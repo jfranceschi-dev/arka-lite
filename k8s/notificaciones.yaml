@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: servicio-notificaciones
-          image: servicio-notificaciones:jossett
+          image: servicio-notificaciones:local
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
