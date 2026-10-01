@@ -1,0 +1,18 @@
+flowchart TB
+    subgraph Equipo[Windows]
+        Browser[Cliente]
+        subgraph Compose[Docker Compose]
+            CS[Solicitudes :8080]
+            CN[Notificaciones :8080]
+            CS -->|servicio-notificaciones:8080| CN
+        end
+        subgraph K8s[Kubernetes de Docker Desktop con kind]
+            KS[Service solicitudes :8080] --> PS[Pod solicitudes :8080]
+            KN[Service notificaciones :8080] --> PN[Pod notificaciones :8080]
+            PS -->|DNS interno servicio-notificaciones:8080| KN
+        end
+    end
+    Browser -->|Compose localhost:8080| CS
+    Browser -->|Compose localhost:8081| CN
+    Browser -.->|port-forward localhost:18080| KS
+    Browser -.->|port-forward localhost:18081| KN

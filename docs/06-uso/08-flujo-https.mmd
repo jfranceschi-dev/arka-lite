@@ -1,0 +1,4 @@
+flowchart LR
+    Cliente[Cliente] -->|HTTPS + certificado| Entrada[Proxy o Ingress: termina TLS]
+    Entrada -->|HTTP interno| Solicitudes[servicio-solicitudes :8080]
+    Solicitudes -->|HTTP interno| Notificaciones[servicio-notificaciones :8080]

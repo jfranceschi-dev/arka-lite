@@ -1,0 +1,24 @@
+sequenceDiagram
+    actor U as Usuario
+    participant C as SolicitudController
+    participant S as ServicioDeSolicitudes
+    participant R as RepositorioQueRegistra
+    participant P as PublicadorRest
+    participant E as EventoController
+    participant N as ServicioDeNotificaciones
+    participant M as Repositorio de notificaciones
+    U->>C: POST /solicitudes/{id}/enviar
+    C->>S: enviar(id)
+    S->>R: buscar(id)
+    R-->>S: Solicitud BORRADOR
+    S->>S: enviar() produce ENVIADA
+    S->>R: guardar(ENVIADA)
+    S->>P: publicar(SolicitudEnviada)
+    P->>E: POST /eventos/solicitud-enviada
+    E->>N: alRecibirSolicitudEnviada(evento)
+    N->>M: guardar(Notificacion)
+    E-->>P: respuesta HTTP
+    P-->>S: termina
+    S-->>C: Solicitud ENVIADA
+    C-->>U: JSON
+    Note over P,E: Si falla HTTP, P registra el error y S devuelve ENVIADA.

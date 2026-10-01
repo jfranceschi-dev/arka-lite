@@ -1,0 +1,6 @@
+flowchart LR
+    E[Push a main o Pull Request] --> M[Matriz: solicitudes y notificaciones]
+    M --> J[Preparar Temurin 26]
+    J --> T[mvn -B verify en cada carpeta]
+    T --> B[docker build por servicio]
+    B --> P[Push a GHCR con etiqueta SHA]

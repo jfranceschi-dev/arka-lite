@@ -1,0 +1,12 @@
+flowchart LR
+    Cliente[Cliente HTTP] --> SC[SolicitudController]
+    SC --> SD[ServicioDeSolicitudes]
+    SD --> RP[Puerto RepositorioDeSolicitudes]
+    SD --> PP[Puerto PublicadorDeEventos]
+    RP --> RR[RepositorioQueRegistra @Primary]
+    PP --> PR[PublicadorRest]
+    PR -->|POST JSON por HTTP| EC[EventoController]
+    EC --> ND[ServicioDeNotificaciones]
+    ND --> NR[RepositorioDeNotificaciones en memoria]
+    NC[NotificacionController] --> ND
+    Cliente --> NC
