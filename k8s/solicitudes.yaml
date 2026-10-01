@@ -18,7 +18,7 @@ spec:
           command: ['sh', '-c', 'until wget -q -O /dev/null http://servicio-notificaciones:8080/notificaciones; do echo esperando notificaciones; sleep 2; done']
       containers:
         - name: servicio-solicitudes
-          image: servicio-solicitudes:jossett
+          image: servicio-solicitudes:local
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
