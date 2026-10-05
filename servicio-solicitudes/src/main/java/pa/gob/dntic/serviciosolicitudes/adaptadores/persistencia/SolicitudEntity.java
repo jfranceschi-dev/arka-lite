@@ -1,11 +1,13 @@
 package pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "solicitudes")
+@Table(name = "solicitud")
 public class SolicitudEntity {
+    @Id
     private String id;
     private String tipo;
     private String estado;

@@ -1,5 +1,6 @@
 package pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import pa.gob.dntic.serviciosolicitudes.dominio.Estado;
 import pa.gob.dntic.serviciosolicitudes.dominio.RepositorioDeSolicitudes;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Primary
 public class RepositorioJpa implements RepositorioDeSolicitudes {
     private final SolicitudJpaRepository jpa;
 

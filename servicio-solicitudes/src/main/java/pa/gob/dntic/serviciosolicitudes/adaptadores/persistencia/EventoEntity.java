@@ -3,7 +3,7 @@ package pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "eventos")
+@Table(name = "evento")
 public class EventoEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
