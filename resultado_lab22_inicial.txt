@@ -1,0 +1,36 @@
+====================================================
+ Puesta a punto de ARKA-Lite  —  8 comprobaciones
+====================================================
+
+[ CAPA DOCKER ]
+-- (1) ambos Dockerfiles: multi-stage y no-root...
+   OK  imagenes chicas y sin root
+
+[ CAPA CI/CD ]
+-- (2) pipeline: prueba antes de publicar, y sin credenciales pegadas...
+   OK  prueba->publica en orden, credencial en secrets
+
+[ CONSTRUIR ]
+-- (3) construyendo las dos imagenes locales...
+   .. fallo build servicio-solicitudes:
+verificar_sistema.sh: line 52: docker: command not found
+   .. fallo build servicio-notificaciones:
+verificar_sistema.sh: line 52: docker: command not found
+   XX  fallo construir/cargar (revisa los Dockerfiles)
+
+[ CAPA KUBERNETES ]
+-- (4) manifiestos validos, aplicados y listos...
+   XX  algun manifiesto invalido
+-- (5) los Services tienen endpoints (selector = labels)...
+   XX  algun Service sin endpoints: el selector no calza con las labels
+-- (6) el evento cruza por DNS (solicitudes -> notificaciones)...
+   XX  el evento no cruzo (revisa NOTIFICACIONES_URL: nombre de Service, no localhost)
+-- (7) comunicacion por NOMBRE de Service (no localhost/IP)...
+   OK  llama por el nombre del Service
+-- (8) auto-sanacion: borro un pod y K8s lo repone...
+   XX  no encontre pod de solicitudes
+
+====================================================
+ RESULTADO:  3/8
+ Sistema aun inestable. Cada XX es un punto abierto por cerrar.
+====================================================

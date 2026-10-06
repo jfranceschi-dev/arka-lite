@@ -1,0 +1,32 @@
+====================================================
+ Puesta a punto de ARKA-Lite  —  8 comprobaciones
+====================================================
+
+[ CAPA DOCKER ]
+-- (1) ambos Dockerfiles: multi-stage y no-root...
+   OK  imagenes chicas y sin root
+
+[ CAPA CI/CD ]
+-- (2) pipeline: prueba antes de publicar, y sin credenciales pegadas...
+   OK  prueba->publica en orden, credencial en secrets
+
+[ CONSTRUIR ]
+-- (3) construyendo las dos imagenes locales...
+   OK  imagenes construidas (Docker Desktop las ve directo)
+
+[ CAPA KUBERNETES ]
+-- (4) manifiestos validos, aplicados y listos...
+   OK  ambos Deployments listos
+-- (5) los Services tienen endpoints (selector = labels)...
+   OK  ambos Services enrutan a pods
+-- (6) el evento cruza por DNS (solicitudes -> notificaciones)...
+   OK  notificaciones recibio el evento por DNS
+-- (7) comunicacion por NOMBRE de Service (no localhost/IP)...
+   OK  llama por el nombre del Service
+-- (8) auto-sanacion: borro un pod y K8s lo repone...
+   OK  el pod se repuso
+
+====================================================
+ RESULTADO:  8/8
+ ARKA-Lite levanta LIMPIO de extremo a extremo.
+====================================================

@@ -11,6 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {contents: read, packages: write}
 
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: arka
+          POSTGRES_USER: arka
+          POSTGRES_PASSWORD: ${{ github.run_id }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U arka -d arka"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    env:
+      DB_URL: jdbc:postgresql://localhost:5432/arka
+      DB_USER: arka
+      DB_PASSWORD: ${{ github.run_id }}
+
     strategy:
       matrix:
           servicio: [ servicio-solicitudes, servicio-notificaciones ]
@@ -26,6 +46,26 @@ jobs:
       - name: Compilar y Probar cada servicio
         run: mvn -B verify
         working-directory: ${{ matrix.servicio }}
+
+      - name: Verificar arranque de solicitudes con PostgreSQL
+        if: matrix.servicio == 'servicio-solicitudes'
+        working-directory: ${{ matrix.servicio }}
+        run: |
+          java -jar target/servicio-solicitudes-*.jar > /tmp/solicitudes.log 2>&1 &
+          APP_PID=$!
+          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+          for intento in $(seq 1 60); do
+            if curl --fail --silent http://localhost:8080/solicitudes | grep -q 'CAM-002'; then
+              exit 0
+            fi
+            if ! kill -0 "$APP_PID" 2>/dev/null; then
+              cat /tmp/solicitudes.log
+              exit 1
+            fi
+            sleep 2
+          done
+          cat /tmp/solicitudes.log
+          exit 1
 
       - name: login al registro
         uses: docker/login-action@v3
