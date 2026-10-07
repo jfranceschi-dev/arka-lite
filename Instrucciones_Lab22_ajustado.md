@@ -11,31 +11,44 @@ Cerrar los puntos abiertos hasta obtener **8/8** en `verificar_sistema.sh`. Entr
 
 `servicio-solicitudes` usa PostgreSQL. Los manifiestos ahora incluyen un Deployment y Service `base-datos`, un volumen persistente y un Secret de **desarrollo local**. Solicitudes recibe `DB_URL`, `DB_USER` y `DB_PASSWORD`, espera a que la base acepte conexiones autenticadas y solo queda listo cuando responde `/solicitudes`. Notificaciones sigue usando almacenamiento en memoria.
 
-El valor del Secret coincide con el de `compose.yaml` para este laboratorio. Para otro entorno, sustituirlo por una credencial gestionada fuera del repositorio. CI levanta PostgreSQL 17 con una contraseña efímera y comprueba el arranque de solicitudes antes de publicar la imagen.
+La credencial local coincide con la usada por Docker Compose en este laboratorio. Para otro entorno, sustituirla por una credencial gestionada fuera del repositorio. CI levanta PostgreSQL 17 con una contraseña temporal y comprueba el arranque de solicitudes antes de publicar la imagen.
+
+## Instalar minikube en Windows
+
+Si minikube no está instalado, abrir **PowerShell como administrador** (clic derecho → «Ejecutar como administrador») y ejecutar:
+
+```powershell
+winget install Kubernetes.minikube
+```
+
+Al terminar, cerrar PowerShell y abrir una terminal nueva para que se actualice el `PATH`. Comprobar la instalación con `minikube version`. Para este laboratorio también debe estar abierto Docker Desktop.
 
 ## Cómo levantarlo en minikube
 
-Abrir Docker Desktop para disponer de su motor Docker. Abrir Git Bash en la raíz del repositorio con `docker`, `kubectl` y `minikube` accesibles. Seleccionar explícitamente minikube: el repositorio también puede estar desplegado en `docker-desktop` y son clústeres distintos.
+Abrir Docker Desktop para disponer de su motor Docker. Abrir Git Bash en la raíz del repositorio con `docker`, `kubectl` y `minikube` accesibles. Para levantar el sistema desde cero:
 
-```bash
-minikube start
-kubectl config use-context minikube
-kubectl get nodes
-bash construir.sh
-minikube image load servicio-solicitudes:local
-minikube image load servicio-notificaciones:local
-kubectl apply -f k8s/
-kubectl rollout status deployment/base-datos --timeout=120s
-kubectl rollout restart deployment/servicio-notificaciones
-kubectl rollout status deployment/servicio-notificaciones --timeout=120s
-kubectl rollout restart deployment/servicio-solicitudes
-kubectl rollout status deployment/servicio-solicitudes --timeout=120s
-bash verificar_sistema.sh 2>&1 | tee resultado_lab22_postgres.txt
-```
+1. `minikube start`
+2. `kubectl config use-context minikube`
+3. `bash construir.sh`
+4. `kubectl apply -f k8s/`
+5. `bash verificar_sistema.sh` → debe dar **8/8**.
 
-La renovación de solicitudes después de notificaciones vuelve a emitir `CAM-002`. Si se modifica el código, repetir construcción y carga antes del despliegue; el verificador construye imágenes en Docker Desktop pero no las carga en minikube. `construir_y_cargar.sh` no existe en este repositorio.
+El segundo paso asegura que los comandos apunten a minikube. Con ese contexto activo, la construcción carga las dos imágenes automáticamente; no hace falta ejecutar `minikube image load` a mano. El verificador permanece sin cambios.
+
+Estos cuatro pasos describen un arranque desde cero. Si ya existen pods con imágenes anteriores, hay que renovarlos para que usen las nuevas; ese fue el motivo del 7/8 previo.
 
 El verificador aplica manifiestos y elimina un pod de solicitudes para comprobar su reposición. Ejecutarlo solo sobre el clúster local del laboratorio.
+
+## Volver a Docker Desktop y apagar minikube
+
+Al terminar, volver al clúster que se usaba antes y detener minikube sin borrar sus datos:
+
+```bash
+kubectl config use-context docker-desktop
+minikube stop
+```
+
+Para trabajar de nuevo con ARKA en Docker Desktop, ejecutar `bash construir.sh`, `kubectl apply -f k8s/` y `bash verificar_sistema.sh`. Si ya existen pods con imágenes anteriores, renovarlos para que usen las imágenes nuevas. Cambiar de contexto y detener minikube no elimina sus recursos; se pueden recuperar con `minikube start`. Solo si se quiere eliminar ese clúster y sus datos locales, ejecutar `minikube delete`.
 
 ## Las ocho comprobaciones
 
@@ -73,4 +86,4 @@ Estos retos siguen siendo opcionales y no se presentan como completados.
 
 ## Evidencia
 
-**Resultado real en minikube con PostgreSQL: 8/8**, en [resultado_lab22_postgres.txt](resultado_lab22_postgres.txt). La lista cerrada está en [puntos_abiertos_ajustado.md](puntos_abiertos_ajustado.md). Aún hay que completar datos de equipo y adjuntar la captura solicitada por el docente.
+**Resultado real en minikube con PostgreSQL: 8/8.** Aún hay que completar los datos del equipo y adjuntar la captura solicitada por el docente.
