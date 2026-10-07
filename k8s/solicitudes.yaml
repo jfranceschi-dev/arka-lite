@@ -13,6 +13,15 @@ spec:
         app: servicio-solicitudes
     spec:
       initContainers:
+        - name: esperar-base-datos
+          image: postgres:17
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arka-postgres
+                  key: password
+          command: ['sh', '-c', 'until psql -h base-datos -U arka -d arka -tAc "SELECT 1" >/dev/null 2>&1; do echo esperando base de datos; sleep 2; done']
         - name: esperar-notificaciones
           image: busybox:1.36
           command: ['sh', '-c', 'until wget -q -O /dev/null http://servicio-notificaciones:8080/notificaciones; do echo esperando notificaciones; sleep 2; done']
@@ -23,8 +32,23 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: DB_URL
+              value: "jdbc:postgresql://base-datos:5432/arka"
+            - name: DB_USER
+              value: arka
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arka-postgres
+                  key: password
             - name: NOTIFICACIONES_URL
               value: "http://servicio-notificaciones:8080/eventos/solicitud-enviada"
+          readinessProbe:
+            httpGet:
+              path: /solicitudes
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: v1
 kind: Service

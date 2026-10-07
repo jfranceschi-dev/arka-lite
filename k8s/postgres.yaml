@@ -1,0 +1,82 @@
+# Credenciales de desarrollo local, iguales a las de compose.yaml.
+# Sustituir este Secret por uno gestionado fuera del repositorio en otros entornos.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: arka-postgres
+type: Opaque
+stringData:
+  password: arka
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: arka-postgres-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: base-datos
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: base-datos
+  template:
+    metadata:
+      labels:
+        app: base-datos
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: arka
+            - name: POSTGRES_USER
+              value: arka
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arka-postgres
+                  key: password
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: datos
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -U arka -d arka"]
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -U arka -d arka"]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: datos
+          persistentVolumeClaim:
+            claimName: arka-postgres-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: base-datos
+spec:
+  selector:
+    app: base-datos
+  ports:
+    - port: 5432
+      targetPort: postgres
