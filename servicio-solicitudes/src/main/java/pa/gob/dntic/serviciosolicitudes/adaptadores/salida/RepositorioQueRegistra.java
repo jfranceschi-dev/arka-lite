@@ -1,6 +1,5 @@
 package pa.gob.dntic.serviciosolicitudes.adaptadores.salida;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import pa.gob.dntic.serviciosolicitudes.dominio.RepositorioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.Solicitud;
@@ -11,7 +10,6 @@ import java.util.*;
  * pero registra cada escritura. El dominio no cambia ni una línea: ese es el pago.
  */
 @Repository
-@Primary
 public class RepositorioQueRegistra implements RepositorioDeSolicitudes {
 
     private final Map<String, Solicitud> almacen = new LinkedHashMap<>();

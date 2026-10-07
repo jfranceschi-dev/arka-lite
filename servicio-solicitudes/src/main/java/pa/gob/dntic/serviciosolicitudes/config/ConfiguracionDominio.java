@@ -11,13 +11,14 @@ import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
 public class ConfiguracionDominio {
 
     @Bean
-    public ServicioDeSolicitudes servicioDeSolicitudes(RepositorioDeSolicitudes repositorio,
-                                                       PublicadorDeEventos publicador) {
+    public ServicioDeSolicitudes servicioDeSolicitudes(
+            RepositorioDeSolicitudes repositorio,
+            PublicadorDeEventos publicador) {
         return new ServicioDeSolicitudes(repositorio, publicador);
     }
 
     @Bean
-    public CommandLineRunner datosDeEjemplo(ServicioDeSolicitudes servicio) {
+    public CommandLineRunner seed(ServicioDeSolicitudes servicio) {
         return args -> {
             servicio.registrar("INC-001", "Incidente");
             servicio.registrar("CAM-002", "Cambio");
