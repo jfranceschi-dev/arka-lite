@@ -1,12 +1,25 @@
 services:
-  base-datos:
+  db-solicitudes:
     image: postgres:17
     environment:
-      POSTGRES_DB: arka
+      POSTGRES_DB: db-solicitudes
       POSTGRES_USER: arka
       POSTGRES_PASSWORD: arka
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U arka"]
+      test: ["CMD-SHELL", "pg_isready -U arka -d db-solicitudes"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  db-notificaciones:
+    image: postgres:17
+    ports: ["5433:5432"]
+    environment:
+      POSTGRES_DB: db-notificaciones
+      POSTGRES_USER: arka
+      POSTGRES_PASSWORD: arka
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arka -d db-notificaciones"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -14,6 +27,13 @@ services:
   servicio-notificaciones:
     build: ./servicio-notificaciones
     ports: ["8081:8080"]
+    environment:
+      DB_URL: jdbc:postgresql://db-notificaciones:5432/db-notificaciones
+      DB_USER: arka
+      DB_PASSWORD: arka
+    depends_on:
+      db-notificaciones:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "bash -lc 'echo > /dev/tcp/127.0.0.1/8080'"]
       interval: 5s
@@ -25,11 +45,11 @@ services:
     ports: ["8080:8080"]
     environment:
       NOTIFICACIONES_URL: "http://servicio-notificaciones:8080/eventos/solicitud-enviada"
-      DB_URL: jdbc:postgresql://base-datos:5432/arka
+      DB_URL: jdbc:postgresql://db-solicitudes:5432/db-solicitudes
       DB_USER: arka
       DB_PASSWORD: arka
     depends_on:
       servicio-notificaciones:
         condition: service_healthy
-      base-datos:
+      db-solicitudes:
         condition: service_healthy

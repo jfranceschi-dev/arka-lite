@@ -9,7 +9,7 @@ Cerrar los puntos abiertos hasta obtener **8/8** en `verificar_sistema.sh`. Entr
 
 ## Adaptación a PostgreSQL
 
-`servicio-solicitudes` usa PostgreSQL. Los manifiestos ahora incluyen un Deployment y Service `base-datos`, un volumen persistente y un Secret de **desarrollo local**. Solicitudes recibe `DB_URL`, `DB_USER` y `DB_PASSWORD`, espera a que la base acepte conexiones autenticadas y solo queda listo cuando responde `/solicitudes`. Notificaciones sigue usando almacenamiento en memoria.
+`servicio-solicitudes` usa PostgreSQL. Los manifiestos ahora incluyen un Deployment y Service `db-solicitudes`, un volumen persistente y un Secret de **desarrollo local**. Solicitudes recibe `DB_URL`, `DB_USER` y `DB_PASSWORD`, espera a que la base acepte conexiones autenticadas y solo queda listo cuando responde `/solicitudes`. Notificaciones sigue usando almacenamiento en memoria.
 
 La credencial local coincide con la usada por Docker Compose en este laboratorio. Para otro entorno, sustituirla por una credencial gestionada fuera del repositorio. CI levanta PostgreSQL 17 con una contraseña temporal y comprueba el arranque de solicitudes antes de publicar la imagen.
 
@@ -71,7 +71,7 @@ El check 2 revisa el archivo de CI; la ejecución remota de GitHub Actions no fo
 |---|---|
 | `ErrImagePull` / `ImagePullBackOff` | `kubectl describe pod <nombre>` y `minikube image load` |
 | Pod de solicitudes no arranca | `kubectl logs deployment/servicio-solicitudes`, `kubectl get pods` y `kubectl get pvc` |
-| PostgreSQL no está listo | `kubectl logs deployment/base-datos`, `kubectl get pvc` y `kubectl get endpoints base-datos` |
+| PostgreSQL no está listo | `kubectl logs deployment/db-solicitudes`, `kubectl get pvc` y `kubectl get endpoints db-solicitudes` |
 | Service sin endpoints | Revisar estado Ready de los pods, selectors y labels; la falta de endpoints también puede ser consecuencia de que un pod no está listo |
 | Evento no aparece | Logs de ambos servicios, `NOTIFICACIONES_URL` y orden de arranque |
 | No aparecen recursos esperados | `kubectl config get-contexts` |

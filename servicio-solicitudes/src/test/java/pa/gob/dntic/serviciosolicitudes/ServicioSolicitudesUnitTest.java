@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ServicioSolicitudesUnitTest {
@@ -47,6 +48,7 @@ class ServicioSolicitudesUnitTest {
         assertEquals(1, eventosPublicados.size());
         assertEquals("SOL-001", eventosPublicados.getFirst().id());
         assertEquals("Incidencia", eventosPublicados.getFirst().tipo());
+        assertDoesNotThrow(() -> java.util.UUID.fromString(eventosPublicados.getFirst().eventoId()));
     }
 
     @Test

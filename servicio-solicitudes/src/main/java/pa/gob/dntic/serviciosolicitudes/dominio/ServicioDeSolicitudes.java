@@ -2,6 +2,7 @@ package pa.gob.dntic.serviciosolicitudes.dominio;
 
 import pa.gob.dntic.serviciosolicitudes.eventos.SolicitudEnviada;
 import java.util.List;
+import java.util.UUID;
 
 /*
  * Dominio de Solicitudes (Etapa 1) + publicación de evento (Etapa 2).
@@ -26,7 +27,11 @@ public class ServicioDeSolicitudes {
     public Solicitud enviar(String id) {
         Solicitud enviada = buscar(id).enviar();
         repositorio.guardar(enviada);
-        publicador.publicar(new SolicitudEnviada(enviada.id(), enviada.tipo()));  // avisa; no sabe quién reacciona
+        publicador.publicar(new SolicitudEnviada(
+                UUID.randomUUID().toString(),
+                enviada.id(),
+                enviada.tipo()
+        ));  // avisa; no sabe quién reacciona
         return enviada;
     }
 

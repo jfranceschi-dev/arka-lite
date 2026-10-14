@@ -15,25 +15,29 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_DB: arka
+          POSTGRES_DB: ${{ matrix.base_datos }}
           POSTGRES_USER: arka
           POSTGRES_PASSWORD: ${{ github.run_id }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U arka -d arka"
+          --health-cmd "pg_isready -U arka -d ${{ matrix.base_datos }}"
           --health-interval 5s
           --health-timeout 3s
           --health-retries 10
 
     env:
-      DB_URL: jdbc:postgresql://localhost:5432/arka
+      DB_URL: jdbc:postgresql://localhost:5432/${{ matrix.base_datos }}
       DB_USER: arka
       DB_PASSWORD: ${{ github.run_id }}
 
     strategy:
       matrix:
-          servicio: [ servicio-solicitudes, servicio-notificaciones ]
+        include:
+          - servicio: servicio-solicitudes
+            base_datos: db-solicitudes
+          - servicio: servicio-notificaciones
+            base_datos: db-notificaciones
 
     steps:
       - name: Traer el codigo

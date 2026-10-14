@@ -12,12 +12,32 @@ spec:
       labels:
         app: servicio-notificaciones
     spec:
+      initContainers:
+        - name: esperar-db-notificaciones
+          image: postgres:17
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arka-postgres
+                  key: password
+          command: ['sh', '-c', 'until psql -h db-notificaciones -U arka -d db-notificaciones -tAc "SELECT 1" >/dev/null 2>&1; do echo esperando base de datos de notificaciones; sleep 2; done']
       containers:
         - name: servicio-notificaciones
           image: servicio-notificaciones:local
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          env:
+            - name: DB_URL
+              value: "jdbc:postgresql://db-notificaciones:5432/db-notificaciones"
+            - name: DB_USER
+              value: arka
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arka-postgres
+                  key: password
           readinessProbe:
             httpGet: { path: /notificaciones, port: 8080 }
             initialDelaySeconds: 3
