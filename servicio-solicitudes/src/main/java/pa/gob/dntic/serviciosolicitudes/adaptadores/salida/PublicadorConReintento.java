@@ -20,6 +20,10 @@ public class PublicadorConReintento implements PublicadorDeEventos {
 
     private final RestClient rest = RestClient.create();
     private final String url;
+    // Esta cola en memoria habría perdido todo al reiniciar el proceso; por
+    // eso sigue comentada. Lo que la reemplaza es la tabla `evento`
+    // (columna procesado) más RelevadorDeEventosPendientes, que sí sobrevive
+    // a un reinicio porque vive en la base, no en memoria.
     //private final Queue<SolicitudEnviada> pendientes = new ConcurrentLinkedQueue<>();
 
     //@Value("${notificaciones.url}")
@@ -52,7 +56,15 @@ public class PublicadorConReintento implements PublicadorDeEventos {
 
     private void guardarParaReintento(SolicitudEnviada evento) {
         //pendientes.add(evento);
-        System.err.println("evento guardado para reintento: " + evento.eventoId());
+        // Antes esto se quedaba solo en el log y el evento se perdía para
+        // siempre (el guardado en 'pendientes' estaba comentado). Ahora se
+        // deja constancia en evento_id (tabla evento, outbox) desde que se
+        // creó el evento en ServicioDeSolicitudes.enviar(), así que lanzar
+        // aquí no pierde nada: solo le avisa a quien llamó (hoy,
+        // RelevadorDeEventosPendientes) que falló, para que no lo marque
+        // como procesado y lo reintente en el próximo ciclo.
+        System.err.println("evento no publicado tras agotar reintentos, queda pendiente: " + evento.eventoId());
+        throw new PublicacionFallidaException(evento.eventoId());
     }
 
     private void dormir(long ms) {

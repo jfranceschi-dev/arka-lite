@@ -6,6 +6,10 @@ import org.springframework.web.client.RestClient;
 import pa.gob.dntic.serviciosolicitudes.dominio.PublicadorDeEventos;
 import pa.gob.dntic.serviciosolicitudes.eventos.SolicitudEnviada;
 
+// NO es el bean activo: PublicadorConReintento tiene @Primary, así que
+// Spring inyecta ese y no este cuando algo pide un PublicadorDeEventos. Se
+// deja esta versión sin reintentos como referencia de "antes" para
+// comparar contra PublicadorConReintento.
 @Component
 public class PublicadorRest implements PublicadorDeEventos {
       private final RestClient rest = RestClient.create();
