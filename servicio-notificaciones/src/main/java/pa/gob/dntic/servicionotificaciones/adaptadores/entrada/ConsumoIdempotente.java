@@ -7,6 +7,8 @@ import pa.gob.dntic.servicionotificaciones.adaptadores.persistencia.EventoProces
 import pa.gob.dntic.servicionotificaciones.dominio.ServicioDeNotificaciones;
 import pa.gob.dntic.servicionotificaciones.eventos.SolicitudEnviada;
 
+import java.util.List;
+
 @Service
 public class ConsumoIdempotente {
     private final EventoProcesadoRepository procesados;
@@ -27,5 +29,11 @@ public class ConsumoIdempotente {
 
         servicio.alRecibirSolicitudEnviada(e);
         procesados.save(new EventoProcesadoEntity(e.eventoId()));
+    }
+
+    public List<String> identificadoresProcesados() {
+        return procesados.findAll().stream()
+                .map(EventoProcesadoEntity::getEventoId)
+                .toList();
     }
 }

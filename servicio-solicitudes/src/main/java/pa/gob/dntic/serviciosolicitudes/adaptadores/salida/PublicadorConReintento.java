@@ -2,6 +2,7 @@ package pa.gob.dntic.serviciosolicitudes.adaptadores.salida;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import pa.gob.dntic.serviciosolicitudes.dominio.PublicadorDeEventos;
@@ -11,7 +12,9 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class PublicadorConReintento {
+@Component
+@Primary
+public class PublicadorConReintento implements PublicadorDeEventos {
     private static final int MAXIMO_INTENTOS = 3;
     private static final long ESPERA_MILISEGUNDOS = 500L;
 
@@ -20,12 +23,14 @@ public class PublicadorConReintento {
     //private final Queue<SolicitudEnviada> pendientes = new ConcurrentLinkedQueue<>();
 
     //@Value("${notificaciones.url}")
-    public PublicadorConReintento(String url) {
+    public PublicadorConReintento(@Value("${notificaciones.url}")String url) {
         this.url = url;
     }
 
-    public void publicar(String solicitudId, String tipo) {
-        SolicitudEnviada evento = new SolicitudEnviada(UUID.randomUUID().toString(), solicitudId, tipo);
+    @Override
+    public void publicar(SolicitudEnviada evento) {
+        //Se camvio para que coincida con los otros metodos y se pueda usar
+        //SolicitudEnviada evento = new SolicitudEnviada(UUID.randomUUID().toString(), solicitudId, tipo);
         for (int intento = 1; intento <= MAXIMO_INTENTOS; intento++) {
             try {
                 rest.post()

@@ -5,9 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pa.gob.dntic.servicionotificaciones.adaptadores.persistencia.EventoProcesadoEntity;
 import pa.gob.dntic.servicionotificaciones.adaptadores.persistencia.EventoProcesadoRepository;
 import pa.gob.dntic.servicionotificaciones.adaptadores.salida.RepositorioEnMemoria;
 import pa.gob.dntic.servicionotificaciones.dominio.ServicioDeNotificaciones;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,11 +23,12 @@ import static org.mockito.Mockito.when;
 class NotificacionControllerWebTest {
 
     private MockMvc mvc;
+    private EventoProcesadoRepository procesados;
 
     @BeforeEach
     void prepararMvc() {
         ServicioDeNotificaciones servicio = new ServicioDeNotificaciones(new RepositorioEnMemoria());
-        EventoProcesadoRepository procesados = mock(EventoProcesadoRepository.class);
+        procesados = mock(EventoProcesadoRepository.class);
         when(procesados.existsById(anyString())).thenReturn(false);
         ConsumoIdempotente consumo = new ConsumoIdempotente(procesados, servicio);
         mvc = MockMvcBuilders.standaloneSetup(
@@ -42,5 +46,18 @@ class NotificacionControllerWebTest {
         mvc.perform(get("/notificaciones"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].texto").value("Solicitud SOL-001 (Incidencia) enviada"));
+    }
+
+    @Test
+    void exponeLosIdentificadoresDeEventosProcesados() throws Exception {
+        when(procesados.findAll()).thenReturn(List.of(
+                new EventoProcesadoEntity("evento 1 chafa :v"),
+                new EventoProcesadoEntity("evento 2 chafa")
+        ));
+
+        mvc.perform(get("/eventos/procesados"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0]").value("evento 1 chafa :v"))
+                .andExpect(jsonPath("$[1]").value("evento 2 chafa"));
     }
 }

@@ -19,4 +19,8 @@ public class EventoProcesadoEntity {
     public EventoProcesadoEntity(String eventoId) {
         this.eventoId = eventoId;
     }
+
+    public String getEventoId() {
+        return eventoId;
+    }
 }
