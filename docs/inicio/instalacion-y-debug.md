@@ -7,12 +7,12 @@ Esta guía prepara una computadora para compilar, probar, ejecutar y depurar los
 | Herramienta | Cuándo se necesita | Uso |
 | --- | --- | --- |
 | Git | Siempre | Descargar el repositorio y trabajar con ramas. |
-| Docker Desktop | Ruta recomendada para ejecutar todo | Construir y levantar ambos servicios con Compose. |
+| Docker Desktop | Ruta recomendada para ejecutar todo | Construir servicios y levantar ambos PostgreSQL con Compose o Kubernetes. |
 | JDK 26 | Desarrollo Java sin Docker | Compilar, probar y depurar desde el IDE o Maven. |
 | IntelliJ IDEA o Visual Studio Code | Recomendado para desarrollo | Editar, ejecutar pruebas y usar breakpoints. |
 | Maven instalado | No | Cada servicio incluye Maven Wrapper. |
 
-Si solamente se ejecuta `docker compose up`, no hace falta instalar Java ni Maven en la computadora. Para desarrollar y depurar Java sí se necesita un JDK 26.
+Si solamente se ejecuta `docker compose up`, no hace falta instalar Java ni Maven en la computadora. Para desarrollar y depurar Java sí se necesita un JDK 26. Si se arranca Java fuera de Compose, también deben estar disponibles los dos PostgreSQL.
 
 ## 1. Instalar y verificar Git
 
@@ -150,46 +150,32 @@ docker compose down
 
 La [guía de Docker](../operaciones/docker-y-compose.md) explica el Dockerfile, `.dockerignore`, `.gitignore` y cada sección de Compose.
 
-## 8. Ejecutar sin Docker
+## 8. Ejecutar Java desde Maven con PostgreSQL local
 
-Abrir dos terminales desde la raíz del repositorio.
+Los valores predeterminados de Spring esperan `db-solicitudes` en `localhost:5432` y `db-notificaciones` en `localhost:5433`. Se pueden instalar dos PostgreSQL locales o, para esta prueba, iniciar **solo las bases** con Docker. No iniciar simultáneamente otro PostgreSQL en esos puertos:
 
-Terminal de notificaciones:
+```powershell
+docker run -d --name arka-db-solicitudes -e POSTGRES_DB=db-solicitudes -e POSTGRES_USER=arka -e POSTGRES_PASSWORD=arka -p 5432:5432 postgres:17
+docker run -d --name arka-db-notificaciones -e POSTGRES_DB=db-notificaciones -e POSTGRES_USER=arka -e POSTGRES_PASSWORD=arka -p 5433:5432 postgres:17
+docker logs arka-db-solicitudes
+docker logs arka-db-notificaciones
+```
+
+Las credenciales son de laboratorio. Abrir dos terminales desde la raíz. Iniciar primero Notificaciones en 8081:
 
 ```powershell
 cd servicio-notificaciones
 .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8081"
 ```
 
-Terminal de solicitudes:
+En otra terminal iniciar Solicitudes en 8080:
 
 ```powershell
 cd servicio-solicitudes
 .\mvnw.cmd spring-boot:run
 ```
 
-Iniciar notificaciones primero facilita la prueba. Ambos servicios usan 8080 de forma predeterminada, por eso el comando anterior mueve notificaciones a 8081. Solicitudes ya usa `http://localhost:8081/eventos/solicitud-enviada` como destino predeterminado.
-
-Para usar otros puertos:
-
-```powershell
-# Terminal de notificaciones
-cd servicio-notificaciones
-.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=9091"
-```
-
-```powershell
-# Terminal de solicitudes
-cd servicio-solicitudes
-$env:NOTIFICACIONES_URL = "http://localhost:9091/eventos/solicitud-enviada"
-.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=9090"
-```
-
-Para eliminar la variable de la sesión:
-
-```powershell
-Remove-Item Env:NOTIFICACIONES_URL
-```
+`NOTIFICACIONES_URL` ya apunta a `http://localhost:8081/eventos/solicitud-enviada`. Si se usan PostgreSQL o puertos distintos, establecer `DB_URL`, `DB_USER`, `DB_PASSWORD` en **cada terminal** antes de arrancar la aplicación correspondiente. Para terminar esta prueba, cerrar las JVM y ejecutar `docker stop arka-db-solicitudes arka-db-notificaciones`. `docker rm -v arka-db-solicitudes arka-db-notificaciones` elimina después los contenedores y sus volúmenes anónimos de laboratorio.
 
 ## 9. Abrir en IntelliJ IDEA
 
@@ -225,11 +211,11 @@ No se debe ejecutar `pa.gob.dntic.arkalite.ArkaliteApplication`; pertenece al mo
 Para seguir el flujo entre servicios:
 
 1. Colocar un breakpoint en `SolicitudController.enviar` o `ServicioDeSolicitudes.enviar`.
-2. Colocar otro en `EventoController.recibir`.
+2. Colocar otro en `RelevadorDeEventosPendientes.publicarPendientes` y otro en `EventoController.recibir`.
 3. Iniciar ambos servicios en modo **Debug**.
 4. Crear `INC-002` y ejecutar la petición de envío.
-5. Continuar la ejecución en solicitudes para permitir la llamada HTTP.
-6. El depurador debe detenerse después en notificaciones.
+5. Continuar la ejecución: `enviar()` guarda el outbox y responde; el relevador hará el POST en un ciclo posterior.
+6. El depurador debe detenerse después en el relevador y luego en Notificaciones.
 
 ```powershell
 Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
@@ -281,15 +267,17 @@ Detener el proceso anterior o usar otros puertos y actualizar `NOTIFICACIONES_UR
 
 ### La solicitud se envía, pero no aparece una notificación
 
-El diseño actual continúa aunque falle la llamada. Revisar:
+El envío guarda el evento pendiente y el relevador vuelve a intentar. Revisar:
 
 ```powershell
 docker compose ps
 docker compose logs servicio-solicitudes
 docker compose logs servicio-notificaciones
+docker compose exec db-solicitudes psql -U arka -d db-solicitudes -c 'SELECT evento_id, procesado FROM evento ORDER BY id;'
+docker compose exec db-notificaciones psql -U arka -d db-notificaciones -c 'SELECT evento_id FROM evento_procesado;'
 ```
 
-En ejecución local, confirmar que notificaciones está en 8081 y que `NOTIFICACIONES_URL` no conserva un valor de otra sesión.
+En ejecución local, confirmar que Notificaciones está en 8081 y que `NOTIFICACIONES_URL` no conserva un valor de otra sesión. Verificar también ambas conexiones `DB_URL`.
 
 ### Docker no refleja el cambio de código
 
@@ -307,5 +295,5 @@ Las imágenes no montan el código como volumen; cualquier cambio Java requiere 
 - El Maven Wrapper de cada microservicio usa Java 26.
 - `clean verify` termina correctamente en ambos servicios.
 - `docker compose config` es válido.
-- Compose muestra notificaciones como saludable y solicitudes como iniciado.
+- Compose muestra los dos PostgreSQL saludables y ambas aplicaciones iniciadas.
 - Crear y enviar `INC-002` produce una entrada en `http://localhost:8081/notificaciones`.

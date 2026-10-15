@@ -8,9 +8,10 @@ La documentación está organizada por propósito para que una persona nueva pue
 2. Seguir [Instalación y depuración](inicio/instalacion-y-debug.md) para preparar el equipo y levantar la solución.
 3. Estudiar [Componentes Java y ejecución](arquitectura/componentes-java.md) para entender clases, capas, Spring y el flujo entre servicios.
 4. Consultar [Docker y Docker Compose](operaciones/docker-y-compose.md) para comprender imágenes, contenedores y la red interna.
-5. Leer [Flujo de trabajo del equipo](desarrollo/flujo-de-trabajo.md) y [Guía de Git](desarrollo/git.md) antes de crear una rama o Pull Request.
-6. Revisar [GitHub Actions y archivos YAML](automatizacion/github-actions-yaml.md) para entender qué archivos reconoce GitHub.
-7. Continuar con [CI/CD, ramas y ambientes](automatizacion/ci-cd-y-ambientes.md) para diseñar la automatización futura.
+5. Seguir [Kubernetes local](operaciones/kubernetes-local.md) y [PostgreSQL en Kubernetes](operaciones/postgresql-kubernetes.md) para entender los dos manifiestos de bases de datos y comprobarlos con comandos.
+6. Leer [Flujo de trabajo del equipo](desarrollo/flujo-de-trabajo.md) y [Guía de Git](desarrollo/git.md) antes de crear una rama o Pull Request.
+7. Revisar [GitHub Actions y archivos YAML](automatizacion/github-actions-yaml.md) para entender qué archivos reconoce GitHub.
+8. Continuar con [CI/CD, ramas y ambientes](automatizacion/ci-cd-y-ambientes.md) para diseñar la automatización futura.
 
 ## Organización
 
@@ -23,7 +24,8 @@ docs/
 │   └── instalacion-y-debug.md
 ├── arquitectura/
 │   ├── README.md
-│   └── componentes-java.md
+│   ├── componentes-java.md
+│   └── especificacion-eventos-outbox.md
 ├── desarrollo/
 │   ├── README.md
 │   ├── flujo-de-trabajo.md
@@ -33,6 +35,7 @@ docs/
 │   ├── README.md
 │   ├── docker-y-compose.md
 │   ├── kubernetes-local.md
+│   ├── postgresql-kubernetes.md
 │   └── kubernetes-limpieza.md
 └── automatizacion/
     ├── README.md
@@ -52,6 +55,7 @@ Material para instalar, ejecutar y conocer el sistema por primera vez.
 Diseño del código, componentes Java y comunicación entre microservicios.
 
 - [Componentes Java y ejecución](arquitectura/componentes-java.md)
+- [Evolución de eventos, reintentos e idempotencia](arquitectura/especificacion-eventos-outbox.md)
 
 ### Desarrollo
 
@@ -67,6 +71,7 @@ Construcción, ejecución y diagnóstico de la aplicación.
 
 - [Docker y Docker Compose](operaciones/docker-y-compose.md)
 - [Kubernetes local con Docker Desktop](operaciones/kubernetes-local.md)
+- [PostgreSQL en Kubernetes](operaciones/postgresql-kubernetes.md)
 - [Limpieza de Kubernetes local](operaciones/kubernetes-limpieza.md)
 
 ### Automatización

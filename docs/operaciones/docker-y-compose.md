@@ -150,32 +150,50 @@ git check-ignore -v servicio-solicitudes\target\archivo.jar
 
 ## `compose.yaml` explicado
 
-El archivo vigente es:
+El archivo vigente define **cuatro servicios**. Este extracto muestra las relaciones principales; el archivo completo está en la raíz:
 
 ```yaml
 services:
+  db-solicitudes:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: db-solicitudes
+      POSTGRES_USER: arka
+      POSTGRES_PASSWORD: arka
+
+  db-notificaciones:
+    image: postgres:17
+    ports: ["5433:5432"]
+    environment:
+      POSTGRES_DB: db-notificaciones
+      POSTGRES_USER: arka
+      POSTGRES_PASSWORD: arka
+
   servicio-notificaciones:
     build: ./servicio-notificaciones
     ports: ["8081:8080"]
-    healthcheck:
-      test: ["CMD-SHELL", "bash -lc 'echo > /dev/tcp/127.0.0.1/8080'"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+    environment:
+      DB_URL: jdbc:postgresql://db-notificaciones:5432/db-notificaciones
+    depends_on:
+      db-notificaciones:
+        condition: service_healthy
 
   servicio-solicitudes:
     build: ./servicio-solicitudes
     ports: ["8080:8080"]
     environment:
       NOTIFICACIONES_URL: "http://servicio-notificaciones:8080/eventos/solicitud-enviada"
+      DB_URL: jdbc:postgresql://db-solicitudes:5432/db-solicitudes
     depends_on:
       servicio-notificaciones:
+        condition: service_healthy
+      db-solicitudes:
         condition: service_healthy
 ```
 
 ### `services`
 
-Define los contenedores que forman la aplicación. Compose crea una imagen y un contenedor para cada entrada.
+Define `db-solicitudes`, `db-notificaciones` y las dos aplicaciones. Cada base es un contenedor PostgreSQL separado; los dos servicios Java tienen sus propias imágenes construidas desde su código.
 
 ### `build`
 
@@ -187,24 +205,25 @@ El formato corto es `PUERTO_COMPUTADORA:PUERTO_CONTENEDOR`:
 
 - `8081:8080`: notificaciones escucha en 8080 dentro del contenedor y se visita en 8081 desde la computadora.
 - `8080:8080`: solicitudes usa 8080 en ambos lados.
+- `5433:5432`: PostgreSQL de Notificaciones se puede consultar desde la computadora en `localhost:5433`; dentro de Compose sigue en `db-notificaciones:5432`.
 
-Los contenedores se comunican entre sí por el puerto interno `8080`, no por el puerto publicado `8081`.
+PostgreSQL de Solicitudes no publica un puerto al anfitrión en este Compose. Los contenedores se comunican usando los nombres de servicio y sus puertos internos, no los puertos publicados al anfitrión.
 
 ### `environment`
 
-Sobrescribe la propiedad `notificaciones.url` de Spring mediante `NOTIFICACIONES_URL`. Dentro de la red de Compose se usa el nombre del servicio como host.
+`NOTIFICACIONES_URL` define el destino HTTP. `DB_URL`, `DB_USER` y `DB_PASSWORD` conectan cada aplicación a **su** PostgreSQL. `POSTGRES_DB`, `POSTGRES_USER` y `POSTGRES_PASSWORD` inicializan las bases al crear contenedores nuevos. Las credenciales `arka` son solo de desarrollo local.
 
 `localhost` dentro de un contenedor se refiere a ese mismo contenedor. Por eso solicitudes no puede llamar a notificaciones con `http://localhost:8081` desde Compose.
 
 ### `healthcheck`
 
-Cada cinco segundos comprueba si el puerto 8080 de notificaciones acepta conexiones. Cada intento puede tardar hasta tres segundos y se permiten cinco fallos antes de marcarlo como no saludable.
+Ambos PostgreSQL usan `pg_isready`; Notificaciones comprueba si su puerto HTTP interno acepta conexiones. Los intervalos y límites exactos están en `compose.yaml`.
 
 Este chequeo confirma que el puerto abrió; no comprueba una operación de negocio. Cuando se agregue Spring Boot Actuator conviene sustituirlo por un endpoint de salud HTTP.
 
 ### `depends_on`
 
-Solicitudes espera a que notificaciones esté saludable antes de iniciar. Esto ordena el arranque inicial, pero no garantiza que notificaciones permanezca disponible. La aplicación debe manejar fallos de red durante toda su ejecución.
+Notificaciones espera a su PostgreSQL; Solicitudes espera a su PostgreSQL y a Notificaciones. Esto ordena el arranque inicial, pero no garantiza disponibilidad continua. El outbox de Solicitudes conserva los eventos pendientes ante fallos posteriores de HTTP.
 
 ### Red predeterminada
 
@@ -248,10 +267,17 @@ Salir de `logs -f` con `Ctrl+C` no detiene los contenedores.
 ```powershell
 Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
 Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/INC-002/enviar
+Start-Sleep -Seconds 6
 Invoke-RestMethod http://localhost:8081/notificaciones
+Invoke-RestMethod http://localhost:8081/eventos/procesados
 ```
 
-La última respuesta debe contener una notificación para `INC-002`.
+El relevador publica después de responder al cliente. La espera permite observar un ciclo; no es una garantía exacta. También se pueden consultar las tablas:
+
+```powershell
+docker compose exec db-solicitudes psql -U arka -d db-solicitudes -c 'SELECT id, solicitud_id, evento_id, procesado FROM evento ORDER BY id;'
+docker compose exec db-notificaciones psql -U arka -d db-notificaciones -c 'SELECT evento_id FROM evento_procesado;'
+```
 
 ### 5. Aplicar cambios
 
@@ -283,7 +309,7 @@ docker compose down       # Detiene y elimina contenedores y red
 docker compose down --rmi local  # También elimina imágenes construidas localmente
 ```
 
-No hay volúmenes de datos en el Compose actual. Los datos están en memoria y se pierden cada vez que se reinicia la JVM.
+El Compose actual no declara volúmenes persistentes para PostgreSQL. Un simple reinicio de la aplicación no borra por sí mismo la BD, pero **recrear o eliminar los contenedores PostgreSQL puede perder sus datos**. En Kubernetes los manifiestos sí usan PVC. Las notificaciones como objetos siguen en memoria y se pierden al reiniciar ese servicio; los ID procesados se guardan en su PostgreSQL.
 
 ## Variables y archivos `.env`
 
@@ -309,7 +335,8 @@ Un `.env` con credenciales no se confirma en Git. Se puede versionar `.env.examp
 | --- | --- |
 | `port is already allocated` | Cambiar el puerto del lado izquierdo o detener el proceso que lo usa. |
 | Un servicio termina | Ejecutar `docker compose ps -a` y `docker compose logs <servicio>`. |
-| Solicitudes no genera notificación | Revisar `NOTIFICACIONES_URL`, la salud de notificaciones y los logs de ambos servicios. |
+| Solicitudes no genera notificación | Revisar `NOTIFICACIONES_URL`, la salud de Notificaciones, `evento.procesado` y los logs de ambos servicios. |
+| PostgreSQL no inicia o la aplicación falla al conectar | Revisar `docker compose ps`, logs de `db-solicitudes` o `db-notificaciones` y las variables `DB_URL` de la aplicación afectada. |
 | Los cambios no aparecen | Ejecutar `docker compose up --build -d`; usar `--no-cache` solo si la caché es sospechosa. |
 | Error al descargar dependencias | Comprobar conexión, proxy, DNS y acceso a Maven Central. |
 | Error de YAML | Ejecutar `docker compose config` y revisar espacios; YAML no usa tabuladores. |

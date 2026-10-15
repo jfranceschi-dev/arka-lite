@@ -1,141 +1,94 @@
 # ARKA-Lite
 
-## Qué es el proyecto
+ARKA-Lite es una aplicación de ejemplo con dos microservicios Spring Boot. Un cliente crea y envía solicitudes; el Servicio de Solicitudes publica un evento por HTTP al Servicio de Notificaciones. En la rama actual, cada servicio tiene su propia base PostgreSQL.
 
-ARKA-Lite es una aplicación de ejemplo para gestionar solicitudes y generar una notificación cuando una solicitud se envía. La versión vigente está dividida en dos microservicios independientes que se comunican por HTTP.
+| Servicio | Responsabilidad | BD propia | Puerto en Compose |
+|---|---|---|---|
+| `servicio-solicitudes` | Crear, consultar, enviar, aprobar y rechazar solicitudes; conservar eventos salientes pendientes. | `db-solicitudes`: tablas `solicitud` y `evento`. | `8080` |
+| `servicio-notificaciones` | Recibir eventos y evitar procesar dos veces el mismo ID. | `db-notificaciones`: tabla `evento_procesado`. La notificación como objeto sigue en memoria. | `8081` |
 
-| Microservicio | Responsabilidad | Puerto local con Compose |
-| --- | --- | --- |
-| `servicio-solicitudes` | Crear, consultar, enviar, aprobar y rechazar solicitudes. | `8080` |
-| `servicio-notificaciones` | Recibir el evento de una solicitud enviada y guardar la notificación. | `8081` |
+## Código vigente
 
-Cada microservicio tiene su propio código, `pom.xml`, Maven Wrapper, pruebas y `Dockerfile`. Se puede compilar, probar y ejecutar uno sin compilar el otro.
-
-## Qué archivos están vigentes
-
-La ejecución vigente parte de estas rutas:
+Cada servicio tiene su propio `pom.xml`, Maven Wrapper, `Dockerfile`, código y pruebas. Los archivos de Maven y `src/` de la raíz pertenecen al monolito anterior y no se usan para ejecutar estos microservicios.
 
 ```text
-.
-├── compose.yaml
-├── servicio-solicitudes/
-│   ├── src/main/ y src/test/
-│   ├── pom.xml
-│   ├── mvnw y mvnw.cmd
-│   └── Dockerfile
-├── servicio-notificaciones/
-│   ├── src/main/ y src/test/
-│   ├── pom.xml
-│   ├── mvnw y mvnw.cmd
-│   └── Dockerfile
-└── docs/
+compose.yaml
+k8s/
+├── db-solicitudes.yaml
+├── db-notificaciones.yaml
+├── solicitudes.yaml
+└── notificaciones.yaml
+servicio-solicitudes/
+servicio-notificaciones/
+docs/
 ```
 
-El `pom.xml`, `src/`, `mvnw`, `mvnw.cmd` y `.mvn/` de la raíz pertenecen al monolito anterior. Permanecen en el repositorio como código legado, pero no se usan para levantar la solución de microservicios ni deben tomarse como referencia para comandos nuevos. Por eso los comandos de esta documentación siempre indican la carpeta del microservicio o utilizan Docker Compose.
+El proyecto usa Java 26, Spring Boot 4.1.1, Maven Wrapper, Spring Web MVC, Spring Data JPA, PostgreSQL 17, Docker y Kubernetes local con Docker Desktop. Los valores efectivos se consultan en los `pom.xml`, `Dockerfile`, `compose.yaml` y manifiestos de `k8s/`.
 
-## Tecnología actual
+## Qué ocurre al enviar una solicitud
 
-- Java 26.
-- Spring Boot 4.1.1.
-- Maven 3.9.16 mediante Maven Wrapper.
-- Spring Web MVC para las API HTTP.
-- Springdoc OpenAPI (Swagger UI) en ambos servicios.
-- JUnit mediante el starter de pruebas de Spring Boot.
-- Docker con compilación de varias etapas.
-- Docker Compose para ejecutar ambos servicios y su red.
-
-Las versiones efectivas están en el `pom.xml` de cada microservicio y en sus `Dockerfile`.
-
-Para recorrer las clases y entender cómo Spring conecta controladores, dominio y adaptadores, consultar [Componentes Java y ejecución](../arquitectura/componentes-java.md).
-
-## Arquitectura y comunicación
-
-Los dos servicios conservan una separación inspirada en arquitectura hexagonal:
-
-- `dominio`: reglas, entidades y puertos; no conoce detalles HTTP ni almacenamiento.
-- `adaptadores/entrada`: controladores que traducen peticiones HTTP hacia el dominio.
-- `adaptadores/salida`: repositorios en memoria y, en solicitudes, el cliente HTTP de notificaciones.
-- `config`: conecta las interfaces del dominio con sus implementaciones.
-
-El flujo de una solicitud enviada es:
-
-```text
-Cliente
-   |
-   | POST /solicitudes/{id}/enviar
-   v
-servicio-solicitudes
-   |
-   | POST /eventos/solicitud-enviada
-   v
-servicio-notificaciones
+```mermaid
+flowchart LR
+    C[Cliente] -->|POST /solicitudes/id/enviar| S[Servicio de Solicitudes]
+    S -->|misma transacción| BS[(Su PostgreSQL<br/>solicitud + evento pendiente)]
+    BS -->|relevador cada ciclo| R[Publicador de Solicitudes]
+    R -->|POST HTTP| N[Servicio de Notificaciones]
+    N -->|comprueba y guarda eventoId| BN[(Su PostgreSQL<br/>evento_procesado)]
+    N -->|crea| M[Notificación en memoria]
 ```
 
-Dentro de Compose, solicitudes usa la dirección `http://servicio-notificaciones:8080`. El nombre `servicio-notificaciones` funciona como nombre DNS dentro de la red privada de Compose. Desde la computadora se accede al mismo servicio mediante `http://localhost:8081`.
+1. Solicitudes cambia el estado a `ENVIADA` y guarda un evento con `procesado=false` en **su** PostgreSQL dentro de una transacción.
+2. Devuelve la respuesta al cliente sin esperar el POST a Notificaciones.
+3. Un relevador de Solicitudes consulta la tabla `evento` y publica cada pendiente por HTTP, con hasta tres intentos por ciclo. Si fallan, el evento continúa pendiente.
+4. Notificaciones consulta **su** tabla `evento_procesado`. Si el ID es nuevo, crea una notificación en memoria y guarda el ID en PostgreSQL. Si ya existe, no crea otra.
+5. Tras un POST exitoso, Solicitudes marca el evento como procesado.
 
-La URL se configura con `NOTIFICACIONES_URL`. Fuera de Docker su valor predeterminado es:
+**La comunicación entre microservicios sigue siendo HTTP.** El outbox permite conservar y reintentar eventos salientes; no convierte la conexión en un bus de mensajes. La explicación con comparativas desde `main` está en [Evolución de eventos y outbox](../arquitectura/especificacion-eventos-outbox.md).
 
-```text
-http://localhost:8081/eventos/solicitud-enviada
-```
+## API relevante
 
-El publicador actual captura los errores de comunicación. Si notificaciones no responde, solicitudes conserva el cambio de estado y escribe un mensaje en el error estándar; no existe reintento ni entrega garantizada.
+| Servicio | Método y ruta | Función |
+|---|---|---|
+| Solicitudes | `GET /solicitudes` y `GET /solicitudes/{id}` | Listar o consultar. |
+| Solicitudes | `POST /solicitudes/crear` | Crear la solicitud demostrativa fija `INC-002`. |
+| Solicitudes | `POST /solicitudes/{id}/enviar` | Marcar como enviada y guardar el evento pendiente. |
+| Solicitudes | `POST /solicitudes/{id}/aprobar` y `/rechazar` | Cambiar el estado cuando la transición sea válida. |
+| Notificaciones | `POST /eventos/solicitud-enviada` | Recibir y deduplicar el evento. |
+| Notificaciones | `GET /eventos/procesados` | Listar ID ya recibidos. |
+| Notificaciones | `GET /notificaciones` | Listar las notificaciones que están en memoria. |
 
-## API actual
+Con Compose, Swagger UI queda en `http://localhost:8080/swagger-ui/index.html` y `http://localhost:8081/swagger-ui/index.html`.
 
-### Servicio de solicitudes: `http://localhost:8080`
-
-| Método | Ruta | Resultado |
-| --- | --- | --- |
-| `GET` | `/solicitudes` | Lista todas las solicitudes. |
-| `GET` | `/solicitudes/{id}` | Busca una solicitud por identificador. |
-| `POST` | `/solicitudes/crear` | Crea la solicitud fija `INC-002` en estado `BORRADOR`. |
-| `POST` | `/solicitudes/{id}/enviar` | Cambia la solicitud a `ENVIADA` y avisa a notificaciones. |
-| `POST` | `/solicitudes/{id}/aprobar` | Aprueba la solicitud cuando su estado lo permite. |
-| `POST` | `/solicitudes/{id}/rechazar` | Rechaza la solicitud cuando su estado lo permite. |
-
-Swagger UI está disponible en `http://localhost:8080/swagger-ui/index.html` y OpenAPI JSON en `http://localhost:8080/v3/api-docs`.
-
-### Servicio de notificaciones: `http://localhost:8081`
-
-| Método | Ruta | Resultado |
-| --- | --- | --- |
-| `POST` | `/eventos/solicitud-enviada` | Recibe el evento enviado por solicitudes. |
-| `GET` | `/notificaciones` | Lista las notificaciones guardadas. |
-
-Swagger UI está disponible en `http://localhost:8081/swagger-ui/index.html` y OpenAPI JSON en `http://localhost:8081/v3/api-docs`.
-
-El endpoint de eventos es parte de la comunicación interna. Normalmente un usuario no lo llama directamente.
-
-## Ejecutar el flujo completo
+## Ejecutar con Docker Compose
 
 Desde la raíz del repositorio:
 
 ```powershell
+docker compose config
 docker compose up --build -d
 docker compose ps
-
-# El arranque carga INC-001 y CAM-002; CAM-002 se envía automáticamente
-Invoke-RestMethod http://localhost:8080/solicitudes
-Invoke-RestMethod http://localhost:8081/notificaciones
-
-# Crear y enviar una solicitud
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/INC-002/enviar
-
-# Comprobar la notificación producida por el segundo servicio
-Invoke-RestMethod http://localhost:8081/notificaciones
-
-# Ver registros y detener la solución
-docker compose logs
-docker compose down
 ```
 
-Consultar la [guía de Docker y Compose](../operaciones/docker-y-compose.md) para entender cada archivo y el ciclo de trabajo completo.
+Probar el flujo:
 
-## Compilar y probar sin Docker
+```powershell
+Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
+Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/INC-002/enviar
+Start-Sleep -Seconds 6
+Invoke-RestMethod http://localhost:8081/notificaciones
+Invoke-RestMethod http://localhost:8081/eventos/procesados
+docker compose logs servicio-solicitudes servicio-notificaciones
+```
 
-En PowerShell, desde la raíz:
+La espera permite observar un ciclo del relevador; no garantiza un tiempo exacto de entrega. Detener con `docker compose down`. El `compose.yaml` actual no define volúmenes persistentes para PostgreSQL, por lo que recrear los contenedores de BD puede eliminar sus datos. Ver [Docker y Compose](../operaciones/docker-y-compose.md).
+
+## Ejecutar en Kubernetes local
+
+La guía [Kubernetes local](../operaciones/kubernetes-local.md) contiene el orden de aplicación, `port-forward`, consultas y diagnóstico. [PostgreSQL en Kubernetes](../operaciones/postgresql-kubernetes.md) explica los PVC, `Secret`, `Deployment` y `Service` de cada base.
+
+## Compilar y probar
+
+Con JDK 26, desde la raíz:
 
 ```powershell
 Push-Location servicio-solicitudes
@@ -147,43 +100,15 @@ Push-Location servicio-notificaciones
 Pop-Location
 ```
 
-`verify` compila el código, ejecuta las pruebas y comprueba el paquete. Para ejecutar solamente las pruebas se reemplaza `clean verify` por `test`.
+Para arrancar desde Maven fuera de Docker se necesitan PostgreSQL accesibles en `localhost:5432` (`db-solicitudes`) y `localhost:5433` (`db-notificaciones`), o definir `DB_URL`, `DB_USER` y `DB_PASSWORD` para cada proceso. Notificaciones debe usar un puerto HTTP distinto al 8080 de Solicitudes, por ejemplo `--server.port=8081`; consultar [Instalación y depuración](instalacion-y-debug.md).
 
-En Linux o macOS se usa `./mvnw` en lugar de `.\mvnw.cmd`.
+## Límites actuales
 
-## Ejecutar sin Docker
-
-Se necesitan dos terminales.
-
-Terminal 1:
-
-```powershell
-cd servicio-notificaciones
-.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8081"
-```
-
-Terminal 2:
-
-```powershell
-cd servicio-solicitudes
-.\mvnw.cmd spring-boot:run
-```
-
-Ambas aplicaciones escuchan en 8080 de forma predeterminada. Por eso notificaciones se inicia en 8081 y el valor predeterminado de `NOTIFICACIONES_URL` ya apunta a ese puerto. Si se cambia a 9091, también se debe cambiar la variable antes de iniciar solicitudes:
-
-```powershell
-$env:NOTIFICACIONES_URL = "http://localhost:9091/eventos/solicitud-enviada"
-.\mvnw.cmd spring-boot:run
-```
-
-## Estado y limitaciones actuales
-
-- Los dos repositorios guardan datos en memoria. Al reiniciar un servicio se pierden sus datos.
-- La creación usa valores fijos y no recibe un cuerpo enviado por el cliente.
+- Las notificaciones como objetos no se guardan en PostgreSQL. El ID procesado sí persiste, por lo que reiniciar Notificaciones puede perder el objeto y conservar el ID.
+- `POST /solicitudes/crear` usa un ID y tipo fijos, adecuados solo para demostración.
+- Al arrancar Solicitudes, la carga de ejemplo vuelve a guardar `INC-001` y `CAM-002` y vuelve a enviar `CAM-002`; con una BD persistente puede restablecer sus estados y generar otro evento.
 - No hay autenticación ni autorización.
-- No hay base de datos ni migraciones.
-- La notificación se envía mediante una llamada HTTP síncrona sin reintentos, cola ni entrega garantizada.
-- El servicio de solicitudes continúa si falla la llamada de notificación.
-- No hay observabilidad centralizada, identificadores de correlación ni métricas de negocio.
+- La tabla `evento` de una instalación anterior necesita migración para agregar `evento_id` y `procesado`; `CREATE TABLE IF NOT EXISTS` no altera una tabla ya existente.
+- El relevador no coordina varias réplicas ni registra la causa de los errores capturados.
 
-Estas restricciones son adecuadas para el laboratorio actual y deben resolverse antes de una puesta en producción.
+Consultar [Componentes Java](../arquitectura/componentes-java.md) y [especificación del flujo](../arquitectura/especificacion-eventos-outbox.md) para las clases y compromisos de diseño.
