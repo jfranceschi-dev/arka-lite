@@ -9,6 +9,7 @@ import pa.gob.dntic.serviciosolicitudes.dominio.Solicitud;
  */
 public interface RepositorioDeSolicitudes {
     void guardar(Solicitud s);
+    void enviar(Solicitud s);
     Optional<Solicitud> buscar(String id);
     List<Solicitud> todas();
 }

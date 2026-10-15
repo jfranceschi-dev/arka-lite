@@ -2,6 +2,7 @@ package pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import pa.gob.dntic.serviciosolicitudes.dominio.SolicitudNoEncontrada;
 
 @Service
 public class OperacionEnviar {
@@ -15,10 +16,21 @@ public class OperacionEnviar {
 
     @Transactional
     public void enviar(String id) {
-        SolicitudEntity s = solicitudes.findById(id).orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
-        s.setEstado("ENVIADA");
-        solicitudes.save(s);
+        actualizarEstado(id);
         eventos.save(new EventoEntity(id, "SolicitudEnviada"));
-        // si cualquiera de los dos revienta, Ninguna queda guardada, se hace rollback de la transacción
+    }
+
+    @Transactional
+    public void enviarConFallo(String id) {
+        actualizarEstado(id);
+        // La base rechaza esta segunda escritura; la excepción provoca el rollback del UPDATE.
+        eventos.saveAndFlush(new EventoEntity(null, "SolicitudEnviada"));
+    }
+
+    private void actualizarEstado(String id) {
+        SolicitudEntity solicitud = solicitudes.findById(id)
+                .orElseThrow(() -> new SolicitudNoEncontrada(id));
+        solicitud.setEstado("ENVIADA");
+        solicitudes.saveAndFlush(solicitud);
     }
 }

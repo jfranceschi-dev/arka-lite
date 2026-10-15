@@ -14,6 +14,10 @@ public class RepositorioEnMemoria implements RepositorioDeSolicitudes {
         almacen.put(s.id(), s);
     }
 
+    public void enviar(Solicitud s) {
+        guardar(s);
+    }
+
     public Optional<Solicitud> buscar(String id) {
         return Optional.ofNullable(almacen.get(id));
     }

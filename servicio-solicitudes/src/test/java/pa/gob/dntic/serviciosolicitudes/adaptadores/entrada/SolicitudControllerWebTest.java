@@ -6,12 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pa.gob.dntic.serviciosolicitudes.adaptadores.salida.RepositorioEnMemoria;
+import pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia.OperacionEnviar;
 import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.mock;
 
 class SolicitudControllerWebTest {
 
@@ -22,7 +24,7 @@ class SolicitudControllerWebTest {
         ServicioDeSolicitudes servicio = new ServicioDeSolicitudes(
                 new RepositorioEnMemoria(), evento -> { }
         );
-        mvc = MockMvcBuilders.standaloneSetup(new SolicitudController(servicio))
+        mvc = MockMvcBuilders.standaloneSetup(new SolicitudController(servicio, mock(OperacionEnviar.class)))
                 .setControllerAdvice(new ManejadorGlobalDeErrores())
                 .build();
     }

@@ -1,6 +1,7 @@
 package pa.gob.dntic.serviciosolicitudes.adaptadores.entrada;
 
 import org.springframework.web.bind.annotation.*;
+import pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia.OperacionEnviar;
 import pa.gob.dntic.serviciosolicitudes.dominio.Estado;
 import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.Solicitud;
@@ -15,9 +16,11 @@ import java.util.List;
 public class SolicitudController {
 
     private final ServicioDeSolicitudes servicio;
+    private final OperacionEnviar operacionEnviar;
 
-    public SolicitudController(ServicioDeSolicitudes servicio) {
+    public SolicitudController(ServicioDeSolicitudes servicio, OperacionEnviar operacionEnviar) {
         this.servicio = servicio;
+        this.operacionEnviar = operacionEnviar;
     }
 
     @GetMapping
@@ -39,6 +42,11 @@ public class SolicitudController {
     @PostMapping("/{id}/enviar")
     public Solicitud enviar(@PathVariable String id) {
         return servicio.enviar(id);
+    }
+
+    @PostMapping("/{id}/enviar-con-fallo")
+    public void enviarConFallo(@PathVariable String id) {
+        operacionEnviar.enviarConFallo(id);
     }
 
     @PostMapping({"/{id}/aprobar"})

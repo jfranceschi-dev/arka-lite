@@ -13,9 +13,11 @@ import java.util.Optional;
 @Primary
 public class RepositorioJpa implements RepositorioDeSolicitudes {
     private final SolicitudJpaRepository jpa;
+    private final OperacionEnviar operacionEnviar;
 
-    public RepositorioJpa(SolicitudJpaRepository jpa) {
+    public RepositorioJpa(SolicitudJpaRepository jpa, OperacionEnviar operacionEnviar) {
         this.jpa = jpa;
+        this.operacionEnviar = operacionEnviar;
     }
 
     @Override
@@ -25,6 +27,11 @@ public class RepositorioJpa implements RepositorioDeSolicitudes {
                 s.tipo(),
                 s.estado().name()
         ));
+    }
+
+    @Override
+    public void enviar(Solicitud s) {
+        operacionEnviar.enviar(s.id());
     }
 
     @Override

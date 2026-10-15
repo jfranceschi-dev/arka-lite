@@ -3,6 +3,7 @@ package pa.gob.dntic.serviciosolicitudes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pa.gob.dntic.serviciosolicitudes.adaptadores.entrada.SolicitudController;
+import pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia.OperacionEnviar;
 import pa.gob.dntic.serviciosolicitudes.adaptadores.salida.RepositorioEnMemoria;
 import pa.gob.dntic.serviciosolicitudes.dominio.Estado;
 import pa.gob.dntic.serviciosolicitudes.dominio.PublicadorDeEventos;
@@ -13,6 +14,7 @@ import pa.gob.dntic.serviciosolicitudes.dominio.Solicitud;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 class ServicioSolicitudesApplicationTests {
 
@@ -25,7 +27,7 @@ class ServicioSolicitudesApplicationTests {
         PublicadorDeEventos publicador = evento -> {
         };
         servicio = new ServicioDeSolicitudes(repositorio, publicador);
-        controller = new SolicitudController(servicio);
+        controller = new SolicitudController(servicio, mock(OperacionEnviar.class));
     }
 
     @Test
