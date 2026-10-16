@@ -1,20 +1,32 @@
 package pa.gob.dntic.serviciosolicitudes.dominio;
 
-import pa.gob.dntic.serviciosolicitudes.eventos.SolicitudEnviada;
+import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 /*
  * Dominio de Solicitudes (Etapa 1) + publicación de evento (Etapa 2).
- * Depende de dos PUERTOS: el repositorio y el publicador. NO conoce a Notificaciones.
+ * Depende de tres PUERTOS: el repositorio, el registrador de outbox y el
+ * publicador. NO conoce a Notificaciones.
  */
 public class ServicioDeSolicitudes {
 
     private final RepositorioDeSolicitudes repositorio;
+    // Ya no se llama directamente desde este archivo (ver enviar() más abajo):
+    // la publicación por HTTP la dispara RelevadorDeEventosPendientes, en
+    // segundo plano, leyendo lo que registrador.registrar() deja en la tabla
+    // evento. Se deja el puerto inyectado para no romper el cableado de
+    // PublicadorConReintento/PublicadorRest como beans de Spring.
     private final PublicadorDeEventos publicador;
+    private final RegistradorDeEventosSalientes registrador;
 
-    public ServicioDeSolicitudes(RepositorioDeSolicitudes repositorio, PublicadorDeEventos publicador) {
+    public ServicioDeSolicitudes(
+            RepositorioDeSolicitudes repositorio,
+            PublicadorDeEventos publicador,
+            RegistradorDeEventosSalientes registrador) {
         this.repositorio = repositorio;
         this.publicador = publicador;
+        this.registrador = registrador;
     }
 
     public Solicitud registrar(String id, String tipo) {
@@ -23,10 +35,16 @@ public class ServicioDeSolicitudes {
         return s;
     }
 
+    // @Transactional: guardar la solicitud ENVIADA y registrar el evento en
+    // el outbox pasan en la misma transacción. Si cualquiera de los dos
+    // falla, no queda ninguno a medias (antes eran dos pasos sueltos: se
+    // guardaba la solicitud y, aparte, se intentaba notificar por HTTP en el
+    // mismo hilo de la petición).
+    @Transactional
     public Solicitud enviar(String id) {
         Solicitud enviada = buscar(id).enviar();
         repositorio.guardar(enviada);
-        publicador.publicar(new SolicitudEnviada(enviada.id(), enviada.tipo()));  // avisa; no sabe quién reacciona
+        registrador.registrar(UUID.randomUUID().toString(), enviada.id(), "SolicitudEnviada");
         return enviada;
     }
 

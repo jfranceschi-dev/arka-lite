@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import pa.gob.dntic.serviciosolicitudes.adaptadores.salida.RepositorioEnMemoria;
 import pa.gob.dntic.serviciosolicitudes.dominio.Estado;
 import pa.gob.dntic.serviciosolicitudes.dominio.PublicadorDeEventos;
+import pa.gob.dntic.serviciosolicitudes.dominio.RegistradorDeEventosSalientes;
 import pa.gob.dntic.serviciosolicitudes.dominio.RepositorioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.Solicitud;
@@ -15,19 +16,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ServicioSolicitudesUnitTest {
 
     private ServicioDeSolicitudes servicio;
+    // Se deja esta lista y el publicador que la llena: antes enviar()
+    // publicaba sincrónicamente y este era el punto de verificación. Ya no
+    // se llena (enviar() ya no llama a publicador.publicar()), así que las
+    // pruebas que verifican la publicación ahora usan eventosRegistrados.
     private final List<SolicitudEnviada> eventosPublicados = new ArrayList<>();
+    private final List<String[]> eventosRegistrados = new ArrayList<>();
 
     @BeforeEach
     void onBefore() {
         RepositorioDeSolicitudes repositorio = new RepositorioEnMemoria();
         PublicadorDeEventos publicador = eventosPublicados::add;
-        servicio = new ServicioDeSolicitudes(repositorio, publicador);
+        RegistradorDeEventosSalientes registrador = (eventoId, solicitudId, tipo) ->
+                eventosRegistrados.add(new String[] { eventoId, solicitudId, tipo });
+        servicio = new ServicioDeSolicitudes(repositorio, publicador, registrador);
         eventosPublicados.clear();
+        eventosRegistrados.clear();
     }
 
     @Test
@@ -38,15 +48,20 @@ class ServicioSolicitudesUnitTest {
     }
 
     @Test
-    void givenUnaSolicitudEnBorrador_whenSeEnvia_thenQuedaEnviadaYPublicaEvento() {
+    void givenUnaSolicitudEnBorrador_whenSeEnvia_thenQuedaEnviadaYRegistraEventoEnElOutbox() {
         servicio.registrar("SOL-001", "Incidencia");
 
         Solicitud enviada = servicio.enviar("SOL-001");
 
         assertEquals(Estado.ENVIADA, enviada.estado());
-        assertEquals(1, eventosPublicados.size());
-        assertEquals("SOL-001", eventosPublicados.getFirst().id());
-        assertEquals("Incidencia", eventosPublicados.getFirst().tipo());
+        // enviar() ya no publica por HTTP en el mismo hilo: deja el evento
+        // registrado (outbox) para que RelevadorDeEventosPendientes lo
+        // publique después. Por eso no se verifica eventosPublicados aquí.
+        assertEquals(0, eventosPublicados.size());
+        assertEquals(1, eventosRegistrados.size());
+        assertEquals("SOL-001", eventosRegistrados.getFirst()[1]);
+        assertEquals("SolicitudEnviada", eventosRegistrados.getFirst()[2]);
+        assertDoesNotThrow(() -> java.util.UUID.fromString(eventosRegistrados.getFirst()[0]));
     }
 
     @Test

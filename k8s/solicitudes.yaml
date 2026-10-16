@@ -13,7 +13,7 @@ spec:
         app: servicio-solicitudes
     spec:
       initContainers:
-        - name: esperar-base-datos
+        - name: esperar-db-solicitudes
           image: postgres:17
           env:
             - name: PGPASSWORD
@@ -21,7 +21,7 @@ spec:
                 secretKeyRef:
                   name: arka-postgres
                   key: password
-          command: ['sh', '-c', 'until psql -h base-datos -U arka -d arka -tAc "SELECT 1" >/dev/null 2>&1; do echo esperando base de datos; sleep 2; done']
+          command: ['sh', '-c', 'until psql -h db-solicitudes -U arka -d db-solicitudes -tAc "SELECT 1" >/dev/null 2>&1; do echo esperando base de datos; sleep 2; done']
         - name: esperar-notificaciones
           image: busybox:1.36
           command: ['sh', '-c', 'until wget -q -O /dev/null http://servicio-notificaciones:8080/notificaciones; do echo esperando notificaciones; sleep 2; done']
@@ -33,7 +33,7 @@ spec:
             - containerPort: 8080
           env:
             - name: DB_URL
-              value: "jdbc:postgresql://base-datos:5432/arka"
+              value: "jdbc:postgresql://db-solicitudes:5432/db-solicitudes"
             - name: DB_USER
               value: arka
             - name: DB_PASSWORD

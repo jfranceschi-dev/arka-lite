@@ -19,8 +19,10 @@ class SolicitudControllerWebTest {
 
     @BeforeEach
     void prepararMvc() {
+        // tercer argumento (registrador): solo hace falta para que compile;
+        // enviar() lo usa para el outbox, esta prueba no verifica eso.
         ServicioDeSolicitudes servicio = new ServicioDeSolicitudes(
-                new RepositorioEnMemoria(), evento -> { }
+                new RepositorioEnMemoria(), evento -> { }, (eventoId, solicitudId, tipo) -> { }
         );
         mvc = MockMvcBuilders.standaloneSetup(new SolicitudController(servicio))
                 .setControllerAdvice(new ManejadorGlobalDeErrores())

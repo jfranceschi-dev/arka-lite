@@ -6,6 +6,7 @@ import pa.gob.dntic.serviciosolicitudes.adaptadores.entrada.SolicitudController;
 import pa.gob.dntic.serviciosolicitudes.adaptadores.salida.RepositorioEnMemoria;
 import pa.gob.dntic.serviciosolicitudes.dominio.Estado;
 import pa.gob.dntic.serviciosolicitudes.dominio.PublicadorDeEventos;
+import pa.gob.dntic.serviciosolicitudes.dominio.RegistradorDeEventosSalientes;
 import pa.gob.dntic.serviciosolicitudes.dominio.RepositorioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.Solicitud;
@@ -24,7 +25,12 @@ class ServicioSolicitudesApplicationTests {
         RepositorioDeSolicitudes repositorio = new RepositorioEnMemoria();
         PublicadorDeEventos publicador = evento -> {
         };
-        servicio = new ServicioDeSolicitudes(repositorio, publicador);
+        // registrador: ServicioDeSolicitudes.enviar() ahora lo necesita para
+        // el outbox; aquí no se verifica nada con él, solo hace falta para
+        // poder construir el servicio.
+        RegistradorDeEventosSalientes registrador = (eventoId, solicitudId, tipo) -> {
+        };
+        servicio = new ServicioDeSolicitudes(repositorio, publicador, registrador);
         controller = new SolicitudController(servicio);
     }
 

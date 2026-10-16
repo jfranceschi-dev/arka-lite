@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pa.gob.dntic.serviciosolicitudes.dominio.PublicadorDeEventos;
+import pa.gob.dntic.serviciosolicitudes.dominio.RegistradorDeEventosSalientes;
 import pa.gob.dntic.serviciosolicitudes.dominio.RepositorioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
 
@@ -13,8 +14,9 @@ public class ConfiguracionDominio {
     @Bean
     public ServicioDeSolicitudes servicioDeSolicitudes(
             RepositorioDeSolicitudes repositorio,
-            PublicadorDeEventos publicador) {
-        return new ServicioDeSolicitudes(repositorio, publicador);
+            PublicadorDeEventos publicador,
+            RegistradorDeEventosSalientes registrador) {
+        return new ServicioDeSolicitudes(repositorio, publicador, registrador);
     }
 
     @Bean

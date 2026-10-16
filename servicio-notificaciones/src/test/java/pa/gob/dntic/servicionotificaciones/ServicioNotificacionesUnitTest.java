@@ -22,7 +22,7 @@ class ServicioNotificacionesUnitTest {
 
     @Test
     void givenUnaSolicitudEnviada_whenSeRecibeElEvento_thenSeGuardaLaNotificacionEsperada() {
-        SolicitudEnviada evento = new SolicitudEnviada("SOL-001", "Incidencia");
+        SolicitudEnviada evento = new SolicitudEnviada("EVT-001", "SOL-001", "Incidencia");
 
         servicio.alRecibirSolicitudEnviada(evento);
 
@@ -33,8 +33,8 @@ class ServicioNotificacionesUnitTest {
 
     @Test
     void givenDosSolicitudesEnviadas_whenSeListanLasNotificaciones_thenDevuelvenAmbas() {
-        servicio.alRecibirSolicitudEnviada(new SolicitudEnviada("SOL-001", "Incidencia"));
-        servicio.alRecibirSolicitudEnviada(new SolicitudEnviada("SOL-002", "Cambio"));
+        servicio.alRecibirSolicitudEnviada(new SolicitudEnviada("EVT-001", "SOL-001", "Incidencia"));
+        servicio.alRecibirSolicitudEnviada(new SolicitudEnviada("EVT-002", "SOL-002", "Cambio"));
 
         List<Notificacion> notificaciones = servicio.listar();
 
@@ -45,7 +45,7 @@ class ServicioNotificacionesUnitTest {
 
     @Test
     void givenUnaSolicitudEnviada_whenSeProcesaElEvento_thenLaNotificacionIncluyeIdYTipo() {
-        servicio.alRecibirSolicitudEnviada(new SolicitudEnviada("SOL-003", "Reclamo"));
+        servicio.alRecibirSolicitudEnviada(new SolicitudEnviada("EVT-003", "SOL-003", "Reclamo"));
 
         assertEquals("Solicitud SOL-003 (Reclamo) enviada", servicio.listar().getFirst().texto());
     }

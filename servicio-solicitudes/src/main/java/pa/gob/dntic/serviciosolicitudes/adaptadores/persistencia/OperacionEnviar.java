@@ -3,6 +3,13 @@ package pa.gob.dntic.serviciosolicitudes.adaptadores.persistencia;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+// NO está conectado al flujo real: nada llama a OperacionEnviar.enviar().
+// ServicioDeSolicitudes.enviar() usa su propio camino (RepositorioJpa +
+// RegistradorDeEventosJpa, ambos dentro de un @Transactional en el dominio)
+// para lograr lo mismo que esta clase intenta: guardar la solicitud y el
+// evento juntos. Se deja esta clase sin tocar porque es un repo de
+// aprendizaje — sirve para comparar un enfoque (todo en un método de
+// persistencia) contra el que quedó cableado (puertos separados).
 @Service
 public class OperacionEnviar {
     private final SolicitudJpaRepository solicitudes;
