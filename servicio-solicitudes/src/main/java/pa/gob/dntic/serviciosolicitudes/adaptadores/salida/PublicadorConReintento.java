@@ -1,6 +1,7 @@
 package pa.gob.dntic.serviciosolicitudes.adaptadores.salida;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.logging.LoggerGroup;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import pa.gob.dntic.serviciosolicitudes.eventos.SolicitudEnviada;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 @Primary
@@ -18,7 +21,9 @@ public class PublicadorConReintento implements PublicadorDeEventos {
     private static final int MAXIMO_INTENTOS = 3;
     private static final long ESPERA_MILISEGUNDOS = 500L;
 
-    private final RestClient rest = RestClient.create();
+    private static final Logger logger = LoggerFactory.getLogger(PublicadorConReintento.class);
+
+    private final RestClient rest; // = RestClient.create();
     private final String url;
     // Esta cola en memoria habría perdido todo al reiniciar el proceso; por
     // eso sigue comentada. Lo que la reemplaza es la tabla `evento`
@@ -27,14 +32,21 @@ public class PublicadorConReintento implements PublicadorDeEventos {
     //private final Queue<SolicitudEnviada> pendientes = new ConcurrentLinkedQueue<>();
 
     //@Value("${notificaciones.url}")
-    public PublicadorConReintento(@Value("${notificaciones.url}")String url) {
+    //public PublicadorConReintento(@Value("${notificaciones.url}")String url) {
+        //this.url = url;
+    //}
+    public PublicadorConReintento(
+            @Value("${notificaciones.url}") String url,
+            RestClient restClientTrazada) {
         this.url = url;
+        this.rest = restClientTrazada;
     }
 
     @Override
     public void publicar(SolicitudEnviada evento) {
         //Se camvio para que coincida con los otros metodos y se pueda usar
         //SolicitudEnviada evento = new SolicitudEnviada(UUID.randomUUID().toString(), solicitudId, tipo);
+        logger.info("Intentando publicar evento: {} de solicitud: {}", evento.eventoId(), evento.id());
         for (int intento = 1; intento <= MAXIMO_INTENTOS; intento++) {
             try {
                 rest.post()
@@ -45,10 +57,12 @@ public class PublicadorConReintento implements PublicadorDeEventos {
                 return;
             } catch (RuntimeException ex) {
                 if (intento == MAXIMO_INTENTOS) {
+                    logger.error("no entregado tras {} intentos; va a outbox: {}", intento, evento.eventoId(), ex);
                     guardarParaReintento(evento);
                     return;
                 }
-
+                //logger.warn("intento {} falló para evento: {} de solicitud: {}, esperando {} ms antes de reintentar", intento, evento.eventoId(), evento.id(), ESPERA_MILISEGUNDOS * intento, ex);
+                logger.warn("intento {} falló para {}; reintentando", intento, evento.eventoId());
                 dormir(ESPERA_MILISEGUNDOS * intento);
             }
         }
@@ -65,6 +79,7 @@ public class PublicadorConReintento implements PublicadorDeEventos {
         // como procesado y lo reintente en el próximo ciclo.
         System.err.println("evento no publicado tras agotar reintentos, queda pendiente: " + evento.eventoId());
         throw new PublicacionFallidaException(evento.eventoId());
+        //outbox: tabla para reintentos, que sobrevive a reinicios. RelevadorDeEventosPendientes lo reintentará.
     }
 
     private void dormir(long ms) {
