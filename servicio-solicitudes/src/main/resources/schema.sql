@@ -22,5 +22,14 @@ CREATE TABLE IF NOT EXISTS evento (
     procesado BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+-- Actualiza también bases creadas antes del outbox. CREATE TABLE IF NOT
+-- EXISTS no agrega columnas a una tabla que ya existe.
+ALTER TABLE evento ADD COLUMN IF NOT EXISTS evento_id UUID NOT NULL DEFAULT gen_random_uuid();
+-- Los eventos históricos no tienen un id de entrega recuperable: no se
+-- republican automáticamente con un UUID nuevo para evitar duplicados.
+-- Si la columna ya existe, se respetan los pendientes y sus ids actuales.
+ALTER TABLE evento ADD COLUMN IF NOT EXISTS procesado BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE evento ALTER COLUMN procesado SET DEFAULT FALSE;
+
 CREATE INDEX IF NOT EXISTS idx_evento_solicitud ON evento (solicitud_id);
 CREATE INDEX IF NOT EXISTS idx_evento_pendiente ON evento (procesado) WHERE procesado = FALSE;
