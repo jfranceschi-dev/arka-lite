@@ -23,6 +23,7 @@ public class ConfiguracionDominio {
     public CommandLineRunner seed(ServicioDeSolicitudes servicio) {
         return args -> {
             servicio.registrar("INC-001", "Incidente");
+            servicio.registrar("HUMO-1", "Incidente");
             servicio.registrar("CAM-002", "Cambio");
             servicio.enviar("CAM-002");   // dispara una notificación al arrancar
         };
