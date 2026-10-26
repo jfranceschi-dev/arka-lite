@@ -103,9 +103,9 @@ Pop-Location
 - Revisar autenticación, autorización, CORS y protección de endpoints antes de exponer la aplicación.
 - Los hallazgos de seguridad no se incluyen completos en tickets o canales públicos si contienen detalles explotables.
 
-## Base de datos y eventos futuros
+## Base de datos y eventos
 
-Cuando se incorpore persistencia:
+La persistencia PostgreSQL ya está implementada. Para mantenerla y evolucionarla:
 
 - Versionar el esquema mediante migraciones inmutables.
 - No editar migraciones ya aplicadas; crear una nueva.
@@ -119,7 +119,7 @@ Si la llamada HTTP actual se reemplaza por mensajería:
 - Diseñar consumidores idempotentes.
 - Definir reintentos con límite, backoff y cola de mensajes fallidos.
 - Añadir identificadores de evento, fecha, versión y correlación.
-- Considerar consistencia entre persistencia y publicación mediante outbox transaccional.
+- Mantener la transacción entre el estado de la solicitud y el registro del outbox; conservar el mismo `eventoId` en los reintentos.
 
 ## Git y revisión
 
@@ -139,7 +139,7 @@ Si la llamada HTTP actual se reemplaza por mensajería:
 
 ## Criterios de revisión automática
 
-Si el repositorio incorpora GitHub Actions, como mínimo debería:
+El workflow actual compila, prueba y publica imágenes. Los siguientes criterios incluyen controles por incorporar:
 
 1. Compilar con la versión de Java establecida.
 2. Ejecutar `mvn verify` para `servicio-solicitudes` y `servicio-notificaciones`.

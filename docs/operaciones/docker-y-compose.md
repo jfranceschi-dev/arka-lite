@@ -148,6 +148,21 @@ git check-ignore -v servicio-solicitudes\target\archivo.jar
 
 `git check-ignore -v` indica qué archivo y qué regla causaron la exclusión. Si Git ya seguía un archivo antes de agregarlo a `.gitignore`, la regla no lo elimina del historial; primero debe dejar de seguirse conscientemente con `git rm --cached`.
 
+## Servicios y observabilidad
+
+| Servicio | Acceso desde el equipo |
+| --- | --- |
+| Solicitudes | `http://localhost:8080` |
+| Notificaciones | `http://localhost:8081` |
+| PostgreSQL de solicitudes | Solo red interna de Compose, puerto `5432` |
+| PostgreSQL de notificaciones | `localhost:5433` |
+| Grafana | `http://localhost:3000` |
+| Loki | `http://localhost:3100` |
+
+Ambas aplicaciones exponen `/actuator/health`, `/actuator/metrics` y `/actuator/prometheus`. Promtail lee logs de Docker y los envía a Loki. Para consultarlos, configura en Grafana una fuente Loki con URL `http://loki:3100`; consulta la [guía de diagnóstico](correccion-arranque.md). Compose no incluye un servidor Prometheus.
+
+Los ejemplos de envío requieren esperar la entrega asíncrona antes de comprobar el contenido de `/notificaciones`.
+
 ## `compose.yaml` explicado
 
 El archivo vigente es:
@@ -175,7 +190,7 @@ services:
 
 ### `services`
 
-Define los contenedores que forman la aplicación. Compose crea una imagen y un contenedor para cada entrada.
+Define los contenedores que forman la aplicación. Las entradas con `build` construyen una imagen; las entradas con `image` utilizan una imagen existente.
 
 ### `build`
 
@@ -283,7 +298,7 @@ docker compose down       # Detiene y elimina contenedores y red
 docker compose down --rmi local  # También elimina imágenes construidas localmente
 ```
 
-No hay volúmenes de datos en el Compose actual. Los datos están en memoria y se pierden cada vez que se reinicia la JVM.
+Compose no declara volúmenes de datos propios para PostgreSQL. Las solicitudes y los registros de eventos viven en las bases, pero su conservación al recrear contenedores requiere configurar almacenamiento persistente. Los textos de notificaciones viven en memoria y se pierden al reiniciar esa JVM. Kubernetes sí declara PVC para ambas bases.
 
 ## Variables y archivos `.env`
 
