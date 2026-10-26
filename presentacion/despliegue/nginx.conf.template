@@ -1,0 +1,85 @@
+# Plantilla de nginx para la UI de ARKA-Lite. Al iniciar, la imagen oficial
+# reemplaza ${ARKA_SOLICITUDES_ORIGEN} y ${ARKA_NOTIFICACIONES_ORIGEN} con las
+# variables de entorno. Las variables propias de nginx ($uri) no se tocan.
+#
+# El navegador solo conoce /api en el mismo origen. El proxy traduce cada
+# ruta al servicio por su nombre interno (Compose o Service de Kubernetes).
+# Solo se publican las rutas que usa el laboratorio; el endpoint interno
+# POST /eventos/solicitud-enviada no se expone.
+
+server {
+    listen 8080;
+    server_name _;
+    server_tokens off;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Salud del propio contenedor de la UI. No depende de los servicios, para
+    # que readiness y liveness no reinicien la UI cuando cae un backend.
+    location = /salud {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-cache";
+    }
+
+    location /assets/ {
+        expires 7d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Límites de espera menores que el de la UI (10 s) para que el proxy
+    # responda 504 antes de que el navegador corte la petición.
+    proxy_connect_timeout 3s;
+    proxy_send_timeout 9s;
+    proxy_read_timeout 9s;
+    proxy_http_version 1.1;
+    # El laboratorio no usa credenciales: no se reenvían cookies ni Authorization.
+    proxy_set_header Cookie "";
+    proxy_set_header Authorization "";
+    proxy_hide_header Set-Cookie;
+
+    location /api/solicitudes {
+        limit_except GET POST { deny all; }
+        proxy_pass ${ARKA_SOLICITUDES_ORIGEN}/solicitudes;
+    }
+
+    location = /api/notificaciones {
+        limit_except GET { deny all; }
+        proxy_pass ${ARKA_NOTIFICACIONES_ORIGEN}/notificaciones;
+    }
+
+    location = /api/eventos/procesados {
+        limit_except GET { deny all; }
+        proxy_pass ${ARKA_NOTIFICACIONES_ORIGEN}/eventos/procesados;
+    }
+
+    location = /api/salud/solicitudes {
+        limit_except GET { deny all; }
+        proxy_pass ${ARKA_SOLICITUDES_ORIGEN}/actuator/health;
+    }
+
+    location = /api/salud/notificaciones {
+        limit_except GET { deny all; }
+        proxy_pass ${ARKA_NOTIFICACIONES_ORIGEN}/actuator/health;
+    }
+
+    location = /api/openapi/solicitudes {
+        limit_except GET { deny all; }
+        proxy_pass ${ARKA_SOLICITUDES_ORIGEN}/v3/api-docs;
+    }
+
+    location = /api/openapi/notificaciones {
+        limit_except GET { deny all; }
+        proxy_pass ${ARKA_NOTIFICACIONES_ORIGEN}/v3/api-docs;
+    }
+
+    # Cualquier otra ruta de /api no existe para el navegador.
+    location /api/ {
+        return 404;
+    }
+}

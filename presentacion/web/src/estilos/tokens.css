@@ -1,0 +1,49 @@
+/* GENERADO por diseno/generar-css.ts desde diseno/tokens.ts. No editar a mano. */
+@theme {
+  --color-marino: #0B1F3A;
+  --color-franja: #0B2350;
+  --color-azul: #1F4E8C;
+  --color-azul-vivo: #2E6DB4;
+  --color-cian: #2BA6CB;
+  --color-cian-texto: #0B6E8A;
+  --color-cian-claro: #7FD3EA;
+  --color-cian-suave: #E3F4FA;
+  --color-fondo: #E6ECF7;
+  --color-superficie: #FFFFFF;
+  --color-superficie2: #F0F4FB;
+  --color-texto: #0B1A3C;
+  --color-secundario: #52607F;
+  --color-borde: #C7D6EA;
+  --color-tinta: #0A1430;
+  --color-correcto: #0A6648;
+  --color-correcto-suave: #E1F1EA;
+  --color-error: #AB243E;
+  --color-error-suave: #F7E3E7;
+  --color-advertencia: #A85D08;
+  --color-advertencia-texto: #8A4B06;
+  --color-advertencia-suave: #FBE7BD;
+  --color-sobre-oscuro: #E8EDF8;
+  --color-sobre-oscuro-secundario: #9FBEE0;
+  --color-tarjeta-oscura: #13294D;
+  --color-borde-oscuro: #3A5A8C;
+  --color-codigo-fondo: #0B1F3A;
+  --color-codigo-texto: #E8EDF8;
+  --color-codigo-clave: #7FD3EA;
+  --color-codigo-tipo: #9FBEE0;
+  --color-codigo-cadena: #F2C66D;
+  --color-codigo-comentario: #8FA2BF;
+  --color-codigo-anotacion: #FFB38A;
+  --font-sans: 'Plus Jakarta Sans', system-ui, 'Segoe UI', sans-serif;
+  --font-mono: 'Cascadia Mono', Consolas, 'SFMono-Regular', ui-monospace, monospace;
+  --radius-capsula: 999px;
+  --radius-franja: 26px;
+  --radius-tarjeta: 20px;
+  --radius-recuadro: 14px;
+  --radius-chico: 12px;
+  --ease-arka: cubic-bezier(.2,.8,.2,1);
+}
+:root {
+  --mov-rapido: 120ms;
+  --mov-normal: 200ms;
+  --mov-lento: 320ms;
+}

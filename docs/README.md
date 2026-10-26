@@ -16,6 +16,8 @@ La documentación está organizada por propósito para que una persona nueva pue
 
 Los [guiones y presentaciones de ARKA-Lite](presentation-data/README.md) incluyen las versiones para equipo y staff, diagramas de arquitectura y el generador editable de PowerPoint. La etapa de [datos y consistencia](presentation-data/datos-y-consistencia.md) desarrolla transacciones, outbox, idempotencia, concurrencia y recuperación. La preparación actual prioriza los guiones Markdown; el ajuste de PowerPoint queda para una etapa posterior. El [guion maestro de exposición](presentation-data/guion-maestro.md) contiene la narración de las nueve secciones y enlaza el [guion detallado de observabilidad](presentation-data/guion-observabilidad.md).
 
+La [presentación web, laboratorio y generador PPTX](../presentacion/README.md) reúne once secciones en una sola fuente de contenido: la presentación guiada, el laboratorio conectado a las API reales, los guiones por participante y la exportación a PowerPoint. Se ejecuta con `compose.ui.yaml` o con `k8s/ui/`.
+
 ```text
 docs/
 ├── README.md
