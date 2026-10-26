@@ -53,3 +53,29 @@ services:
         condition: service_healthy
       db-solicitudes:
         condition: service_healthy
+
+  loki:                             # almacén + consulta de logs (la "sala de control")
+    image: grafana/loki:3.0.0
+    command: -config.file=/etc/loki/local-config.yaml
+    ports: ["3100:3100"]
+
+  promtail:                         # recolecta los logs de TODOS los contenedores y los manda a Loki
+    image: grafana/promtail:3.0.0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - type: bind
+        source: ./observabilidad/promtail.yaml
+        target: /etc/promtail/config.yaml
+        read_only: true
+        bind:
+          create_host_path: false
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on: [loki]
+
+  grafana:                          # el TABLERO: en 'Explore' se buscan las trazas por traceId
+    image: grafana/grafana:11.0.0
+    ports: ["3000:3000"]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+    depends_on: [loki]
