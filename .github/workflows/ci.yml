@@ -144,30 +144,3 @@ jobs:
           IMG=ghcr.io/$REPO_NAME/arka-lite-ui:${{ github.sha }}
           docker tag arka-lite-ui:ci "$IMG"
           docker push "$IMG"
-
-  # Presentación del proyecto final (docs/presentation-data/). Valida el
-  # contenido y comprueba que los generadores de PPTX, PDF y guiones funcionan.
-  # No publica nada: los entregables se versionan en esa misma carpeta.
-  presentacion:
-    runs-on: ubuntu-latest
-    permissions: {contents: read}
-    defaults:
-      run:
-        working-directory: docs/presentation-data
-
-    steps:
-      - name: Traer el codigo
-        uses: actions/checkout@v4
-
-      - name: Preparar Node 24
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: docs/presentation-data/package-lock.json
-
-      - name: Instalar dependencias
-        run: npm ci --no-audit --no-fund
-
-      - name: Validar, probar y generar
-        run: npm run todo
