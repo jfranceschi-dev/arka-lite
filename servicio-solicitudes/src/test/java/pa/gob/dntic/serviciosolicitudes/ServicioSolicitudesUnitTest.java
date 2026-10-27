@@ -10,6 +10,7 @@ import pa.gob.dntic.serviciosolicitudes.dominio.RepositorioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
 import pa.gob.dntic.serviciosolicitudes.dominio.Solicitud;
 import pa.gob.dntic.serviciosolicitudes.dominio.SolicitudNoEncontrada;
+import pa.gob.dntic.serviciosolicitudes.dominio.SolicitudYaExiste;
 import pa.gob.dntic.serviciosolicitudes.eventos.SolicitudEnviada;
 
 import java.util.ArrayList;
@@ -134,5 +135,28 @@ class ServicioSolicitudesUnitTest {
         );
 
         assertEquals("solo se rechaza una solicitud ENVIADA", exception.getMessage());
+    }
+
+    @Test
+    void givenUnIdNuevo_whenSeCrea_thenQuedaEnBorradorConElIdNormalizado() {
+        Solicitud creada = servicio.crear(" sol-200 ", "Consulta");
+
+        assertEquals("SOL-200", creada.id());
+        assertEquals(Estado.BORRADOR, creada.estado());
+    }
+
+    @Test
+    void givenUnIdExistente_whenSeCrea_thenNoLaPisa() {
+        servicio.crear("SOL-201", "Consulta");
+        servicio.enviar("SOL-201");
+
+        assertThrows(SolicitudYaExiste.class, () -> servicio.crear("SOL-201", "Consulta"));
+        assertEquals(Estado.ENVIADA, servicio.buscar("SOL-201").estado());
+    }
+
+    @Test
+    void givenDatosVacios_whenSeCrea_thenLosRechaza() {
+        assertThrows(IllegalArgumentException.class, () -> servicio.crear("", "Consulta"));
+        assertThrows(IllegalArgumentException.class, () -> servicio.crear("SOL-202", null));
     }
 }

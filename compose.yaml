@@ -54,6 +54,28 @@ services:
       db-solicitudes:
         condition: service_healthy
 
+  arka-lite-ui:                     # la interfaz web: http://localhost:8088
+    build: ./arka-lite-ui
+    ports: ["8088:8080"]
+    environment:
+      # nginx reenvía /api a cada servicio por su nombre en la red de Compose.
+      ARKA_SOLICITUDES_ORIGEN: http://servicio-solicitudes:8080
+      ARKA_NOTIFICACIONES_ORIGEN: http://servicio-notificaciones:8080
+      # Enlaces que abre el navegador (puertos publicados en este archivo).
+      ARKA_ENLACE_SWAGGER_SOLICITUDES: http://localhost:8080/swagger-ui/index.html
+      ARKA_ENLACE_SWAGGER_NOTIFICACIONES: http://localhost:8081/swagger-ui/index.html
+      ARKA_ENLACE_GRAFANA: http://localhost:3000
+    depends_on:
+      servicio-solicitudes:
+        condition: service_started
+      servicio-notificaciones:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/salud || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   loki:                             # almacén + consulta de logs (la "sala de control")
     image: grafana/loki:3.0.0
     command: -config.file=/etc/loki/local-config.yaml

@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "arka-ui-preview",
+      "name": "arka-lite-ui-preview",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "presentacion", "run", "preview", "--", "--port", "4173", "--strictPort"],
+      "runtimeArgs": ["--prefix", "arka-lite-ui", "run", "preview", "--", "--port", "4173", "--strictPort"],
       "port": 4173
     }
   ]

@@ -158,7 +158,7 @@ BORRADOR -> ENVIADA -> APROBADA
                     -> RECHAZADA
 ```
 
-Intentar enviar algo que no esté en `BORRADOR`, o aprobar/rechazar algo que no esté en `ENVIADA`, produce `IllegalStateException`.
+Intentar enviar algo que no esté en `BORRADOR`, o aprobar/rechazar algo que no esté en `ENVIADA`, produce `TransicionNoPermitida` (subclase de `IllegalStateException`).
 
 ### Adaptadores de entrada
 
@@ -170,9 +170,9 @@ Intentar enviar algo que no esté en `BORRADOR`, o aprobar/rechazar algo que no 
 
 `SolicitudController` no almacena datos. Por ejemplo, el método `enviar` toma el `id` de la ruta y llama a `servicio.enviar(id)`.
 
-El endpoint `/solicitudes/crear` es demostrativo: siempre registra `INC-002` con tipo `Incidencia`. Todavía no recibe datos del usuario mediante `@RequestBody`.
+`POST /solicitudes` recibe `NuevaSolicitud(id, tipo)` mediante `@RequestBody` y llama a `ServicioDeSolicitudes.crear()`, que rechaza datos vacíos y no pisa un id existente (`SolicitudYaExiste`). El endpoint `/solicitudes/crear` se conserva como atajo demostrativo: siempre registra `INC-002` con tipo `Incidencia`.
 
-`IllegalStateException` no tiene un manejador específico. Actualmente Spring la convierte en una respuesta de error del servidor.
+`ManejadorGlobalDeErrores` traduce `SolicitudYaExiste` y `TransicionNoPermitida` a `409 Conflict`, e `IllegalArgumentException` a `400 Bad Request`, siempre con `ErrorRespuesta(estado, mensaje)`. `EventoSalienteController` expone `GET /eventos` a través del puerto de consulta `ConsultaDeEventosSalientes`, que implementa `RegistradorDeEventosJpa`.
 
 ### Adaptadores de salida
 
@@ -319,7 +319,7 @@ docker compose ps
 docker compose logs -f
 ```
 
-Compose construye los dos JAR dentro de imágenes separadas, crea una red e inicia notificaciones antes de solicitudes.
+Compose construye los dos JAR dentro de imágenes separadas, crea una red e inicia notificaciones antes de solicitudes. También construye la UI, que queda en `http://localhost:8088`.
 
 Después de completar el arranque existen `INC-001` y `CAM-002`. La notificación inicial aparece cuando el relevador entrega el evento. Si una consulta no muestra el aviso, repítela tras unos segundos; lo mismo aplica al enviar `INC-002`.
 
@@ -460,7 +460,7 @@ cd servicio-solicitudes
 | Solicitudes arranca, pero no crea la notificación inicial | Notificaciones no estaba disponible o `NOTIFICACIONES_URL` apunta a otra dirección. |
 | Spring encuentra dos repositorios de solicitudes | `RepositorioJpa` debe conservar `@Primary` o se debe seleccionar un bean explícitamente. |
 | Un identificador inexistente devuelve 404 | Es el comportamiento de `SolicitudNoEncontrada` y `ManejadorGlobalDeErrores`. |
-| Una transición inválida devuelve error del servidor | `Solicitud` lanza `IllegalStateException` y todavía no existe un manejador HTTP específico. |
+| Una transición inválida devuelve 409 | `Solicitud` lanza `TransicionNoPermitida` y `ManejadorGlobalDeErrores` la traduce a `409 Conflict`. |
 | Los datos desaparecen | Los avisos están en memoria; para solicitudes y eventos, revisar la base conectada y la conservación de sus datos. |
 
 Para instalación detallada, variables y depuración remota, consultar [Instalación del entorno y depuración](../inicio/instalacion-y-debug.md).

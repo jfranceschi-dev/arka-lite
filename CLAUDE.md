@@ -8,7 +8,8 @@ ARKA-Lite is a learning/lab project: two independent Spring Boot 4.1.1 microserv
 
 - `servicio-solicitudes` (port 8080): create/list/send/approve/reject *solicitudes*; owns the outbox.
 - `servicio-notificaciones` (port 8081 via Compose/local, 8080 inside its container): consumes the `SolicitudEnviada` event and records a notification.
-- `presentacion/` (Node 24, React + Vite + Tailwind): presentation web app, API lab and PPTX generator, all reading one content source in `presentacion/contenido/`. Run `npm run todo` there after editing content; generated files live in `presentacion/salida/` and `presentacion/guiones/salida/` and must not be edited by hand. Details in `presentacion/README.md`. It runs via `compose.ui.yaml` (extension of `compose.yaml`) or `k8s/ui/` (kept out of `kubectl apply -f k8s/`).
+- `arka-lite-ui/` (Node 24, React + Vite + Tailwind): the minimal UI that consumes both services, with four tabs: **Solicitudes** (`#/solicitudes`, default: create via `POST /solicitudes`, list all/own ones in jQuery DataTables, Tom Select for the type, SweetAlert2 confirmations for Enviar/Aprobar/Rechazar), **Enviadas** (outbox vs consumed events, Reentregar to show idempotency), **Salud** (validate both services, links to Swagger and Grafana served by nginx at `/enlaces.json`) and **Ayuda** (step-by-step diagrams; topics in `contenido/ayuda.ts`, diagrams in `diagramas/`). The template colors are customizable at runtime (`web/src/estado/tema.tsx`, TGS navy/cyan by default). It does NOT generate presentations. Runs as part of `compose.yaml` (port 8088) or via `k8s/arka-lite-ui.yaml` (applied with the rest of `k8s/`). Details in `arka-lite-ui/README.md`.
+- `docs/presentation-data/` (Node 24, own `package.json`): the final presentation of the **Upskilling Backend Java** course. Owns its content (`contenido/`), slide diagrams, the PPTX/PDF/script generators and the generated `pptx/`, `pdf/`, `guiones/` (don't edit those by hand; run `npm run todo` there). The narrative is how we built the system (2 microservices + UI), not one example request; write in neutral Panamanian Spanish.
 
 Code, domain names, docs, branch names and commit messages are in **Spanish**; follow that.
 
@@ -28,7 +29,7 @@ Tests do **not** need PostgreSQL: there are no `@SpringBootTest`/`@DataJpaTest` 
 Whole system (from repo root):
 
 ```bash
-docker compose up --build -d     # both services, two Postgres 17, Loki (3100), Promtail, Grafana (3000)
+docker compose up --build -d     # both services, two Postgres 17, the UI (8088), Loki (3100), Promtail, Grafana (3000)
 docker compose logs servicio-solicitudes
 docker compose down
 bash smoke.sh                    # end-to-end smoke test against Compose
@@ -38,7 +39,7 @@ Images don't mount source; any Java change requires `--build`.
 
 Running the apps outside Docker requires PostgreSQL: solicitudes → `localhost:5432/db-solicitudes`, notificaciones → `localhost:5433/db-notificaciones` (user/pass `arka`, overridable via `DB_URL`/`DB_USER`/`DB_PASSWORD`). Compose only publishes the notificaciones DB (5433), not the solicitudes DB — see `docs/inicio/bases-de-datos-locales.md`. Start notificaciones with `-Dspring-boot.run.arguments=--server.port=8081`; solicitudes targets it via `NOTIFICACIONES_URL` (default `http://localhost:8081/eventos/solicitud-enviada`).
 
-Kubernetes (Docker Desktop or minikube): `bash construir.sh` builds `servicio-*:local` images, then `kubectl apply -f k8s/`. `verificar_sistema.sh` checks Docker/CI/K8s layers end to end.
+Kubernetes (Docker Desktop or minikube): `bash construir.sh` builds `servicio-*:local` and `arka-lite-ui:local` images, then `kubectl apply -f k8s/`. `verificar_sistema.sh` checks Docker/CI/K8s layers end to end.
 
 ## Architecture
 
@@ -73,7 +74,7 @@ No Flyway/Liquibase.
 
 ### Seed data and CI coupling
 
-`ConfiguracionDominio.seed` (a `CommandLineRunner`) registers `INC-001` and `CAM-002` and sends `CAM-002` on **every** startup. `POST /solicitudes/crear` always creates the fixed id `INC-002`. CI (`.github/workflows/ci.yml`) runs `mvn -B verify` per service against a Postgres service container, then boots the solicitudes JAR and polls `GET /solicitudes` until it contains `CAM-002` — changing the seed breaks CI. CI then pushes images to GHCR tagged with the commit SHA.
+`ConfiguracionDominio.seed` (a `CommandLineRunner`) registers `INC-001` and `CAM-002` and sends `CAM-002` on **every** startup. `POST /solicitudes` creates a solicitud with a chosen id (201, 409 if it exists, 400 if data is missing); `POST /solicitudes/crear` is a demo shortcut that always creates or resets `INC-002`. Invalid state transitions return 409 (`TransicionNoPermitida`). `GET /eventos` lists the outbox. CI (`.github/workflows/ci.yml`) runs `mvn -B verify` per service against a Postgres service container, then boots the solicitudes JAR and polls `GET /solicitudes` until it contains `CAM-002` — changing the seed breaks CI. CI then pushes images to GHCR tagged with the commit SHA.
 
 ## Conventions (from `docs/desarrollo/`)
 
@@ -81,4 +82,3 @@ No Flyway/Liquibase.
 - Conventional Commits in Spanish, lowercase, imperative, no trailing period: `fix: impedir el envío de una solicitud aprobada`.
 - Constructor injection only; domain rules stay out of controllers; keep the domain free of Spring.
 - Human documentation lives in `docs/` and must be linked from `docs/README.md`; update the affected docs in the same PR when behavior, ports, env vars, commands or contracts change. Doc examples use PowerShell.
-- `docs/presentation-data/` holds presentation scripts and a PowerPoint generator (`generar-ppt.ps1`/`.mjs`) that depends on an external local runtime; it is not part of the build.

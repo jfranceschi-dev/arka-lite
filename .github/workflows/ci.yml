@@ -86,15 +86,16 @@ jobs:
           docker build -t "$IMG" .
           docker push "$IMG"
 
-  # UI de presentación y laboratorio (presentacion/). Valida la fuente de
-  # contenido, prueba, construye, genera y verifica los PPTX y comprueba que
-  # Compose acepta la extensión. Publica la imagen solo en push a main.
-  presentacion:
+  # UI de ARKA-Lite (arka-lite-ui/): Solicitudes, Enviadas, Salud y Ayuda.
+  # Valida sus operaciones y diagramas, prueba, construye y comprueba que
+  # compose.yaml (que ya incluye la UI) es válido. Publica la imagen solo en
+  # push a main.
+  arka-lite-ui:
     runs-on: ubuntu-latest
     permissions: {contents: read, packages: write}
     defaults:
       run:
-        working-directory: presentacion
+        working-directory: arka-lite-ui
 
     steps:
       - name: Traer el codigo
@@ -105,7 +106,7 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: presentacion/package-lock.json
+          cache-dependency-path: arka-lite-ui/package-lock.json
 
       - name: Instalar dependencias
         run: npm ci --no-audit --no-fund
@@ -121,17 +122,12 @@ jobs:
       - name: Construir la UI
         run: npm run build
 
-      - name: Generar y verificar PPTX
-        run: |
-          npm run pptx
-          npm run verificar-pptx
-
-      - name: Validar la extension de Compose
+      - name: Validar Compose
         working-directory: .
-        run: docker compose -f compose.yaml -f compose.ui.yaml config --quiet
+        run: docker compose config --quiet
 
       - name: Construir la imagen de la UI
-        run: docker build -t arka-ui:ci .
+        run: docker build -t arka-lite-ui:ci .
 
       - name: login al registro
         if: github.event_name == 'push'
@@ -145,6 +141,33 @@ jobs:
         if: github.event_name == 'push'
         run: |
           REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          IMG=ghcr.io/$REPO_NAME/arka-ui:${{ github.sha }}
-          docker tag arka-ui:ci "$IMG"
+          IMG=ghcr.io/$REPO_NAME/arka-lite-ui:${{ github.sha }}
+          docker tag arka-lite-ui:ci "$IMG"
           docker push "$IMG"
+
+  # Presentación del proyecto final (docs/presentation-data/). Valida el
+  # contenido y comprueba que los generadores de PPTX, PDF y guiones funcionan.
+  # No publica nada: los entregables se versionan en esa misma carpeta.
+  presentacion:
+    runs-on: ubuntu-latest
+    permissions: {contents: read}
+    defaults:
+      run:
+        working-directory: docs/presentation-data
+
+    steps:
+      - name: Traer el codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: docs/presentation-data/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Validar, probar y generar
+        run: npm run todo

@@ -1,102 +1,96 @@
-# Guiones de presentación de ARKA-Lite
+# Presentación del proyecto final · Upskilling Backend Java
 
-Material para dos presentaciones sobre la misma aplicación, adaptadas a públicos distintos. Incluye guiones, diagramas Mermaid y código para generar PowerPoint con texto, tablas, formas y conectores editables. El diseño utiliza azul marino, azul medio, azul claro y fondo blanco, con tipografía Arial.
+Esta carpeta es la **presentación de ARKA-Lite**: el contenido, los generadores y los entregables (PPTX, PDF y guiones). Es un proyecto propio; la UI `arka-lite-ui` no depende de ella ni genera presentaciones.
 
-| Presentación | Público | Duración sugerida | Enfoque |
+La presentación muestra lo que aprendimos en el curso y cómo funciona el proyecto: **una UI y dos microservicios Spring Boot**, cada uno con su base PostgreSQL.
+
+## Cómo está organizada
+
+No sigue el temario clase por clase. Cuenta cómo se construye el sistema, del "qué hace" al "cómo se opera", y cada tema del curso aparece donde se usa.
+
+La presenta el **Equipo arka-litos**: siete personas, cuatro de desarrollo, dos de DevOps y una de base de datos. Cada quien presenta la parte de su área:
+
+| Parte | Qué explica | Temas del curso | Presenta |
 | --- | --- | --- | --- |
-| [Equipo de desarrollo](equipo-desarrollo.md) | Personas que implementan, prueban y mantienen código | 180–225 minutos, con pausas y demostraciones | Java, contratos, clases reales y recorrido técnico de los datos |
-| [Staff de desarrollo](staff-desarrollo.md) | Coordinación y referentes que necesitan comprender decisiones técnicas sin revisar cada clase | 95–120 minutos, incluidas preguntas | Conceptos, responsabilidades, comunicación y efectos operativos |
+| Apertura | Quiénes somos, qué es ARKA-Lite y cómo vamos a recorrerlo | — | Participante 1 · Desarrollo |
+| 1 El sistema por fuera | El mapa completo, la arquitectura general y los estados de una solicitud | Visión general | Participante 1 · Desarrollo |
+| 2 Construir un servicio | Spring Boot, endpoints REST, la regla en el dominio, errores, Swagger, pruebas y Git | Spring Boot, endpoints REST, endpoint seguro con manejo global de errores, Git y documentación, Swagger, pruebas unitarias y commits | Participante 2 · Desarrollo |
+| 3 Diseñar para cambiar | Componentes, puertos y adaptadores; de monolito a microservicios | Puertos y adaptadores, estructura base, descomposición del monolito | Participante 3 · Desarrollo |
+| 4 Guardar sin perder datos | Adaptador con PostgreSQL, el problema de la consistencia, outbox e idempotencia | Modelado y consultas, adaptador con base real, el problema de la consistencia | Participante 4 · Base de datos |
+| 5 Empaquetar y entregar | Dockerfile, Compose y el pipeline de integración y entrega continua | Docker y Dockerfile, Docker Compose, integración y entrega continua | Participante 5 · DevOps |
+| 6 Desplegar y operar | Kubernetes, puesta a punto, logs centralizados y salud de los servicios | Kubernetes, del contenedor al clúster, puesta a punto, logs y monitoreo, centralización de logs | Participante 6 · DevOps |
+| 7 Ensamblaje: la UI | Cómo la UI consume los dos servicios y demostración en vivo | Ensamblaje del sistema | Participante 7 · Desarrollo |
+| Cierre | Tabla "tema del curso → dónde está en ARKA-Lite" y lo que falta | — | Participante 1 · Desarrollo |
 
-“Staff” se interpreta aquí como una audiencia técnica que requiere menos detalle de implementación, conforme al alcance solicitado.
+Cada parte sigue el mismo orden: **qué problema resuelve → cómo lo aplicamos → diagrama paso a paso → evidencia**. En los diagramas, el número sobre cada flecha coincide con el paso que se lee.
 
-## Feedback del equipo y criterio de claridad
+Hay dos recorridos con el mismo texto oral: el **ejecutivo** (sin código) y el **técnico** (agrega código y configuración).
 
-El [feedback integrado](feedback-integrado.md) identifica cada punto recibido, su ubicación en los guiones y la corrección técnica necesaria. Incluye flujos para público no técnico, secuencias con clases reales, comparación de monolito y servicios, y una matriz de cómo se aplicó lo aprendido.
+## Entregables
 
-La exposición presenta cada concepto en tres pasos: problema reconocible para el usuario, explicación visual y detalle de implementación. El guion maestro y las dos versiones por audiencia incorporan estas precisiones; los PowerPoint entregados antes siguen pendientes de sincronizar con estos cambios.
+| Archivo | Para qué sirve |
+| --- | --- |
+| [`pptx/ARKA-Lite-ejecutivo.pptx`](pptx/ARKA-Lite-ejecutivo.pptx) | Presentación sin código, para un público mixto. |
+| [`pptx/ARKA-Lite-tecnico.pptx`](pptx/ARKA-Lite-tecnico.pptx) | Presentación con código, contratos y configuración. |
+| [`pdf/ARKA-Lite-ejecutivo.pdf`](pdf/ARKA-Lite-ejecutivo.pdf) | Contenido y guion del recorrido ejecutivo, para leer o imprimir. |
+| [`pdf/ARKA-Lite-tecnico.pdf`](pdf/ARKA-Lite-tecnico.pdf) | Contenido y guion del recorrido técnico. |
+| [`guiones/guion-ejecutivo.md`](guiones/guion-ejecutivo.md) · [`guiones/guion-tecnico.md`](guiones/guion-tecnico.md) | Guion completo de cada recorrido. |
+| [`guiones/participantes/`](guiones/participantes/) | Un guion por persona (`p1.md` a `p7.md`): solo sus láminas, de quién recibe y a quién entrega. |
 
-## Cómo preparar la exposición
+Los PPTX tienen texto, tablas y diagramas editables, y las notas del expositor en cada lámina. Cada diagrama se repite en láminas "paso a paso". Los entregables se generan; no se editan a mano.
 
-1. Leer el [guion maestro](guion-maestro.md): apertura, nueve secciones, narración, demostraciones, preguntas y cierre.
-2. Ensayar con el [guion oral de observabilidad](guion-observabilidad.md), que explica cada herramienta y sus conexiones desde cero.
-3. Usar las versiones por unidad de equipo o staff para decidir qué contenido mostrar y cuánto detalle conservar.
-4. Preparar los casos de laboratorio por separado. Los ejemplos y comandos del guion no son resultados observados.
+## Cómo leer un guion
 
-El guion maestro conserva el orden acordado y relaciona cada bloque con sus unidades. El texto oral puede leerse y adaptarse; las instrucciones de apoyo son para el expositor. No se ha generado ni ajustado PowerPoint en esta etapa.
+| Parte | Qué es |
+| --- | --- |
+| **En pantalla** | Lo que ve el público. |
+| **Diagrama paso a paso** | Los pasos numerados; el número coincide con el de la flecha. |
+| **Qué decir** | Texto para decir en voz alta. |
+| **Qué hacer** | Indicaciones para quien expone. No se dicen. |
+| **Si preguntan** | Una pregunta probable y su respuesta corta. |
+| **Para pasar** | La frase que conecta con la lámina siguiente. |
 
-## Orden de ambas presentaciones
+## Estructura
 
-1. **Fundamentos:** cómo se construye código Java, variables y tipos, nombres, buenas prácticas y SOLID.
-2. **Arquitectura hexagonal:** dominio, puertos, adaptadores, interfaces y organización del código.
-3. **Arquitectura del sistema:** clases de servicios, comunicación y recorrido de los datos dentro de cada servicio y entre servicios.
-4. **Docker:** construcción multietapa, imágenes, contenedores y Compose.
-5. **Kubernetes:** reconciliación, recursos, salud y diagnóstico.
-6. **CI/CD:** pipeline actual y propuesta de promoción entre ambientes.
-7. **Git y GitHub:** historial, revisión y trazabilidad.
-8. **Datos y consistencia:** modelo relacional, ACID, transacciones, Outbox Pattern, idempotencia, concurrencia, evolución y recuperación.
-9. **Observabilidad:** logs, métricas y trazas, Grafana, Loki, recolección, instrumentación y diagnóstico operativo.
-
-Cada lámina incluye contenido para mostrar, un guion para el expositor y una transición. Los ejemplos didácticos se identifican; las descripciones de ARKA-Lite corresponden al código actual del repositorio.
-
-## Caso conductor
-
-Una solicitud `INC-002` se crea como `BORRADOR`, se envía y finalmente produce un aviso. El envío guarda un evento pendiente en PostgreSQL; otro componente lo entrega por HTTP. El aviso puede aparecer después de la respuesta de envío.
-
-La explicación distingue tres cosas: el estado de la solicitud, el estado de entrega del evento y el texto de la notificación. No se almacenan en el mismo lugar ni se completan al mismo tiempo.
-
-## Material compartido
-
-- [Guion maestro de la presentación completa](guion-maestro.md).
-- [Cobertura del feedback, correcciones y flujos para público mixto](feedback-integrado.md).
-- [Guion oral desarrollado de observabilidad](guion-observabilidad.md).
-
-- [Flujo detallado, contrato y referencias al código](flujo-y-referencias.md).
-- [Diagramas de infraestructura y entrega](infraestructura-y-entrega.md).
-- [Creación y explicación de ci.yml en GitHub](ci-yaml-paso-a-paso.md).
-- [Datos y consistencia: diagramas, laboratorio y referencias](datos-y-consistencia.md).
-- [Observabilidad: componentes, consultas y diagnóstico](observabilidad.md).
-- [Descripción de la aplicación](../inicio/proyecto.md).
-- [Componentes Java](../arquitectura/componentes-java.md).
-- [Preparación de bases locales](../inicio/bases-de-datos-locales.md).
-
-No presentar como funcionalidades implementadas un broker de mensajes, entrega exactamente una vez, persistencia del texto de las notificaciones o aislamiento completo del dominio frente a frameworks. Las diferencias entre el diseño deseado y la implementación actual forman parte de los guiones.
-
-Volver al [índice de documentación](../README.md).
-
-## Estado del contenido
-
-La prioridad actual son los Markdown: contenido para mostrar, guion del expositor, transiciones y diagramas Mermaid. Las secciones 1 a 9 están desarrolladas en ambos guiones.
-
-| Versión | Unidades de contenido en Markdown | Sección de datos y consistencia |
-| --- | --- | --- |
-| Equipo | 65 | 46–57, doce unidades |
-| Staff | 36 | 27–32, seis unidades |
-
-Observabilidad agrega ocho unidades para equipo (58–65) y cuatro para staff (33–36). El material distingue logs de contenedores y archivos del sistema, y explica la relación entre Actuator, health, Micrometer, Prometheus y Grafana.
-
-Los PowerPoint entregados anteriormente tienen 45 y 26 láminas respectivamente. **Las secciones 8 y 9 todavía no se han generado ni ajustado en PowerPoint.** Sus diagramas están en el material compartido como Mermaid y su composición futura en PPT queda pendiente. Los tiempos totales son orientativos y permiten dividir el material en varias sesiones.
-
-## Generar y editar el PowerPoint
-
-Desde la raíz del repositorio, en PowerShell:
-
-```powershell
-.\docs\presentation-data\generar-ppt.ps1
+```text
+docs/presentation-data/
+├── contenido/          Fuente: partes, láminas, guion y reparto (participantes.ts)
+├── diagramas/          Diagramas de las láminas y su geometría
+├── diseno/             Colores y tipografía
+├── generador-pptx/     PowerPoint y su verificador
+├── generador-pdf/      PDF de contenido y guion
+├── generador-guiones/  Guiones en Markdown
+├── pruebas/            Pruebas del contenido y del PPTX
+├── pptx/ pdf/ guiones/ Entregables generados
+└── package.json
 ```
 
-El script usa el runtime de presentaciones incluido en Codex; no descarga paquetes. Si cambian sus rutas, utiliza los parámetros `-RuntimeRoot` y `-SkillRoot`. Requiere `@oai/artifact-tool`, Node.js y los validadores del runtime. No necesita Java ni levantar los servicios.
+## Cómo regenerar
 
-Cada ejecución crea una carpeta con fecha en `output/`, con `equipo-desarrollo.pptx` y `staff-desarrollo.pptx`, a partir de las unidades presentes en los guiones al ejecutarse. Las notas del presentador incluyen el guion y las transiciones. Los PNG y reportes de validación se guardan en `.build/`; `.build/latest.json` identifica la última generación completa. Estas salidas se excluyen de Git para versionar las fuentes.
+Requiere Node.js 24 (mínimo 22.18). Desde esta carpeta:
 
-| Para cambiar | Archivo fuente |
-| --- | --- |
-| Contenido y notas del equipo | [equipo-desarrollo.md](equipo-desarrollo.md) |
-| Contenido y notas del staff | [staff-desarrollo.md](staff-desarrollo.md) |
-| Nodos, zonas, etiquetas y conexiones en PPT | [diagramas.mjs](diagramas.mjs) |
-| Diagramas de documentación | [flujo-y-referencias.md](flujo-y-referencias.md) |
-| Colores, tamaños y composición | [generar-ppt.mjs](generar-ppt.mjs) |
-| Rutas de dependencias y ejecución | [generar-ppt.ps1](generar-ppt.ps1) |
+```powershell
+npm ci
+npm run todo
+```
 
-Para agregar las próximas secciones, conserva el formato `## Sección N · Título` y agrega láminas `### NN · Título`, con bloques `**En pantalla**` y `**Guion del expositor**`. La sección se obtiene del Markdown. Para una lámina con diagrama, agrega su número a `diagramSlides` en `diagramas.mjs`. Si renumeras láminas, actualiza esa correspondencia.
+En la raíz del repositorio no hay `package.json`; desde ahí, indicar la carpeta con `--prefix`:
 
-En las láminas con diagrama, el dibujo sustituye al bloque «En pantalla»; el contenido completo permanece en las notas. Los diagramas Mermaid y los del PPT son fuentes distintas: actualiza ambos si cambia el flujo.
+```powershell
+npm ci --prefix docs/presentation-data
+npm run todo --prefix docs/presentation-data
+```
+
+`npm run todo` valida el contenido, revisa los tipos, corre las pruebas y genera PPTX, PDF y guiones. Para una sola parte: `npm run pptx`, `npm run pdf` o `npm run guiones`.
+
+Para poner los nombres reales de las siete personas o cambiar el nombre del equipo (`EQUIPO`), editar [`contenido/participantes.ts`](contenido/participantes.ts) y regenerar.
+
+## Material de referencia
+
+- [Descripción del proyecto y su API](../inicio/proyecto.md)
+- [Flujo de una solicitud y referencias al código](../arquitectura/flujo-y-referencias.md)
+- [Datos y consistencia: transacciones, outbox e idempotencia](../arquitectura/datos-y-consistencia.md)
+- [Observabilidad: logs, métricas y trazas](../operaciones/observabilidad.md)
+- [Infraestructura y entrega](../operaciones/infraestructura-y-entrega.md)
+- [Creación de ci.yml paso a paso](../automatizacion/ci-yaml-paso-a-paso.md)
+- [La UI arka-lite-ui](../../arka-lite-ui/README.md)

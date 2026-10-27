@@ -14,9 +14,9 @@ La documentación está organizada por propósito para que una persona nueva pue
 
 ## Organización
 
-Los [guiones y presentaciones de ARKA-Lite](presentation-data/README.md) incluyen las versiones para equipo y staff, diagramas de arquitectura y el generador editable de PowerPoint. La etapa de [datos y consistencia](presentation-data/datos-y-consistencia.md) desarrolla transacciones, outbox, idempotencia, concurrencia y recuperación. La preparación actual prioriza los guiones Markdown; el ajuste de PowerPoint queda para una etapa posterior. El [guion maestro de exposición](presentation-data/guion-maestro.md) contiene la narración de las nueve secciones y enlaza el [guion detallado de observabilidad](presentation-data/guion-observabilidad.md).
+La [presentación del proyecto final](presentation-data/README.md) del curso Upskilling Backend Java tiene su propio contenido, sus generadores y sus entregables: PPTX, PDF y guiones (completos y por participante). Explica lo aprendido y cómo funciona ARKA-Lite: una UI y dos microservicios.
 
-La [presentación web, laboratorio y generador PPTX](../presentacion/README.md) reúne once secciones en una sola fuente de contenido: la presentación guiada, el laboratorio conectado a las API reales, los guiones por participante y la exportación a PowerPoint. Se ejecuta con `compose.ui.yaml` o con `k8s/ui/`.
+La [UI arka-lite-ui](../arka-lite-ui/README.md) es una aplicación minimalista con cuatro pestañas: **Solicitudes** (crear, ver y decidir), **Enviadas** (el recorrido de cada evento y la prueba de idempotencia), **Salud** (validar los servicios y abrir Swagger y Grafana) y **Ayuda** (diagramas paso a paso de cómo funciona). Se levanta con el resto del sistema en `docker compose up` (`http://localhost:8088`) o con `k8s/arka-lite-ui.yaml`.
 
 ```text
 docs/
@@ -28,7 +28,10 @@ docs/
 │   └── bases-de-datos-locales.md
 ├── arquitectura/
 │   ├── README.md
-│   └── componentes-java.md
+│   ├── componentes-java.md
+│   ├── especificacion-eventos-outbox.md
+│   ├── flujo-y-referencias.md
+│   └── datos-y-consistencia.md
 ├── desarrollo/
 │   ├── README.md
 │   ├── flujo-de-trabajo.md
@@ -39,11 +42,20 @@ docs/
 │   ├── docker-y-compose.md
 │   ├── kubernetes-local.md
 │   ├── kubernetes-limpieza.md
-│   └── correccion-arranque.md
-└── automatizacion/
+│   ├── correccion-arranque.md
+│   ├── observabilidad.md
+│   └── infraestructura-y-entrega.md
+├── automatizacion/
+│   ├── README.md
+│   ├── github-actions-yaml.md
+│   ├── ci-cd-y-ambientes.md
+│   └── ci-yaml-paso-a-paso.md
+└── presentation-data/   (proyecto de la presentación)
     ├── README.md
-    ├── github-actions-yaml.md
-    └── ci-cd-y-ambientes.md
+    ├── contenido/ diagramas/ generador-*/
+    ├── pptx/
+    ├── pdf/
+    └── guiones/
 ```
 
 ### Inicio
@@ -59,6 +71,8 @@ Material para instalar, ejecutar y conocer el sistema por primera vez.
 Diseño del código, componentes Java y comunicación entre microservicios.
 
 - [Componentes Java y ejecución](arquitectura/componentes-java.md)
+- [Flujo de una solicitud y referencias al código](arquitectura/flujo-y-referencias.md)
+- [Datos y consistencia: transacciones, outbox e idempotencia](arquitectura/datos-y-consistencia.md)
 
 ### Desarrollo
 
@@ -76,6 +90,8 @@ Construcción, ejecución y diagnóstico de la aplicación.
 - [Kubernetes local con Docker Desktop](operaciones/kubernetes-local.md)
 - [Limpieza de Kubernetes local](operaciones/kubernetes-limpieza.md)
 - [Diagnóstico del esquema y arranque](operaciones/correccion-arranque.md)
+- [Observabilidad: logs, métricas y trazas](operaciones/observabilidad.md)
+- [Infraestructura y entrega](operaciones/infraestructura-y-entrega.md)
 
 ### Automatización
 
@@ -83,6 +99,7 @@ GitHub Actions, CI/CD, ramas, ambientes y otros archivos de GitHub.
 
 - [GitHub Actions y archivos YAML](automatizacion/github-actions-yaml.md)
 - [CI/CD, ramas y ambientes](automatizacion/ci-cd-y-ambientes.md)
+- [Creación de ci.yml paso a paso](automatizacion/ci-yaml-paso-a-paso.md)
 
 ## Regla de mantenimiento
 

@@ -29,6 +29,19 @@ public class ServicioDeSolicitudes {
         this.registrador = registrador;
     }
 
+    // Alta desde la API: a diferencia de registrar(), no pisa una solicitud
+    // existente ni acepta datos vacíos.
+    public Solicitud crear(String id, String tipo) {
+        if (id == null || id.isBlank() || tipo == null || tipo.isBlank()) {
+            throw new IllegalArgumentException("id y tipo son obligatorios");
+        }
+        String idNormalizado = id.trim().toUpperCase();
+        if (repositorio.buscar(idNormalizado).isPresent()) {
+            throw new SolicitudYaExiste(idNormalizado);
+        }
+        return registrar(idNormalizado, tipo.trim());
+    }
+
     public Solicitud registrar(String id, String tipo) {
         Solicitud s = new Solicitud(id, tipo, Estado.BORRADOR);
         repositorio.guardar(s);

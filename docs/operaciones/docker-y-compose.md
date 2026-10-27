@@ -154,6 +154,7 @@ git check-ignore -v servicio-solicitudes\target\archivo.jar
 | --- | --- |
 | Solicitudes | `http://localhost:8080` |
 | Notificaciones | `http://localhost:8081` |
+| Interfaz web (`arka-lite-ui`) | `http://localhost:8088` |
 | PostgreSQL de solicitudes | Solo red interna de Compose, puerto `5432` |
 | PostgreSQL de notificaciones | `localhost:5433` |
 | Grafana | `http://localhost:3000` |

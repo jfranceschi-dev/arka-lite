@@ -1,0 +1,31 @@
+{
+  "name": "arka-lite-presentacion",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Presentación del proyecto final de Upskilling Backend Java: contenido, generadores y entregables (PPTX, PDF y guiones).",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "validar": "node contenido/validar.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "pptx": "node generador-pptx/cli.ts",
+    "verificar-pptx": "node generador-pptx/verificar.ts",
+    "pdf": "node generador-pdf/cli.ts",
+    "guiones": "node generador-guiones/generar.ts",
+    "todo": "npm run validar && npm run typecheck && npm test && npm run pptx && npm run verificar-pptx && npm run pdf && npm run guiones"
+  },
+  "dependencies": {
+    "jszip": "^3.10.2",
+    "pdfkit": "^0.17.2",
+    "pptxgenjs": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/pdfkit": "^0.17.7",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

@@ -3,13 +3,13 @@
 # Verifica RAPIDO que el camino critico funciona de extremo a extremo, capa por capa.
 #  ->  bash smoke.sh
 set -u
-PASS=0; TOTAL=6
+PASS=0; TOTAL=7
 # --- AJUSTA a TU sistema integrado: no solo los puertos, tambien las RUTAS de abajo ---
 #     (/actuator/health, el endpoint de enviar, el de consultar estado, el de notificaciones).
 #     Si no coinciden con la API real, el humo marca rojo aunque el sistema este bien.
-SOL_URL="http://localhost:8080"; NOT_URL="http://localhost:8081"; GRAFANA="http://localhost:3000"; LOKI_URL="http://localhost:3100"
+SOL_URL="http://localhost:8080"; NOT_URL="http://localhost:8081"; GRAFANA="http://localhost:3000"; LOKI_URL="http://localhost:3100"; UI_URL="http://localhost:8088"
 SOL="servicio-solicitudes"; NOT="servicio-notificaciones"
-echo "== PRUEBA DE HUMO — ARKA ensamblado (6 capas) =="
+echo "== PRUEBA DE HUMO — ARKA ensamblado (7 capas) =="
 
 echo "-- levantando el sistema completo..."
 docker compose up -d --build >/tmp/smoke.log 2>&1 || { echo "[X] no levantó:"; tail -5 /tmp/smoke.log; echo "HUMO: 0/${TOTAL}"; exit 0; }
@@ -59,6 +59,9 @@ AFTER=$(curl -sf "$NOT_URL/notificaciones" 2>/dev/null | grep -o "$ID" | wc -l |
 echo "-- (6) observabilidad: el tablero responde y Loki recibió logs de $SOL..."
 LOKI_END=$(date +%s); LOKI_START=$((LOKI_END - 3600))
 if curl -sf "$GRAFANA/api/health" >/dev/null 2>&1 && curl -sf -G "$LOKI_URL/loki/api/v1/query_range" --data-urlencode "query={service=\"$SOL\"}" --data-urlencode "start=${LOKI_START}000000000" --data-urlencode "end=${LOKI_END}000000000" --data-urlencode "limit=1" 2>/dev/null | grep -q '"values"'; then echo "[OK] (6) Grafana arriba y Loki tiene logs de $SOL"; PASS=$((PASS+1)); else echo "[X] (6) el tablero no responde o Loki no recibió logs de $SOL"; fi
+
+echo "-- (7) interfaz: la UI responde y su proxy llega a los dos servicios..."
+if curl -sf "$UI_URL/salud" >/dev/null 2>&1 && curl -sf "$UI_URL/api/salud/solicitudes" | grep -qi '"status":"UP"' && curl -sf "$UI_URL/api/salud/notificaciones" | grep -qi '"status":"UP"'; then echo "[OK] (7) la UI responde y ve los dos servicios"; PASS=$((PASS+1)); else echo "[X] (7) la UI no responde o su proxy no llega a los servicios"; fi
 
 echo "-- limpieza..."; docker compose down >/dev/null 2>&1
 echo ""; echo "HUMO: ${PASS}/${TOTAL}"

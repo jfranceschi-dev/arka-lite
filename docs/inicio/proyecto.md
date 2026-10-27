@@ -90,10 +90,14 @@ El envío guarda la solicitud y un evento pendiente en una misma transacción. U
 | --- | --- | --- |
 | `GET` | `/solicitudes` | Lista todas las solicitudes. |
 | `GET` | `/solicitudes/{id}` | Busca una solicitud por identificador. |
-| `POST` | `/solicitudes/crear` | Crea la solicitud fija `INC-002` en estado `BORRADOR`. |
+| `POST` | `/solicitudes` | Crea una solicitud con el cuerpo `{ "id", "tipo" }` en estado `BORRADOR`. Responde `201`; `409` si el id ya existe; `400` si falta un dato. El id se guarda en mayúsculas. |
+| `POST` | `/solicitudes/crear` | Atajo de demostración: crea `INC-002` en `BORRADOR` y, si ya existe, la devuelve a `BORRADOR`. |
 | `POST` | `/solicitudes/{id}/enviar` | Cambia la solicitud a `ENVIADA` y registra un evento para entrega posterior. |
 | `POST` | `/solicitudes/{id}/aprobar` | Aprueba la solicitud cuando su estado lo permite. |
 | `POST` | `/solicitudes/{id}/rechazar` | Rechaza la solicitud cuando su estado lo permite. |
+| `GET` | `/eventos` | Lista los eventos del outbox: `eventoId`, `solicitudId`, `tipo` y `procesado`. |
+
+Una transición que el estado actual no permite (por ejemplo, enviar una solicitud ya enviada) responde `409` con `{ "estado": 409, "mensaje": … }`. Una solicitud inexistente responde `404`.
 
 Swagger UI está disponible en `http://localhost:8080/swagger-ui/index.html` y OpenAPI JSON en `http://localhost:8080/v3/api-docs`.
 
@@ -107,7 +111,7 @@ Swagger UI está disponible en `http://localhost:8080/swagger-ui/index.html` y O
 
 Swagger UI está disponible en `http://localhost:8081/swagger-ui/index.html` y OpenAPI JSON en `http://localhost:8081/v3/api-docs`.
 
-El endpoint de eventos es parte de la comunicación interna. Normalmente un usuario no lo llama directamente.
+`POST /eventos/solicitud-enviada` es parte de la comunicación interna. La UI `arka-lite-ui` lo usa solo para reentregar un evento ya consumido y mostrar que no se duplica el aviso.
 
 ## Ejecutar el flujo completo
 
@@ -119,13 +123,18 @@ Desde la raíz del repositorio:
 docker compose up --build -d
 docker compose ps
 
+# La interfaz web queda en http://localhost:8088
+
 # El arranque carga INC-001 y CAM-002; CAM-002 se envía automáticamente
 Invoke-RestMethod http://localhost:8080/solicitudes
 Invoke-RestMethod http://localhost:8081/notificaciones
 
 # Crear y enviar una solicitud
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/INC-002/enviar
+Invoke-RestMethod -Method Post http://localhost:8080/solicitudes -ContentType 'application/json' -Body '{"id":"SOL-100","tipo":"Consulta"}'
+Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/SOL-100/enviar
+
+# Ver el evento en el outbox de solicitudes
+Invoke-RestMethod http://localhost:8080/eventos
 
 # Comprobar la notificación producida por el segundo servicio
 Invoke-RestMethod http://localhost:8081/notificaciones

@@ -48,4 +48,34 @@ class SolicitudControllerWebTest {
                 .andExpect(jsonPath("$.estado").value(404))
                 .andExpect(jsonPath("$.mensaje").value("No existe la solicitud NO-EXISTE"));
     }
+
+    @Test
+    void creaUnaSolicitudConIdYTipoElegidosYRechazaElDuplicado() throws Exception {
+        String cuerpo = "{\"id\":\"sol-100\",\"tipo\":\"Consulta\"}";
+        mvc.perform(post("/solicitudes").contentType(MediaType.APPLICATION_JSON).content(cuerpo))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value("SOL-100"))
+                .andExpect(jsonPath("$.tipo").value("Consulta"))
+                .andExpect(jsonPath("$.estado").value("BORRADOR"));
+
+        mvc.perform(post("/solicitudes").contentType(MediaType.APPLICATION_JSON).content(cuerpo))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.mensaje").value("Ya existe la solicitud SOL-100"));
+    }
+
+    @Test
+    void sinIdOTipoDevuelveBadRequest() throws Exception {
+        mvc.perform(post("/solicitudes").contentType(MediaType.APPLICATION_JSON).content("{\"id\":\" \",\"tipo\":\"Consulta\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.estado").value(400));
+    }
+
+    @Test
+    void enviarDosVecesDevuelveConflict() throws Exception {
+        mvc.perform(post("/solicitudes/crear")).andExpect(status().isOk());
+        mvc.perform(post("/solicitudes/INC-002/enviar")).andExpect(status().isOk());
+        mvc.perform(post("/solicitudes/INC-002/enviar"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.estado").value(409));
+    }
 }

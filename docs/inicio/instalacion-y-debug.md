@@ -136,7 +136,7 @@ docker compose up --build -d
 docker compose ps
 ```
 
-Probar el flujo:
+La interfaz web queda en `http://localhost:8088`. Probar el flujo desde la UI o con la API:
 
 ```powershell
 Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
