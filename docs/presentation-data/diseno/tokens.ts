@@ -39,6 +39,31 @@ export const color = {
   codigoAnotacion: "#FFB38A",
 } as const;
 
+// Cada parte del sistema tiene su color en los diagramas de arquitectura:
+// fuerte para títulos e íconos, suave para el fondo de su zona.
+export type AreaSistema = "ui" | "solicitudes" | "notificaciones" | "datos" | "entrega" | "observabilidad" | "plataforma";
+
+export const area: Record<AreaSistema, { fuerte: string; suave: string; borde: string }> = {
+  ui: { fuerte: "#5B3FC4", suave: "#F1EEFD", borde: "#C9BEF4" },
+  solicitudes: { fuerte: color.azul, suave: "#EAF0FA", borde: "#AFC4E6" },
+  notificaciones: { fuerte: color.cianTexto, suave: "#E5F5FA", borde: "#9DD7E8" },
+  datos: { fuerte: "#3D5675", suave: "#EEF2F7", borde: "#C2CEDD" },
+  entrega: { fuerte: color.correcto, suave: "#E6F4EE", borde: "#A9D8C3" },
+  observabilidad: { fuerte: color.advertenciaTexto, suave: "#FCF2E2", borde: "#EDCC93" },
+  plataforma: { fuerte: color.secundario, suave: "#F7F9FC", borde: "#C7D2E2" },
+};
+
+// Tonos de los elementos visuales de las láminas (cifras, tarjetas, flujos).
+export const tono = {
+  marino: { fuerte: color.franja, suave: "#E8EEF8" },
+  cian: { fuerte: color.cianTexto, suave: color.cianSuave },
+  violeta: { fuerte: "#5B3FC4", suave: "#F1EEFD" },
+  correcto: { fuerte: color.correcto, suave: color.correctoSuave },
+  error: { fuerte: color.error, suave: color.errorSuave },
+  advertencia: { fuerte: color.advertenciaTexto, suave: "#FCEFD6" },
+  neutro: { fuerte: color.secundario, suave: color.fondo },
+} as const;
+
 export const tipografia = {
   web: "'Plus Jakarta Sans', system-ui, 'Segoe UI', sans-serif",
   mono: "'Cascadia Mono', Consolas, 'SFMono-Regular', ui-monospace, monospace",

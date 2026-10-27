@@ -10,6 +10,7 @@ export const ensamblaje: Seccion = {
   participante: "p7",
   subtitulo: "La interfaz que junta los dos servicios y permite comprobar, en vivo, todo lo anterior.",
   temas: ["Ensamblaje del sistema", "Puesta a punto"],
+  icono: "monitor",
   claves: {
     problema: "Dos servicios sueltos no son un producto: alguien tiene que poder usarlos y entenderlos.",
     sencillo: "Una interfaz web consume los dos servicios por un mismo origen y explica cómo funcionan.",
@@ -46,6 +47,15 @@ export const ensamblaje: Seccion = {
       visible: ["Solicitudes: crear, ver las tuyas, enviar, aprobar o rechazar", "Enviadas: el recorrido de cada evento y Reentregar", "Salud: validar los dos servicios", "Ayuda: diagramas paso a paso de cómo funciona"],
       porque: "Cualquier persona puede usarla, y quien quiera entenderla tiene la explicación a un clic.",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "captura",
+        capturas: [
+          { archivo: "ui-solicitudes.png", titulo: "Solicitudes", texto: "Crear, ver las tuyas y decidir.", url: "localhost:8088/#/solicitudes" },
+          { archivo: "ui-enviadas.png", titulo: "Enviadas", texto: "El recorrido de cada evento y Reentregar.", url: "localhost:8088/#/enviadas" },
+          { archivo: "ui-salud.png", titulo: "Salud", texto: "Los dos servicios, Swagger y Grafana.", url: "localhost:8088/#/salud" },
+          { archivo: "ui-ayuda.png", titulo: "Ayuda", texto: "Diagramas paso a paso de cómo funciona.", url: "localhost:8088/#/ayuda" },
+        ],
+      },
       guion: {
         decir: [
           "La interfaz tiene solo cuatro pestañas. En Solicitudes creas una solicitud, ves las que creaste y tienes a la mano las acciones que corresponden a cada una. Antes de cada acción, la app te pide confirmar.",
@@ -61,6 +71,15 @@ export const ensamblaje: Seccion = {
       idea: "Todo lo que contamos, funcionando.",
       visible: ["Ver los dos servicios en verde", "Crear una solicitud nueva", "Enviarla y ver llegar el evento", "Reentregarlo: el aviso no se duplica"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "heart-pulse", titulo: "Ver la salud", texto: "Los dos servicios en verde.", tono: "marino" },
+          { icono: "file-plus", titulo: "Crear", texto: "Una solicitud nueva: DEMO-01.", tono: "marino" },
+          { icono: "send", titulo: "Enviar", texto: "Y ver llegar el evento y el aviso.", tono: "cian" },
+          { icono: "repeat", titulo: "Reentregar", texto: "El aviso no se duplica.", tono: "correcto" },
+        ],
+      },
       guion: {
         decir: [
           "Abrimos la interfaz. Arriba a la derecha vemos que los dos servicios están en verde. Creamos una solicitud nueva, con un identificador propio. La app confirma que se creó y la marca como nuestra.",
@@ -90,6 +109,23 @@ export const cierre: Seccion = {
       titulo: "Lo que aprendimos, en ARKA-Lite",
       visible: ["Cada tema del curso tiene un lugar en el proyecto", "Del primer endpoint al clúster", "Con pruebas y una demostración que lo respaldan"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "tarjetas",
+        columnas: 4,
+        tarjetas: [
+          { icono: "code", titulo: "Spring Boot y endpoints REST", texto: "Los controladores de los dos servicios", tono: "marino" },
+          { icono: "shield-alert", titulo: "Manejo global de errores", texto: "404, 409 y 400 desde un solo lugar", tono: "marino" },
+          { icono: "git-branch", titulo: "Git, Swagger y pruebas", texto: "Pull Requests, contratos, JUnit y MockMvc", tono: "marino" },
+          { icono: "plug", titulo: "Puertos y adaptadores", texto: "dominio/ y adaptadores/, con @Primary", tono: "marino" },
+          { icono: "boxes", titulo: "De monolito a microservicios", texto: "Dos servicios, cada uno con su base", tono: "marino" },
+          { icono: "database", titulo: "Base de datos y consistencia", texto: "JPA, bandeja de salida e idempotencia", tono: "violeta" },
+          { icono: "container", titulo: "Docker y Compose", texto: "Dockerfile en dos etapas y compose.yaml", tono: "correcto" },
+          { icono: "workflow", titulo: "Integración y entrega continua", texto: "El pipeline de GitHub Actions", tono: "correcto" },
+          { icono: "ship-wheel", titulo: "Kubernetes", texto: "Deployments, Services, Secret y disco", tono: "correcto" },
+          { icono: "chart-line", titulo: "Logs y monitoreo", texto: "Promtail, Loki, Grafana y Actuator", tono: "correcto" },
+          { icono: "monitor", titulo: "Ensamblaje del sistema", texto: "La interfaz: cuatro pestañas", tono: "marino" },
+        ],
+      },
       tabla: {
         encabezados: ["Tema del curso", "Dónde está en ARKA-Lite"],
         filas: [
@@ -119,6 +155,7 @@ export const cierre: Seccion = {
       titulo: "Lo que le falta",
       idea: "Un laboratorio sólido, todavía no un producto.",
       visible: ["El texto de los avisos vive en memoria", "No hay inicio de sesión: es un laboratorio", "Sin mensajería dedicada ni métricas históricas", "El pipeline publica, pero no despliega solo"],
+      iconos: ["cpu", "lock", "activity", "rocket"],
       porque: "Siguientes pasos: guardar el aviso en la base, agregar autenticación y sacar las contraseñas del repositorio.",
       recorridos: ["ejecutivo", "tecnico"],
       marcas: [

@@ -18,11 +18,25 @@ export const apertura: Seccion = {
       recorridos: ["ejecutivo", "tecnico"],
       guion: {
         decir: [
-          "Buenos días a todos. Somos el equipo arka-litos: siete personas del curso Upskilling Backend Java, cuatro de desarrollo, dos de DevOps y una de base de datos. Hoy les vamos a contar cómo construimos ARKA-Lite, nuestro proyecto final.",
+          "Buenos días a todos. Somos el equipo arka-litos, del curso Upskilling Backend Java, y hoy les vamos a contar cómo construimos ARKA-Lite, nuestro proyecto final.",
           "El título lo resume: empezamos escribiendo un endpoint, una sola operación en Java, y terminamos con un sistema completo corriendo en un clúster de Kubernetes. En el camino fuimos aplicando, uno por uno, los temas que vimos en el curso.",
-          "Cada uno va a presentar la parte de su área. La idea no es que memoricen tecnologías: queremos que, al salir, puedan explicar con sus propias palabras cómo funciona el sistema y por qué tomamos cada decisión.",
         ],
         instrucciones: ["Antes de empezar, abrir la UI en http://localhost:8088 y comprobar que los dos servicios aparecen en verde."],
+        transicion: "Primero, quiénes somos.",
+      },
+    },
+    {
+      id: "s00-equipo",
+      titulo: "El equipo arka-litos",
+      visible: ["Cuatro personas de desarrollo", "Dos personas de DevOps", "Una persona de base de datos", "Cada quien presenta la parte de su área"],
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: { tipo: "equipo" },
+      guion: {
+        decir: [
+          "Somos siete personas. Cuatro somos de desarrollo: construimos los servicios, su diseño y la interfaz. Dos son de DevOps: se encargaron de empaquetar, desplegar y operar el sistema. Y una es de base de datos: cuidó cómo se guardan los datos y que ningún aviso se pierda.",
+          "Por eso hoy van a escuchar varias voces: cada uno presenta la parte de su área. Debajo de cada persona ven qué partes le tocan.",
+          "La idea no es que memoricen tecnologías. Queremos que, al salir, puedan explicar con sus propias palabras cómo funciona el sistema y por qué tomamos cada decisión.",
+        ],
         transicion: "Empecemos por lo básico: qué hace ARKA-Lite.",
       },
     },
@@ -31,7 +45,9 @@ export const apertura: Seccion = {
       titulo: "Qué es ARKA-Lite",
       idea: "Registra solicitudes y avisa cuando se envían.",
       visible: ["Solicitudes: crea solicitudes y cambia su estado", "Notificaciones: crea un aviso cuando una solicitud se envía", "La interfaz web: permite usar y entender los dos"],
+      iconos: ["clipboard-list", "bell", "monitor"],
       comparacion: "Como una ventanilla y un buzón: la ventanilla recibe el trámite y el buzón te avisa cuando avanzó.",
+      iconoComparacion: "mailbox",
       porque: "Dos servicios con tareas distintas: así pudimos practicar todo lo que trae trabajar con microservicios.",
       recorridos: ["ejecutivo", "tecnico"],
       guion: {
@@ -40,14 +56,42 @@ export const apertura: Seccion = {
           "Por dentro son dos servicios. El de solicitudes es como la ventanilla: recibe el trámite y lleva su estado. El de notificaciones es como el buzón: cuando el trámite avanza, deja el aviso. Y encima de los dos hay una interfaz web, que es lo que usa la persona.",
           "Elegimos un problema pequeño a propósito. Así el foco no está en el negocio, sino en cómo se construye, se despliega y se opera un sistema con más de un servicio.",
         ],
+        transicion: "Antes de entrar en detalle, veamos el proyecto en números.",
+      },
+    },
+    {
+      id: "s00-cifras",
+      titulo: "ARKA-Lite en números",
+      idea: "Un sistema pequeño, pero completo de punta a punta.",
+      visible: ["Dos microservicios y una interfaz", "Todo se levanta con un solo comando", "Cada cambio pasa por pruebas automáticas"],
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "cifras",
+        cifras: [
+          { valor: "2", icono: "server", titulo: "microservicios", texto: "Spring Boot con Java 26, cada uno con su base PostgreSQL.", tono: "marino" },
+          { valor: "11", icono: "code", titulo: "endpoints REST", texto: "8 en solicitudes y 3 en notificaciones, documentados con Swagger.", tono: "violeta" },
+          { valor: "8", icono: "container", titulo: "contenedores", texto: "Servicios, bases, interfaz y logs, con un solo comando.", tono: "cian" },
+          { valor: "67", icono: "flask-conical", titulo: "pruebas automáticas", texto: "28 en solicitudes, 10 en notificaciones y 29 en la interfaz.", tono: "correcto" },
+          { valor: "5 s", icono: "timer", titulo: "para entregar un aviso", texto: "Cada cinco segundos se entregan los avisos pendientes.", tono: "advertencia" },
+          { valor: "0", icono: "fingerprint", titulo: "avisos duplicados", texto: "Aunque un evento llegue dos veces, se crea un solo aviso.", tono: "marino" },
+        ],
+      },
+      guion: {
+        decir: [
+          "Así se ve ARKA-Lite en números. Son dos microservicios hechos con Spring Boot, cada uno con su propia base de datos, y entre los dos exponen once endpoints REST.",
+          "Todo el sistema son ocho contenedores: los servicios, sus bases, la interfaz y las herramientas de logs. Y se levantan con un solo comando.",
+          "Lo cuidan sesenta y siete pruebas automáticas. Los avisos pendientes se entregan cada cinco segundos y, aunque un evento llegue dos veces, se crea un solo aviso. Esos dos números los vamos a explicar con calma más adelante.",
+        ],
         transicion: "¿Y cómo se conecta esto con lo que vimos en el curso?",
       },
     },
     {
       id: "s00-agenda",
       titulo: "Cómo vamos a recorrerlo",
+      idea: "Siete partes, en el orden en que se construye el sistema.",
       visible: ["Siete partes, en el orden en que se construye", "Cada tema del curso, donde se usa", "Diagramas paso a paso", "Demostración en vivo al final"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: { tipo: "ruta" },
       tabla: {
         encabezados: ["Parte", "Temas del curso que aparecen"],
         filas: [
@@ -81,6 +125,7 @@ export const sistema: Seccion = {
   participante: "p1",
   subtitulo: "Qué piezas tiene ARKA-Lite, dónde corren y cómo se hablan.",
   temas: ["Visión general", "Arquitectura", "Microservicios"],
+  icono: "map",
   claves: {
     problema: "Antes de ver código, hay que saber qué piezas existen y cómo se hablan.",
     sencillo: "Una UI llama a dos microservicios por HTTP; cada uno guarda sus datos en su propia base.",
@@ -109,8 +154,22 @@ export const sistema: Seccion = {
     {
       id: "s01-estados",
       titulo: "La vida de una solicitud",
+      idea: "Cuatro estados, y solo un momento genera un aviso.",
       visible: ["Nace en BORRADOR", "Al enviarla pasa a ENVIADA y se genera un aviso", "Desde ENVIADA se aprueba o se rechaza", "Un cambio no permitido responde 409"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "estados",
+        columnas: [
+          [{ icono: "file-plus", titulo: "BORRADOR", texto: "Recién creada. Nadie se entera.", tono: "neutro" }],
+          [{ icono: "send", titulo: "ENVIADA", texto: "Se genera un aviso.", tono: "cian" }],
+          [
+            { icono: "circle-check", titulo: "APROBADA", texto: "Termina su vida.", tono: "correcto" },
+            { icono: "circle-x", titulo: "RECHAZADA", texto: "Termina su vida.", tono: "error" },
+          ],
+        ],
+        acciones: ["Enviar", "Aprobar o rechazar"],
+        error: { icono: "ban", titulo: "409 · Conflicto", texto: "Enviar dos veces o aprobar algo que no está enviado: el servicio no lo permite y explica por qué.", tono: "error" },
+      },
       tabla: {
         encabezados: ["Acción", "Desde", "Hacia", "¿Genera aviso?"],
         filas: [
@@ -157,6 +216,7 @@ export const servicio: Seccion = {
   participante: "p2",
   subtitulo: "Cómo pasamos de una idea a un endpoint que responde, avisa sus errores y está probado.",
   temas: ["Spring Boot", "Endpoints REST", "Manejo global de errores", "Swagger", "Pruebas unitarias", "Git"],
+  icono: "code",
   claves: {
     problema: "Necesitamos exponer operaciones del negocio por HTTP de forma clara, documentada y probada.",
     sencillo: "Spring Boot arma la aplicación; los controladores reciben peticiones; el dominio decide; las pruebas lo comprueban.",
@@ -170,7 +230,9 @@ export const servicio: Seccion = {
       titulo: "Primer contacto con Spring Boot",
       idea: "Spring Boot arma la aplicación por nosotros.",
       visible: ["Maven descarga lo necesario, compila y prueba", "Spring Boot levanta el servidor y conecta las piezas", "Cada pieza recibe lo que necesita por el constructor", "Las reglas del negocio no dependen de Spring"],
+      iconos: ["package", "rocket", "plug", "shield-check"],
       comparacion: "Como un contratista de obra: nosotros decimos qué piezas hay y él las arma y las conecta.",
+      iconoComparacion: "hard-hat",
       recorridos: ["ejecutivo", "tecnico"],
       codigo: {
         lenguaje: "java",
@@ -209,6 +271,7 @@ export const servicio: Seccion = {
       titulo: "La regla vive en el dominio",
       idea: "La regla del negocio está en un solo lugar.",
       visible: ["La solicitud es un record: datos que no cambian", "Solo se envía si está en BORRADOR", "Si no, lanza una excepción del dominio", "No sabe nada de HTTP ni de bases de datos"],
+      iconos: ["lock", "send", "triangle-alert", "shield"],
       porque: "Si mañana cambia la regla, se cambia en un solo archivo y las pruebas lo confirman.",
       recorridos: ["ejecutivo", "tecnico"],
       codigo: {
@@ -232,6 +295,15 @@ export const servicio: Seccion = {
       visible: ["404: la solicitud no existe", "409: el identificador ya existe o el cambio no se permite", "400: faltan datos", "Siempre la misma forma: estado y mensaje"],
       porque: "La interfaz puede mostrarle a la persona exactamente qué pasó.",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "cifras",
+        cifras: [
+          { valor: "201", icono: "circle-check", titulo: "Creada", texto: "Todo salió bien: la solicitud quedó en BORRADOR.", tono: "correcto" },
+          { valor: "400", icono: "triangle-alert", titulo: "Faltan datos", texto: "El identificador o el tipo vienen vacíos.", tono: "advertencia" },
+          { valor: "404", icono: "search", titulo: "No existe", texto: "No hay ninguna solicitud con ese identificador.", tono: "neutro" },
+          { valor: "409", icono: "ban", titulo: "Conflicto", texto: "El identificador ya existe o el cambio no se permite.", tono: "error" },
+        ],
+      },
       codigo: {
         lenguaje: "java",
         archivo: "servicio-solicitudes/…/adaptadores/entrada/ManejadorGlobalDeErrores.java",
@@ -252,8 +324,11 @@ export const servicio: Seccion = {
       titulo: "Documentar con Swagger",
       idea: "La documentación sale del mismo código.",
       visible: ["Cada servicio publica su contrato con OpenAPI", "Swagger lo muestra como una página", "Se puede probar cada endpoint desde ahí", "Si agregamos un endpoint, aparece solo"],
+      iconos: ["file-json", "book-open", "play", "sparkles"],
       comparacion: "Como el menú de un restaurante: dice qué hay, qué lleva cada plato y qué te van a traer.",
+      iconoComparacion: "utensils",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: { tipo: "captura", capturas: [{ archivo: "swagger-solicitudes.png", titulo: "Swagger de solicitudes", url: "localhost:8080/swagger-ui/index.html" }] },
       tabla: {
         encabezados: ["Servicio", "Swagger"],
         filas: [
@@ -278,6 +353,15 @@ export const servicio: Seccion = {
       visible: ["Las reglas se prueban sin levantar Spring", "Los controladores se prueban con MockMvc", "Un repositorio en memoria reemplaza a PostgreSQL", "El pipeline corre todas las pruebas en cada cambio"],
       porque: "Si alguien rompe una regla sin darse cuenta, una prueba falla antes de llegar a producción.",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "tarjetas",
+        tarjetas: [
+          { icono: "list-checks", titulo: "SolicitudTest", texto: "Los cambios de estado permitidos y los prohibidos.", tono: "marino" },
+          { icono: "flask-conical", titulo: "ServicioSolicitudesUnitTest", texto: "Crear, enviar y registrar el evento, con un repositorio en memoria.", tono: "cian" },
+          { icono: "code", titulo: "SolicitudControllerWebTest", texto: "El JSON y los códigos 201, 404, 409 y 400, con MockMvc.", tono: "violeta" },
+          { icono: "fingerprint", titulo: "Pruebas de notificaciones", texto: "Un evento repetido genera un solo aviso.", tono: "correcto" },
+        ],
+      },
       tabla: {
         encabezados: ["Prueba", "Qué comprueba"],
         filas: [
@@ -303,6 +387,13 @@ export const servicio: Seccion = {
       idea: "Cada cambio cuenta qué hizo y por qué.",
       visible: ["Una rama corta por tarea: feat/, fix/, docs/", "Commits en español: “feat: crear solicitud por post”", "Todo entra por Pull Request con una aprobación", "Nadie sube cambios directo a main"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "ramas",
+        principal: "main",
+        rama: "feat/crear-solicitud-por-post",
+        commits: ["feat: crear solicitud por post", "fix: responder 409 si el id ya existe", "docs: documentar POST /solicitudes"],
+        fusion: "Pull Request: una aprobación y el pipeline en verde",
+      },
       guion: {
         decir: [
           "Trabajamos en equipo sobre el mismo código, así que necesitábamos orden. Cada tarea se hace en una rama corta, con un nombre que dice qué es: feat para algo nuevo, fix para una corrección, docs para documentación.",

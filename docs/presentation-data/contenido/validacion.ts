@@ -1,6 +1,26 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { secciones } from "./index.ts";
 import { participantes } from "./participantes.ts";
+import type { Visual } from "./tipos.ts";
 import { diagramas } from "../diagramas/definiciones.ts";
+import { DIR_CAPTURAS } from "../entregables.ts";
+
+function validarVisual(id: string, v: Visual | undefined): string[] {
+  if (!v) return [];
+  const errores: string[] = [];
+  if (v.tipo === "captura") {
+    for (const c of v.capturas) if (!existsSync(join(DIR_CAPTURAS, c.archivo))) errores.push(`${id}: falta la captura capturas/${c.archivo} (ejecutar capturas/capturar.ps1)`);
+    if (v.capturas.length === 0 || v.capturas.length > 4) errores.push(`${id}: una lámina lleva de 1 a 4 capturas`);
+  }
+  if (v.tipo === "estados" && v.acciones.length !== v.columnas.length - 1) errores.push(`${id}: cada paso entre columnas de estados necesita su acción`);
+  if (v.tipo === "flujo" && v.desvio && (v.desvio.desde < 0 || v.desvio.desde >= v.pasos.length)) errores.push(`${id}: el desvío cuelga de un paso que no existe`);
+  if (v.tipo === "flujo" && (v.pasos.length < 2 || v.pasos.length > 6)) errores.push(`${id}: un flujo lleva de 2 a 6 pasos`);
+  if (v.tipo === "tuberia" && (v.etapas.length < 2 || v.etapas.length > 7)) errores.push(`${id}: una tubería lleva de 2 a 7 etapas`);
+  if (v.tipo === "cifras" && (v.cifras.length < 2 || v.cifras.length > 6)) errores.push(`${id}: una lámina de cifras lleva de 2 a 6 números`);
+  if (v.tipo === "tarjetas" && (v.tarjetas.length < 2 || v.tarjetas.length > 12)) errores.push(`${id}: una lámina de tarjetas lleva de 2 a 12 tarjetas`);
+  return errores;
+}
 
 // Reglas de consistencia entre contenido y diagramas. Las usan
 // `npm run validar`, las pruebas y el CI.
@@ -26,7 +46,10 @@ export function validarContenido(): string[] {
       if (!ultima && !d.guion.transicion) errores.push(`${d.id}: falta la transición`);
       if (d.diagrama && !idsDiagramas.has(d.diagrama)) errores.push(`${d.id}: diagrama ${d.diagrama} no existe`);
       if (d.guion.pregunta && !d.guion.pregunta.respuesta) errores.push(`${d.id}: la pregunta necesita respuesta esperada`);
+      if (d.iconos && d.iconos.length !== d.visible.length) errores.push(`${d.id}: necesita un ícono por línea visible (${d.iconos.length} de ${d.visible.length})`);
+      errores.push(...validarVisual(d.id, d.visual));
     });
+    if (s.numero !== null && !s.icono) errores.push(`${s.id}: una sección numerada necesita su ícono`);
   }
 
 

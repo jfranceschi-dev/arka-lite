@@ -30,25 +30,50 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué decir**
 
-> Buenos días a todos. Somos el equipo arka-litos: siete personas del curso Upskilling Backend Java, cuatro de desarrollo, dos de DevOps y una de base de datos. Hoy les vamos a contar cómo construimos ARKA-Lite, nuestro proyecto final.
+> Buenos días a todos. Somos el equipo arka-litos, del curso Upskilling Backend Java, y hoy les vamos a contar cómo construimos ARKA-Lite, nuestro proyecto final.
 >
 > El título lo resume: empezamos escribiendo un endpoint, una sola operación en Java, y terminamos con un sistema completo corriendo en un clúster de Kubernetes. En el camino fuimos aplicando, uno por uno, los temas que vimos en el curso.
->
-> Cada uno va a presentar la parte de su área. La idea no es que memoricen tecnologías: queremos que, al salir, puedan explicar con sus propias palabras cómo funciona el sistema y por qué tomamos cada decisión.
 
 **Qué hacer** (no se dice)
 
 - Antes de empezar, abrir la UI en http://localhost:8088 y comprobar que los dos servicios aparecen en verde.
 
+**Para pasar:** “Primero, quiénes somos.”
+
+### 2. El equipo arka-litos
+
+**En pantalla · El equipo por área:**
+
+- Desarrollo (4): Participante 1, Participante 2, Participante 3, Participante 7
+- DevOps (2): Participante 5, Participante 6
+- Base de datos (1): Participante 4
+
+**Ideas clave:**
+
+- Cuatro personas de desarrollo
+- Dos personas de DevOps
+- Una persona de base de datos
+- Cada quien presenta la parte de su área
+
+**Qué decir**
+
+> Somos siete personas. Cuatro somos de desarrollo: construimos los servicios, su diseño y la interfaz. Dos son de DevOps: se encargaron de empaquetar, desplegar y operar el sistema. Y una es de base de datos: cuidó cómo se guardan los datos y que ningún aviso se pierda.
+>
+> Por eso hoy van a escuchar varias voces: cada uno presenta la parte de su área. Debajo de cada persona ven qué partes le tocan.
+>
+> La idea no es que memoricen tecnologías. Queremos que, al salir, puedan explicar con sus propias palabras cómo funciona el sistema y por qué tomamos cada decisión.
+
 **Para pasar:** “Empecemos por lo básico: qué hace ARKA-Lite.”
 
-### 2. Qué es ARKA-Lite
+### 3. Qué es ARKA-Lite
 
 **En pantalla:**
 
 - Solicitudes: crea solicitudes y cambia su estado
 - Notificaciones: crea un aviso cuando una solicitud se envía
 - La interfaz web: permite usar y entender los dos
+
+**Comparación:** Como una ventanilla y un buzón: la ventanilla recibe el trámite y el buzón te avisa cuando avanzó.
 
 **Qué decir**
 
@@ -58,9 +83,36 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 >
 > Elegimos un problema pequeño a propósito. Así el foco no está en el negocio, sino en cómo se construye, se despliega y se opera un sistema con más de un servicio.
 
+**Para pasar:** “Antes de entrar en detalle, veamos el proyecto en números.”
+
+### 4. ARKA-Lite en números
+
+**En pantalla · Números grandes:**
+
+- 2 microservicios: Spring Boot con Java 26, cada uno con su base PostgreSQL.
+- 11 endpoints REST: 8 en solicitudes y 3 en notificaciones, documentados con Swagger.
+- 8 contenedores: Servicios, bases, interfaz y logs, con un solo comando.
+- 67 pruebas automáticas: 28 en solicitudes, 10 en notificaciones y 29 en la interfaz.
+- 5 s para entregar un aviso: Cada cinco segundos se entregan los avisos pendientes.
+- 0 avisos duplicados: Aunque un evento llegue dos veces, se crea un solo aviso.
+
+**Ideas clave:**
+
+- Dos microservicios y una interfaz
+- Todo se levanta con un solo comando
+- Cada cambio pasa por pruebas automáticas
+
+**Qué decir**
+
+> Así se ve ARKA-Lite en números. Son dos microservicios hechos con Spring Boot, cada uno con su propia base de datos, y entre los dos exponen once endpoints REST.
+>
+> Todo el sistema son ocho contenedores: los servicios, sus bases, la interfaz y las herramientas de logs. Y se levantan con un solo comando.
+>
+> Lo cuidan sesenta y siete pruebas automáticas. Los avisos pendientes se entregan cada cinco segundos y, aunque un evento llegue dos veces, se crea un solo aviso. Esos dos números los vamos a explicar con calma más adelante.
+
 **Para pasar:** “¿Y cómo se conecta esto con lo que vimos en el curso?”
 
-### 3. Cómo vamos a recorrerlo
+### 5. Cómo vamos a recorrerlo
 
 **En pantalla:**
 
@@ -95,7 +147,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## 1 · El sistema por fuera · presenta Participante 1
 
-### 4. Portada · El sistema por fuera
+### 6. Portada · El sistema por fuera
 
 **En pantalla:** cinco preguntas con su respuesta corta.
 
@@ -111,7 +163,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué hacer:** leer las cinco preguntas antes de avanzar.
 
-### 5. El mapa de ARKA-Lite
+### 7. El mapa de ARKA-Lite
 
 **En pantalla:**
 
@@ -145,7 +197,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
-### 6. La vida de una solicitud
+### 8. La vida de una solicitud
 
 **En pantalla:**
 
@@ -175,7 +227,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Esa es la vista sencilla. Ahora veamos todo lo que hay alrededor.”
 
-### 7. La arquitectura completa
+### 9. La arquitectura completa
 
 **En pantalla:**
 
@@ -186,14 +238,14 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Diagrama paso a paso · La arquitectura completa.** Cada número coincide con el de la flecha en la lámina.
 
-1. Todo empieza en el navegador: la persona usa la UI.
-2. La UI llama a solicitudes para crear, enviar y decidir.
-3. Solicitudes guarda en su propia base PostgreSQL.
-4. Al enviar, solicitudes le pasa un evento a notificaciones.
-5. Notificaciones guarda en su base qué eventos ya recibió.
-6. La UI también consulta a notificaciones para mostrar los avisos.
-7. Cada cambio en el código pasa por GitHub Actions, que prueba y publica las imágenes.
-8. Los logs de los contenedores llegan a Grafana a través de Promtail y Loki.
+1. La persona usa la interfaz en su navegador: React muestra las cuatro pestañas.
+2. nginx recibe /api y reenvía cada ruta al servicio que corresponde.
+3. La API de solicitudes recibe la petición y el dominio aplica las reglas.
+4. En una sola transacción se guardan la solicitud y su evento pendiente.
+5. Cada 5 segundos, el relevador lee los pendientes y los entrega por HTTP, con el traceId.
+6. Notificaciones revisa si el evento ya llegó; si es nuevo, crea el aviso y anota su número.
+7. Cada cambio en GitHub pasa por GitHub Actions, que prueba y publica las imágenes en GHCR.
+8. Los logs de todos los contenedores llegan a Grafana a través de Promtail y Loki.
 
 **Qué decir**
 
@@ -211,7 +263,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## 2 · Construir un servicio · presenta Participante 2
 
-### 8. Portada · Construir un servicio
+### 10. Portada · Construir un servicio
 
 **En pantalla:** cinco preguntas con su respuesta corta.
 
@@ -227,7 +279,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué hacer:** leer las cinco preguntas antes de avanzar.
 
-### 9. Primer contacto con Spring Boot
+### 11. Primer contacto con Spring Boot
 
 **En pantalla:**
 
@@ -235,6 +287,8 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 - Spring Boot levanta el servidor y conecta las piezas
 - Cada pieza recibe lo que necesita por el constructor
 - Las reglas del negocio no dependen de Spring
+
+**Comparación:** Como un contratista de obra: nosotros decimos qué piezas hay y él las arma y las conecta.
 
 **Qué decir**
 
@@ -252,7 +306,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/arquitectura/componentes-java.md`
 
-### 10. Construcción de endpoints REST
+### 12. Construcción de endpoints REST
 
 **En pantalla:**
 
@@ -282,7 +336,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
-### 11. La regla vive en el dominio
+### 13. La regla vive en el dominio
 
 **En pantalla:**
 
@@ -301,9 +355,16 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Esa excepción tiene que llegarle a la persona como un mensaje que entienda.”
 
-### 12. Manejo global de errores
+### 14. Manejo global de errores
 
-**En pantalla:**
+**En pantalla · Números grandes:**
+
+- 201 Creada: Todo salió bien: la solicitud quedó en BORRADOR.
+- 400 Faltan datos: El identificador o el tipo vienen vacíos.
+- 404 No existe: No hay ninguna solicitud con ese identificador.
+- 409 Conflicto: El identificador ya existe o el cambio no se permite.
+
+**Ideas clave:**
 
 - 404: la solicitud no existe
 - 409: el identificador ya existe o el cambio no se permite
@@ -324,7 +385,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Ahora, ¿cómo sabe otra persona qué endpoints existen?”
 
-### 13. Documentar con Swagger
+### 15. Documentar con Swagger
 
 **En pantalla:**
 
@@ -332,6 +393,8 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 - Swagger lo muestra como una página
 - Se puede probar cada endpoint desde ahí
 - Si agregamos un endpoint, aparece solo
+
+**Comparación:** Como el menú de un restaurante: dice qué hay, qué lleva cada plato y qué te van a traer.
 
 | Servicio | Swagger |
 | --- | --- |
@@ -352,7 +415,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Documentar no basta: también hay que comprobar que funciona.”
 
-### 14. Pruebas unitarias
+### 16. Pruebas unitarias
 
 **En pantalla:**
 
@@ -382,9 +445,17 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Las pruebas cuidan el código. Git cuida su historia.”
 
-### 15. Git y commits con sentido
+### 17. Git y commits con sentido
 
-**En pantalla:**
+**En pantalla · Una rama de Git:**
+
+- Rama feat/crear-solicitud-por-post sale de main
+- Commit: feat: crear solicitud por post
+- Commit: fix: responder 409 si el id ya existe
+- Commit: docs: documentar POST /solicitudes
+- Vuelve a main: Pull Request: una aprobación y el pipeline en verde
+
+**Ideas clave:**
 
 - Una rama corta por tarea: feat/, fix/, docs/
 - Commits en español: “feat: crear solicitud por post”
@@ -409,7 +480,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## 3 · Diseñar para cambiar · presenta Participante 3
 
-### 16. Portada · Diseñar para cambiar
+### 18. Portada · Diseñar para cambiar
 
 **En pantalla:** cinco preguntas con su respuesta corta.
 
@@ -425,7 +496,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué hacer:** leer las cinco preguntas antes de avanzar.
 
-### 17. Por dentro de servicio-solicitudes
+### 19. Por dentro de servicio-solicitudes
 
 **En pantalla:**
 
@@ -437,12 +508,14 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 **Diagrama paso a paso · Por dentro de servicio-solicitudes.** Cada número coincide con el de la flecha en la lámina.
 
 1. Las peticiones entran por el controlador, que solo traduce HTTP.
-2. El servicio de dominio decide qué hacer: crear, enviar, aprobar o rechazar.
-3. Las reglas de estado viven en el record Solicitud.
+2. El servicio de dominio coordina cada caso: crear, enviar, aprobar o rechazar.
+3. Las reglas viven en el record Solicitud; si una no se cumple, lanza una excepción.
 4. El dominio pide lo que necesita a través de puertos: interfaces sin tecnología.
-5. Los adaptadores de salida implementan esos puertos con PostgreSQL y HTTP.
-6. El relevador lee los eventos pendientes y los entrega a notificaciones.
-7. Si una regla no se cumple, el manejador de errores responde con un mensaje claro.
+5. Los adaptadores de salida implementan esos puertos; Spring usa los marcados con @Primary.
+6. Al enviar, la solicitud y su evento pendiente se guardan en PostgreSQL.
+7. Cada 5 segundos, el relevador lee los pendientes y el publicador los entrega con reintentos.
+8. El manejador global convierte las excepciones en 404, 409 o 400; Swagger y Actuator publican el contrato y la salud.
+9. ConfiguracionDominio arma las piezas con @Bean, y el RestClient lleva el traceId al otro servicio.
 
 **Qué decir**
 
@@ -452,11 +525,45 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 >
 > Los adaptadores de salida cumplen ese contrato. Uno guarda en PostgreSQL; otro anota el evento pendiente; otro lo entrega a notificaciones. A esto se le llama arquitectura de puertos y adaptadores, o arquitectura hexagonal.
 
-**Para pasar:** “¿Qué ganamos con esa separación?”
+**Para pasar:** “El otro servicio sigue la misma idea.”
 
 **Para leer más:** `docs/arquitectura/flujo-y-referencias.md`
 
-### 18. Cambiar la pieza sin tocar el negocio
+### 20. Por dentro de servicio-notificaciones
+
+**En pantalla:**
+
+- Entrada: recibe el evento y las consultas
+- Consumo idempotente: ¿este evento ya llegó?
+- Dominio: crea el aviso
+- Salida: avisos en memoria y eventos en PostgreSQL
+
+**Diagrama paso a paso · Por dentro de servicio-notificaciones.** Cada número coincide con el de la flecha en la lámina.
+
+1. Solicitudes entrega el evento por HTTP a EventoController.
+2. ConsumoIdempotente pregunta si ese eventoId ya está en evento_procesado.
+3. Si es nuevo, el dominio crea el aviso; si ya estaba, lo ignora.
+4. El aviso se guarda en memoria por el puerto, y el eventoId queda anotado en PostgreSQL.
+5. La interfaz consulta los avisos con GET /notificaciones.
+6. ConfiguracionNotificaciones arma el dominio; Swagger y Actuator publican el contrato y la salud.
+
+**Qué decir**
+
+> Ahora el otro servicio. Notificaciones es más pequeño, pero está organizado igual: entrada, dominio y salida.
+>
+> Por la entrada llegan dos cosas: el evento que manda solicitudes y las consultas de la interfaz. Antes de crear un aviso, una pieza que llamamos consumo idempotente revisa en la base si ese número de evento ya llegó. Si es nuevo, el dominio crea el aviso y se anota el número.
+>
+> Y un detalle honesto: los avisos viven en memoria, pero la lista de eventos ya recibidos está en PostgreSQL. Por eso, aunque el servicio se reinicie, nunca crea un aviso repetido.
+
+**Si preguntan:** ¿Qué pasa con los avisos si notificaciones se reinicia?
+
+**Respuesta corta:** Se pierde su texto, pero no se duplican: la lista de eventos recibidos está en la base.
+
+**Para pasar:** “¿Qué ganamos con esa separación?”
+
+**Para leer más:** `docs/arquitectura/componentes-java.md`
+
+### 21. Cambiar la pieza sin tocar el negocio
 
 **En pantalla:**
 
@@ -464,6 +571,8 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 - Spring usa el que tiene @Primary
 - Hoy: PostgreSQL y publicador con reintentos
 - En las pruebas: un repositorio en memoria
+
+**Comparación:** Como un enchufe: el aparato no sabe de qué planta viene la electricidad, solo que el enchufe cumple la norma.
 
 **Diagrama paso a paso · Dependencias de código frente a llamadas.** Cada número coincide con el de la flecha en la lámina.
 
@@ -486,7 +595,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Esa misma idea, llevada más lejos, separa aplicaciones completas.”
 
-### 19. De monolito a microservicios
+### 22. De monolito a microservicios
 
 **En pantalla:**
 
@@ -512,7 +621,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “¿Siempre conviene separar?”
 
-### 20. Cuándo conviene separar
+### 23. Cuándo conviene separar
 
 **En pantalla:**
 
@@ -543,7 +652,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## 4 · Guardar sin perder datos · presenta Participante 4
 
-### 21. Portada · Guardar sin perder datos
+### 24. Portada · Guardar sin perder datos
 
 **En pantalla:** cinco preguntas con su respuesta corta.
 
@@ -559,7 +668,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué hacer:** leer las cinco preguntas antes de avanzar.
 
-### 22. Un adaptador conectado a una base real
+### 25. Un adaptador conectado a una base real
 
 **En pantalla:**
 
@@ -580,7 +689,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
 
-### 23. Dónde vive cada dato
+### 26. Dónde vive cada dato
 
 **En pantalla:**
 
@@ -607,9 +716,14 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Con esto claro, veamos el problema de la consistencia.”
 
-### 24. El problema de la consistencia
+### 27. El problema de la consistencia
 
-**En pantalla:**
+**En pantalla · Dos maneras, lado a lado:**
+
+- Avisar en el mismo momento: Se guarda la solicitud como enviada; Justo ahí, notificaciones está caído; El aviso se pierde y nadie se entera
+- Guardar primero, avisar después: Solicitud y evento pendiente se guardan juntos; Si notificaciones está caído, el evento espera; El aviso llega cuando el servicio vuelve
+
+**Ideas clave:**
 
 - Se guardan juntos la solicitud ENVIADA y un evento pendiente
 - Si una de las dos falla, no se guarda ninguna
@@ -640,14 +754,24 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/arquitectura/flujo-y-referencias.md`
 
-### 25. La bandeja de salida
+### 28. La bandeja de salida
 
-**En pantalla:**
+**En pantalla · Flujo paso a paso:**
+
+- 1. Evento pendiente: Espera en la tabla evento, junto a la solicitud.
+- 2. Relevador: Revisa los pendientes cada 5 segundos.
+- 3. Publicador: Lo entrega por HTTP, con hasta 3 intentos.
+- 4. Notificaciones: Lo recibe y el evento queda procesado.
+- Si si falla en el paso 3: Sigue pendiente: Con el mismo número de evento, se reintenta en el siguiente ciclo.
+
+**Ideas clave:**
 
 - El evento espera en la tabla de pendientes
 - El relevador revisa cada 5 segundos
 - Lo entrega con hasta 3 intentos
 - Si falla, vuelve a intentar en el siguiente ciclo
+
+**Comparación:** Como dejar una carta en la bandeja de salida: aunque el mensajero no pase hoy, la carta no se pierde.
 
 **Diagrama paso a paso · Entrega posterior del evento.** Cada número coincide con el de la flecha en la lámina.
 
@@ -672,14 +796,24 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Si se reintenta, ¿no puede llegar el aviso dos veces?”
 
-### 26. El mismo evento, un solo aviso
+### 29. El mismo evento, un solo aviso
 
-**En pantalla:**
+**En pantalla · Flujo paso a paso:**
+
+- 1. Llega el evento: Trae su número: el eventoId.
+- 2. ¿Ya lo recibimos?: Se busca el número en la tabla evento_procesado.
+- 3. Crear el aviso: Solo si el número es nuevo.
+- 4. Anotar el número: Para reconocerlo si vuelve a llegar.
+- Si ya estaba en el paso 2: Ignorarlo: No se crea otro aviso. Avisos duplicados: cero.
+
+**Ideas clave:**
 
 - Cada evento tiene un número que no cambia
 - Notificaciones anota los números que ya recibió
 - Si llega uno repetido, lo ignora
 - Lo comprobamos con el botón Reentregar
+
+**Comparación:** Como un portero con lista de invitados: si alguien ya entró, no lo vuelve a anotar.
 
 **Qué decir**
 
@@ -701,7 +835,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## 5 · Empaquetar y entregar · presenta Participante 5
 
-### 27. Portada · Empaquetar y entregar
+### 30. Portada · Empaquetar y entregar
 
 **En pantalla:** cinco preguntas con su respuesta corta.
 
@@ -717,14 +851,23 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué hacer:** leer las cinco preguntas antes de avanzar.
 
-### 28. Docker y Dockerfile
+### 31. Docker y Dockerfile
 
-**En pantalla:**
+**En pantalla · Flujo paso a paso:**
+
+- 1. Dockerfile: La receta: qué instalar y qué copiar.
+- 2. Etapa build: Compila el JAR con Maven.
+- 3. Imagen: Solo Java y el JAR, con un usuario sin privilegios.
+- 4. Contenedor: La imagen corriendo, igual en cualquier computadora.
+
+**Ideas clave:**
 
 - Dockerfile: la receta
 - Imagen: el resultado empaquetado
 - Contenedor: la imagen corriendo
 - Dos etapas: compilar y ejecutar
+
+**Comparación:** Como una receta de cocina: con los mismos ingredientes y pasos, sale el mismo plato en cualquier cocina.
 
 **Diagrama paso a paso · De Dockerfile a contenedor.** Cada número coincide con el de la flecha en la lámina.
 
@@ -747,7 +890,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/operaciones/docker-y-compose.md`
 
-### 29. Docker Compose: el sistema completo
+### 32. Docker Compose: el sistema completo
 
 **En pantalla:**
 
@@ -781,9 +924,18 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Ya corre en cualquier computadora. Ahora, cómo validamos cada cambio sin hacerlo a mano.”
 
-### 30. Integración y entrega continua
+### 33. Integración y entrega continua
 
-**En pantalla:**
+**En pantalla · Las etapas del pipeline:**
+
+- 1. Push o PR: Alguien sube un cambio.
+- 2. Compilar: Java 26 y Maven, un trabajo por servicio.
+- 3. Probar: Todas las pruebas, cada servicio con su base.
+- 4. Arrancar: ¿El servicio realmente levanta?
+- 5. Imagen: Se construye con Docker.
+- 6. Publicar: En GHCR, con el SHA del commit.
+
+**Ideas clave:**
 
 - Cada push o Pull Request dispara el pipeline
 - Compila y prueba cada servicio con su base
@@ -817,7 +969,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## 6 · Desplegar y operar · presenta Participante 6
 
-### 31. Portada · Desplegar y operar
+### 34. Portada · Desplegar y operar
 
 **En pantalla:** cinco preguntas con su respuesta corta.
 
@@ -833,7 +985,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué hacer:** leer las cinco preguntas antes de avanzar.
 
-### 32. Del contenedor al clúster
+### 35. Del contenedor al clúster
 
 **En pantalla:**
 
@@ -841,6 +993,8 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 - Pod: donde corre el contenedor
 - Service: un nombre fijo para encontrarlo
 - Secret y disco persistente para las bases
+
+**Comparación:** Como un termostato: le dices la temperatura que quieres y él se encarga de mantenerla.
 
 **Diagrama paso a paso · Kubernetes: estado deseado.** Cada número coincide con el de la flecha en la lámina.
 
@@ -864,7 +1018,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/operaciones/kubernetes-local.md`
 
-### 33. Puesta a punto: arranque y salud
+### 36. Puesta a punto: arranque y salud
 
 **En pantalla:**
 
@@ -894,14 +1048,23 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “El sistema corre. ¿Cómo sabemos qué está pasando adentro?”
 
-### 34. Centralizar los logs
+### 37. Centralizar los logs
 
-**En pantalla:**
+**En pantalla · Flujo paso a paso:**
+
+- 1. Servicios: Escriben sus logs en JSON, con el traceId.
+- 2. Promtail: Los recoge de todos los contenedores.
+- 3. Loki: Los guarda y los ordena por servicio.
+- 4. Grafana: Permite buscarlos en un solo lugar.
+
+**Ideas clave:**
 
 - Cada servicio escribe sus logs en JSON
 - Promtail los recoge
 - Loki los guarda
 - Grafana permite buscarlos
+
+**Comparación:** Como la caja negra de un avión: registra todo lo que pasó, para revisarlo después.
 
 **Diagrama paso a paso · Recorrido de los logs.** Cada número coincide con el de la flecha en la lámina.
 
@@ -927,9 +1090,13 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `docs/operaciones/observabilidad.md`
 
-### 35. Salud y monitoreo
+### 38. Salud y monitoreo
 
-**En pantalla:**
+**En pantalla · Capturas reales:**
+
+- Captura de La pestaña Salud de la UI (localhost:8088/#/salud)
+
+**Ideas clave:**
 
 - Actuator expone la salud de cada servicio
 - Revisa, por ejemplo, la conexión con la base
@@ -959,7 +1126,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## 7 · Ensamblaje: la UI · presenta Participante 7
 
-### 36. Portada · Ensamblaje: la UI
+### 39. Portada · Ensamblaje: la UI
 
 **En pantalla:** cinco preguntas con su respuesta corta.
 
@@ -975,7 +1142,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué hacer:** leer las cinco preguntas antes de avanzar.
 
-### 37. Cómo la UI consume los dos servicios
+### 40. Cómo la UI consume los dos servicios
 
 **En pantalla:**
 
@@ -1007,9 +1174,16 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para leer más:** `arka-lite-ui/README.md`
 
-### 38. Una interfaz simple, con ayuda
+### 41. Una interfaz simple, con ayuda
 
-**En pantalla:**
+**En pantalla · Capturas reales:**
+
+- Captura de Solicitudes (localhost:8088/#/solicitudes): Crear, ver las tuyas y decidir.
+- Captura de Enviadas (localhost:8088/#/enviadas): El recorrido de cada evento y Reentregar.
+- Captura de Salud (localhost:8088/#/salud): Los dos servicios, Swagger y Grafana.
+- Captura de Ayuda (localhost:8088/#/ayuda): Diagramas paso a paso de cómo funciona.
+
+**Ideas clave:**
 
 - Solicitudes: crear, ver las tuyas, enviar, aprobar o rechazar
 - Enviadas: el recorrido de cada evento y Reentregar
@@ -1026,9 +1200,16 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Ahora sí, vamos a verlo funcionando.”
 
-### 39. Demostración en vivo
+### 42. Demostración en vivo
 
-**En pantalla:**
+**En pantalla · Flujo paso a paso:**
+
+- 1. Ver la salud: Los dos servicios en verde.
+- 2. Crear: Una solicitud nueva: DEMO-01.
+- 3. Enviar: Y ver llegar el evento y el aviso.
+- 4. Reentregar: El aviso no se duplica.
+
+**Ideas clave:**
 
 - Ver los dos servicios en verde
 - Crear una solicitud nueva
@@ -1053,7 +1234,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 ## Cierre · presenta Participante 1
 
-### 40. Lo que aprendimos, en ARKA-Lite
+### 43. Lo que aprendimos, en ARKA-Lite
 
 **En pantalla:**
 
@@ -1083,7 +1264,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “También queremos ser honestos con lo que le falta.”
 
-### 41. Lo que le falta
+### 44. Lo que le falta
 
 **En pantalla:**
 
@@ -1102,7 +1283,7 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Para pasar:** “Gracias por su atención.”
 
-### 42. Gracias
+### 45. Gracias
 
 **En pantalla:**
 

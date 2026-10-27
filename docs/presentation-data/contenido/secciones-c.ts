@@ -11,6 +11,7 @@ export const despliegue: Seccion = {
   participante: "p5",
   subtitulo: "Cómo hicimos que el sistema corra igual en cualquier computadora y que cada cambio se pruebe solo.",
   temas: ["Docker y Dockerfile", "Docker Compose", "Integración y entrega continua"],
+  icono: "package",
   claves: {
     problema: "“En mi máquina funciona”: cada computadora tiene otro Java, otras variables y otra red.",
     sencillo: "Docker empaqueta cada servicio, Compose levanta el sistema y el pipeline prueba cada cambio.",
@@ -25,7 +26,17 @@ export const despliegue: Seccion = {
       idea: "Una receta que funciona igual en cualquier computadora.",
       visible: ["Dockerfile: la receta", "Imagen: el resultado empaquetado", "Contenedor: la imagen corriendo", "Dos etapas: compilar y ejecutar"],
       comparacion: "Como una receta de cocina: con los mismos ingredientes y pasos, sale el mismo plato en cualquier cocina.",
+      iconoComparacion: "chef-hat",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "file-code", titulo: "Dockerfile", texto: "La receta: qué instalar y qué copiar.", tono: "marino" },
+          { icono: "settings", titulo: "Etapa build", texto: "Compila el JAR con Maven.", tono: "marino" },
+          { icono: "package", titulo: "Imagen", texto: "Solo Java y el JAR, con un usuario sin privilegios.", tono: "cian" },
+          { icono: "container", titulo: "Contenedor", texto: "La imagen corriendo, igual en cualquier computadora.", tono: "correcto" },
+        ],
+      },
       diagrama: "docker",
       codigo: {
         lenguaje: "bash",
@@ -48,6 +59,21 @@ export const despliegue: Seccion = {
       idea: "Un solo comando levanta todo el sistema.",
       visible: ["Servicios, bases, UI y logs en un archivo", "Dentro de la red, cada servicio se llama por su nombre", "Las variables de entorno cambian la configuración", "El puerto publicado no tiene que ser el interno"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "tarjetas",
+        comando: "docker compose up --build -d",
+        columnas: 4,
+        tarjetas: [
+          { icono: "monitor", titulo: "arka-lite-ui", texto: ":8088 · la interfaz y su proxy", tono: "violeta" },
+          { icono: "clipboard-list", titulo: "servicio-solicitudes", texto: ":8080 · el trámite", tono: "marino" },
+          { icono: "bell", titulo: "servicio-notificaciones", texto: ":8081 · los avisos", tono: "cian" },
+          { icono: "database", titulo: "db-solicitudes", texto: "PostgreSQL 17 · solo red interna", tono: "neutro" },
+          { icono: "database", titulo: "db-notificaciones", texto: "PostgreSQL 17 · :5433", tono: "neutro" },
+          { icono: "scan-eye", titulo: "promtail", texto: "recoge los logs", tono: "advertencia" },
+          { icono: "archive", titulo: "loki", texto: ":3100 · guarda los logs", tono: "advertencia" },
+          { icono: "chart-line", titulo: "grafana", texto: ":3000 · busca en los logs", tono: "advertencia" },
+        ],
+      },
       tabla: {
         encabezados: ["Quién llama", "A quién", "Dirección"],
         filas: [
@@ -75,6 +101,17 @@ export const despliegue: Seccion = {
       visible: ["Cada push o Pull Request dispara el pipeline", "Compila y prueba cada servicio con su base", "Comprueba que el servicio arranca", "Publica la imagen con el código del commit"],
       porque: "Un cambio roto se detecta en minutos, antes de que llegue a los demás.",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "tuberia",
+        etapas: [
+          { icono: "git-pull-request", titulo: "Push o PR", texto: "Alguien sube un cambio." },
+          { icono: "settings", titulo: "Compilar", texto: "Java 26 y Maven, un trabajo por servicio." },
+          { icono: "flask-conical", titulo: "Probar", texto: "Todas las pruebas, cada servicio con su base." },
+          { icono: "power", titulo: "Arrancar", texto: "¿El servicio realmente levanta?" },
+          { icono: "package", titulo: "Imagen", texto: "Se construye con Docker." },
+          { icono: "cloud-upload", titulo: "Publicar", texto: "En GHCR, con el SHA del commit." },
+        ],
+      },
       diagrama: "cicd",
       guion: {
         decir: [
@@ -117,6 +154,7 @@ export const observabilidad: Seccion = {
   participante: "p6",
   subtitulo: "Cómo lo llevamos a un clúster, lo mantenemos corriendo y sabemos qué pasa adentro.",
   temas: ["Fundamentos de Kubernetes", "Del contenedor al clúster", "Puesta a punto", "Logs y monitoreo", "Centralización de logs"],
+  icono: "ship-wheel",
   claves: {
     problema: "Si un servicio se cae de madrugada, alguien tiene que levantarlo y después averiguar qué pasó.",
     sencillo: "Kubernetes mantiene el sistema corriendo; los logs y la salud nos dicen qué está pasando.",
@@ -147,8 +185,19 @@ export const observabilidad: Seccion = {
     {
       id: "s06-arranque",
       titulo: "Puesta a punto: arranque y salud",
+      idea: "Arrancar no es lo mismo que estar listo. Si un Pod se ve así, esta es la primera pregunta:",
       visible: ["Antes de arrancar, espera a sus dependencias", "Readiness: ¿ya puede recibir tráfico?", "Liveness: ¿hay que reiniciarlo?", "Si un Pod muere, Kubernetes crea otro"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "tarjetas",
+        columnas: 2,
+        tarjetas: [
+          { icono: "hourglass", titulo: "Pending", texto: "¿Hay recursos o falta el disco?", tono: "advertencia" },
+          { icono: "image-off", titulo: "ImagePullBackOff", texto: "¿Existe la imagen en el clúster?", tono: "error" },
+          { icono: "refresh-cw", titulo: "CrashLoopBackOff", texto: "¿Qué dicen los logs del contenedor?", tono: "error" },
+          { icono: "heart-pulse", titulo: "Running, sin Ready", texto: "¿Responde la ruta de salud?", tono: "advertencia" },
+        ],
+      },
       tabla: {
         encabezados: ["Si el Pod está…", "Primera pregunta"],
         filas: [
@@ -174,7 +223,17 @@ export const observabilidad: Seccion = {
       idea: "Todos los logs, en un solo lugar.",
       visible: ["Cada servicio escribe sus logs en JSON", "Promtail los recoge", "Loki los guarda", "Grafana permite buscarlos"],
       comparacion: "Como la caja negra de un avión: registra todo lo que pasó, para revisarlo después.",
+      iconoComparacion: "plane",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "server", titulo: "Servicios", texto: "Escriben sus logs en JSON, con el traceId.", tono: "marino" },
+          { icono: "scan-eye", titulo: "Promtail", texto: "Los recoge de todos los contenedores.", tono: "advertencia" },
+          { icono: "archive", titulo: "Loki", texto: "Los guarda y los ordena por servicio.", tono: "advertencia" },
+          { icono: "chart-line", titulo: "Grafana", texto: "Permite buscarlos en un solo lugar.", tono: "correcto" },
+        ],
+      },
       diagrama: "logs",
       codigo: { lenguaje: "yaml", archivo: "observabilidad/promtail.yaml", texto: "clients:\n  - url: http://loki:3100/loki/api/v1/push\nscrape_configs:\n  - job_name: docker\n    docker_sd_configs:\n      - host: unix:///var/run/docker.sock" },
       guion: {
@@ -215,7 +274,9 @@ export const observabilidad: Seccion = {
       titulo: "Salud y monitoreo",
       idea: "Cada servicio responde: ¿estás bien?",
       visible: ["Actuator expone la salud de cada servicio", "Revisa, por ejemplo, la conexión con la base", "Kubernetes y la UI la consultan", "UP no garantiza que todos los avisos llegaron"],
+      iconos: ["heart-pulse", "database", "ship-wheel", "triangle-alert"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: { tipo: "captura", capturas: [{ archivo: "ui-salud.png", titulo: "La pestaña Salud de la UI", url: "localhost:8088/#/salud" }] },
       diagrama: "metricas",
       guion: {
         decir: [

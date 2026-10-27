@@ -7,6 +7,7 @@ import { DIR_GUIONES } from "../entregables.ts";
 import { laminas, etiquetaSeccion, secciones, type Lamina } from "../contenido/index.ts";
 import { EQUIPO, participantes, participantePorId } from "../contenido/participantes.ts";
 import type { Recorrido } from "../contenido/tipos.ts";
+import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
 
 const base = DIR_GUIONES;
@@ -32,7 +33,13 @@ function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido | "ambos")
   }
   const solo = recorrido === "ambos" && d.recorridos.length === 1 ? ` _(solo recorrido ${d.recorridos[0] === "tecnico" ? "técnico" : "ejecutivo"})_` : "";
   salida.push(`### ${numero}. ${d.titulo}${solo}`, "");
-  salida.push("**En pantalla:**", "", ...d.visible.map((v) => `- ${v}`), "");
+  if (d.visual && !d.tabla) {
+    salida.push(`**En pantalla · ${nombreDeVisual(d.visual)}:**`, "", ...lineasDeVisual(d.visual).map((v) => `- ${v}`), "");
+    salida.push("**Ideas clave:**", "", ...d.visible.map((v) => `- ${v}`), "");
+  } else {
+    salida.push("**En pantalla:**", "", ...d.visible.map((v) => `- ${v}`), "");
+  }
+  if (d.comparacion) salida.push(`**Comparación:** ${d.comparacion}`, "");
   if (d.diagrama) {
     const fig = diagramaPorId(d.diagrama);
     salida.push(`**Diagrama paso a paso · ${fig.titulo}.** Cada número coincide con el de la flecha en la lámina.`, "", ...fig.pasos.map((p, i) => `${i + 1}. ${p.texto}`), "");

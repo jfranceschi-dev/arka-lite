@@ -1,5 +1,6 @@
 // Comprueba que cada PPTX generado es un paquete válido: tamaño 16:9, una
-// nota por diapositiva y texto editable (sin diapositivas hechas de imágenes).
+// nota por diapositiva y texto editable. Las únicas imágenes son capturas de
+// pantalla dentro de una lámina con texto: ninguna lámina es una sola imagen.
 //   node generador-pptx/verificar.ts
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -18,11 +19,17 @@ for (const archivo of readdirSync(salida).filter((f) => f.endsWith(".pptx"))) {
   const imagenes = Object.keys(zip.files).filter((f) => f.startsWith("ppt/media/") && !zip.files[f].dir);
   let sinTexto = 0;
   let formas = 0;
+  let laminasImagen = 0;
   const fuera: string[] = [];
   const [ancho, alto] = [Number(tam?.[1] ?? 0), Number(tam?.[2] ?? 0)];
   for (const d of diapositivas) {
     const xml = (await zip.file(d)?.async("string")) ?? "";
     if (!xml.includes("<a:t>")) sinTexto++;
+    // Una imagen que ocupa casi toda la lámina la convierte en una foto.
+    for (const pic of xml.split("<p:pic>").slice(1)) {
+      const ext = pic.match(/<a:ext cx="(\d+)" cy="(\d+)"\/>/);
+      if (ext && Number(ext[1]) > ancho * 0.9 && Number(ext[2]) > alto * 0.9) laminasImagen++;
+    }
     formas += (xml.match(/<p:sp>/g) ?? []).length + (xml.match(/<p:cxnSp>/g) ?? []).length;
     // Toda forma con texto o conector debe quedar dentro de la diapositiva.
     // Los círculos decorativos de portada salen a propósito y se excluyen.
@@ -40,8 +47,8 @@ for (const archivo of readdirSync(salida).filter((f) => f.endsWith(".pptx"))) {
   if (!tam || Number(tam[1]) / Number(tam[2]) < 1.77 || Number(tam[1]) / Number(tam[2]) > 1.78) problemas.push(`tamaño no es 16:9 (${tam?.[1]}×${tam?.[2]})`);
   if (notas.length < diapositivas.length) problemas.push(`faltan notas: ${notas.length} de ${diapositivas.length}`);
   if (sinTexto > 0) problemas.push(`${sinTexto} diapositivas sin texto editable`);
-  if (imagenes.length > 0) problemas.push(`${imagenes.length} imágenes incrustadas`);
-  console.log(`${archivo}: ${diapositivas.length} diapositivas · ${notas.length} notas · ${formas} formas editables · ${imagenes.length} imágenes${problemas.length ? " · PROBLEMAS: " + problemas.join("; ") : " · OK"}`);
+  if (laminasImagen > 0) problemas.push(`${laminasImagen} diapositivas hechas de una imagen`);
+  console.log(`${archivo}: ${diapositivas.length} diapositivas · ${notas.length} notas · ${formas} formas editables · ${imagenes.length} capturas${problemas.length ? " · PROBLEMAS: " + problemas.join("; ") : " · OK"}`);
   if (problemas.length) fallos++;
 }
 process.exit(fallos ? 1 : 0);

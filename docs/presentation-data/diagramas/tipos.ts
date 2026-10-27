@@ -1,4 +1,5 @@
-import type { TipoTrazo } from "../diseno/tokens.ts";
+import type { NombreIcono } from "../diseno/iconos.ts";
+import type { AreaSistema, TipoTrazo } from "../diseno/tokens.ts";
 
 // Coordenadas en un lienzo virtual. La web las dibuja en SVG escalable y el
 // generador PPTX las convierte a pulgadas dentro de la diapositiva.
@@ -29,6 +30,8 @@ export interface Nodo {
   titulo: string;
   subtitulo?: string;
   tipo?: TipoNodo;
+  // Sin valor, iconos-de-nodo.ts lo deduce del tipo o del título.
+  icono?: NombreIcono;
   detalle: DetalleNodo;
 }
 
@@ -54,6 +57,8 @@ export interface Zona {
   etiqueta: string;
   // Una zona punteada agrupa algo que ocurre junto, como una transacción.
   punteada?: boolean;
+  // Parte del sistema a la que pertenece: le da su color.
+  area?: AreaSistema;
 }
 
 export interface Paso {

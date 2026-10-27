@@ -2,6 +2,7 @@ import PDFDocument from "pdfkit";
 import { laminas, etiquetaSeccion, secciones, type Lamina } from "../contenido/index.ts";
 import { EQUIPO, participantes, participantePorId } from "../contenido/participantes.ts";
 import type { Recorrido, Tabla } from "../contenido/tipos.ts";
+import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
 import { numeroDePaso, posicionEtiqueta, posicionNumero, rutaArista } from "../diagramas/geometria.ts";
 import type { Diagrama } from "../diagramas/tipos.ts";
@@ -260,8 +261,15 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
     return;
   }
   titulo(doc, `${numero}. ${d.titulo}`, 14);
-  etiqueta(doc, "En pantalla");
+  if (d.visual && !d.tabla) {
+    etiqueta(doc, `En pantalla · ${nombreDeVisual(d.visual)}`);
+    vinetas(doc, lineasDeVisual(d.visual));
+    etiqueta(doc, "Ideas clave");
+  } else {
+    etiqueta(doc, "En pantalla");
+  }
   vinetas(doc, d.visible);
+  if (d.comparacion) parrafo(doc, `Comparación: ${d.comparacion}`, { fuente: CURSIVA, tamano: 9.5, c: color.secundario });
   if (d.diagrama) {
     const fig = diagramaPorId(d.diagrama);
     etiqueta(doc, `Diagrama paso a paso · ${fig.titulo}`);

@@ -10,6 +10,7 @@ export const diseno: Seccion = {
   participante: "p3",
   subtitulo: "Cómo organizamos el código para cambiar una tecnología sin tocar el negocio.",
   temas: ["Puertos y adaptadores", "Estructura base de ARKA-Lite", "De monolito a microservicios"],
+  icono: "puzzle",
   claves: {
     problema: "Si las reglas dependen de HTTP o de la base, cambiar una tecnología obliga a tocar el negocio.",
     sencillo: "El negocio va en el centro y la tecnología en los bordes. Lo que cambia por motivos distintos va en servicios distintos.",
@@ -30,8 +31,25 @@ export const diseno: Seccion = {
           "El dominio no llama directamente a la base. Pide lo que necesita a través de puertos, que son interfaces: un contrato que dice, por ejemplo, necesito guardar y buscar solicitudes, sin decir cómo.",
           "Los adaptadores de salida cumplen ese contrato. Uno guarda en PostgreSQL; otro anota el evento pendiente; otro lo entrega a notificaciones. A esto se le llama arquitectura de puertos y adaptadores, o arquitectura hexagonal.",
         ],
-        transicion: "¿Qué ganamos con esa separación?",
+        transicion: "El otro servicio sigue la misma idea.",
         respaldo: "docs/arquitectura/flujo-y-referencias.md",
+      },
+    },
+    {
+      id: "s03-notificaciones",
+      titulo: "Por dentro de servicio-notificaciones",
+      visible: ["Entrada: recibe el evento y las consultas", "Consumo idempotente: ¿este evento ya llegó?", "Dominio: crea el aviso", "Salida: avisos en memoria y eventos en PostgreSQL"],
+      recorridos: ["ejecutivo", "tecnico"],
+      diagrama: "componentes-notificaciones",
+      guion: {
+        decir: [
+          "Ahora el otro servicio. Notificaciones es más pequeño, pero está organizado igual: entrada, dominio y salida.",
+          "Por la entrada llegan dos cosas: el evento que manda solicitudes y las consultas de la interfaz. Antes de crear un aviso, una pieza que llamamos consumo idempotente revisa en la base si ese número de evento ya llegó. Si es nuevo, el dominio crea el aviso y se anota el número.",
+          "Y un detalle honesto: los avisos viven en memoria, pero la lista de eventos ya recibidos está en PostgreSQL. Por eso, aunque el servicio se reinicie, nunca crea un aviso repetido.",
+        ],
+        pregunta: { texto: "¿Qué pasa con los avisos si notificaciones se reinicia?", respuesta: "Se pierde su texto, pero no se duplican: la lista de eventos recibidos está en la base." },
+        transicion: "¿Qué ganamos con esa separación?",
+        respaldo: "docs/arquitectura/componentes-java.md",
       },
     },
     {
@@ -85,8 +103,16 @@ export const diseno: Seccion = {
     {
       id: "s03-decision",
       titulo: "Cuándo conviene separar",
+      idea: "Separar se decide por el negocio, no por moda.",
       visible: ["Separar agrega red, bases propias y fallos parciales", "Se decide por negocio, equipos y operación", "En ARKA-Lite separamos para aprender esas fronteras"],
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "contraste",
+        lados: [
+          { titulo: "Conviene un monolito", icono: "box", tono: "neutro", puntos: ["Las partes cambian juntas", "Se publica todo junto", "La carga es pareja", "Un equipo pequeño lo mantiene"] },
+          { titulo: "Conviene separar", icono: "boxes", tono: "cian", puntos: ["Responsabilidades claramente distintas", "Una parte necesita salir sola", "Una parte necesita más recursos", "Un equipo dueño de cada parte"] },
+        ],
+      },
       tabla: {
         encabezados: ["Criterio", "Favorece un monolito", "Favorece microservicios"],
         filas: [
@@ -117,6 +143,7 @@ export const datos: Seccion = {
   participante: "p4",
   subtitulo: "Qué hicimos para que un aviso nunca se pierda ni se duplique.",
   temas: ["Modelado y consultas", "Adaptador con base de datos real", "El problema de la consistencia"],
+  icono: "database",
   claves: {
     problema: "Si guardamos la solicitud y justo después falla el aviso, podríamos perder la intención de avisar.",
     sencillo: "Primero se guarda, después se avisa; y el que recibe ignora lo que ya recibió.",
@@ -130,6 +157,7 @@ export const datos: Seccion = {
       titulo: "Un adaptador conectado a una base real",
       idea: "JPA traduce entre objetos y tablas.",
       visible: ["Cada servicio tiene su base PostgreSQL", "schema.sql crea las tablas al arrancar", "Hibernate revisa que las entidades coincidan", "La entidad JPA no es el objeto del dominio"],
+      iconos: ["database", "table", "list-checks", "split"],
       recorridos: ["ejecutivo", "tecnico"],
       codigo: {
         lenguaje: "properties",
@@ -168,6 +196,13 @@ export const datos: Seccion = {
       visible: ["Se guardan juntos la solicitud ENVIADA y un evento pendiente", "Si una de las dos falla, no se guarda ninguna", "La respuesta llega enseguida", "El aviso se entrega después"],
       porque: "Si notificaciones está caído, ningún aviso se pierde: queda pendiente.",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "contraste",
+        lados: [
+          { titulo: "Avisar en el mismo momento", icono: "zap", tono: "error", puntos: ["Se guarda la solicitud como enviada", "Justo ahí, notificaciones está caído", "El aviso se pierde y nadie se entera"] },
+          { titulo: "Guardar primero, avisar después", icono: "inbox", tono: "correcto", puntos: ["Solicitud y evento pendiente se guardan juntos", "Si notificaciones está caído, el evento espera", "El aviso llega cuando el servicio vuelve"] },
+        ],
+      },
       diagrama: "envio",
       codigo: {
         lenguaje: "java",
@@ -191,7 +226,18 @@ export const datos: Seccion = {
       idea: "Un mensajero pasa cada 5 segundos.",
       visible: ["El evento espera en la tabla de pendientes", "El relevador revisa cada 5 segundos", "Lo entrega con hasta 3 intentos", "Si falla, vuelve a intentar en el siguiente ciclo"],
       comparacion: "Como dejar una carta en la bandeja de salida: aunque el mensajero no pase hoy, la carta no se pierde.",
+      iconoComparacion: "mail",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "inbox", titulo: "Evento pendiente", texto: "Espera en la tabla evento, junto a la solicitud.", tono: "marino" },
+          { icono: "timer", titulo: "Relevador", texto: "Revisa los pendientes cada 5 segundos.", tono: "marino" },
+          { icono: "send", titulo: "Publicador", texto: "Lo entrega por HTTP, con hasta 3 intentos.", tono: "cian" },
+          { icono: "bell", titulo: "Notificaciones", texto: "Lo recibe y el evento queda procesado.", tono: "correcto" },
+        ],
+        desvio: { desde: 2, etiqueta: "si falla", elemento: { icono: "refresh-cw", titulo: "Sigue pendiente", texto: "Con el mismo número de evento, se reintenta en el siguiente ciclo.", tono: "advertencia" } },
+      },
       diagrama: "entrega",
       codigo: {
         lenguaje: "java",
@@ -213,8 +259,19 @@ export const datos: Seccion = {
       idea: "Repetir no multiplica el efecto.",
       visible: ["Cada evento tiene un número que no cambia", "Notificaciones anota los números que ya recibió", "Si llega uno repetido, lo ignora", "Lo comprobamos con el botón Reentregar"],
       comparacion: "Como un portero con lista de invitados: si alguien ya entró, no lo vuelve a anotar.",
+      iconoComparacion: "user-check",
       porque: "Los reintentos nos protegen de perder avisos; la idempotencia, de duplicarlos.",
       recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "mail", titulo: "Llega el evento", texto: "Trae su número: el eventoId.", tono: "marino" },
+          { icono: "fingerprint", titulo: "¿Ya lo recibimos?", texto: "Se busca el número en la tabla evento_procesado.", tono: "cian" },
+          { icono: "bell", titulo: "Crear el aviso", texto: "Solo si el número es nuevo.", tono: "correcto" },
+          { icono: "clipboard-check", titulo: "Anotar el número", texto: "Para reconocerlo si vuelve a llegar.", tono: "correcto" },
+        ],
+        desvio: { desde: 1, etiqueta: "ya estaba", elemento: { icono: "ban", titulo: "Ignorarlo", texto: "No se crea otro aviso. Avisos duplicados: cero.", tono: "neutro" } },
+      },
       codigo: {
         lenguaje: "java",
         archivo: "servicio-notificaciones/…/adaptadores/entrada/ConsumoIdempotente.java",

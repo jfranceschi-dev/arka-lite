@@ -37,7 +37,24 @@ Hay dos recorridos con el mismo texto oral: el **ejecutivo** (sin código) y el 
 | [`guiones/guion-ejecutivo.md`](guiones/guion-ejecutivo.md) · [`guiones/guion-tecnico.md`](guiones/guion-tecnico.md) | Guion completo de cada recorrido. |
 | [`guiones/participantes/`](guiones/participantes/) | Un guion por persona (`p1.md` a `p7.md`): solo sus láminas, de quién recibe y a quién entrega. |
 
-Los PPTX tienen texto, tablas y diagramas editables, y las notas del expositor en cada lámina. Cada diagrama se repite en láminas "paso a paso". Los entregables se generan; no se editan a mano.
+Los PPTX tienen texto, tablas, diagramas e íconos editables, y las notas del expositor en cada lámina. Cada diagrama se repite en láminas "paso a paso". Los entregables se generan; no se editan a mano.
+
+## Recursos visuales
+
+Cada lámina lleva un recurso que explica la idea sin leer párrafos:
+
+| Recurso | Dónde se usa |
+| --- | --- |
+| Íconos | En cada tarjeta, cada nodo de diagrama y cada portada de parte. Son trazos vectoriales nativos de PowerPoint ([Lucide](https://lucide.dev), licencia ISC), así que se pueden recolorear. |
+| Equipo y ruta | Quién presenta cada parte, con el color de su área (desarrollo, DevOps, base de datos). |
+| Cifras | ARKA-Lite en números y los códigos HTTP 201, 400, 404 y 409. |
+| Estados | La vida de una solicitud: de BORRADOR a APROBADA o RECHAZADA. |
+| Flujos y tubería | La bandeja de salida, la idempotencia, Docker, los logs, el pipeline y la demostración. |
+| Contraste | Monolito o microservicios; avisar en el momento o guardar primero. |
+| Capturas reales | Swagger y las cuatro pestañas de la UI, en un marco de navegador. |
+| Arquitectura | La arquitectura completa y un diagrama de componentes por servicio, con un color por área del sistema. |
+
+Las capturas viven en [`capturas/`](capturas/) y no se generan con `npm run todo`: se toman con el sistema arriba (`docker compose up --build -d`) y el script [`capturas/capturar.ps1`](capturas/capturar.ps1), que usa Edge o Chrome sin ventana. Si falta una, la validación lo avisa.
 
 ## Cómo leer un guion
 
@@ -54,9 +71,10 @@ Los PPTX tienen texto, tablas y diagramas editables, y las notas del expositor e
 
 ```text
 docs/presentation-data/
-├── contenido/          Fuente: partes, láminas, guion y reparto (participantes.ts)
-├── diagramas/          Diagramas de las láminas y su geometría
-├── diseno/             Colores y tipografía
+├── contenido/          Fuente: partes, láminas, guion, reparto (participantes.ts) y recursos visuales
+├── diagramas/          Diagramas de las láminas, su geometría y el ícono de cada nodo
+├── diseno/             Colores, tipografía e íconos (iconos.ts y su conversión a trazos)
+├── capturas/           Capturas reales de la UI y de Swagger, y el script que las toma
 ├── generador-pptx/     PowerPoint y su verificador
 ├── generador-pdf/      PDF de contenido y guion
 ├── generador-guiones/  Guiones en Markdown
@@ -84,6 +102,8 @@ npm run todo --prefix docs/presentation-data
 `npm run todo` valida el contenido, revisa los tipos, corre las pruebas y genera PPTX, PDF y guiones. Para una sola parte: `npm run pptx`, `npm run pdf` o `npm run guiones`.
 
 Para poner los nombres reales de las siete personas o cambiar el nombre del equipo (`EQUIPO`), editar [`contenido/participantes.ts`](contenido/participantes.ts) y regenerar.
+
+Para usar un ícono que no está en [`diseno/iconos.ts`](diseno/iconos.ts), agregarlo desde el paquete `lucide-static` con su misma estructura. `node generador-pptx/muestra-iconos.ts <salida.pptx>` genera una lámina con todos los íconos para revisarlos.
 
 ## Material de referencia
 
