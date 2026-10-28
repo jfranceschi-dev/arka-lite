@@ -321,6 +321,44 @@ Un `.env` con credenciales no se confirma en Git. Se puede versionar `.env.examp
 
 ## Diagnóstico frecuente
 
+### npm falla con `UNABLE_TO_VERIFY_LEAF_SIGNATURE`
+
+Si la red inspecciona HTTPS (por ejemplo, mediante Fortinet), el contenedor
+Node necesita confiar en la CA corporativa. Solicitar a TI el certificado
+CA oficial en formato PEM y definir su ruta antes de construir:
+
+```powershell
+$env:ARKA_NPM_CA = "C:\certificados\ca-corporativa.pem"
+docker compose up --build -d
+```
+
+El Compose principal entrega la CA como secreto de construcción. Sin
+`ARKA_NPM_CA`, usa `arka-lite-ui/despliegue/ca-vacia.pem`, un archivo vacío
+para redes que no necesitan una CA adicional. El
+Dockerfile configura `NODE_EXTRA_CA_CERTS` únicamente durante `npm ci`;
+el certificado no se copia a la imagen final. Se mantiene la validación
+HTTPS. No usar `strict-ssl=false` ni `NODE_TLS_REJECT_UNAUTHORIZED=0`.
+Si la CA utiliza una cadena intermedia, el PEM debe incluir los certificados
+CA necesarios proporcionados por TI. En redes sin inspección se conserva
+el comando habitual `docker compose up --build -d`.
+
+Sin la CA tampoco hace falta configurar nada: si `npm ci` falla contra
+`registry.npmjs.org`, el Dockerfile reintenta automáticamente con el espejo
+oficial `registry.yarnpkg.com`, que conserva la validación HTTPS normal. En el
+log de construcción aparece `npm ci falló con ...; reintento con ...`. El
+`sha512` de `package-lock.json` sigue verificando cada paquete, sin importar
+el registro.
+
+Para forzar otro registro principal (por ejemplo, un Nexus interno) se
+define `ARKA_NPM_REGISTRY`, que llega al Dockerfile como `NPM_REGISTRY`:
+
+```powershell
+$env:ARKA_NPM_REGISTRY = "https://nexus.ejemplo/repository/npm/"
+docker compose up --build -d
+```
+
+### Puertos reservados en Windows
+
 En Windows, el mensaje `Intento de acceso a un socket no permitido por sus
 permisos de acceso` puede indicar un puerto reservado por el sistema, aunque
 ninguna aplicación parezca usarlo. Consultar las reservas con:

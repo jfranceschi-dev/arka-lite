@@ -7,7 +7,7 @@ PASS=0; TOTAL=7
 # --- AJUSTA a TU sistema integrado: no solo los puertos, tambien las RUTAS de abajo ---
 #     (/actuator/health, el endpoint de enviar, el de consultar estado, el de notificaciones).
 #     Si no coinciden con la API real, el humo marca rojo aunque el sistema este bien.
-SOL_URL="http://localhost:8080"; NOT_URL="http://localhost:8081"; GRAFANA="http://localhost:3000"; LOKI_URL="http://localhost:3100"; UI_URL="http://localhost:8088"
+SOL_URL="http://localhost:${SOLICITUDES_PORT:-18080}"; NOT_URL="http://localhost:${NOTIFICACIONES_PORT:-18081}"; GRAFANA="http://localhost:3000"; LOKI_URL="http://localhost:3100"; UI_URL="http://localhost:8088"
 SOL="servicio-solicitudes"; NOT="servicio-notificaciones"
 echo "== PRUEBA DE HUMO — ARKA ensamblado (7 capas) =="
 
