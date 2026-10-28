@@ -34,3 +34,6 @@ build/
 
 ### macOS ###
 .DS_Store
+
+### Capturas de Windows sueltas en la raíz ###
+/Captura de pantalla*

@@ -1,1 +1,6 @@
 node_modules/
+
+# Temporales de construcción y archivos de bloqueo de PowerPoint abierto
+.build/
+output/
+~$*
