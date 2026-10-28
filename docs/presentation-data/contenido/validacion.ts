@@ -1,7 +1,6 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { secciones } from "./index.ts";
-import { participantes } from "./participantes.ts";
 import type { Visual } from "./tipos.ts";
 import { diagramas } from "../diagramas/definiciones.ts";
 import { DIR_CAPTURAS } from "../entregables.ts";
@@ -19,6 +18,12 @@ function validarVisual(id: string, v: Visual | undefined): string[] {
   if (v.tipo === "tuberia" && (v.etapas.length < 2 || v.etapas.length > 7)) errores.push(`${id}: una tubería lleva de 2 a 7 etapas`);
   if (v.tipo === "cifras" && (v.cifras.length < 2 || v.cifras.length > 6)) errores.push(`${id}: una lámina de cifras lleva de 2 a 6 números`);
   if (v.tipo === "tarjetas" && (v.tarjetas.length < 2 || v.tarjetas.length > 12)) errores.push(`${id}: una lámina de tarjetas lleva de 2 a 12 tarjetas`);
+  if (v.tipo === "aprendizajes" && (v.items.length < 2 || v.items.length > 4 || v.metricas.length < 1 || v.metricas.length > 2)) errores.push(`${id}: los aprendizajes llevan de 2 a 4 ítems y 1 o 2 métricas`);
+  if (v.tipo === "escenario" && (v.pasos.length < 2 || v.pasos.length > 5)) errores.push(`${id}: un escenario lleva de 2 a 5 pasos`);
+  if (v.tipo === "capas" && (v.capas.length < 2 || v.capas.length > 5 || v.capas.some((c) => c.elementos.length < 1 || c.elementos.length > 4))) errores.push(`${id}: de 2 a 5 capas, cada una con 1 a 4 piezas`);
+  if (v.tipo === "matriz" && (v.filas.length < 2 || v.filas.length > 6)) errores.push(`${id}: una matriz lleva de 2 a 6 filas`);
+  if (v.tipo === "hexagono" && (v.entrada.length > 3 || v.salida.length > 4 || v.puertos.length > 4)) errores.push(`${id}: el hexágono lleva hasta 3 entradas, 4 salidas y 4 puertos`);
+  if (v.tipo === "tablas" && (v.bases.length < 1 || v.bases.length > 3)) errores.push(`${id}: de 1 a 3 bases`);
   return errores;
 }
 
@@ -30,15 +35,18 @@ export function validarContenido(): string[] {
   const errores: string[] = [];
   const ids = new Set<string>();
   const idsDiagramas = new Set(diagramas.map((d) => d.id));
-  const idsParticipantes = new Set(participantes.map((p) => p.id));
 
   for (const s of secciones) {
-    if (!idsParticipantes.has(s.participante)) errores.push(`${s.id}: participante ${s.participante} no existe`);
-    if (s.numero !== null && !s.claves) errores.push(`${s.id}: una sección numerada necesita sus cinco claves`);
+    // Cada parte numerada cierra con sus aprendizajes, desde el recorrido ejecutivo.
+    const ultima = s.diapositivas[s.diapositivas.length - 1];
+    if (s.numero !== null && (ultima?.visual?.tipo !== "aprendizajes" || !ultima.recorridos.includes("ejecutivo"))) errores.push(`${s.id}: una sección numerada termina con su lámina de aprendizajes`);
     s.diapositivas.forEach((d, i) => {
       if (ids.has(d.id)) errores.push(`${d.id}: id repetido`);
       ids.add(d.id);
       if (d.recorridos.length === 0) errores.push(`${d.id}: no pertenece a ningún recorrido`);
+      // Cada variante contiene a la anterior: resumen ⊂ ejecutivo ⊂ técnico.
+      if (d.recorridos.includes("resumen") && !d.recorridos.includes("ejecutivo")) errores.push(`${d.id}: lo que está en el resumen también va en el ejecutivo`);
+      if (d.recorridos.includes("ejecutivo") && !d.recorridos.includes("tecnico")) errores.push(`${d.id}: lo que está en el ejecutivo también va en el técnico`);
       if (d.visible.length === 0 || d.visible.length > LIMITES.lineasVisibles) errores.push(`${d.id}: necesita entre 1 y ${LIMITES.lineasVisibles} líneas visibles`);
       for (const l of d.visible) if (l.length > LIMITES.caracteresPorLinea) errores.push(`${d.id}: línea visible demasiado larga: "${l}"`);
       if (d.guion.decir.length === 0) errores.push(`${d.id}: falta el texto para decir`);
@@ -71,9 +79,5 @@ export function validarContenido(): string[] {
     });
   }
 
-  for (const id of idsDiagramas) {
-    const usado = secciones.some((s) => s.diapositivas.some((d) => d.diagrama === id));
-    if (!usado) errores.push(`diagrama ${id}: ninguna diapositiva lo usa`);
-  }
   return errores;
 }

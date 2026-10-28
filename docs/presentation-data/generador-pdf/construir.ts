@@ -1,6 +1,5 @@
 import PDFDocument from "pdfkit";
-import { laminas, etiquetaSeccion, secciones, type Lamina } from "../contenido/index.ts";
-import { EQUIPO, participantes, participantePorId } from "../contenido/participantes.ts";
+import { laminas, etiquetaSeccion, NOMBRE_RECORRIDO, secciones, type Lamina } from "../contenido/index.ts";
 import type { Recorrido, Tabla } from "../contenido/tipos.ts";
 import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
@@ -8,7 +7,7 @@ import { numeroDePaso, posicionEtiqueta, posicionNumero, rutaArista } from "../d
 import type { Diagrama } from "../diagramas/tipos.ts";
 import { color, trazo } from "../diseno/tokens.ts";
 
-// PDF de lectura: cada lámina con lo que se ve, su diagrama paso a paso y el
+// PDF de lectura: cada lámina con lo que se ve, su diagrama detallado y el
 // guion (qué decir, qué hacer, si preguntan, para pasar). Usa las fuentes
 // estándar del PDF para que el resultado sea igual en Windows y en CI.
 
@@ -23,7 +22,7 @@ const CURSIVA = "Helvetica-Oblique";
 const MONO = "Courier";
 
 export function nombreArchivoPdf(recorrido: Recorrido): string {
-  return `ARKA-Lite-${recorrido === "ejecutivo" ? "ejecutivo" : "tecnico"}.pdf`;
+  return `ARKA-Lite-${recorrido}.pdf`;
 }
 
 // Las fuentes estándar solo cubren WinAnsi: los símbolos fuera de ese juego
@@ -221,17 +220,16 @@ function portada(doc: Doc, recorrido: Recorrido) {
   doc.moveDown(0.6).font(FUENTE).fontSize(15).fillColor(color.sobreOscuroSecundario)
     .text("Una UI y dos microservicios Spring Boot: lo que aprendimos y cómo funciona.", { width: CW });
   doc.moveDown(1.5).font(NEGRITA).fontSize(11).fillColor(color.cian)
-    .text(`RECORRIDO ${recorrido === "ejecutivo" ? "EJECUTIVO" : "TÉCNICO"} · CONTENIDO Y GUION`, { characterSpacing: 1.5 });
-  doc.moveDown(3).font(NEGRITA).fontSize(10).fillColor(color.cianClaro).text(`REPARTO · ${EQUIPO.toUpperCase()}`, { characterSpacing: 1.2 });
+    .text(`RECORRIDO ${NOMBRE_RECORRIDO[recorrido].toUpperCase()} · CONTENIDO Y GUION`, { characterSpacing: 1.5 });
+  doc.moveDown(3).font(NEGRITA).fontSize(10).fillColor(color.cianClaro).text("PARTES", { characterSpacing: 1.2 });
   doc.moveDown(0.4);
-  for (const p of participantes) {
-    const temas = secciones.filter((s) => s.participante === p.id).map((s) => s.corto).join(", ");
-    doc.font(NEGRITA).fontSize(10.5).fillColor("#FFFFFF").text(`${p.nombre} · ${p.perfil}`, M, doc.y, { continued: true })
-      .font(FUENTE).fillColor(color.sobreOscuroSecundario).text(`  ${texto(temas)}`);
+  for (const sec of secciones.filter((x) => x.numero !== null)) {
+    doc.font(NEGRITA).fontSize(10.5).fillColor("#FFFFFF").text(`${sec.numero}. ${sec.titulo}`, M, doc.y, { continued: true })
+      .font(FUENTE).fillColor(color.sobreOscuroSecundario).text(`  ${texto(sec.subtitulo ?? "")}`);
     doc.moveDown(0.3);
   }
   doc.font(FUENTE).fontSize(9).fillColor(color.sobreOscuroSecundario)
-    .text("Generado desde docs/presentation-data/contenido. Cada lámina tiene: lo que se ve, el diagrama paso a paso cuando lo hay, y el guion: qué decir, qué hacer, si preguntan y para pasar.", M, ALTO - M - 30, { width: CW });
+    .text("Generado desde docs/presentation-data/contenido. Cada lámina tiene: lo que se ve, el diagrama detallado cuando lo hay, y el guion: qué decir, qué hacer, si preguntan y para pasar.", M, ALTO - M - 30, { width: CW });
 }
 
 function encabezadoSeccion(doc: Doc, l: Lamina) {
@@ -239,7 +237,7 @@ function encabezadoSeccion(doc: Doc, l: Lamina) {
   const y = doc.y + 6;
   doc.roundedRect(M, y, CW, 46, 10).fill(color.franja);
   doc.font(NEGRITA).fontSize(16).fillColor("#FFFFFF").text(texto(etiquetaSeccion(l.seccion)), M + 14, y + 9, { width: CW - 28 });
-  doc.font(FUENTE).fontSize(9).fillColor(color.sobreOscuroSecundario).text(`Presenta: ${participantePorId(l.seccion.participante).nombre} · ${participantePorId(l.seccion.participante).perfil}`, M + 14, y + 29, { width: CW - 28 });
+  if (l.seccion.subtitulo) doc.font(FUENTE).fontSize(9).fillColor(color.sobreOscuroSecundario).text(texto(l.seccion.subtitulo), M + 14, y + 29, { width: CW - 28 });
   doc.x = M;
   doc.y = y + 58;
 }
@@ -250,16 +248,6 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
   doc.moveDown(0.6);
   doc.moveTo(M, doc.y).lineTo(M + CW, doc.y).lineWidth(0.6).stroke(color.borde);
   doc.moveDown(0.5);
-  if (!d) {
-    titulo(doc, `${numero}. Portada · ${l.seccion.titulo}`, 14);
-    const c = l.seccion.claves;
-    if (c) {
-      etiqueta(doc, "En pantalla");
-      vinetas(doc, [`¿Qué problema resuelve? ${c.problema}`, `¿Cómo funciona? ${c.sencillo}`, `¿Cómo se ve? ${c.visual}`, `¿Dónde está en ARKA-Lite? ${c.aplicacion}`, `¿Cómo lo comprobamos? ${c.evidencia}`]);
-    }
-    recuadro(doc, "Qué decir", [`“Ahora vamos con ${l.seccion.titulo.toLowerCase()}. Primero, qué problema resuelve.”`], color.cianSuave, color.cianClaro);
-    return;
-  }
   titulo(doc, `${numero}. ${d.titulo}`, 14);
   if (d.visual && !d.tabla) {
     etiqueta(doc, `En pantalla · ${nombreDeVisual(d.visual)}`);
@@ -272,7 +260,7 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
   if (d.comparacion) parrafo(doc, `Comparación: ${d.comparacion}`, { fuente: CURSIVA, tamano: 9.5, c: color.secundario });
   if (d.diagrama) {
     const fig = diagramaPorId(d.diagrama);
-    etiqueta(doc, `Diagrama paso a paso · ${fig.titulo}`);
+    etiqueta(doc, `Diagrama · ${fig.titulo}`);
     diagrama(doc, fig);
     vinetas(doc, fig.pasos.map((p) => p.texto), true);
     if (fig.nota) parrafo(doc, fig.nota, { fuente: CURSIVA, tamano: 9.5, c: color.secundario });
@@ -307,7 +295,7 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
 }
 
 export function construirPdf(recorrido: Recorrido): Doc {
-  const doc = new PDFDocument({ size: "LETTER", margins: { top: M, bottom: M, left: M, right: M }, bufferPages: true, info: { Title: `ARKA-Lite · recorrido ${recorrido === "ejecutivo" ? "ejecutivo" : "técnico"}`, Subject: "Proyecto final de Upskilling Backend Java" } });
+  const doc = new PDFDocument({ size: "LETTER", margins: { top: M, bottom: M, left: M, right: M }, bufferPages: true, info: { Title: `ARKA-Lite · recorrido ${NOMBRE_RECORRIDO[recorrido].toLowerCase()}`, Subject: "Proyecto final de Upskilling Backend Java" } });
   portada(doc, recorrido);
   doc.addPage();
   let seccion = "";
@@ -323,7 +311,7 @@ export function construirPdf(recorrido: Recorrido): Doc {
   for (let i = 1; i < paginas.count; i++) {
     doc.switchToPage(i);
     doc.font(FUENTE).fontSize(8).fillColor(color.secundario)
-      .text(`ARKA-Lite · recorrido ${recorrido === "ejecutivo" ? "ejecutivo" : "técnico"} · ${i + 1}/${paginas.count}`, M, ALTO - M + 18, { width: CW, align: "right", lineBreak: false });
+      .text(`ARKA-Lite · recorrido ${NOMBRE_RECORRIDO[recorrido].toLowerCase()} · ${i + 1}/${paginas.count}`, M, ALTO - M + 18, { width: CW, align: "right", lineBreak: false });
   }
   return doc;
 }

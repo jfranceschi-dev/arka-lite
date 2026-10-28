@@ -1,5 +1,4 @@
 import { secciones } from "./index.ts";
-import { participantes } from "./participantes.ts";
 import type { ElementoVisual, Visual } from "./tipos.ts";
 
 // El recurso visual de una lámina contado en texto, para los guiones y el
@@ -9,8 +8,13 @@ const linea = (e: ElementoVisual) => (e.texto ? `${e.titulo}: ${e.texto}` : e.ti
 
 export function nombreDeVisual(v: Visual): string {
   const nombres: Record<Visual["tipo"], string> = {
-    equipo: "El equipo por área",
-    ruta: "La ruta de las siete partes",
+    ruta: "La ruta de las partes",
+    aprendizajes: "Lo que aprendimos",
+    escenario: "Qué pasa cuando falla",
+    capas: "Capas del sistema",
+    tablas: "Bases de datos y sus tablas",
+    matriz: "Tabla de tres columnas",
+    hexagono: "Puertos y adaptadores",
     cifras: "Números grandes",
     flujo: "Flujo paso a paso",
     tuberia: "Las etapas del pipeline",
@@ -25,16 +29,23 @@ export function nombreDeVisual(v: Visual): string {
 
 export function lineasDeVisual(v: Visual): string[] {
   switch (v.tipo) {
-    case "equipo":
-      return (["Desarrollo", "DevOps", "Base de datos"] as const).map((perfil) => {
-        const quienes = participantes.filter((p) => p.perfil === perfil);
-        return `${perfil} (${quienes.length}): ${quienes.map((p) => p.nombre).join(", ")}`;
-      });
     case "ruta":
-      return secciones.filter((s) => s.numero !== null).map((s) => {
-        const p = participantes.find((x) => x.id === s.participante)!;
-        return `${s.numero}. ${s.titulo} · presenta ${p.nombre} (${p.perfil})`;
-      });
+      return secciones.filter((s) => s.numero !== null).map((s) => `${s.numero}. ${s.titulo}${s.subtitulo ? `: ${s.subtitulo}` : ""}`);
+    case "aprendizajes":
+      return [...v.metricas.map((m) => `Métrica: ${m.valor} ${m.titulo}`), ...v.items.map((e) => `${linea(e)} Valor: ${e.valor}`)];
+    case "escenario":
+      return [`Falla: ${linea(v.falla)}`, ...v.pasos.map((p, i) => `${i + 1}. [${p.momento}] ${linea(p)}`), `Resultado: ${linea(v.resultado)}`];
+    case "capas":
+      return v.capas.map((c) => `${c.titulo}: ${c.elementos.map(linea).join("; ")}`);
+    case "tablas":
+      return [
+        ...v.bases.map((b) => `${b.titulo}${b.subtitulo ? ` (${b.subtitulo})` : ""}: ${b.tablas.map((t) => `${t.nombre} [${t.columnas.join(", ")}]`).join("; ")}`),
+        `Entre bases: ${v.enlace}`,
+      ];
+    case "matriz":
+      return v.filas.map((f) => f.celdas.map((c, i) => `${v.encabezados[i]}: ${c}`).join(" · "));
+    case "hexagono":
+      return [`Centro: ${linea(v.centro)}`, `Puertos: ${v.puertos.join(", ")}`, `Entrada: ${v.entrada.map(linea).join("; ")}`, `Salida: ${v.salida.map(linea).join("; ")}`];
     case "cifras":
       return v.cifras.map((c) => `${c.valor} ${c.titulo}${c.texto ? `: ${c.texto}` : ""}`);
     case "flujo":

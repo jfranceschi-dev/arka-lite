@@ -152,8 +152,8 @@ git check-ignore -v servicio-solicitudes\target\archivo.jar
 
 | Servicio | Acceso desde el equipo |
 | --- | --- |
-| Solicitudes | `http://localhost:8080` |
-| Notificaciones | `http://localhost:8081` |
+| Solicitudes | `http://localhost:18080` |
+| Notificaciones | `http://localhost:18081` |
 | Interfaz web (`arka-lite-ui`) | `http://localhost:8088` |
 | PostgreSQL de solicitudes | Solo red interna de Compose, puerto `5432` |
 | PostgreSQL de notificaciones | `localhost:5433` |
@@ -172,7 +172,7 @@ El archivo vigente es:
 services:
   servicio-notificaciones:
     build: ./servicio-notificaciones
-    ports: ["8081:8080"]
+    ports: ["${NOTIFICACIONES_PORT:-18081}:8080"]
     healthcheck:
       test: ["CMD-SHELL", "bash -lc 'echo > /dev/tcp/127.0.0.1/8080'"]
       interval: 5s
@@ -181,7 +181,7 @@ services:
 
   servicio-solicitudes:
     build: ./servicio-solicitudes
-    ports: ["8080:8080"]
+    ports: ["${SOLICITUDES_PORT:-18080}:8080"]
     environment:
       NOTIFICACIONES_URL: "http://servicio-notificaciones:8080/eventos/solicitud-enviada"
     depends_on:
@@ -201,16 +201,16 @@ Indica el contexto de construcción. Cada servicio usa su propia carpeta y su pr
 
 El formato corto es `PUERTO_COMPUTADORA:PUERTO_CONTENEDOR`:
 
-- `8081:8080`: notificaciones escucha en 8080 dentro del contenedor y se visita en 8081 desde la computadora.
-- `8080:8080`: solicitudes usa 8080 en ambos lados.
+- `${NOTIFICACIONES_PORT:-18081}:8080`: notificaciones escucha en 8080 dentro del contenedor y se visita en 18081 desde la computadora por defecto.
+- `${SOLICITUDES_PORT:-18080}:8080`: solicitudes escucha en 8080 dentro del contenedor y se visita en 18080 desde la computadora por defecto.
 
-Los contenedores se comunican entre sí por el puerto interno `8080`, no por el puerto publicado `8081`.
+Los contenedores se comunican entre sí por el puerto interno `8080`, no por el puerto publicado `18081`.
 
 ### `environment`
 
 Sobrescribe la propiedad `notificaciones.url` de Spring mediante `NOTIFICACIONES_URL`. Dentro de la red de Compose se usa el nombre del servicio como host.
 
-`localhost` dentro de un contenedor se refiere a ese mismo contenedor. Por eso solicitudes no puede llamar a notificaciones con `http://localhost:8081` desde Compose.
+`localhost` dentro de un contenedor se refiere a ese mismo contenedor. Por eso solicitudes no puede llamar a notificaciones con `http://localhost:18081` desde Compose.
 
 ### `healthcheck`
 
@@ -262,9 +262,9 @@ Salir de `logs -f` con `Ctrl+C` no detiene los contenedores.
 ### 4. Probar la comunicación completa
 
 ```powershell
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/INC-002/enviar
-Invoke-RestMethod http://localhost:8081/notificaciones
+Invoke-RestMethod -Method Post http://localhost:18080/solicitudes/crear
+Invoke-RestMethod -Method Post http://localhost:18080/solicitudes/INC-002/enviar
+Invoke-RestMethod http://localhost:18081/notificaciones
 ```
 
 La última respuesta debe contener una notificación para `INC-002`.
@@ -303,11 +303,11 @@ Compose no declara volúmenes de datos propios para PostgreSQL. Las solicitudes 
 
 ## Variables y archivos `.env`
 
-Compose puede sustituir valores desde variables del sistema o un archivo `.env`. Un patrón futuro puede ser:
+Compose permite cambiar los puertos publicados desde variables del sistema o un archivo `.env`. La configuración actual usa:
 
 ```yaml
 ports:
-  - "${SOLICITUDES_PORT:-8080}:8080"
+  - "${SOLICITUDES_PORT:-18080}:8080"
 ```
 
 Y un archivo local:
@@ -320,6 +320,27 @@ NOTIFICACIONES_PORT=9081
 Un `.env` con credenciales no se confirma en Git. Se puede versionar `.env.example` con nombres y valores de demostración sin secretos. Para ambientes reales se usan secretos y variables del sistema de despliegue, como se explica en [Integración continua, ramas y ambientes](../automatizacion/ci-cd-y-ambientes.md).
 
 ## Diagnóstico frecuente
+
+En Windows, el mensaje `Intento de acceso a un socket no permitido por sus
+permisos de acceso` puede indicar un puerto reservado por el sistema, aunque
+ninguna aplicación parezca usarlo. Consultar las reservas con:
+
+```powershell
+netsh interface ipv4 show excludedportrange protocol=tcp
+netsh interface ipv6 show excludedportrange protocol=tcp
+```
+
+Los puertos 18080 y 18081 se eligieron fuera de las reservas de esta máquina.
+Si cambian las reservas o aparece otro proceso, seleccionar puertos libres:
+
+```powershell
+$env:SOLICITUDES_PORT = "19080"
+$env:NOTIFICACIONES_PORT = "19081"
+docker compose up --build -d
+```
+
+Los enlaces de Swagger de la UI usan esas mismas variables. Los servicios
+siguen comunicándose por el puerto 8080 dentro de la red de Compose.
 
 | Problema | Comprobación |
 | --- | --- |

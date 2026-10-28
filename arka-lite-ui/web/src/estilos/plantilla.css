@@ -68,6 +68,8 @@ a:hover { color: var(--tema-pri); }
 .recorrido-paso.hecho + .recorrido-paso::before { background: var(--color-correcto); }
 .recorrido-paso.en-curso { color: var(--tema-acc-texto); }
 .recorrido-paso.en-curso .recorrido-punto { border-color: var(--tema-acc); animation: latido 1.4s ease-in-out infinite; }
+.recorrido-paso.perdido { color: var(--color-secundario); font-weight: 500; cursor: help; }
+.recorrido-paso.perdido .recorrido-punto { border-style: dashed; border-color: var(--color-secundario); }
 
 /* ── jQuery DataTables con el estilo de la plantilla ── */
 .arka-tabla { font-size: 14px; }
@@ -85,8 +87,13 @@ a:hover { color: var(--tema-pri); }
 .arka-tabla table.dataTable > tbody > tr:first-child > td { border-top: none !important; }
 .arka-tabla table.dataTable > tbody > tr:hover > td { background: var(--color-fondo); }
 .arka-tabla table.dataTable td.dt-right, .arka-tabla table.dataTable th.dt-right { text-align: right; }
-.arka-tabla .dt-paging .dt-paging-button { min-width: 32px; height: 32px; padding: 0 10px !important; margin-left: 4px !important; border: 1px solid var(--color-linea) !important; border-radius: 8px !important; background: #FFFFFF !important; color: var(--color-texto) !important; font-size: 13px; }
-.arka-tabla .dt-paging .dt-paging-button.current { background: var(--tema-pri) !important; border-color: var(--tema-pri) !important; color: var(--tema-sobre-pri) !important; font-weight: 700; }
+/* La hoja de DataTables usa div.dt-container y color: inherit !important en
+   la página actual; estas reglas llevan más especificidad para ganarle en
+   todos los estados (normal, hover, actual y deshabilitado). */
+.arka-tabla div.dt-container .dt-paging .dt-paging-button { min-width: 32px; height: 32px; padding: 0 10px !important; margin-left: 4px !important; border: 1px solid var(--color-linea) !important; border-radius: 8px !important; background: #FFFFFF !important; color: var(--color-texto) !important; font-size: 13px; }
+.arka-tabla div.dt-container .dt-paging .dt-paging-button:not(.disabled):not(.current):hover { background: var(--tema-acc-suave) !important; border-color: var(--tema-acc) !important; color: var(--tema-acc-texto) !important; }
+.arka-tabla div.dt-container .dt-paging .dt-paging-button.current, .arka-tabla div.dt-container .dt-paging .dt-paging-button.current:hover { background: var(--tema-pri) !important; border-color: var(--tema-pri) !important; color: var(--tema-sobre-pri) !important; font-weight: 700; }
+.arka-tabla div.dt-container .dt-paging .dt-paging-button.disabled, .arka-tabla div.dt-container .dt-paging .dt-paging-button.disabled:hover { background: #FFFFFF !important; color: var(--color-secundario) !important; }
 .arka-tabla .dt-paging .dt-paging-button.disabled { opacity: .45; }
 .arka-tabla .dt-empty { color: var(--color-secundario); padding: 24px !important; text-align: center; }
 @keyframes destello { from { background: var(--tema-acc-suave); } to { background: transparent; } }

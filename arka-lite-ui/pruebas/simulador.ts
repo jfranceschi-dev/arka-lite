@@ -2,8 +2,10 @@ import { vi } from "vitest";
 
 // Doble de prueba del proxy /api: reproduce las respuestas que dan hoy los
 // controladores (200/201, 404 y 409 con ErrorRespuesta, 400 sin datos).
-// Solo se usa en pruebas; la UI no tiene modo simulado.
-export function crearApiFalsa() {
+// Solo se usa en pruebas; la UI no tiene modo simulado. Con
+// notificacionesCaido, notificaciones responde 502 (como el proxy cuando el
+// servicio no está) y lo que se envía queda pendiente en la bandeja de salida.
+export function crearApiFalsa({ notificacionesCaido = false } = {}) {
   const solicitudes = new Map<string, { id: string; tipo: string; estado: string }>([
     ["INC-001", { id: "INC-001", tipo: "Incidente", estado: "BORRADOR" }],
     ["CAM-002", { id: "CAM-002", tipo: "Cambio", estado: "ENVIADA" }],
@@ -44,7 +46,9 @@ export function crearApiFalsa() {
       const id = decodeURIComponent(accion[1]);
       if (accion[2] === "enviar") {
         const r = transicion(id, "BORRADOR", "ENVIADA");
-        if (r.status === 200) {
+        if (r.status === 200 && notificacionesCaido) {
+          salientes.push({ eventoId: `evento-${id}`, solicitudId: id, tipo: "SolicitudEnviada", procesado: false });
+        } else if (r.status === 200) {
           procesados.push(`evento-${id}`);
           salientes.push({ eventoId: `evento-${id}`, solicitudId: id, tipo: "SolicitudEnviada", procesado: true });
           avisos.push({ texto: `Solicitud ${id} (SolicitudEnviada) enviada` });
@@ -58,6 +62,8 @@ export function crearApiFalsa() {
       const s = solicitudes.get(decodeURIComponent(una[1]));
       return s ? json(200, s) : json(404, { estado: 404, mensaje: `No existe la solicitud ${decodeURIComponent(una[1])}` });
     }
+    const deNotificaciones = ["/api/notificaciones", "/api/eventos/procesados", "/api/eventos/solicitud-enviada", "/api/salud/notificaciones"];
+    if (notificacionesCaido && deNotificaciones.includes(ruta)) return new Response("<html>502 Bad Gateway</html>", { status: 502 });
     if (ruta === "/api/notificaciones") return json(200, avisos);
     if (ruta === "/api/eventos/procesados") return json(200, procesados);
     if (ruta === "/api/eventos/salientes") return json(200, salientes);

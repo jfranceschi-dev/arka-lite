@@ -6,9 +6,12 @@ import { useHistorial } from "./historial.tsx";
 
 // Lo que la UI sabe de los dos servicios, compartido por todas las pantallas.
 // Mientras haya eventos sin consumir se vuelve a consultar cada 5 s (el ciclo
-// del relevador), con un máximo para no consultar sin fin.
+// del relevador). Después de un minuto se sigue consultando, pero más
+// despacio: un evento puede esperar mucho si notificaciones está caído, y la
+// pantalla debe mostrar solo cuándo llega.
 
 export const PERIODO_MS = 5000;
+export const PERIODO_LENTO_MS = 15000;
 const MAX_ACTUALIZACIONES = 12;
 
 export interface SaludServicio {
@@ -34,6 +37,8 @@ interface Datos {
   mias: string[];
   // false hasta la primera consulta: así "cargando" no se confunde con "falló".
   cargado: boolean;
+  // La última consulta a notificaciones falló: sus datos son los últimos conocidos.
+  notificacionesSinRespuesta: boolean;
   pendientes: number;
   enviadas: FilaEnviada[];
   duplicados: number;
@@ -65,6 +70,7 @@ export function ProveedorDatos({ children }: { children: ReactNode }) {
   const [mias, setMias] = useState<string[]>(leerMisSolicitudes);
   const [pulso, setPulso] = useState(0);
   const [cargado, setCargado] = useState(false);
+  const [notificacionesSinRespuesta, setNotificacionesSinRespuesta] = useState(false);
   const vueltas = useRef(0);
   const consumidosAntes = useRef<number | null>(null);
 
@@ -77,9 +83,13 @@ export function ProveedorDatos({ children }: { children: ReactNode }) {
     ]);
     setSolicitudes(comoSolicitudes(s));
     setSalientes(comoEventosSalientes(e));
+    // Si notificaciones no responde se conservan sus últimos datos: los
+    // eventos ya consumidos siguen consumidos (están en su base).
     const ids = comoIdsConsumidos(c);
-    setConsumidos(ids);
-    setAvisos(comoAvisos(a));
+    const nuevosAvisos = comoAvisos(a);
+    setNotificacionesSinRespuesta(ids === null);
+    if (ids) setConsumidos(ids);
+    if (nuevosAvisos) setAvisos(nuevosAvisos);
     if (ids && consumidosAntes.current !== null && ids.length > consumidosAntes.current) setPulso((n) => n + 1);
     if (ids) consumidosAntes.current = ids.length;
     setCargado(true);
@@ -96,18 +106,31 @@ export function ProveedorDatos({ children }: { children: ReactNode }) {
     void actualizar();
   }, [validarSalud, actualizar]);
 
+  // Si notificaciones deja de responder o vuelve, la salud se valida otra vez
+  // para que el indicador de la barra no quede desactualizado.
+  const respondioAntes = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (!cargado) return;
+    const responde = !notificacionesSinRespuesta;
+    if (respondioAntes.current !== null && respondioAntes.current !== responde) void validarSalud();
+    respondioAntes.current = responde;
+  }, [cargado, notificacionesSinRespuesta, validarSalud]);
+
+  // En camino: lo que el relevador no ha entregado y, si se sabe, lo que
+  // notificaciones todavía no consumió. Sin respuesta de notificaciones, los
+  // eventos sin entregar siguen contando.
   const pendientes = useMemo(() => {
-    if (!salientes || !consumidos) return 0;
-    const ya = new Set(consumidos);
-    return salientes.filter((e) => !e.procesado || !ya.has(e.eventoId)).length;
+    if (!salientes) return 0;
+    const ya = consumidos ? new Set(consumidos) : null;
+    return salientes.filter((e) => !e.procesado || (ya !== null && !ya.has(e.eventoId))).length;
   }, [salientes, consumidos]);
 
   useEffect(() => {
     if (pendientes === 0) { vueltas.current = 0; return; }
-    if (vueltas.current >= MAX_ACTUALIZACIONES) return;
-    const t = setTimeout(() => { vueltas.current += 1; void actualizar(); }, PERIODO_MS);
+    const espera = vueltas.current < MAX_ACTUALIZACIONES ? PERIODO_MS : PERIODO_LENTO_MS;
+    const t = setTimeout(() => { vueltas.current += 1; void actualizar(); }, espera);
     return () => clearTimeout(t);
-  }, [pendientes, salientes, consumidos, actualizar]);
+  }, [pendientes, salientes, consumidos, notificacionesSinRespuesta, actualizar]);
 
   const enviadas = useMemo<FilaEnviada[]>(() => {
     const porId = new Map((solicitudes ?? []).map((s) => [s.id, s]));
@@ -156,9 +179,9 @@ export function ProveedorDatos({ children }: { children: ReactNode }) {
   }, [lanzar, actualizar, avisos]);
 
   const valor = useMemo<Datos>(() => ({
-    solicitudes, salientes, consumidos, avisos, salud, mias, cargado, pendientes, enviadas, duplicados, pulso,
+    solicitudes, salientes, consumidos, avisos, salud, mias, cargado, notificacionesSinRespuesta, pendientes, enviadas, duplicados, pulso,
     actualizar, validarSalud, crear, cambiarEstado, reentregar,
-  }), [solicitudes, salientes, consumidos, avisos, salud, mias, cargado, pendientes, enviadas, duplicados, pulso, actualizar, validarSalud, crear, cambiarEstado, reentregar]);
+  }), [solicitudes, salientes, consumidos, avisos, salud, mias, cargado, notificacionesSinRespuesta, pendientes, enviadas, duplicados, pulso, actualizar, validarSalud, crear, cambiarEstado, reentregar]);
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;
 }

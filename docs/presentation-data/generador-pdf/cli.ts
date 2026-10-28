@@ -3,13 +3,13 @@
 //   npm run pdf
 import { createWriteStream, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import type { Recorrido } from "../contenido/tipos.ts";
+import { RECORRIDOS } from "../contenido/tipos.ts";
 import { DIR_PDF } from "../entregables.ts";
 import { construirPdf, nombreArchivoPdf } from "./construir.ts";
 
 mkdirSync(DIR_PDF, { recursive: true });
 
-for (const r of ["ejecutivo", "tecnico"] as Recorrido[]) {
+for (const r of RECORRIDOS) {
   const ruta = join(DIR_PDF, nombreArchivoPdf(r));
   const doc = construirPdf(r);
   await new Promise<void>((listo, fallo) => {

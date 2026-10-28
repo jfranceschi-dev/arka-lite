@@ -2,177 +2,354 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-Incluye código, contratos y configuración. Comparte el texto oral con el recorrido ejecutivo para no contradecirse.
+47 láminas. El recorrido ejecutivo más el código, la configuración y los diagramas detallados.
 
-## Reparto
+## Partes
 
-Equipo arka-litos: siete personas, cada una presenta la parte de su área.
+1. **Fundamentos**: Spring Boot, REST, reglas de negocio, pruebas y Git.
+2. **Arquitectura**: Microservicios, puertos y adaptadores, y un contrato por eventos.
+3. **Base de datos**: Una base por servicio, un esquema que se cuida solo y datos consistentes.
+4. **Contenedores y Kubernetes**: El mismo sistema en cualquier computadora y un clúster que se repara solo.
+5. **CI/CD**: Integración y entrega continua: cada cambio se prueba y se empaqueta solo.
+6. **Observabilidad**: Logs centralizados, trazas entre servicios y salud de cada componente.
+7. **Documentación**: Contratos que salen del código y documentación que cambia con él.
+8. **La UI como laboratorio**: No es parte del entregable: es el banco de pruebas para ver cómo se comporta el sistema, sobre todo cuando algo falla.
 
-| Participante | Área | Rol | Secciones |
-| --- | --- | --- | --- |
-| Participante 1 | Desarrollo | Abre, presenta el sistema por fuera y cierra. | Apertura, Sistema, Cierre |
-| Participante 2 | Desarrollo | Explica cómo se construye un servicio con Spring Boot. | Servicio |
-| Participante 3 | Desarrollo | Explica cómo diseñamos el código para que pueda cambiar. | Diseño |
-| Participante 4 | Base de datos | Explica la base de datos, la consistencia y la idempotencia. | Datos |
-| Participante 5 | DevOps | Explica Docker, Docker Compose y el pipeline de integración y entrega continua. | Empaquetar |
-| Participante 6 | DevOps | Explica Kubernetes, la puesta a punto y la centralización de logs. | Operar |
-| Participante 7 | Desarrollo | Explica la interfaz web y conduce la demostración en vivo. | UI |
+El reparto no está fijo: cada parte se puede asignar a cualquier persona. Las notas de cada lámina del PPTX traen el mismo texto.
 
 Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** son indicaciones para quien expone; **Para pasar** es la frase que conecta con la lámina siguiente.
 
-## Apertura · presenta Participante 1
+## Apertura
 
 ### 1. Del endpoint al clúster
 
 **En pantalla:**
 
-- Cómo construimos ARKA-Lite: una interfaz web y dos microservicios en Java.
+- Lo que aprendimos construyendo dos microservicios Java, de punta a punta.
 
 **Qué decir**
 
-> Buenos días a todos. Somos el equipo arka-litos, del curso Upskilling Backend Java, y hoy les vamos a contar cómo construimos ARKA-Lite, nuestro proyecto final.
+> Buenos días. Hoy les presentamos ARKA-Lite, el proyecto final del curso Upskilling Backend Java.
 >
-> El título lo resume: empezamos escribiendo un endpoint, una sola operación en Java, y terminamos con un sistema completo corriendo en un clúster de Kubernetes. En el camino fuimos aplicando, uno por uno, los temas que vimos en el curso.
+> Empezamos escribiendo un endpoint y terminamos con un sistema de dos microservicios corriendo en Kubernetes, con su pipeline, su base de datos y su observabilidad. No les vamos a contar el temario: les vamos a contar qué construimos, qué medimos y qué aprendimos.
 
 **Qué hacer** (no se dice)
 
 - Antes de empezar, abrir la UI en http://localhost:8088 y comprobar que los dos servicios aparecen en verde.
 
-**Para pasar:** “Primero, quiénes somos.”
+**Para pasar:** “Primero, el proyecto en números.”
 
-### 2. El equipo arka-litos
-
-**En pantalla · El equipo por área:**
-
-- Desarrollo (4): Participante 1, Participante 2, Participante 3, Participante 7
-- DevOps (2): Participante 5, Participante 6
-- Base de datos (1): Participante 4
-
-**Ideas clave:**
-
-- Cuatro personas de desarrollo
-- Dos personas de DevOps
-- Una persona de base de datos
-- Cada quien presenta la parte de su área
-
-**Qué decir**
-
-> Somos siete personas. Cuatro somos de desarrollo: construimos los servicios, su diseño y la interfaz. Dos son de DevOps: se encargaron de empaquetar, desplegar y operar el sistema. Y una es de base de datos: cuidó cómo se guardan los datos y que ningún aviso se pierda.
->
-> Por eso hoy van a escuchar varias voces: cada uno presenta la parte de su área. Debajo de cada persona ven qué partes le tocan.
->
-> La idea no es que memoricen tecnologías. Queremos que, al salir, puedan explicar con sus propias palabras cómo funciona el sistema y por qué tomamos cada decisión.
-
-**Para pasar:** “Empecemos por lo básico: qué hace ARKA-Lite.”
-
-### 3. Qué es ARKA-Lite
-
-**En pantalla:**
-
-- Solicitudes: crea solicitudes y cambia su estado
-- Notificaciones: crea un aviso cuando una solicitud se envía
-- La interfaz web: permite usar y entender los dos
-
-**Comparación:** Como una ventanilla y un buzón: la ventanilla recibe el trámite y el buzón te avisa cuando avanzó.
-
-**Qué decir**
-
-> ARKA-Lite hace algo sencillo: registra solicitudes, por ejemplo una incidencia o un pedido de cambio, y avisa cuando una solicitud se envía.
->
-> Por dentro son dos servicios. El de solicitudes es como la ventanilla: recibe el trámite y lleva su estado. El de notificaciones es como el buzón: cuando el trámite avanza, deja el aviso. Y encima de los dos hay una interfaz web, que es lo que usa la persona.
->
-> Elegimos un problema pequeño a propósito. Así el foco no está en el negocio, sino en cómo se construye, se despliega y se opera un sistema con más de un servicio.
-
-**Para pasar:** “Antes de entrar en detalle, veamos el proyecto en números.”
-
-### 4. ARKA-Lite en números
+### 2. ARKA-Lite en números
 
 **En pantalla · Números grandes:**
 
-- 2 microservicios: Spring Boot con Java 26, cada uno con su base PostgreSQL.
-- 11 endpoints REST: 8 en solicitudes y 3 en notificaciones, documentados con Swagger.
-- 8 contenedores: Servicios, bases, interfaz y logs, con un solo comando.
-- 67 pruebas automáticas: 28 en solicitudes, 10 en notificaciones y 29 en la interfaz.
-- 5 s para entregar un aviso: Cada cinco segundos se entregan los avisos pendientes.
-- 0 avisos duplicados: Aunque un evento llegue dos veces, se crea un solo aviso.
+- 2 microservicios: Spring Boot 4 y Java 26, cada uno con su PostgreSQL.
+- 11 endpoints REST: Documentados con OpenAPI y Swagger.
+- 67 pruebas automáticas: 28 en solicitudes, 10 en notificaciones, 29 en la UI.
+- 8 contenedores: Servicios, bases, UI y logs con un solo comando.
+- ≤ 5 s para entregar un aviso: El relevador revisa los pendientes cada 5 segundos.
+- 0 avisos perdidos o duplicados: Aunque el otro servicio esté caído o el evento llegue dos veces.
 
 **Ideas clave:**
 
-- Dos microservicios y una interfaz
-- Todo se levanta con un solo comando
+- Dos microservicios con su propia base
+- Un solo comando levanta todo
 - Cada cambio pasa por pruebas automáticas
 
 **Qué decir**
 
-> Así se ve ARKA-Lite en números. Son dos microservicios hechos con Spring Boot, cada uno con su propia base de datos, y entre los dos exponen once endpoints REST.
+> ARKA-Lite hace algo sencillo a propósito: registra solicitudes, como una incidencia o un pedido de cambio, y avisa cuando una solicitud se envía. El problema es pequeño para que el foco esté en cómo se construye, se despliega y se opera.
 >
-> Todo el sistema son ocho contenedores: los servicios, sus bases, la interfaz y las herramientas de logs. Y se levantan con un solo comando.
+> Son dos microservicios con Spring Boot, once endpoints documentados, sesenta y siete pruebas automáticas y ocho contenedores que se levantan con un solo comando.
 >
-> Lo cuidan sesenta y siete pruebas automáticas. Los avisos pendientes se entregan cada cinco segundos y, aunque un evento llegue dos veces, se crea un solo aviso. Esos dos números los vamos a explicar con calma más adelante.
+> Y los dos números que más nos importan: un aviso se entrega en cinco segundos o menos, y no se pierde ni se duplica ninguno, aunque el otro servicio esté caído. Más adelante les mostramos cómo lo logramos.
 
-**Para pasar:** “¿Y cómo se conecta esto con lo que vimos en el curso?”
+**Para pasar:** “Antes de entrar, ocho palabras que vamos a usar mucho.”
 
-### 5. Cómo vamos a recorrerlo
+### 3. Ocho conceptos, en una frase
 
-**En pantalla:**
+**En pantalla · Tarjetas:**
 
-- Siete partes, en el orden en que se construye
-- Cada tema del curso, donde se usa
-- Diagramas paso a paso
-- Demostración en vivo al final
+- Microservicio: Una aplicación pequeña, con una sola tarea y su propia base de datos.
+- API REST: La puerta para pedirle algo a una aplicación por HTTP, como abrir una URL.
+- Arquitectura hexagonal: El negocio al centro; la base y la web se conectan por “enchufes”.
+- ORM (JPA): Traduce entre clases Java y tablas: escribe el SQL rutinario por nosotros.
+- Docker: Empaqueta la aplicación con todo lo que necesita: corre igual en cualquier lado.
+- Kubernetes: Administra esos paquetes: los arranca, los vigila y los reinicia si fallan.
+- CI/CD: Un robot que compila, prueba y empaqueta cada cambio, sin pasos manuales.
+- Observabilidad: Logs y salud de todo el sistema en un solo lugar.
 
-| Parte | Temas del curso que aparecen |
-| --- | --- |
-| 1 El sistema por fuera | Visión general del sistema y su arquitectura |
-| 2 Construir un servicio | Spring Boot, endpoints REST, manejo global de errores, Swagger, pruebas, Git |
-| 3 Diseñar para cambiar | Puertos y adaptadores, de monolito a microservicios |
-| 4 Guardar sin perder datos | Adaptador con base de datos real, el problema de la consistencia |
-| 5 Empaquetar y entregar | Docker y Dockerfile, Docker Compose, integración y entrega continua |
-| 6 Desplegar y operar | Kubernetes, del contenedor al clúster, puesta a punto, logs y monitoreo |
-| 7 Ensamblaje | Ensamblaje del sistema y puesta a punto |
+**Ideas clave:**
+
+- Microservicio y API REST
+- Arquitectura hexagonal y ORM
+- Docker y Kubernetes
+- CI/CD y observabilidad
 
 **Qué decir**
 
-> No vamos a seguir el temario clase por clase. Vamos a contar la historia de cómo se construye el sistema, en el orden en que tiene sentido.
+> Sabemos que muchos de ustedes trabajan sobre todo con la base de datos y procedimientos almacenados, así que antes de entrar les dejamos ocho conceptos en una frase.
 >
-> Primero lo vemos por fuera, como un usuario. Después entramos a un servicio y vemos cómo se arma. Luego, cómo lo diseñamos para que pueda cambiar sin romperse y cómo cuidamos los datos. Nuestros compañeros de DevOps nos muestran cómo lo empaquetamos, lo desplegamos y sabemos si está funcionando. Al final lo vemos todo junto, en vivo.
+> Un microservicio es una aplicación pequeña con una sola tarea y su propia base. Una API REST es la puerta para pedirle cosas por HTTP. La arquitectura hexagonal pone el negocio al centro y conecta la base y la web como si fueran enchufes. Y un ORM traduce entre clases Java y tablas, para no escribir a mano el SQL de todos los días.
 >
-> En cada parte van a ver el mismo orden: qué problema resuelve, cómo lo aplicamos, un diagrama paso a paso y la prueba de que funciona.
+> Docker empaqueta la aplicación con todo lo que necesita; Kubernetes administra esos paquetes. CI/CD es un robot que prueba cada cambio. Y observabilidad es poder ver qué pasa adentro. Cada uno lo vamos a ver con un ejemplo.
+
+**Si preguntan:** ¿Esto reemplaza a los procedimientos almacenados?
+
+**Respuesta corta:** No necesariamente. Mueve las reglas del negocio al código; el SQL pesado o los reportes pueden seguir en la base.
+
+**Para pasar:** “Este es el recorrido.”
+
+### 4. Qué vamos a ver
+
+**En pantalla · La ruta de las partes:**
+
+- 1. Fundamentos: Spring Boot, REST, reglas de negocio, pruebas y Git.
+- 2. Arquitectura: Microservicios, puertos y adaptadores, y un contrato por eventos.
+- 3. Base de datos: Una base por servicio, un esquema que se cuida solo y datos consistentes.
+- 4. Contenedores y Kubernetes: El mismo sistema en cualquier computadora y un clúster que se repara solo.
+- 5. CI/CD: Integración y entrega continua: cada cambio se prueba y se empaqueta solo.
+- 6. Observabilidad: Logs centralizados, trazas entre servicios y salud de cada componente.
+- 7. Documentación: Contratos que salen del código y documentación que cambia con él.
+- 8. La UI como laboratorio: No es parte del entregable: es el banco de pruebas para ver cómo se comporta el sistema, sobre todo cuando algo falla.
+
+**Ideas clave:**
+
+- Fundamentos y arquitectura
+- Base de datos
+- Contenedores, CI/CD y observabilidad
+- Documentación, la UI y el valor
+
+**Qué decir**
+
+> Vamos en ocho partes, en el orden en que se construye un sistema: fundamentos, arquitectura, base de datos, contenedores y Kubernetes, integración y entrega continua, observabilidad y documentación.
+>
+> Después les mostramos la interfaz que usamos como laboratorio, sobre todo para ver qué pasa cuando algo falla. Y cerramos con el valor que esto deja.
+>
+> Cada parte termina con una lámina de aprendizajes: qué aprendimos, cómo lo aplicamos y qué valor tiene para un equipo de tecnología.
+
+**Para pasar:** “Empecemos por los fundamentos.”
+
+## 1 · Fundamentos
+
+### 5. Cómo funciona Spring Boot
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. main(): SpringApplication.run arranca la aplicación.
+- 2. Autoconfiguración: Ve web, JPA y PostgreSQL y los configura solos.
+- 3. Beans e inyección: Crea cada pieza y le pasa lo que necesita.
+- 4. Servidor embebido: Tomcat queda escuchando en el puerto 8080.
+- 5. Controlador: Recibe el JSON, llama al negocio y responde.
+
+**Ideas clave:**
+
+- Un main arranca todo
+- Se configura solo según las librerías
+- Crea las piezas y las conecta por el constructor
+- Trae su propio servidor web
+
+**Comparación:** Como un contratista de obra: le decimos qué piezas hay y él las arma, las conecta y abre la puerta.
+
+**Código:** `servicio-solicitudes/…/ServicioSolicitudesApplication.java`
+
+**Qué decir**
+
+> Antes de Spring Boot, levantar una aplicación Java web significaba instalar un servidor, configurar la conexión a la base y conectar cada clase a mano. Spring Boot hace ese trabajo.
+>
+> Todo empieza en un main. Spring Boot mira qué librerías tenemos, por ejemplo web, JPA y el driver de PostgreSQL, y las configura solo. Luego crea cada pieza de la aplicación, lo que en Spring se llama un bean, y le pasa por el constructor lo que necesita: eso es la inyección de dependencias.
+>
+> Al final arranca su propio servidor web, Tomcat, en el puerto 8080. Cuando llega una petición, el controlador la recibe, llama al negocio y responde. Nosotros solo escribimos el negocio y decimos qué piezas hay.
 
 **Qué hacer** (no se dice)
 
-- Explicar que el número sobre cada flecha de los diagramas coincide con el paso que se lee.
+- Mostrar: Ejecutar ./mvnw clean verify dentro de servicio-solicitudes. Debe verse: BUILD SUCCESS y el resumen de pruebas.
 
-**Para pasar:** “Empecemos mirando el sistema completo desde afuera.”
+**Si preguntan:** ¿Qué es un bean?
 
-## 1 · El sistema por fuera · presenta Participante 1
+**Respuesta corta:** Un objeto que Spring crea y administra, y que puede pasarle a otros por el constructor.
 
-### 6. Portada · El sistema por fuera
+**Para pasar:** “Con la aplicación arriba, veamos cómo responde la API.”
 
-**En pantalla:** cinco preguntas con su respuesta corta.
+**Para leer más:** `docs/arquitectura/componentes-java.md`
 
-- **¿Qué problema resuelve?** Antes de ver código, hay que saber qué piezas existen y cómo se hablan.
-- **¿Cómo funciona?** Una UI llama a dos microservicios por HTTP; cada uno guarda sus datos en su propia base.
-- **¿Cómo se ve?** Persona → UI → solicitudes y notificaciones → una base PostgreSQL para cada uno.
-- **¿Dónde está en ARKA-Lite?** compose.yaml levanta la UI, los dos servicios, sus bases y la observabilidad con un solo comando.
-- **¿Cómo lo comprobamos?** La UI en localhost:8088 con los dos servicios en verde.
+### 6. Una API que responde siempre igual
+
+**En pantalla · Números grandes:**
+
+- 201 Creada: La solicitud quedó en BORRADOR.
+- 400 Faltan datos: El identificador o el tipo vienen vacíos.
+- 404 No existe: No hay una solicitud con ese identificador.
+- 409 Conflicto: El id ya existe o el cambio de estado no se permite.
+
+**Ideas clave:**
+
+- Método + ruta = una operación
+- La regla está en el dominio, sin Spring
+- Un manejador global convierte errores en respuestas
+- Siempre la misma forma: estado y mensaje
+
+**Por qué importa:** Quien consume la API sabe qué pasó sin adivinar, y la UI le muestra a la persona un mensaje claro.
+
+**Código:** `servicio-solicitudes/…/dominio/Solicitud.java`
 
 **Qué decir**
 
-> Ahora vamos con el sistema por fuera. Primero, qué problema resuelve.
+> Un endpoint REST es método más ruta: POST a /solicitudes crea, GET lista. El controlador solo traduce; quien decide es el dominio, que son clases Java normales, sin Spring. Por ejemplo, una solicitud solo se puede enviar si está en borrador.
+>
+> Si la regla no se cumple, el dominio lanza una excepción, y un único manejador global la convierte en una respuesta HTTP. Así cada error tiene su código: 400 si faltan datos, 404 si no existe, 409 si hay un conflicto. Siempre con la misma forma: estado y mensaje.
+>
+> Para el staff esto significa una API predecible: quien la consume sabe qué pasó sin leer el código.
 
-**Qué hacer:** leer las cinco preguntas antes de avanzar.
+**Qué hacer** (no se dice)
 
-### 7. El mapa de ARKA-Lite
+- Mostrar: En la UI, crear dos veces el mismo identificador. Debe verse: El diálogo “Ese identificador ya existe” con el código 409.
+
+**Para pasar:** “Que funcione no basta: el código también tiene que ser fácil de cambiar.”
+
+**Para leer más:** `docs/inicio/proyecto.md`
+
+### 7. Código mantenible: buenas prácticas
+
+**En pantalla · Tabla de tres columnas:**
+
+- Práctica: Una responsabilidad por clase · Cómo la aplicamos: El controlador traduce, el servicio decide, el adaptador guarda · Por qué ayuda a mantener: Un cambio toca un solo lugar
+- Práctica: Inyección por constructor · Cómo la aplicamos: Cada pieza recibe sus dependencias; nadie hace new de lo que necesita · Por qué ayuda a mantener: Cualquier pieza se reemplaza o se prueba sola
+- Práctica: Datos inmutables · Cómo la aplicamos: La Solicitud es un record: cambiar de estado crea una nueva · Por qué ayuda a mantener: Sin estados a medias ni efectos ocultos
+- Práctica: Errores en un solo lugar · Cómo la aplicamos: Excepciones del dominio y un manejador global · Por qué ayuda a mantener: Respuestas iguales, sin try/catch repetidos
+- Práctica: Nombres del negocio · Cómo la aplicamos: Solicitud, enviar, TransicionNoPermitida · Por qué ayuda a mantener: El código se lee como el proceso real
+- Práctica: Pruebas y convenciones · Cómo la aplicamos: Una prueba por regla, ramas cortas y commits con formato · Por qué ayuda a mantener: Cambiar sin miedo, con un historial legible
+
+**Ideas clave:**
+
+- Una responsabilidad por clase
+- Inyección por constructor
+- Datos inmutables con records
+- Errores en un solo lugar
+- Nombres del negocio
+- Pruebas y convenciones
+
+**Código:** `servicio-solicitudes/…/dominio/ServicioDeSolicitudes.java`
+
+**Qué decir**
+
+> Un código mantenible es el que se puede cambiar sin miedo. Aplicamos seis prácticas sencillas.
+>
+> Cada clase tiene una sola responsabilidad: el controlador solo traduce HTTP, el servicio decide y el adaptador guarda. Las dependencias llegan por el constructor, así cualquier pieza se puede reemplazar o probar sola. Los datos son inmutables: cambiar de estado crea una solicitud nueva, en lugar de modificar la que había.
+>
+> Los errores se manejan en un solo lugar, los nombres son los del negocio, en español, y cada regla tiene su prueba. El resultado es que un cambio de regla toca un archivo, y una prueba nos dice si rompimos algo.
+
+**Si preguntan:** ¿Esto no hace el código más largo?
+
+**Respuesta corta:** Un poco, pero cada pieza es corta y se entiende sola; el costo se paga solo en el primer cambio.
+
+**Para pasar:** “Esto es lo que aprendimos de los fundamentos.”
+
+**Para leer más:** `docs/desarrollo/flujo-de-trabajo.md`
+
+### 8. Calidad que se comprueba sola
+
+**En pantalla · Tarjetas:**
+
+- SolicitudTest: Los cambios de estado permitidos y los prohibidos.
+- ServicioSolicitudesUnitTest: Crear, enviar y registrar el evento, en memoria.
+- SolicitudControllerWebTest: El JSON y los códigos 201, 400, 404 y 409.
+- Pruebas de notificaciones: Un evento repetido genera un solo aviso.
+
+**Ideas clave:**
+
+- Las reglas se prueban sin levantar Spring
+- Un repositorio en memoria reemplaza a PostgreSQL
+- MockMvc prueba los controladores sin servidor
+- El pipeline corre todo en cada Pull Request
+
+**Código:** `servicio-solicitudes/…/adaptadores/entrada/ManejadorGlobalDeErrores.java`
+
+**Qué decir**
+
+> Como el dominio no depende de Spring, sus reglas se prueban en milisegundos. En lugar de PostgreSQL usamos un repositorio en memoria que cumple el mismo contrato, y los controladores los probamos con MockMvc, que simula peticiones HTTP sin levantar un servidor.
+>
+> Ninguna prueba necesita una base de datos, así que corren igual en cualquier computadora y en el pipeline.
+
+**Qué hacer** (no se dice)
+
+- Mostrar: ./mvnw test en servicio-solicitudes. Debe verse: Tests run: 28, Failures: 0.
+
+**Para pasar:** “Esto es lo que nos llevamos de los fundamentos.”
+
+### 9. Fundamentos: lo que aprendimos
+
+**En pantalla · Lo que aprendimos:**
+
+- Métrica: 67 pruebas en cada cambio
+- Métrica: 0 bases de datos para probar
+- El negocio no depende del framework: Las reglas son clases Java sin Spring, inyectadas por constructor. Valor: Se prueban en milisegundos y sobreviven a un cambio de framework.
+- Los errores son parte del contrato: Un manejador global responde 400, 404 y 409 con la misma forma. Valor: Menos soporte: quien consume la API entiende qué pasó.
+- Mantenible se diseña desde el inicio: Una responsabilidad por clase, inyección por constructor y records. Valor: Cambios pequeños y localizados.
+- Todo entra por Pull Request: Ramas cortas, commits con sentido y una aprobación. Valor: Historial legible y ningún cambio sin revisar.
+
+**Ideas clave:**
+
+- El negocio no depende del framework
+- Los errores son parte del contrato
+- Probar es barato si el diseño lo permite
+
+**Qué decir**
+
+> Cuatro aprendizajes de esta parte. Primero: el negocio no debe depender del framework. Mantener las reglas en clases Java simples nos permitió probarlas rápido y pensar en el negocio, no en las anotaciones.
+>
+> Segundo: los errores son parte del contrato. Un buen 409 con un mensaje claro ahorra muchas horas de soporte.
+>
+> Tercero: el código mantenible se diseña desde el inicio, con piezas pequeñas de una sola responsabilidad. Y cuarto: trabajar con ramas cortas y Pull Requests con aprobación nos dio un historial que cualquiera puede leer.
+
+**Para pasar:** “Con esas bases, veamos cómo está armado el sistema completo.”
+
+**Para leer más:** `docs/desarrollo/flujo-de-trabajo.md`
+
+## 2 · Arquitectura
+
+### 10. El sistema de un vistazo
+
+**En pantalla · Capas del sistema:**
+
+- Experiencia: Persona: Usa el navegador; arka-lite-ui: React + nginx · proxy /api
+- Servicios: servicio-solicitudes: El trámite y sus estados; Evento SolicitudEnviada: Por HTTP, con su eventoId; servicio-notificaciones: Los avisos, sin duplicados
+- Datos: db-solicitudes: PostgreSQL 17 · solicitud y evento; db-notificaciones: PostgreSQL 17 · evento_procesado
+- Plataforma: Compose o Kubernetes: Dónde corre; GitHub Actions: Prueba y publica; Loki y Grafana: Logs en un solo lugar
+
+**Ideas clave:**
+
+- La UI es la puerta de entrada
+- Dos servicios, cada uno dueño de su base
+- Se hablan con un evento por HTTP
+- La plataforma corre, entrega y observa
+
+**Qué decir**
+
+> Este es el sistema por capas. Arriba, la experiencia: la persona usa la interfaz, y la interfaz no guarda nada, solo llama a los servicios por un proxy.
+>
+> En el medio, los dos microservicios. Solicitudes lleva el trámite; notificaciones crea los avisos. No comparten base: cada uno es dueño de sus datos, y se comunican con un evento por HTTP.
+>
+> Y abajo, la plataforma que lo sostiene: dónde corre, cómo se prueba y publica cada cambio, y dónde vemos los logs. Cada capa tiene una sola responsabilidad, y por eso cada una se puede cambiar sin romper las otras.
+
+**Si preguntan:** ¿Por qué no comparten una sola base de datos?
+
+**Respuesta corta:** Para que cada servicio sea dueño de sus datos y pueda cambiar sin romper al otro.
+
+**Para pasar:** “¿Y cómo se conectan esas piezas entre sí?”
+
+**Para leer más:** `docs/inicio/proyecto.md`
+
+### 11. Cómo se conectan las piezas
 
 **En pantalla:**
 
-- La UI es la puerta de entrada
-- Cada servicio tiene su propia base
-- Solicitudes avisa a notificaciones con un evento
-- Todo se comunica por HTTP
+- UI → solicitudes por /api
+- Cada servicio → su propia base
+- solicitudes → notificaciones con un evento
+- UI → notificaciones para ver los avisos
 
-**Diagrama paso a paso · El mapa de ARKA-Lite.** Cada número coincide con el de la flecha en la lámina.
+**Diagrama · El mapa de ARKA-Lite.** Cada número coincide con el de la flecha en la lámina.
 
 1. La persona usa la UI en el navegador.
 2. La UI llama a solicitudes por /api: crear, listar, enviar, aprobar o rechazar.
@@ -183,60 +360,84 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué decir**
 
-> Este es el mapa. A la izquierda está la persona, usando la interfaz desde su navegador. La interfaz no guarda nada: le pide las cosas a los servicios.
+> Sigamos los números. La persona usa la interfaz en su navegador. La interfaz llama a solicitudes por la ruta /api para crear, listar, enviar, aprobar o rechazar, y solicitudes guarda en su propia base.
 >
-> Arriba está el servicio de solicitudes, con su base de datos. Abajo, el de notificaciones, con la suya. Fíjense en algo importante: ninguno lee la base del otro. Si notificaciones necesita saber algo, solicitudes se lo cuenta con un mensaje que llamamos evento.
+> Cuando una solicitud se envía, solicitudes le avisa después a notificaciones con un evento por HTTP, y notificaciones anota en su base qué eventos ya recibió. Por último, la interfaz también consulta a notificaciones para mostrar los avisos.
 >
-> Y todo viaja por HTTP, el mismo protocolo que usa cualquier página web. No hay magia: son peticiones y respuestas.
+> Fíjense en lo que no hay: ninguna flecha entre las dos bases. Los servicios solo se hablan por HTTP.
 
-**Si preguntan:** ¿Por qué no comparten una sola base de datos?
+**Para pasar:** “Veamos cada conexión con más detalle.”
 
-**Respuesta corta:** Para que cada servicio sea dueño de sus datos y pueda cambiar sin romper al otro.
+### 12. Quién habla con quién, y cómo
 
-**Para pasar:** “Veamos qué le pasa a una solicitud durante su vida.”
+**En pantalla · Tabla de tres columnas:**
 
-**Para leer más:** `docs/inicio/proyecto.md`
+- Conexión: Navegador → UI · Cómo se habla: HTTP a localhost:8088; nginx sirve la página · Por qué así: El navegador nunca conoce las direcciones internas
+- Conexión: UI → servicios · Cómo se habla: nginx reenvía /api/solicitudes y /api/notificaciones · Por qué así: Cambiar una dirección no obliga a tocar la UI
+- Conexión: solicitudes → notificaciones · Cómo se habla: POST del evento SolicitudEnviada en JSON, desde el relevador · Por qué así: Si notificaciones cae, solicitudes sigue funcionando
+- Conexión: Servicio → su base · Cómo se habla: JDBC a db-solicitudes:5432 o db-notificaciones · Por qué así: Cada servicio es dueño de sus datos
+- Conexión: Cómo se encuentran · Cómo se habla: Por nombre: la red de Compose o un Service de Kubernetes · Por qué así: Sin IPs fijas: funciona igual en cualquier ambiente
+- Conexión: Seguimiento · Cómo se habla: El traceId viaja en la cabecera de cada llamada HTTP · Por qué así: Una sola búsqueda en Grafana sigue todo el recorrido
 
-### 8. La vida de una solicitud
+**Ideas clave:**
 
-**En pantalla:**
+- El navegador solo conoce la UI
+- nginx reenvía /api al servicio
+- El evento viaja después, desde el relevador
+- Cada servicio habla solo con su base
+- Se encuentran por nombre, no por IP
+- El traceId acompaña cada llamada
 
-- Nace en BORRADOR
-- Al enviarla pasa a ENVIADA y se genera un aviso
-- Desde ENVIADA se aprueba o se rechaza
-- Un cambio no permitido responde 409
-
-| Acción | Desde | Hacia | ¿Genera aviso? |
-| --- | --- | --- | --- |
-| Crear | — | BORRADOR | No |
-| Enviar | BORRADOR | ENVIADA | Sí, un evento para notificaciones |
-| Aprobar | ENVIADA | APROBADA | No |
-| Rechazar | ENVIADA | RECHAZADA | No |
+**Código:** `servicio-solicitudes/…/adaptadores/salida/PublicadorConReintento.java`
 
 **Qué decir**
 
-> Toda solicitud nace en borrador. Mientras está en borrador, nadie se entera: es como un formulario que todavía no hemos entregado.
+> Esta tabla resume todas las conexiones. El navegador solo conoce la interfaz. La interfaz no llama directo a los servicios: nginx recibe todo lo que empieza con /api y lo reenvía al servicio que corresponde.
 >
-> Cuando la enviamos, pasa a enviada, y ese es el único momento en que se genera un aviso. Desde enviada, alguien la puede aprobar o rechazar, y ahí termina su vida.
+> Entre servicios, solicitudes manda el evento a notificaciones con un POST en JSON, pero no en el momento de la petición: lo hace el relevador, después. Por eso, si notificaciones se cae, solicitudes sigue funcionando.
 >
-> ¿Qué pasa si intentamos algo que no corresponde, como enviar dos veces la misma solicitud? El servicio no lo permite y responde con un código 409, que en HTTP significa conflicto, junto con un mensaje que explica el porqué.
+> Cada servicio habla solo con su propia base. Y nadie usa direcciones IP: se encuentran por nombre, gracias a la red de Docker Compose o a los Services de Kubernetes. En cada llamada viaja además un traceId, que nos permite seguir el recorrido completo en los logs.
 
-**Qué hacer** (no se dice)
+**Si preguntan:** ¿Por qué no se llaman directamente por localhost?
 
-- Mostrar: En la UI, pestaña Solicitudes: crear una solicitud nueva y enviarla. Debe verse: La fila pasa de Borrador a Enviada y, unos segundos después, muestra 1 aviso.
+**Respuesta corta:** Porque dentro de un contenedor localhost es el mismo contenedor; por eso cada servicio se busca por su nombre.
 
-**Para pasar:** “Esa es la vista sencilla. Ahora veamos todo lo que hay alrededor.”
+**Para pasar:** “Hay dos formas de hablarse, y usamos las dos.”
 
-### 9. La arquitectura completa
+### 13. Síncrono o asíncrono
+
+**En pantalla · Dos maneras, lado a lado:**
+
+- Síncrono: pido y espero: La UI llama y espera la respuesta; Crear, listar, aprobar o rechazar; Respuesta inmediata: 201, 404, 409; Si el servicio está caído, la persona ve el error
+- Asíncrono: aviso después: Solicitudes guarda el evento y responde ya; El relevador lo entrega cada 5 segundos; Si notificaciones cae, el evento espera; Mismo contrato JSON: SolicitudEnviada
+
+**Ideas clave:**
+
+- Síncrono: pido y espero la respuesta
+- Asíncrono: guardo, respondo y aviso después
+- La UI usa síncrono; el evento, asíncrono
+- Lo asíncrono aguanta que el otro esté caído
+
+**Qué decir**
+
+> Hay dos formas de comunicarse. Síncrona: pido y espero la respuesta, como una llamada telefónica. Es lo que hace la interfaz al crear o aprobar una solicitud, porque la persona necesita saber el resultado en ese momento.
+>
+> Asíncrona: dejo el mensaje y sigo, como un correo. Es lo que hace solicitudes con notificaciones: guarda el evento, responde enseguida y el relevador lo entrega después.
+>
+> La regla que aprendimos: lo que la persona necesita ver, síncrono; lo que puede esperar, asíncrono. Así una caída de notificaciones no afecta a quien está usando solicitudes.
+
+**Para pasar:** “Ahora entremos a uno de los servicios.”
+
+### 14. La arquitectura completa
 
 **En pantalla:**
 
-- Las piezas corren en Docker Compose o en Kubernetes
-- GitHub Actions prueba cada cambio y publica las imágenes
-- Los logs de todos llegan a Grafana
-- Cada pieza tiene una sola responsabilidad
+- Compose o Kubernetes
+- Outbox y consumo idempotente
+- Entrega continua
+- Logs con traceId
 
-**Diagrama paso a paso · La arquitectura completa.** Cada número coincide con el de la flecha en la lámina.
+**Diagrama · La arquitectura completa.** Cada número coincide con el de la flecha en la lámina.
 
 1. La persona usa la interfaz en su navegador: React muestra las cuatro pestañas.
 2. nginx recibe /api y reenvía cada ruta al servicio que corresponde.
@@ -249,209 +450,603 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Qué decir**
 
-> Este es el mismo sistema, pero con todo lo que lo rodea. El recuadro grande es el lugar donde corre: en nuestra computadora con Docker Compose, o en un clúster de Kubernetes.
+> Para el equipo técnico, el mismo sistema con todo el detalle. Los números de las flechas siguen el orden de los pasos de abajo: la petición entra por nginx, el dominio guarda la solicitud y el evento en una transacción, el relevador lo entrega y notificaciones lo consume de forma idempotente.
 >
-> Abajo a la izquierda está la entrega continua. Cada vez que alguien sube un cambio a GitHub, un proceso automático lo compila, corre las pruebas y, si todo sale bien, publica las imágenes listas para desplegar.
->
-> Y abajo a la derecha, la observabilidad: los logs de todos los contenedores se recogen con Promtail, se guardan en Loki y se consultan en Grafana. Así, si algo falla, no tenemos que entrar a cada servicio a buscar qué pasó.
+> Abajo, la entrega continua y la observabilidad: los logs de todos los contenedores llegan a Grafana con su traceId.
 
-**Si preguntan:** Si mañana agregamos un tercer servicio, ¿qué partes del dibujo cambian?
+**Para pasar:** “Veamos cómo se organiza el código por dentro.”
 
-**Respuesta corta:** Se agrega su caja y su base; la entrega y los logs lo cubren igual, sin cambios.
+### 15. Por dentro: puertos y adaptadores
 
-**Para pasar:** “Ya vimos el mapa. Ahora entremos a uno de esos servicios.”
+**En pantalla · Puertos y adaptadores:**
 
-## 2 · Construir un servicio · presenta Participante 2
-
-### 10. Portada · Construir un servicio
-
-**En pantalla:** cinco preguntas con su respuesta corta.
-
-- **¿Qué problema resuelve?** Necesitamos exponer operaciones del negocio por HTTP de forma clara, documentada y probada.
-- **¿Cómo funciona?** Spring Boot arma la aplicación; los controladores reciben peticiones; el dominio decide; las pruebas lo comprueban.
-- **¿Cómo se ve?** Petición → controlador → servicio → repositorio → respuesta con su código HTTP.
-- **¿Dónde está en ARKA-Lite?** SolicitudController, ServicioDeSolicitudes, ManejadorGlobalDeErrores, Swagger y las pruebas JUnit.
-- **¿Cómo lo comprobamos?** ./mvnw verify en cada servicio y Swagger en /swagger-ui/index.html.
-
-**Qué decir**
-
-> Ahora vamos con construir un servicio. Primero, qué problema resuelve.
-
-**Qué hacer:** leer las cinco preguntas antes de avanzar.
-
-### 11. Primer contacto con Spring Boot
-
-**En pantalla:**
-
-- Maven descarga lo necesario, compila y prueba
-- Spring Boot levanta el servidor y conecta las piezas
-- Cada pieza recibe lo que necesita por el constructor
-- Las reglas del negocio no dependen de Spring
-
-**Comparación:** Como un contratista de obra: nosotros decimos qué piezas hay y él las arma y las conecta.
-
-**Código (solo recorrido técnico):** `servicio-solicitudes/…/config/ConfiguracionDominio.java`
-
-**Qué decir**
-
-> Nuestro primer contacto con Spring Boot fue entender qué hace por nosotros. Maven se encarga de descargar las librerías, compilar y correr las pruebas. Spring Boot levanta el servidor web y conecta las piezas de la aplicación.
->
-> Piénsenlo como un contratista de obra: nosotros le decimos qué piezas hay, y él las arma y las conecta. Cada pieza recibe lo que necesita por su constructor; nadie sale a buscar sus dependencias por su cuenta.
->
-> Una decisión que tomamos desde el principio: las reglas del negocio no conocen a Spring. Son clases normales de Java. Eso nos va a servir mucho cuando hablemos de pruebas y de diseño.
-
-**Qué hacer** (no se dice)
-
-- Mostrar: Ejecutar ./mvnw clean verify dentro de servicio-solicitudes. Debe verse: BUILD SUCCESS y el resumen de pruebas.
-
-**Para pasar:** “Con la aplicación arriba, construyamos nuestro primer endpoint.”
-
-**Para leer más:** `docs/arquitectura/componentes-java.md`
-
-### 12. Construcción de endpoints REST
-
-**En pantalla:**
-
-- Método + ruta = una operación
-- El cuerpo viaja en JSON
-- Cada respuesta trae un código: 201, 404, 409
-- El controlador traduce; quien decide es el servicio
-
-**Diagrama paso a paso · Crear una solicitud por REST.** Cada número coincide con el de la flecha en la lámina.
-
-1. La UI envía POST con un cuerpo JSON: id y tipo.
-2. El controlador convierte el JSON en NuevaSolicitud y llama al servicio.
-3. El servicio valida los datos y revisa que el id no exista.
-4. El adaptador JPA guarda la fila en PostgreSQL.
-5. La API responde 201 Created con la solicitud en BORRADOR.
-6. Si el id ya existe, el manejador global de errores responde 409 con un mensaje claro.
-
-**Qué decir**
-
-> Un endpoint REST es una combinación de método y ruta. Por ejemplo, POST a /solicitudes significa: crea una solicitud nueva. GET a /solicitudes significa: dame la lista.
->
-> Sigamos el diagrama. La interfaz manda los datos en formato JSON. El controlador los recibe y se los pasa al servicio. El servicio revisa que todo esté bien y el adaptador lo guarda en la base de datos. Si todo sale bien, la respuesta es 201, que quiere decir creado.
->
-> Y si el identificador ya existía, el servicio no lo guarda y responde 409, conflicto, con un mensaje claro. Cada código cuenta qué pasó, sin tener que adivinar.
-
-**Para pasar:** “¿Y dónde vive la regla que decide si algo se permite?”
-
-**Para leer más:** `docs/inicio/proyecto.md`
-
-### 13. La regla vive en el dominio
-
-**En pantalla:**
-
-- La solicitud es un record: datos que no cambian
-- Solo se envía si está en BORRADOR
-- Si no, lanza una excepción del dominio
-- No sabe nada de HTTP ni de bases de datos
-
-**Código (solo recorrido técnico):** `servicio-solicitudes/…/dominio/Solicitud.java`
-
-**Qué decir**
-
-> La solicitud es un record de Java, que es una forma corta de declarar datos que no cambian. Cuando la enviamos, no modificamos la solicitud que teníamos: creamos una nueva en estado enviada.
->
-> Y la regla está ahí mismo, a la vista: solo se puede enviar si está en borrador. Si no, lanza una excepción que se llama TransicionNoPermitida.
->
-> Fíjense en lo que esta clase no sabe: no sabe de HTTP, no sabe de PostgreSQL. Solo sabe del negocio. Si mañana cambia la regla, la cambiamos en un solo lugar.
-
-**Para pasar:** “Esa excepción tiene que llegarle a la persona como un mensaje que entienda.”
-
-### 14. Manejo global de errores
-
-**En pantalla · Números grandes:**
-
-- 201 Creada: Todo salió bien: la solicitud quedó en BORRADOR.
-- 400 Faltan datos: El identificador o el tipo vienen vacíos.
-- 404 No existe: No hay ninguna solicitud con ese identificador.
-- 409 Conflicto: El identificador ya existe o el cambio no se permite.
+- Centro: Dominio: Solicitud · ServicioDeSolicitudes
+- Puertos: RepositorioDeSolicitudes, RegistradorDeEventosSalientes, PublicadorDeEventos
+- Entrada: SolicitudController: REST · Swagger; Manejador global: Errores → HTTP
+- Salida: RepositorioJpa: @Primary · PostgreSQL; Bandeja de salida: Tabla evento; PublicadorConReintento: @Primary · HTTP; RepositorioEnMemoria: Para las pruebas
 
 **Ideas clave:**
 
-- 404: la solicitud no existe
-- 409: el identificador ya existe o el cambio no se permite
-- 400: faltan datos
-- Siempre la misma forma: estado y mensaje
+- Entrada: traduce HTTP al dominio
+- Dominio: las reglas, sin Spring
+- Puertos: contratos que el dominio necesita
+- Salida: PostgreSQL y HTTP, intercambiables
 
-**Código (solo recorrido técnico):** `servicio-solicitudes/…/adaptadores/entrada/ManejadorGlobalDeErrores.java`
+**Comparación:** Como un enchufe: el aparato no sabe de qué planta viene la electricidad, solo que el enchufe cumple la norma.
 
-**Qué decir**
-
-> En el taller del endpoint seguro aprendimos a no repetir el manejo de errores en cada controlador. En su lugar, hay un solo componente, el manejador global, que atrapa las excepciones y las convierte en respuestas HTTP.
->
-> Si la solicitud no existe, responde 404. Si el identificador ya existe o el cambio no se permite, 409. Si faltan datos, 400. Y siempre con la misma forma: un estado y un mensaje.
->
-> Eso es lo que permite que la interfaz le muestre a la persona un mensaje claro, en lugar de un error genérico que nadie entiende.
-
-**Qué hacer** (no se dice)
-
-- Mostrar: En la UI, crear dos veces el mismo identificador. Debe verse: Aparece el diálogo “Ese identificador ya existe” con el código 409.
-
-**Para pasar:** “Ahora, ¿cómo sabe otra persona qué endpoints existen?”
-
-### 15. Documentar con Swagger
-
-**En pantalla:**
-
-- Cada servicio publica su contrato con OpenAPI
-- Swagger lo muestra como una página
-- Se puede probar cada endpoint desde ahí
-- Si agregamos un endpoint, aparece solo
-
-**Comparación:** Como el menú de un restaurante: dice qué hay, qué lleva cada plato y qué te van a traer.
-
-| Servicio | Swagger |
-| --- | --- |
-| solicitudes | http://localhost:8080/swagger-ui/index.html |
-| notificaciones | http://localhost:8081/swagger-ui/index.html |
+**Código:** `servicio-solicitudes/…/config/ConfiguracionDominio.java`
 
 **Qué decir**
 
-> Un contrato de API es como el menú de un restaurante: dice qué se puede pedir, qué lleva cada pedido y qué te van a devolver.
+> ¿Qué quiere decir hexagonal? El nombre viene del dibujo: un hexágono con el negocio al centro y cada lado como un enchufe hacia afuera. También se le llama puertos y adaptadores. El dominio no llama a la base: pide lo que necesita a través de puertos, que son interfaces.
 >
-> Cada servicio publica su contrato con un estándar llamado OpenAPI, y Swagger lo muestra como una página donde podemos ver cada endpoint y hasta probarlo.
+> Para quien trabaja con procedimientos almacenados es una idea conocida: la aplicación llama a un procedimiento por su nombre y sus parámetros, sin saber cómo está escrito por dentro. Aquí es al revés: el negocio declara qué necesita, y la tecnología se enchufa a ese contrato.
 >
-> Lo mejor es que se genera desde el código. Cuando agregamos un endpoint, la documentación lo muestra sin trabajo extra, y nunca queda desactualizada. Desde la interfaz hay un menú, Contratos, que abre estas páginas directamente.
+> A la izquierda están los adaptadores de entrada, como el controlador REST. A la derecha, los de salida: el que guarda en PostgreSQL, el que anota el evento pendiente y el que lo publica con reintentos.
+>
+> Fíjense en el de abajo: un repositorio en memoria que cumple el mismo puerto. Lo usan las pruebas, y Spring elige el que usa la aplicación real con @Primary. Por eso cambiar la base o el mecanismo de entrega no obliga a tocar las reglas del negocio.
 
-**Qué hacer** (no se dice)
+**Si preguntan:** ¿Esto no es más código que una aplicación en capas tradicional?
 
-- Mostrar: En la UI, menú Contratos › Swagger · solicitudes, y ejecutar GET /solicitudes. Debe verse: La lista en JSON con código 200.
+**Respuesta corta:** Un poco más de interfaces, a cambio de probar sin base y cambiar adaptadores sin tocar reglas.
 
-**Para pasar:** “Documentar no basta: también hay que comprobar que funciona.”
+**Para pasar:** “¿Y por qué dos servicios y no uno solo?”
 
-### 16. Pruebas unitarias
+**Para leer más:** `docs/arquitectura/componentes-java.md`
 
-**En pantalla:**
+### 16. ¿Monolito o microservicios?
 
-- Las reglas se prueban sin levantar Spring
-- Los controladores se prueban con MockMvc
-- Un repositorio en memoria reemplaza a PostgreSQL
-- El pipeline corre todas las pruebas en cada cambio
+**En pantalla · Dos maneras, lado a lado:**
 
-| Prueba | Qué comprueba |
-| --- | --- |
-| SolicitudTest | Los cambios de estado permitidos y prohibidos |
-| ServicioSolicitudesUnitTest | Crear, enviar y registrar el evento |
-| SolicitudControllerWebTest | El JSON y los códigos 201, 404, 409 y 400 |
-| Pruebas de notificaciones | Un evento repetido genera un solo aviso |
+- Conviene un monolito: Las partes cambian juntas; Se publica todo junto; La carga es pareja; Un equipo pequeño lo mantiene
+- Conviene separar: Responsabilidades claramente distintas; Una parte necesita salir sola; Una parte necesita más recursos; Un equipo dueño de cada parte
+
+**Ideas clave:**
+
+- Separar agrega red, bases propias y fallos parciales
+- Se decide por negocio, equipos y operación
+- En ARKA-Lite separamos para aprender esas fronteras
+
+**Código:** `servicio-*/…/eventos/SolicitudEnviada.java`
 
 **Qué decir**
 
-> Las pruebas son como un vigilante que revisa cada regla todas las noches. Si alguien cambia algo y rompe una regla sin darse cuenta, la prueba falla y nos avisa.
+> Separar no es gratis: agrega red entre servicios, una base por servicio y fallos parciales, cuando uno está arriba y el otro caído. La decisión se toma por negocio, despliegue, carga y equipos, no por moda.
 >
-> Como el negocio no depende de Spring, podemos probar las reglas sin levantar nada: son pruebas muy rápidas. En lugar de PostgreSQL usamos un repositorio en memoria que cumple el mismo contrato.
+> En ARKA-Lite el trámite y los avisos cambian por motivos distintos, así que los separamos y los unimos con un contrato: el evento SolicitudEnviada, copiado en los dos proyectos.
+
+**Para pasar:** “Esto es lo que aprendimos de la arquitectura.”
+
+### 17. Arquitectura: lo que aprendimos
+
+**En pantalla · Lo que aprendimos:**
+
+- Métrica: 3 puertos en solicitudes
+- Métrica: 2 adaptadores por puerto
+- Los puertos separan negocio y tecnología: Varios adaptadores por puerto; Spring usa el @Primary. Valor: Cambiar la base o la mensajería sin reescribir reglas.
+- Separar servicios tiene un costo: Red, bases propias y fallos parciales. Valor: Separar solo cuando el negocio o los equipos lo justifican.
+- Síncrono para ver, asíncrono para avisar: La UI espera la respuesta; el evento se entrega después. Valor: Una caída parcial no detiene a quien usa el sistema.
+- El contrato es lo único compartido: SolicitudEnviada vive en los dos servicios y cambia junto. Valor: Equipos independientes con un acuerdo explícito.
+
+**Ideas clave:**
+
+- Los puertos separan negocio y tecnología
+- Separar servicios tiene un costo
+- El contrato entre servicios se versiona con cuidado
+
+**Qué decir**
+
+> Primero: los puertos separan el negocio de la tecnología. Hoy usamos PostgreSQL y HTTP, pero cambiar a otra base o a un sistema de mensajería no obligaría a reescribir las reglas.
 >
-> Los controladores los probamos con MockMvc, que simula peticiones HTTP sin un servidor real. Solo el servicio de solicitudes tiene 28 pruebas, y el pipeline las corre todas en cada cambio.
+> Segundo: separar servicios tiene un costo real. Lo vale cuando el negocio o los equipos lo piden, no antes.
+>
+> Tercero: síncrono para lo que la persona necesita ver y asíncrono para lo que puede esperar. Y cuarto: entre dos servicios, lo único compartido debe ser el contrato. Si cambia, cambia en los dos lados, de forma coordinada.
+
+**Para pasar:** “El costo más interesante de separar está en los datos. Vamos a la base de datos.”
+
+## 3 · Base de datos
+
+### 18. Del procedimiento almacenado al ORM
+
+**En pantalla · Dos maneras, lado a lado:**
+
+- Con procedimientos almacenados: La regla vive en la base: EXEC sp_enviar; Cambiar una regla es cambiar la base; Para probar hace falta la base con datos; Atado a un motor: T-SQL o PL/SQL
+- Con un ORM: JPA + Hibernate: La regla vive en Java, en el dominio; Hibernate genera el SQL de guardar y buscar; Las reglas se prueban sin base, en milisegundos; Cambiar de motor no toca las reglas
+
+**Ideas clave:**
+
+- Con SP, la regla vive en la base
+- Con ORM, la regla vive en el código
+- Hibernate escribe el INSERT, UPDATE y SELECT
+- No es todo o nada: el SQL pesado puede seguir en la base
+
+**Por qué importa:** No es todo o nada: las reglas van al código y los reportes o consultas pesadas pueden seguir en SQL.
+
+**Código:** `servicio-solicitudes/…/adaptadores/persistencia/SolicitudEntity.java`
+
+**Qué decir**
+
+> Muchos de ustedes trabajan con procedimientos almacenados: la regla del negocio vive en la base, y la aplicación solo hace EXEC con parámetros. Funciona, pero cambiar una regla es cambiar la base, y probarla exige una base con datos.
+>
+> En ARKA-Lite usamos un ORM, que significa mapeo objeto-relacional. En Java el estándar se llama JPA y la herramienta que lo hace es Hibernate. Una clase Java se marca como entidad y queda asociada a una tabla: cada campo es una columna. Cuando guardamos o buscamos, Hibernate escribe el INSERT, el UPDATE o el SELECT por nosotros.
+>
+> Ojo: no es todo o nada. Las reglas del negocio pasan al código, donde se prueban en milisegundos, y lo que de verdad es trabajo de base de datos, como reportes pesados, puede seguir en SQL.
+
+**Si preguntan:** ¿Y el rendimiento? ¿El SQL que genera Hibernate es bueno?
+
+**Respuesta corta:** Para guardar y buscar por llave, sí. Para consultas complejas se puede escribir SQL propio; además, los índices y constraints siguen siendo trabajo de la base.
+
+**Para pasar:** “¿Y cómo llega, paso a paso, una línea de Java hasta PostgreSQL?”
+
+**Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
+
+### 19. Cómo el código llega a la base
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. Dominio: Pide guardar la solicitud, sin SQL.
+- 2. Spring Data: save() y findById(), sin escribir SQL.
+- 3. Hibernate: Objeto → INSERT o UPDATE.
+- 4. JDBC + pool: Reutiliza conexiones con usuario y clave.
+- 5. PostgreSQL: Ejecuta y confirma la transacción.
+
+**Ideas clave:**
+
+- El dominio pide guardar, sin SQL
+- Spring Data ofrece save y findById
+- Hibernate convierte el objeto en SQL
+- JDBC y un pool de conexiones hablan con PostgreSQL
+
+**Comparación:** Como un traductor: el código habla Java, la base habla SQL, y el ORM traduce en los dos sentidos.
+
+**Qué decir**
+
+> Sigamos una línea de código. El dominio dice: guardar esta solicitud. No sabe nada de SQL. Spring Data nos da métodos listos, como save o findById, sin escribir una sola consulta.
+>
+> Por debajo, Hibernate convierte el objeto en un INSERT o un UPDATE. Y el driver JDBC, con un pool de conexiones que las reutiliza, como el que ya conocen de cualquier aplicación, se lo manda a PostgreSQL, que ejecuta y confirma la transacción.
+>
+> La dirección de la base, el usuario y la clave no están en el código: llegan por variables de entorno.
+
+**Para pasar:** “¿Y dónde se configura todo eso?”
+
+### 20. Dónde se configura la conexión
+
+**En pantalla · Tarjetas:**
+
+- URL, usuario y clave: spring.datasource lee DB_URL, DB_USER y DB_PASSWORD; nada fijo en el código.
+- Secretos fuera de la imagen: En Compose, variables de entorno; en Kubernetes, el Secret arka-postgres.
+- Pool de conexiones: HikariCP viene con Spring Boot: abre unas pocas conexiones y las reutiliza.
+- Transacciones: @Transactional es el BEGIN … COMMIT: si algo falla, ROLLBACK de todo.
+- Arranque seguro: schema.sql crea lo que falta y Hibernate valida que las tablas coincidan.
+- Por nombre: jdbc:postgresql://db-solicitudes:5432 dentro de la red; nunca localhost.
+
+**Ideas clave:**
+
+- URL, usuario y clave por variables
+- Secretos fuera de la imagen
+- Un pool que reutiliza conexiones
+- Transacciones todo o nada
+- Tablas listas y validadas al arrancar
+- La base se busca por nombre
+
+**Código:** `servicio-solicitudes/src/main/resources/application.properties`
+
+**Qué decir**
+
+> Para quienes administran bases de datos, esta es la parte conocida. La aplicación no trae la dirección de la base ni la clave: las lee de variables de entorno. En Docker Compose las pone el archivo compose; en Kubernetes, la clave sale de un Secret.
+>
+> Spring Boot incluye un pool de conexiones, HikariCP, que abre unas pocas conexiones y las reutiliza, igual que cualquier aplicación bien configurada. Y la anotación @Transactional es el BEGIN y COMMIT de siempre: si algo falla en el medio, se hace ROLLBACK de todo.
+>
+> Al arrancar, el servicio crea las tablas que falten con schema.sql y Hibernate valida que coincidan con el código. Y dentro de la red, la base se busca por su nombre, db-solicitudes, nunca por localhost.
+
+**Si preguntan:** ¿Cuántas conexiones abre cada servicio?
+
+**Respuesta corta:** Las que define el pool; por defecto HikariCP mantiene hasta 10 y las reutiliza entre peticiones.
+
+**Para pasar:** “Ahora veamos qué tablas tiene cada servicio.”
+
+### 21. Una base por servicio
+
+**En pantalla · Bases de datos y sus tablas:**
+
+- db-solicitudes (PostgreSQL 17 · schema.sql): solicitud [id · PK, tipo, estado · CHECK (4 estados)]; evento [solicitud_id · FK, evento_id · UUID, procesado · false = pendiente]
+- db-notificaciones (PostgreSQL 17 · Hibernate): evento_procesado [evento_id · PK, un registro por evento recibido]
+- Entre bases: evento_id por HTTP
+
+**Ideas clave:**
+
+- PostgreSQL 17 en cada servicio
+- solicitud y evento viven juntas
+- evento_procesado recuerda lo recibido
+- Ninguna llave foránea cruza bases
+
+**Por qué importa:** Cada servicio cambia su esquema sin coordinarse con el otro; solo el contrato del evento es compartido.
+
+**Qué decir**
+
+> Cada servicio tiene su propia base PostgreSQL. En la de solicitudes hay dos tablas: la solicitud, con un CHECK que solo admite los cuatro estados válidos, y la tabla evento, que funciona como bandeja de salida: cada fila es un aviso pendiente de entregar.
+>
+> En la de notificaciones hay una sola tabla importante: evento_procesado, la lista de eventos que ya recibió.
+>
+> Fíjense en la flecha: no hay llaves foráneas entre bases. Lo único que viaja de un lado al otro es el evento_id. Esa es la frontera entre los dos servicios.
+
+**Si preguntan:** ¿Por qué no un JOIN entre las dos bases?
+
+**Respuesta corta:** Porque cada servicio es dueño de sus datos; un JOIN entre bases los volvería a acoplar.
+
+**Para pasar:** “Ahora, el problema más interesante: ¿qué pasa si guardo y el otro servicio está caído?”
+
+**Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
+
+### 22. Un esquema que se cuida solo
+
+**En pantalla · Tarjetas:**
+
+- schema.sql idempotente: CREATE y ALTER … IF NOT EXISTS: se puede correr mil veces y también actualiza bases viejas.
+- Hibernate valida: ddl-auto=validate: si una entidad no coincide con la tabla, el servicio no arranca.
+- La base también cuida reglas: Un CHECK solo admite BORRADOR, ENVIADA, APROBADA o RECHAZADA.
+- Índice parcial: idx_evento_pendiente solo indexa las filas con procesado = false.
+
+**Ideas clave:**
+
+- schema.sql corre en cada arranque
+- Todo es idempotente: IF NOT EXISTS
+- Hibernate valida las entidades
+- Un índice parcial para los pendientes
+
+**Código:** `servicio-solicitudes/src/main/resources/schema.sql`
+
+**Qué decir**
+
+> No usamos Flyway ni Liquibase, así que nos pusimos una regla: el archivo schema.sql corre en cada arranque y todo lo que tiene es idempotente. Crea lo que falta y actualiza bases viejas sin romperlas.
+>
+> Además, Hibernate valida que las entidades coincidan con las tablas. Si no coinciden, el servicio no arranca, y eso es bueno: preferimos un error al inicio que datos mal guardados.
+>
+> Y dos detalles de base de datos: un CHECK que impide estados inválidos aunque alguien escriba directo en la tabla, y un índice parcial que solo indexa los eventos pendientes, que son los que el relevador busca cada cinco segundos.
+
+**Si preguntan:** ¿Cuándo conviene pasar a Flyway o Liquibase?
+
+**Respuesta corta:** Cuando haya muchos ambientes o cambios que no se puedan escribir de forma idempotente.
+
+**Para pasar:** “Con el esquema claro, vamos al problema de la consistencia.”
+
+### 23. Guardar primero, avisar después
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. Enviar: Solicitud ENVIADA + evento pendiente, en una transacción.
+- 2. Bandeja de salida: El evento espera en la tabla evento.
+- 3. Relevador: Cada 5 s entrega los pendientes, hasta 3 intentos.
+- 4. Notificaciones: Lo recibe y el evento queda procesado.
+- Si si falla en el paso 3: Sigue pendiente: Mismo eventoId; se reintenta en el siguiente ciclo.
+
+**Ideas clave:**
+
+- Solicitud ENVIADA y evento pendiente, juntos
+- Si una falla, no se guarda ninguna
+- El relevador entrega cada 5 s, con 3 intentos
+- Si falla, sigue pendiente con el mismo eventoId
+
+**Comparación:** Como dejar una carta en la bandeja de salida: aunque el mensajero no pase hoy, la carta no se pierde.
+
+**Por qué importa:** Si notificaciones está caído, ningún aviso se pierde: queda pendiente hasta que vuelve.
+
+**Código:** `servicio-solicitudes/…/dominio/ServicioDeSolicitudes.java`
+
+**Qué decir**
+
+> Este es el problema de la consistencia. Si al enviar una solicitud llamáramos directamente a notificaciones y justo estuviera caído, la solicitud quedaría enviada y nadie se enteraría.
+>
+> La solución se llama patrón outbox, o bandeja de salida. Al enviar, guardamos la solicitud y un evento pendiente en la misma transacción: o se guardan las dos cosas, o ninguna. La respuesta le llega a la persona enseguida.
+>
+> Después, un relevador revisa la bandeja cada cinco segundos y entrega los pendientes, con hasta tres intentos. Si aun así falla, el evento sigue pendiente, con el mismo número, para el siguiente ciclo.
+
+**Si preguntan:** ¿Que el envío responda bien significa que el aviso ya existe?
+
+**Respuesta corta:** No. Significa que la solicitud y el evento quedaron guardados; el aviso llega después.
+
+**Para pasar:** “Si se reintenta, ¿no puede llegar el aviso dos veces?”
+
+**Para leer más:** `docs/arquitectura/flujo-y-referencias.md`
+
+### 24. El mismo evento, un solo aviso
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. Llega el evento: Trae su eventoId.
+- 2. ¿Ya lo recibimos?: Se busca en evento_procesado.
+- 3. Crear el aviso: Solo si el número es nuevo.
+- 4. Anotar el número: En la misma transacción.
+- Si ya estaba en el paso 2: Ignorarlo: No se crea otro aviso. Duplicados: cero.
+
+**Ideas clave:**
+
+- Cada evento trae un número que no cambia
+- Notificaciones anota los números recibidos
+- Si llega uno repetido, lo ignora
+- Se comprueba con el botón Reentregar
+
+**Comparación:** Como un portero con lista de invitados: si alguien ya entró, no lo vuelve a anotar.
+
+**Código:** `servicio-notificaciones/…/adaptadores/entrada/ConsumoIdempotente.java`
+
+**Qué decir**
+
+> Sí, puede llegar dos veces. Si notificaciones recibió el evento pero su respuesta se perdió, el relevador cree que falló y lo vuelve a mandar.
+>
+> Para eso está la idempotencia: repetir la misma operación no multiplica su efecto. Notificaciones funciona como un portero con lista: anota el número de cada evento, y si llega uno que ya está en la lista, lo ignora.
+>
+> El outbox evita perder avisos; la idempotencia evita duplicarlos. Juntos dan lo que en la industria se llama entrega al menos una vez con efecto exactamente una vez.
 
 **Qué hacer** (no se dice)
 
-- Mostrar: ./mvnw test en servicio-solicitudes. Debe verse: Tests run: 28, Failures: 0.
+- Mostrar: En la UI, pestaña Enviadas: Reentregar un evento ya consumido. Debe verse: El diálogo “El aviso no se duplicó” y Avisos duplicados en 0.
 
-**Para pasar:** “Las pruebas cuidan el código. Git cuida su historia.”
+**Si preguntan:** ¿Qué resuelve el outbox y qué resuelve la idempotencia?
 
-### 17. Git y commits con sentido
+**Respuesta corta:** El outbox evita perder el evento; la idempotencia evita duplicar su efecto.
+
+**Para pasar:** “Esto es lo que aprendimos de la base de datos.”
+
+### 25. Base de datos: lo que aprendimos
+
+**En pantalla · Lo que aprendimos:**
+
+- Métrica: 0 avisos perdidos
+- Métrica: 0 avisos duplicados
+- El ORM no elimina el trabajo de base de datos: Hibernate escribe el SQL rutinario; índices, CHECK y transacciones siguen siendo diseño de BD. Valor: Reglas que se prueban en código y una base que se cuida sola.
+- Guardar primero, avisar después: Solicitud y evento en una transacción local; el relevador entrega después. Valor: Un servicio caído no hace perder información.
+- Todo reintento necesita idempotencia: Un eventoId fijo y una tabla de eventos ya procesados. Valor: Se puede reintentar sin miedo a duplicar efectos.
+- El esquema también es código: schema.sql idempotente, CHECK, índice parcial y validación al arrancar. Valor: Despliegues repetibles y errores visibles al inicio.
+
+**Ideas clave:**
+
+- La transacción local es la herramienta más confiable
+- Reintentar exige idempotencia
+- El esquema también es código
+
+**Qué decir**
+
+> Cuatro aprendizajes de datos. El primero, para quienes vienen de los procedimientos almacenados: el ORM no elimina el trabajo de base de datos. Escribe el SQL rutinario, pero los índices, los CHECK y las transacciones siguen siendo diseño de base.
+>
+> Segundo: la transacción local es la herramienta más confiable que tenemos. En lugar de coordinar dos servicios al mismo tiempo, guardamos todo en nuestra base y avisamos después.
+>
+> Tercero: cualquier reintento necesita idempotencia del otro lado. Si no, los reintentos que nos protegen de perder datos nos terminan duplicando datos.
+>
+> Y cuarto: el esquema también es código. Versionado, idempotente y validado al arrancar.
+
+**Para pasar:** “Los datos están cuidados. Ahora, ¿cómo llevamos todo esto a cualquier ambiente?”
+
+## 4 · Contenedores y Kubernetes
+
+### 26. ¿Qué es Docker y qué es Kubernetes?
+
+**En pantalla · Dos maneras, lado a lado:**
+
+- Docker: la caja: Empaqueta la app con Java y todo lo que usa; Imagen: un paquete que no cambia; Corre igual en una laptop y en un servidor; Compose levanta varias cajas juntas
+- Kubernetes: el administrador: Decide dónde corre cada caja; Si una se cae, levanta otra; Le da a cada servicio un nombre fijo; Puede correr más copias si hay carga
+
+**Ideas clave:**
+
+- Docker: la caja con la app y todo lo que necesita
+- Imagen: el paquete; contenedor: el paquete corriendo
+- Kubernetes: arranca, vigila y reinicia las cajas
+- Compose hace lo mismo en una sola computadora
+
+**Comparación:** Como el transporte de carga: Docker es el contenedor estándar y Kubernetes, el puerto que los acomoda, los vigila y reemplaza el que se daña.
+
+**Qué decir**
+
+> Dos palabras que se escuchan mucho. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia. Cuando esa imagen corre, se llama contenedor, y corre igual en una laptop o en un servidor.
+>
+> Kubernetes es el siguiente nivel: no empaqueta, administra. Decide dónde corre cada contenedor, lo vigila, y si uno se cae, levanta otro. Piénsenlo como un puerto de carga: Docker es el contenedor estándar y Kubernetes es el puerto que los acomoda y reemplaza el que se daña.
+>
+> En una sola computadora usamos Docker Compose; en un clúster, Kubernetes. La misma imagen sirve en los dos.
+
+**Si preguntan:** ¿Docker es una máquina virtual?
+
+**Respuesta corta:** No. Es más liviano: comparte el sistema operativo y solo aísla la aplicación y lo que necesita.
+
+**Para pasar:** “Veamos el sistema completo levantado con Docker.”
+
+### 27. De código a contenedor
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. Dockerfile: La receta: qué instalar y qué copiar.
+- 2. Etapa build: Compila el JAR con Maven.
+- 3. Imagen: Solo Java y el JAR: más liviana.
+- 4. Contenedor: Corre con un usuario sin privilegios.
+
+**Ideas clave:**
+
+- Dockerfile: la receta
+- Etapa build: compila con Maven
+- Imagen: solo Java y el JAR
+- Contenedor: corre sin privilegios
+
+**Código:** `servicio-solicitudes/Dockerfile`
+
+**Qué decir**
+
+> El Dockerfile tiene dos etapas. La primera trae Maven y compila. La segunda solo lleva Java y el JAR, así la imagen final es más liviana y no carga herramientas de compilación.
+>
+> Además corre con un usuario sin privilegios: si alguien llegara a comprometer el proceso, no sería administrador del contenedor.
+
+**Para pasar:** “Un contenedor solo no es el sistema. Necesitamos levantarlos todos juntos.”
+
+**Para leer más:** `docs/operaciones/docker-y-compose.md`
+
+### 28. Todo el sistema con un comando
+
+**En pantalla · Tarjetas:**
+
+- Comando: docker compose up --build -d
+- arka-lite-ui: :8088 · la interfaz y su proxy
+- servicio-solicitudes: :8080 · el trámite
+- servicio-notificaciones: :8081 · los avisos
+- db-solicitudes: PostgreSQL 17 · solo red interna
+- db-notificaciones: PostgreSQL 17 · :5433
+- promtail: recoge los logs
+- loki: :3100 · guarda los logs
+- grafana: :3000 · busca en los logs
+
+**Ideas clave:**
+
+- Servicios, bases, UI y logs en un archivo
+- Cada servicio se llama por su nombre
+- La configuración entra por variables
+- La misma imagen sirve en Compose y en Kubernetes
+
+**Qué decir**
+
+> ¿Cuántas veces hemos escuchado “en mi máquina funciona”? Con Docker, cada servicio viaja con su receta, y con Compose levantamos el sistema completo con un solo comando: los dos servicios, sus bases, la interfaz y las herramientas de logs.
+>
+> Dentro de la red de Compose, cada servicio encuentra al otro por su nombre, no por localhost. Y la configuración entra por variables de entorno, así que la misma imagen sirve en nuestra computadora y en el clúster, sin recompilar.
+>
+> Para un equipo nuevo, esto es la diferencia entre un día configurando y cinco minutos.
+
+**Qué hacer** (no se dice)
+
+- Mostrar: docker compose ps Debe verse: La UI, los servicios y las bases arriba y sanos.
+
+**Si preguntan:** Dentro de un contenedor, ¿a dónde lleva localhost?
+
+**Respuesta corta:** Al mismo contenedor, no a otro servicio. Por eso usamos el nombre del servicio.
+
+**Para pasar:** “En nuestra computadora usamos Compose. En un clúster, Kubernetes.”
+
+### 29. Los recursos de Kubernetes
+
+**En pantalla · Capas del sistema:**
+
+- Acceso: Service: Un nombre fijo por componente; port-forward: La UI en localhost:8088
+- Cómputo: 5 Deployments: UI, 2 servicios y 2 bases; initContainers: Esperan a la base y al otro servicio; readinessProbe: Sin tráfico hasta estar listo
+- Configuración: Secret arka-postgres: La contraseña de las bases; Variables de entorno: DB_URL, NOTIFICACIONES_URL
+- Datos: PersistentVolumeClaim: Un disco por base: sobrevive al Pod
+
+**Ideas clave:**
+
+- Deployment y Pod por componente
+- Service: un nombre fijo
+- Secret para la contraseña
+- Disco persistente para cada base
+
+**Código:** `despliegue local`
+
+**Qué decir**
+
+> Para el equipo técnico, estos son los recursos. Un Deployment por componente, que crea su Pod; un Service que le da un nombre fijo; la contraseña en un Secret; y un disco persistente por base, que sobrevive si el Pod se recrea.
+>
+> Antes de arrancar, cada servicio espera con initContainers a que su base y sus dependencias respondan, y una readinessProbe evita mandarle tráfico antes de tiempo. Todo se aplica con un solo kubectl apply.
+
+**Para pasar:** “¿Y qué pasa cuando algo se cae?”
+
+**Para leer más:** `docs/operaciones/kubernetes-local.md`
+
+### 30. Cuando un Pod se cae
+
+**En pantalla · Qué pasa cuando falla:**
+
+- Falla: Se cae el Pod de solicitudes: Un error, un nodo reiniciado o un kubectl delete.
+- 1. [0 s] Detecta: Falta 1 de 1 copias.
+- 2. [+1 s] Recrea: Un Pod nuevo con la misma imagen.
+- 3. [+segundos] Espera: initContainers: base y notificaciones.
+- 4. [Ready] Listo: La readinessProbe responde.
+- Resultado: Sin intervención manual: Los eventos pendientes siguen en la base y se entregan.
+
+**Ideas clave:**
+
+- El Deployment detecta que falta una copia
+- Crea un Pod nuevo
+- Espera a la base y a su salud
+- Vuelve a recibir tráfico, sin intervención
+
+**Qué decir**
+
+> Kubernetes funciona como un termostato: no le decimos qué hacer paso a paso, le decimos el estado que queremos, por ejemplo una copia de cada servicio, y él lo mantiene.
+>
+> Si el Pod de solicitudes se cae, el Deployment detecta que falta una copia y crea otro con la misma imagen. El Pod nuevo espera a que su base y notificaciones respondan, y solo cuando su prueba de salud contesta, el Service le vuelve a mandar tráfico.
+>
+> Y como los eventos pendientes están en la base, no en memoria, nada se pierde mientras tanto. Nadie tuvo que despertarse a las tres de la mañana.
+
+**Qué hacer** (no se dice)
+
+- Mostrar: kubectl delete pod -l app=servicio-solicitudes y luego kubectl get pods -w. Debe verse: Aparece un Pod nuevo que vuelve a estar Ready.
+
+**Si preguntan:** ¿Y si se cae la base?
+
+**Respuesta corta:** Su Pod también se recrea y los datos siguen en el disco persistente; los servicios esperan a que vuelva.
+
+**Para pasar:** “Esto es lo que aprendimos de la plataforma.”
+
+### 31. Contenedores y Kubernetes: lo que aprendimos
+
+**En pantalla · Lo que aprendimos:**
+
+- Métrica: 1 comando para levantar todo
+- Métrica: 5 manifiestos en k8s/
+- La imagen es el entregable: Dos etapas, solo Java y el JAR, usuario sin privilegios. Valor: Lo que se prueba es exactamente lo que se despliega.
+- Configurar por variables: La misma imagen en Compose y en Kubernetes. Valor: Un solo artefacto para todos los ambientes.
+- Declarar el estado deseado: Deployments, initContainers y readinessProbe. Valor: El clúster se repara solo y no recibe tráfico antes de tiempo.
+
+**Ideas clave:**
+
+- La imagen es el entregable
+- Configurar por variables, no por código
+- Declarar el estado y dejar que se mantenga
+
+**Qué decir**
+
+> Primero: la imagen es el entregable. Lo que se prueba es exactamente lo que se despliega.
+>
+> Segundo: configurar por variables de entorno y no por código. Así hay un solo artefacto para todos los ambientes.
+>
+> Y tercero: con Kubernetes declaramos el estado que queremos y el clúster lo mantiene. Arrancar no es lo mismo que estar listo, y eso hay que decírselo explícitamente.
+
+**Para pasar:** “¿Y quién construye y prueba esas imágenes? Nadie a mano: el pipeline.”
+
+## 5 · CI/CD
+
+### 32. Cada cambio se prueba solo
+
+**En pantalla · Las etapas del pipeline:**
+
+- 1. Push o PR: Alguien sube un cambio.
+- 2. Compilar: Java 26 y Maven, un job por servicio.
+- 3. Probar: mvn verify con PostgreSQL de servicio.
+- 4. Arrancar: Levanta el JAR y espera ver CAM-002.
+- 5. Imagen: Se construye con Docker.
+- 6. Publicar: En GHCR, con el SHA del commit.
+
+**Ideas clave:**
+
+- Cada push o Pull Request dispara el pipeline
+- Compila y prueba cada servicio con su base
+- Comprueba que el servicio realmente arranca
+- Publica la imagen con el SHA del commit
+
+**Por qué importa:** Un cambio roto se detecta en minutos, antes de llegar a los demás.
+
+**Código:** `.github/workflows/ci.yml`
+
+**Qué decir**
+
+> Con GitHub Actions, cada vez que alguien sube un cambio o abre un Pull Request, se dispara el pipeline. Por cada servicio prepara Java y una base PostgreSQL, compila y corre todas las pruebas.
+>
+> Luego hace algo que muchos pipelines no hacen: arranca el servicio de verdad y espera a ver los datos iniciales. Así detectamos errores de configuración que las pruebas unitarias no ven.
+>
+> Si todo pasa, construye la imagen y la publica etiquetada con el código del commit. Cada imagen se puede rastrear hasta el cambio exacto que la produjo.
+
+**Si preguntan:** ¿Publicar la imagen la despliega en Kubernetes?
+
+**Respuesta corta:** No. Publicar deja la imagen lista; desplegar es otro paso, con kubectl apply.
+
+**Para pasar:** “El pipeline funciona porque todo entra por el mismo camino.”
+
+**Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
+
+### 33. Todo entra por Pull Request
 
 **En pantalla · Una rama de Git:**
 
@@ -464,729 +1059,87 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 **Ideas clave:**
 
 - Una rama corta por tarea: feat/, fix/, docs/
-- Commits en español: “feat: crear solicitud por post”
-- Todo entra por Pull Request con una aprobación
-- Nadie sube cambios directo a main
+- Commits en español con Conventional Commits
+- Una aprobación y el pipeline en verde
+- Nadie sube directo a main
 
 **Qué decir**
 
-> Trabajamos en equipo sobre el mismo código, así que necesitábamos orden. Cada tarea se hace en una rama corta, con un nombre que dice qué es: feat para algo nuevo, fix para una corrección, docs para documentación.
+> Cada tarea va en una rama corta con un nombre que dice qué es, y cada commit sigue una convención: tipo, dos puntos y qué hace el cambio.
 >
-> Cada commit sigue una convención: el tipo, dos puntos y una frase corta que dice qué hace el cambio. Por ejemplo: feat, crear solicitud por post. Así, leyendo el historial, cualquiera entiende qué pasó.
->
-> Y nadie sube cambios directo a la rama principal. Todo entra por un Pull Request, otra persona lo revisa y el pipeline lo valida antes de integrarlo.
+> Nadie sube directo a main: todo entra por un Pull Request, con una aprobación y el pipeline en verde.
 
 **Qué hacer** (no se dice)
 
 - Mostrar el historial del repositorio en GitHub; no crear commits durante la exposición.
 
-**Para pasar:** “Ya sabemos construir un servicio. Ahora veamos cómo lo diseñamos para que pueda cambiar.”
+**Para pasar:** “Esto es lo que aprendimos de la integración continua.”
 
 **Para leer más:** `docs/desarrollo/flujo-de-trabajo.md`
 
-## 3 · Diseñar para cambiar · presenta Participante 3
-
-### 18. Portada · Diseñar para cambiar
-
-**En pantalla:** cinco preguntas con su respuesta corta.
-
-- **¿Qué problema resuelve?** Si las reglas dependen de HTTP o de la base, cambiar una tecnología obliga a tocar el negocio.
-- **¿Cómo funciona?** El negocio va en el centro y la tecnología en los bordes. Lo que cambia por motivos distintos va en servicios distintos.
-- **¿Cómo se ve?** Entrada → dominio → salida; un monolito que se separa en dos servicios.
-- **¿Dónde está en ARKA-Lite?** Paquetes dominio/ y adaptadores/ en cada servicio; adaptadores activos marcados con @Primary.
-- **¿Cómo lo comprobamos?** Las pruebas usan un repositorio en memoria con el mismo puerto, sin PostgreSQL.
-
-**Qué decir**
-
-> Ahora vamos con diseñar para cambiar. Primero, qué problema resuelve.
-
-**Qué hacer:** leer las cinco preguntas antes de avanzar.
-
-### 19. Por dentro de servicio-solicitudes
-
-**En pantalla:**
-
-- Entrada: traduce HTTP
-- Dominio: las reglas, sin Spring
-- Puertos: lo que el negocio necesita
-- Salida: PostgreSQL y HTTP
-
-**Diagrama paso a paso · Por dentro de servicio-solicitudes.** Cada número coincide con el de la flecha en la lámina.
-
-1. Las peticiones entran por el controlador, que solo traduce HTTP.
-2. El servicio de dominio coordina cada caso: crear, enviar, aprobar o rechazar.
-3. Las reglas viven en el record Solicitud; si una no se cumple, lanza una excepción.
-4. El dominio pide lo que necesita a través de puertos: interfaces sin tecnología.
-5. Los adaptadores de salida implementan esos puertos; Spring usa los marcados con @Primary.
-6. Al enviar, la solicitud y su evento pendiente se guardan en PostgreSQL.
-7. Cada 5 segundos, el relevador lee los pendientes y el publicador los entrega con reintentos.
-8. El manejador global convierte las excepciones en 404, 409 o 400; Swagger y Actuator publican el contrato y la salud.
-9. ConfiguracionDominio arma las piezas con @Bean, y el RestClient lleva el traceId al otro servicio.
-
-**Qué decir**
-
-> En el taller de estructura base organizamos cada servicio en tres zonas. A la izquierda, la entrada: los controladores que reciben las peticiones HTTP. En el centro, el dominio: las reglas del negocio. A la derecha, la salida: lo que habla con el exterior, como la base de datos o el otro servicio.
->
-> El dominio no llama directamente a la base. Pide lo que necesita a través de puertos, que son interfaces: un contrato que dice, por ejemplo, necesito guardar y buscar solicitudes, sin decir cómo.
->
-> Los adaptadores de salida cumplen ese contrato. Uno guarda en PostgreSQL; otro anota el evento pendiente; otro lo entrega a notificaciones. A esto se le llama arquitectura de puertos y adaptadores, o arquitectura hexagonal.
-
-**Para pasar:** “El otro servicio sigue la misma idea.”
-
-**Para leer más:** `docs/arquitectura/flujo-y-referencias.md`
-
-### 20. Por dentro de servicio-notificaciones
-
-**En pantalla:**
-
-- Entrada: recibe el evento y las consultas
-- Consumo idempotente: ¿este evento ya llegó?
-- Dominio: crea el aviso
-- Salida: avisos en memoria y eventos en PostgreSQL
-
-**Diagrama paso a paso · Por dentro de servicio-notificaciones.** Cada número coincide con el de la flecha en la lámina.
-
-1. Solicitudes entrega el evento por HTTP a EventoController.
-2. ConsumoIdempotente pregunta si ese eventoId ya está en evento_procesado.
-3. Si es nuevo, el dominio crea el aviso; si ya estaba, lo ignora.
-4. El aviso se guarda en memoria por el puerto, y el eventoId queda anotado en PostgreSQL.
-5. La interfaz consulta los avisos con GET /notificaciones.
-6. ConfiguracionNotificaciones arma el dominio; Swagger y Actuator publican el contrato y la salud.
-
-**Qué decir**
-
-> Ahora el otro servicio. Notificaciones es más pequeño, pero está organizado igual: entrada, dominio y salida.
->
-> Por la entrada llegan dos cosas: el evento que manda solicitudes y las consultas de la interfaz. Antes de crear un aviso, una pieza que llamamos consumo idempotente revisa en la base si ese número de evento ya llegó. Si es nuevo, el dominio crea el aviso y se anota el número.
->
-> Y un detalle honesto: los avisos viven en memoria, pero la lista de eventos ya recibidos está en PostgreSQL. Por eso, aunque el servicio se reinicie, nunca crea un aviso repetido.
-
-**Si preguntan:** ¿Qué pasa con los avisos si notificaciones se reinicia?
-
-**Respuesta corta:** Se pierde su texto, pero no se duplican: la lista de eventos recibidos está en la base.
-
-**Para pasar:** “¿Qué ganamos con esa separación?”
-
-**Para leer más:** `docs/arquitectura/componentes-java.md`
-
-### 21. Una consulta, capa por capa
-
-**En pantalla:**
-
-- El controlador recibe el id
-- El servicio pide la solicitud por el puerto
-- El adaptador JPA consulta PostgreSQL
-- La fila vuelve convertida en objeto del dominio
-
-**Diagrama paso a paso · Consulta de una solicitud.** Cada número coincide con el de la flecha en la lámina.
-
-1. La UI pide GET /solicitudes/SOL-100. El id viaja en la ruta; no hay cuerpo.
-2. El controlador no decide reglas: llama al caso de uso.
-3. El caso de uso llama buscar(id) a través del contrato. Spring conectó RepositorioJpa.
-4. RepositorioJpa usa Spring Data JPA, que consulta PostgreSQL.
-5. La fila vuelve como entidad y el adaptador la convierte en Solicitud del dominio.
-6. Si no existe, el servicio lanza SolicitudNoEncontrada y el manejador responde 404.
-7. Spring escribe la solicitud como JSON con id, tipo y estado.
-
-**Qué decir**
-
-> Sigamos una consulta para el equipo técnico. El controlador recibe el id en la ruta y llama al servicio. El servicio pide la solicitud a través del puerto RepositorioDeSolicitudes.
->
-> Quien responde es RepositorioJpa, que usa Spring Data para hacer la consulta y convierte la fila de la base en un objeto del dominio. El servicio nunca ve una tabla ni una consulta SQL.
-
-**Para pasar:** “Ahora, la ventaja práctica de trabajar con puertos.”
-
-### 22. Cambiar la pieza sin tocar el negocio
-
-**En pantalla:**
-
-- Hay varios adaptadores para el mismo puerto
-- Spring usa el que tiene @Primary
-- Hoy: PostgreSQL y publicador con reintentos
-- En las pruebas: un repositorio en memoria
-
-**Comparación:** Como un enchufe: el aparato no sabe de qué planta viene la electricidad, solo que el enchufe cumple la norma.
-
-**Diagrama paso a paso · Dependencias de código frente a llamadas.** Cada número coincide con el de la flecha en la lámina.
-
-1. El servicio de dominio solo conoce el contrato que necesita, no la clase que lo cumple.
-2. El adaptador también conoce ese contrato y lo cumple. Los dos dependen del contrato.
-3. Cuando la aplicación corre, la llamada sí llega al adaptador.
-4. Spring elige cuál usar: el que está marcado con @Primary, hoy el que guarda en PostgreSQL.
-
-**Qué decir**
-
-> Piensen en un enchufe. Un aparato no sabe si la electricidad viene de una hidroeléctrica o de paneles solares. Solo sabe que el enchufe cumple la norma. Los puertos son ese enchufe.
->
-> Por eso podemos tener varios adaptadores para el mismo puerto. Hoy, Spring usa el que marcamos con @Primary: el que guarda en PostgreSQL y el que publica con reintentos. En las pruebas usamos uno que guarda en memoria, y el negocio ni se entera del cambio.
->
-> Dejamos las versiones alternativas en el código a propósito, como material de aprendizaje: muestran que cambiar la pieza no obliga a tocar las reglas.
-
-**Si preguntan:** ¿La interfaz guarda algo por sí misma?
-
-**Respuesta corta:** No. Solo declara el contrato; el adaptador es el que hace el trabajo.
-
-**Para pasar:** “Esa misma idea, llevada más lejos, separa aplicaciones completas.”
-
-### 23. De monolito a microservicios
-
-**En pantalla:**
-
-- Separamos por responsabilidad
-- El trámite y los avisos cambian por motivos distintos
-- Cada servicio es dueño de su base
-- Se hablan con un contrato: el evento
-
-**Diagrama paso a paso · De monolito a microservicios.** Cada número coincide con el de la flecha en la lámina.
-
-1. Antes: una sola aplicación hace todo y comparte una base.
-2. Separamos por responsabilidad: el trámite y los avisos cambian por motivos distintos.
-3. Cada servicio es dueño de su base. Ninguno lee la base del otro.
-4. Se comunican con un contrato: el evento SolicitudEnviada por HTTP.
-
-**Código (solo recorrido técnico):** `servicio-*/…/eventos/SolicitudEnviada.java`
-
-**Qué decir**
-
-> En el taller de descomposición del monolito aprendimos que la pregunta clave no es técnica. Es: ¿qué partes del negocio cambian juntas?
->
-> Un monolito es una sola aplicación que lo hace todo y comparte una base. En ARKA-Lite, el trámite y los avisos cambian por motivos distintos, así que los separamos en dos servicios, cada uno con su propia base.
->
-> ¿Cómo se hablan, entonces? Con un contrato: un mensaje llamado SolicitudEnviada, que dice qué solicitud se envió. Ese contrato está copiado en los dos proyectos, y si cambia de un lado, hay que cambiarlo del otro.
-
-**Para pasar:** “¿Siempre conviene separar?”
-
-### 24. Cuándo conviene separar
-
-**En pantalla:**
-
-- Separar agrega red, bases propias y fallos parciales
-- Se decide por negocio, equipos y operación
-- En ARKA-Lite separamos para aprender esas fronteras
-
-| Criterio | Favorece un monolito | Favorece microservicios |
-| --- | --- | --- |
-| Negocio | Las partes cambian juntas | Responsabilidades claramente distintas |
-| Despliegue | Se publica todo junto | Una parte necesita salir sola |
-| Carga | Pareja | Una parte necesita más recursos |
-| Equipos | Un equipo pequeño | Un equipo dueño de cada parte |
-
-**Qué decir**
-
-> Separar no es gratis. Ahora hay red entre los servicios, cada uno tiene su base, y puede pasar que uno esté arriba y el otro caído. A eso se le llama fallo parcial.
->
-> Por eso la decisión se toma con criterios como los de esta tabla: si las partes cambian juntas, si necesitan desplegarse por separado, si un equipo distinto es dueño de cada una.
->
-> En ARKA-Lite separamos para aprender esas fronteras. Y justamente el fallo parcial es el problema que resolvemos en la siguiente parte.
-
-**Si preguntan:** Si un solo equipo mantiene todo y lo publica junto, ¿qué ganamos separando?
-
-**Respuesta corta:** Poco: agregamos red y fallos parciales sin un beneficio claro.
-
-**Para pasar:** “Si un servicio puede fallar mientras el otro funciona, ¿cómo evitamos perder datos?”
-
-## 4 · Guardar sin perder datos · presenta Participante 4
-
-### 25. Portada · Guardar sin perder datos
-
-**En pantalla:** cinco preguntas con su respuesta corta.
-
-- **¿Qué problema resuelve?** Si guardamos la solicitud y justo después falla el aviso, podríamos perder la intención de avisar.
-- **¿Cómo funciona?** Primero se guarda, después se avisa; y el que recibe ignora lo que ya recibió.
-- **¿Cómo se ve?** Transacción local → evento pendiente → relevador → receptor idempotente.
-- **¿Dónde está en ARKA-Lite?** Adaptador JPA, tabla evento, RelevadorDeEventosPendientes, PublicadorConReintento y ConsumoIdempotente.
-- **¿Cómo lo comprobamos?** En la UI, pestaña Enviadas: eventos entregados y consumidos, y 0 avisos duplicados al reentregar.
-
-**Qué decir**
-
-> Ahora vamos con guardar sin perder datos. Primero, qué problema resuelve.
-
-**Qué hacer:** leer las cinco preguntas antes de avanzar.
-
-### 26. Un adaptador conectado a una base real
-
-**En pantalla:**
-
-- Cada servicio tiene su base PostgreSQL
-- schema.sql crea las tablas al arrancar
-- Hibernate revisa que las entidades coincidan
-- La entidad JPA no es el objeto del dominio
-
-**Código (solo recorrido técnico):** `servicio-solicitudes/src/main/resources/application.properties`
-
-**Qué decir**
-
-> En el taller de modelado y consultas conectamos el adaptador a una base de datos real: PostgreSQL. Para no escribir SQL a mano en cada operación, usamos JPA, que traduce entre nuestros objetos y las tablas.
->
-> Al arrancar, el servicio ejecuta un archivo llamado schema.sql que crea las tablas si no existen. Después, Hibernate revisa que las clases coincidan con las tablas. Si no coinciden, el servicio no arranca, y eso es bueno: preferimos un error al inicio que datos mal guardados.
->
-> Un detalle de diseño: la clase que JPA guarda no es la misma que usa el negocio. El adaptador traduce entre las dos, y así el negocio sigue sin saber nada de la base.
-
-**Para pasar:** “Ahora veamos el problema más interesante del proyecto.”
-
-**Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
-
-### 27. Dónde vive cada dato
-
-**En pantalla:**
-
-- Solicitudes guarda el trámite y sus eventos
-- Notificaciones guarda qué eventos ya recibió
-- El texto del aviso vive en memoria
-- No hay relación directa entre las dos bases
-
-**Diagrama paso a paso · Dónde vive cada dato.** Cada número coincide con el de la flecha en la lámina.
-
-1. Solicitudes guarda el trámite en su propia base de datos.
-2. En esa misma base anota el evento pendiente, para no perder la intención de avisar.
-3. Notificaciones guarda en su base los números de evento que ya recibió.
-4. El texto del aviso vive en memoria: si el servicio se reinicia, se pierde el texto, pero no el registro.
-5. Las dos bases no están conectadas. Lo que las une es el contrato del evento.
-
-**Qué decir**
-
-> Antes del problema, ubiquemos los datos. Solicitudes guarda el trámite y una lista de eventos pendientes. Notificaciones guarda la lista de eventos que ya recibió.
->
-> Las dos bases no están conectadas entre sí. Lo único que las une es el contrato del evento.
->
-> Y una aclaración honesta: el texto del aviso vive en memoria. Si notificaciones se reinicia, perdemos ese texto, pero conservamos el registro de qué eventos ya recibimos. Lo mencionamos al final como mejora pendiente.
-
-**Para pasar:** “Con esto claro, veamos el problema de la consistencia.”
-
-### 28. El problema de la consistencia
-
-**En pantalla · Dos maneras, lado a lado:**
-
-- Avisar en el mismo momento: Se guarda la solicitud como enviada; Justo ahí, notificaciones está caído; El aviso se pierde y nadie se entera
-- Guardar primero, avisar después: Solicitud y evento pendiente se guardan juntos; Si notificaciones está caído, el evento espera; El aviso llega cuando el servicio vuelve
+### 34. CI/CD: lo que aprendimos
+
+**En pantalla · Lo que aprendimos:**
+
+- Métrica: 2 jobs en paralelo, uno por servicio
+- Métrica: 1 imagen por commit
+- Probar que arranca, no solo que compila: El pipeline levanta el JAR y consulta GET /solicitudes. Valor: Los errores de configuración aparecen antes de desplegar.
+- Cada imagen se rastrea a su commit: Etiqueta con el SHA en GHCR. Valor: Saber qué código corre y volver atrás con certeza.
+- El pipeline es la puerta: Pull Request, una aprobación y todo en verde. Valor: La calidad no depende de la memoria de nadie.
 
 **Ideas clave:**
 
-- Se guardan juntos la solicitud ENVIADA y un evento pendiente
-- Si una de las dos falla, no se guarda ninguna
-- La respuesta llega enseguida
-- El aviso se entrega después
-
-**Diagrama paso a paso · Envío: estado y evento en una transacción.** Cada número coincide con el de la flecha en la lámina.
-
-1. La persona pulsa Enviar y la interfaz le pide al servicio que envíe la solicitud.
-2. El controlador recibe el pedido y se lo pasa al servicio de dominio.
-3. El servicio revisa que la solicitud esté en BORRADOR y la cambia a ENVIADA.
-4. En una sola operación se guardan dos cosas: la solicitud ENVIADA y un evento pendiente.
-5. La respuesta llega enseguida. El aviso todavía no existe: se entrega después.
-
-**Código (solo recorrido técnico):** `servicio-solicitudes/…/dominio/ServicioDeSolicitudes.java`
+- Probar que arranca, no solo que compila
+- Cada imagen se rastrea a su commit
+- El pipeline es la puerta de entrada
 
 **Qué decir**
 
-> Imagínense que envían una solicitud justo cuando el servicio de avisos está caído. Si en ese momento intentáramos avisar directamente, la solicitud quedaría enviada, pero nadie se enteraría. Ese es el problema de la consistencia.
+> Primero: hay que probar que el servicio arranca, no solo que compila. Muchos errores de configuración solo aparecen al arrancar.
 >
-> Lo que hicimos fue separar el envío en dos momentos. En el primero, guardamos la solicitud como enviada y, en la misma operación, dejamos anotado que hay un aviso pendiente. Es todo o nada: si una de las dos cosas falla, no se guarda ninguna.
+> Segundo: cada imagen se etiqueta con su commit. Eso nos dice exactamente qué código está corriendo y nos permite volver atrás con certeza.
 >
-> La respuesta le llega a la persona enseguida. El aviso se entrega en un segundo momento, que vemos en la siguiente lámina.
+> Y tercero: el pipeline es la puerta de entrada. La calidad no depende de que alguien se acuerde de correr las pruebas.
 
-**Si preguntan:** ¿Que el envío responda bien significa que el aviso ya existe?
+**Para pasar:** “Ya está desplegado. ¿Cómo sabemos qué pasa adentro?”
 
-**Respuesta corta:** No. Significa que la solicitud y el evento quedaron guardados; el aviso llega después.
+## 6 · Observabilidad
 
-**Para pasar:** “¿Quién entrega ese aviso pendiente?”
-
-**Para leer más:** `docs/arquitectura/flujo-y-referencias.md`
-
-### 29. La bandeja de salida
+### 35. Todos los logs, en un solo lugar
 
 **En pantalla · Flujo paso a paso:**
 
-- 1. Evento pendiente: Espera en la tabla evento, junto a la solicitud.
-- 2. Relevador: Revisa los pendientes cada 5 segundos.
-- 3. Publicador: Lo entrega por HTTP, con hasta 3 intentos.
-- 4. Notificaciones: Lo recibe y el evento queda procesado.
-- Si si falla en el paso 3: Sigue pendiente: Con el mismo número de evento, se reintenta en el siguiente ciclo.
+- 1. Servicios: Logs JSON con traceId y eventoId.
+- 2. Promtail: Los recoge de cada contenedor.
+- 3. Loki: Los guarda, etiquetados por servicio.
+- 4. Grafana: Una búsqueda para todo el sistema.
 
 **Ideas clave:**
 
-- El evento espera en la tabla de pendientes
-- El relevador revisa cada 5 segundos
-- Lo entrega con hasta 3 intentos
-- Si falla, vuelve a intentar en el siguiente ciclo
+- Cada servicio escribe sus logs en JSON (ECS)
+- Promtail los recoge de todos los contenedores
+- Loki los guarda por servicio
+- Grafana los busca por traceId o eventoId
 
-**Comparación:** Como dejar una carta en la bandeja de salida: aunque el mensajero no pase hoy, la carta no se pierde.
-
-**Diagrama paso a paso · Entrega posterior del evento.** Cada número coincide con el de la flecha en la lámina.
-
-1. El evento espera en la tabla de pendientes.
-2. Cada 5 segundos, el relevador revisa si hay pendientes.
-3. El publicador lo entrega hasta con tres intentos, siempre con el mismo número de evento.
-4. El evento llega a notificaciones por HTTP.
-5. Notificaciones revisa si ya conoce ese número de evento.
-6. Si es nuevo, crea el aviso y anota el número.
-7. Si ya lo conocía, lo ignora. Así una reentrega no duplica el aviso.
-8. Notificaciones responde que lo recibió.
-9. Solo entonces el relevador lo marca como entregado.
-10. Si esa respuesta se pierde, el evento se vuelve a mandar, y la idempotencia evita el aviso doble.
-
-**Código (solo recorrido técnico):** `servicio-solicitudes/…/adaptadores/salida/RelevadorDeEventosPendientes.java`
+**Comparación:** Como la caja negra de un avión: registra lo que pasó, para revisarlo después.
 
 **Qué decir**
 
-> Esto se llama patrón outbox, que en español sería bandeja de salida. Es como dejar una carta en la bandeja: aunque el mensajero no pase hoy, la carta no se pierde.
+> Con dos servicios, cada uno tiene sus propios logs. Si algo falla, no queremos entrar contenedor por contenedor a buscar.
 >
-> Nuestro mensajero se llama relevador. Cada cinco segundos revisa la tabla de eventos pendientes y los entrega a notificaciones. Si no logra entregarlos, lo intenta hasta tres veces, y si aun así falla, el evento sigue pendiente para el siguiente ciclo.
+> Cada servicio escribe sus logs en JSON, con un formato estándar. Promtail los recoge de todos los contenedores, Loki los guarda etiquetados por servicio y Grafana nos deja buscarlos en un solo lugar.
 >
-> Un detalle importante: cada reintento lleva exactamente el mismo número de evento. Eso es lo que nos permite resolver el siguiente problema.
-
-**Para pasar:** “Si se reintenta, ¿no puede llegar el aviso dos veces?”
-
-### 30. El mismo evento, un solo aviso
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Llega el evento: Trae su número: el eventoId.
-- 2. ¿Ya lo recibimos?: Se busca el número en la tabla evento_procesado.
-- 3. Crear el aviso: Solo si el número es nuevo.
-- 4. Anotar el número: Para reconocerlo si vuelve a llegar.
-- Si ya estaba en el paso 2: Ignorarlo: No se crea otro aviso. Avisos duplicados: cero.
-
-**Ideas clave:**
-
-- Cada evento tiene un número que no cambia
-- Notificaciones anota los números que ya recibió
-- Si llega uno repetido, lo ignora
-- Lo comprobamos con el botón Reentregar
-
-**Comparación:** Como un portero con lista de invitados: si alguien ya entró, no lo vuelve a anotar.
-
-**Código (solo recorrido técnico):** `servicio-notificaciones/…/adaptadores/entrada/ConsumoIdempotente.java`
-
-**Qué decir**
-
-> Sí, puede llegar dos veces. Por ejemplo, si notificaciones recibió el evento pero su respuesta se perdió en el camino, el relevador piensa que falló y lo vuelve a mandar.
->
-> Para eso está la idempotencia, una palabra difícil para una idea sencilla: repetir la misma operación no multiplica su efecto. Notificaciones funciona como un portero con lista de invitados: anota el número de cada evento que recibe, y si llega uno que ya está en la lista, lo ignora.
->
-> En la demostración lo vamos a comprobar: vamos a reentregar a propósito un evento que ya llegó, y vamos a ver que no aparece un aviso nuevo.
+> Las llamadas entre servicios llevan el traceId, así que con una sola búsqueda vemos el viaje de un evento: cuándo lo publicó el relevador y cuándo lo consumió notificaciones.
 
 **Qué hacer** (no se dice)
 
-- Mostrar: En la UI, pestaña Enviadas: Reentregar un evento ya consumido. Debe verse: El diálogo “El aviso no se duplicó” y Avisos duplicados en 0.
+- Mostrar: Grafana › Explore › Loki: {service="servicio-notificaciones"} |= "evento". Debe verse: Las líneas “Consume evento” y “aviso creado” con el número del evento.
 
-**Si preguntan:** ¿Qué resuelve el outbox y qué resuelve la idempotencia?
-
-**Respuesta corta:** El outbox evita perder el evento; la idempotencia evita duplicar su efecto.
-
-**Para pasar:** “Los datos están cuidados. Ahora, ¿cómo llevamos todo esto a cualquier computadora?”
-
-## 5 · Empaquetar y entregar · presenta Participante 5
-
-### 31. Portada · Empaquetar y entregar
-
-**En pantalla:** cinco preguntas con su respuesta corta.
-
-- **¿Qué problema resuelve?** “En mi máquina funciona”: cada computadora tiene otro Java, otras variables y otra red.
-- **¿Cómo funciona?** Docker empaqueta cada servicio, Compose levanta el sistema y el pipeline prueba cada cambio.
-- **¿Cómo se ve?** Dockerfile → imagen → contenedor; push → pipeline → imagen publicada.
-- **¿Dónde está en ARKA-Lite?** Un Dockerfile por servicio, compose.yaml y .github/workflows/ci.yml.
-- **¿Cómo lo comprobamos?** docker compose ps con todo sano y la ejecución en GitHub Actions.
-
-**Qué decir**
-
-> Ahora vamos con empaquetar y entregar. Primero, qué problema resuelve.
-
-**Qué hacer:** leer las cinco preguntas antes de avanzar.
-
-### 32. Docker y Dockerfile
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Dockerfile: La receta: qué instalar y qué copiar.
-- 2. Etapa build: Compila el JAR con Maven.
-- 3. Imagen: Solo Java y el JAR, con un usuario sin privilegios.
-- 4. Contenedor: La imagen corriendo, igual en cualquier computadora.
-
-**Ideas clave:**
-
-- Dockerfile: la receta
-- Imagen: el resultado empaquetado
-- Contenedor: la imagen corriendo
-- Dos etapas: compilar y ejecutar
-
-**Comparación:** Como una receta de cocina: con los mismos ingredientes y pasos, sale el mismo plato en cualquier cocina.
-
-**Diagrama paso a paso · De Dockerfile a contenedor.** Cada número coincide con el de la flecha en la lámina.
-
-1. La primera etapa tiene Maven y Java completo, y compila el programa.
-2. La etapa final solo lleva lo necesario para ejecutarlo, con un usuario sin privilegios.
-3. El resultado es una imagen: la misma receta para cualquier computadora.
-4. Un contenedor es esa imagen corriendo, con su configuración.
-5. Dentro de la red, solicitudes llama a notificaciones por su nombre, no por localhost.
-6. Desde tu computadora entras por el puerto publicado.
-
-**Código (solo recorrido técnico):** `servicio-solicitudes/Dockerfile`
-
-**Qué decir**
-
-> ¿Cuántas veces hemos escuchado “en mi máquina funciona”? Docker existe para que eso no vuelva a pasar.
->
-> El Dockerfile es una receta. La imagen es el plato ya preparado y empaquetado. Y el contenedor es ese plato servido: la imagen corriendo. Con la misma receta, sale lo mismo en cualquier computadora.
->
-> En el taller del Dockerfile usamos dos etapas. La primera tiene todas las herramientas para compilar. La segunda solo lleva lo necesario para ejecutar, así la imagen final es más liviana, y corre con un usuario sin privilegios, que es más seguro.
-
-**Para pasar:** “Un contenedor solo no es el sistema. Necesitamos levantarlos todos juntos.”
-
-**Para leer más:** `docs/operaciones/docker-y-compose.md`
-
-### 33. Docker Compose: el sistema completo
-
-**En pantalla:**
-
-- Servicios, bases, UI y logs en un archivo
-- Dentro de la red, cada servicio se llama por su nombre
-- Las variables de entorno cambian la configuración
-- El puerto publicado no tiene que ser el interno
-
-| Quién llama | A quién | Dirección |
-| --- | --- | --- |
-| Navegador | UI | http://localhost:8088 |
-| Proxy de la UI | solicitudes | http://servicio-solicitudes:8080 |
-| solicitudes | notificaciones | http://servicio-notificaciones:8080 |
-| solicitudes | su base | jdbc:postgresql://db-solicitudes:5432/… |
-
-**Qué decir**
-
-> En el taller de Compose conectamos los dos microservicios. Con un solo comando levantamos todo: los dos servicios, sus dos bases, la interfaz y las herramientas de logs.
->
-> Dentro de la red que crea Compose, cada servicio encuentra al otro por su nombre. Solicitudes no llama a localhost: llama a servicio-notificaciones. Esto es importante, porque dentro de un contenedor, localhost es el mismo contenedor.
->
-> Y la configuración entra por variables de entorno: la dirección de la base, la del otro servicio. Así la misma imagen sirve en nuestra computadora y en el clúster, sin recompilar.
-
-**Qué hacer** (no se dice)
-
-- Mostrar: docker compose ps Debe verse: La UI, los servicios y las bases arriba y sanos.
-
-**Si preguntan:** Dentro de un contenedor, ¿a dónde lleva localhost?
-
-**Respuesta corta:** Al mismo contenedor, no a otro servicio. Por eso usamos el nombre del servicio.
-
-**Para pasar:** “Ya corre en cualquier computadora. Ahora, cómo validamos cada cambio sin hacerlo a mano.”
-
-### 34. Integración y entrega continua
-
-**En pantalla · Las etapas del pipeline:**
-
-- 1. Push o PR: Alguien sube un cambio.
-- 2. Compilar: Java 26 y Maven, un trabajo por servicio.
-- 3. Probar: Todas las pruebas, cada servicio con su base.
-- 4. Arrancar: ¿El servicio realmente levanta?
-- 5. Imagen: Se construye con Docker.
-- 6. Publicar: En GHCR, con el SHA del commit.
-
-**Ideas clave:**
-
-- Cada push o Pull Request dispara el pipeline
-- Compila y prueba cada servicio con su base
-- Comprueba que el servicio arranca
-- Publica la imagen con el código del commit
-
-**Diagrama paso a paso · CI/CD con GitHub Actions.** Cada número coincide con el de la flecha en la lámina.
-
-1. Un push a main o un Pull Request dispara el pipeline.
-2. Se crea un trabajo por servicio, cada uno con su base de datos de prueba.
-3. Cada trabajo compila y corre todas las pruebas del servicio.
-4. En solicitudes, además, comprueba que el servicio arranca de verdad.
-5. Si todo pasa, construye la imagen y la publica con el código del commit.
-6. Publicar no es desplegar: lo que corre en el clúster cambia en un paso aparte.
-
-**Qué decir**
-
-> En el taller del pipeline configuramos GitHub Actions para que trabaje por nosotros. Cada vez que alguien sube un cambio o abre un Pull Request, se dispara solo.
->
-> Por cada servicio, prepara Java y una base de datos, compila, corre todas las pruebas y comprueba que el servicio realmente arranca. Si algo falla, nos avisa en minutos.
->
-> Si todo pasa, construye la imagen y la publica con el código del commit. Así cada imagen se puede relacionar con el cambio exacto que la produjo. Integración continua es probar seguido; entrega continua es dejar siempre una versión lista para desplegar.
-
-**Si preguntan:** ¿Publicar la imagen la despliega en Kubernetes?
-
-**Respuesta corta:** No. Desplegar es un paso aparte.
-
-**Para pasar:** “Con cada cambio probado y empaquetado, falta llevarlo al clúster.”
-
-**Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
-
-### 35. Leer ci.yml
-
-**En pantalla:**
-
-- on: push a main y pull_request
-- Una matriz: un job por servicio
-- mvn -B verify en la carpeta del servicio
-- Imagen etiquetada con el SHA
-
-**Código (solo recorrido técnico):** `.github/workflows/ci.yml`
-
-**Qué decir**
-
-> Antes de pasar al clúster, para el equipo técnico, veamos el archivo que lo hace. GitHub encuentra los workflows en la carpeta .github/workflows. La sección on dice cuándo se dispara: con cada push a main y con cada Pull Request.
->
-> La matriz crea un trabajo por servicio, cada uno con su base. Cada trabajo corre mvn verify dentro de su carpeta. En solicitudes, además, arranca el JAR y espera ver la solicitud CAM-002 que se carga al iniciar. Al final, construye y publica la imagen.
-
-**Qué hacer** (no se dice)
-
-- Abrir el archivo en GitHub solo en modo lectura.
-
-**Para pasar:** “Con las imágenes publicadas, falta llevarlas al clúster.”
-
-## 6 · Desplegar y operar · presenta Participante 6
-
-### 36. Portada · Desplegar y operar
-
-**En pantalla:** cinco preguntas con su respuesta corta.
-
-- **¿Qué problema resuelve?** Si un servicio se cae de madrugada, alguien tiene que levantarlo y después averiguar qué pasó.
-- **¿Cómo funciona?** Kubernetes mantiene el sistema corriendo; los logs y la salud nos dicen qué está pasando.
-- **¿Cómo se ve?** Deployment → Pod → Service; App → Promtail → Loki → Grafana.
-- **¿Dónde está en ARKA-Lite?** Los manifiestos de k8s/, Promtail, Loki y Grafana, y Actuator en cada servicio.
-- **¿Cómo lo comprobamos?** kubectl get pods, una búsqueda en Grafana por número de evento y la pestaña Salud de la UI.
-
-**Qué decir**
-
-> Ahora vamos con desplegar y operar. Primero, qué problema resuelve.
-
-**Qué hacer:** leer las cinco preguntas antes de avanzar.
-
-### 37. Del contenedor al clúster
-
-**En pantalla:**
-
-- Deployment: cuántas copias de cada servicio
-- Pod: donde corre el contenedor
-- Service: un nombre fijo para encontrarlo
-- Secret y disco persistente para las bases
-
-**Comparación:** Como un termostato: le dices la temperatura que quieres y él se encarga de mantenerla.
-
-**Diagrama paso a paso · Kubernetes: estado deseado.** Cada número coincide con el de la flecha en la lámina.
-
-1. Declaramos un Deployment: qué imagen usar y cuántas copias queremos.
-2. Kubernetes mantiene ese número de copias. Si una falta, crea otra.
-3. Cada copia corre en un Pod. Antes de arrancar, espera a la base y a notificaciones.
-4. El Service da un nombre fijo y solo manda tráfico a los Pods listos.
-5. El Secret entrega la contraseña de la base sin escribirla en el código.
-6. La base guarda sus datos en un disco que sobrevive a los reinicios. Aun así, no es un respaldo.
-7. La aplicación llega a la base por su nombre de Service, no por una dirección fija.
-
-**Código (solo recorrido técnico):** `despliegue local`
-
-**Qué decir**
-
-> Kubernetes funciona como un termostato. No le decimos qué hacer paso a paso: le decimos el estado que queremos, por ejemplo una copia de cada servicio, y él se encarga de mantenerlo.
->
-> El Deployment dice cuántas copias queremos. Cada copia corre en un Pod. El Service le da a cada servicio un nombre fijo dentro del clúster, para que los demás lo encuentren. Y las bases guardan su contraseña en un Secret y sus datos en un disco que sobrevive a los reinicios.
->
-> En el taller desplegamos ARKA-Lite completo en un clúster con un solo comando: kubectl apply sobre la carpeta k8s.
-
-**Para pasar:** “¿Y cómo sabe Kubernetes si un servicio está bien?”
-
-**Para leer más:** `docs/operaciones/kubernetes-local.md`
-
-### 38. Puesta a punto: arranque y salud
-
-**En pantalla:**
-
-- Antes de arrancar, espera a sus dependencias
-- Readiness: ¿ya puede recibir tráfico?
-- Liveness: ¿hay que reiniciarlo?
-- Si un Pod muere, Kubernetes crea otro
-
-| Si el Pod está… | Primera pregunta |
-| --- | --- |
-| Pending | ¿Hay recursos o falta el disco? |
-| ImagePullBackOff | ¿Existe la imagen en el clúster? |
-| CrashLoopBackOff | ¿Qué dicen los logs del contenedor? |
-| Running, sin Ready | ¿Responde la ruta de salud? |
-
-**Qué decir**
-
-> En la puesta a punto aprendimos que arrancar no es lo mismo que estar listo. Por eso, antes de iniciar, cada servicio espera a que su base y sus dependencias respondan.
->
-> Kubernetes hace dos preguntas a cada Pod. La primera: ¿ya puedes recibir tráfico? Si no, no le manda peticiones. La segunda: ¿sigues vivo? Si no responde, lo reinicia.
->
-> Y si borramos un Pod a propósito, Kubernetes crea otro solo. En la tabla está la primera pregunta que nos hacemos según el estado en que veamos un Pod.
-
-**Qué hacer** (no se dice)
-
-- Mostrar: kubectl delete pod de servicio-solicitudes y luego kubectl get pods. Debe verse: Aparece un Pod nuevo que vuelve a estar Ready.
-
-**Para pasar:** “El sistema corre. ¿Cómo sabemos qué está pasando adentro?”
-
-### 39. Centralizar los logs
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Servicios: Escriben sus logs en JSON, con el traceId.
-- 2. Promtail: Los recoge de todos los contenedores.
-- 3. Loki: Los guarda y los ordena por servicio.
-- 4. Grafana: Permite buscarlos en un solo lugar.
-
-**Ideas clave:**
-
-- Cada servicio escribe sus logs en JSON
-- Promtail los recoge
-- Loki los guarda
-- Grafana permite buscarlos
-
-**Comparación:** Como la caja negra de un avión: registra todo lo que pasó, para revisarlo después.
-
-**Diagrama paso a paso · Recorrido de los logs.** Cada número coincide con el de la flecha en la lámina.
-
-1. Cada servicio escribe sus logs en formato JSON.
-2. Docker guarda lo que escribe cada contenedor.
-3. Promtail recoge esos logs de todos los contenedores.
-4. Loki los guarda y permite buscarlos.
-5. Grafana muestra los logs y deja filtrarlos, por ejemplo, por número de evento.
-
-**Código (solo recorrido técnico):** `observabilidad/promtail.yaml`
-
-**Qué decir**
-
-> Los logs son como la caja negra de un avión: registran lo que pasó para poder revisarlo después. El problema es que cada servicio tiene su propia caja negra.
->
-> En el taller de centralización de logs armamos este recorrido. Cada servicio escribe sus logs en formato JSON. Promtail los recoge de todos los contenedores, Loki los guarda y Grafana nos deja buscarlos en un solo lugar.
->
-> Así podemos seguir un evento de un servicio a otro buscando su número, sin entrar a cada contenedor. Desde la interfaz, el menú Contratos tiene un acceso directo a Grafana.
-
-**Qué hacer** (no se dice)
-
-- Mostrar: Grafana › Explore › Loki: {service="servicio-solicitudes"} |= "evento". Debe verse: Las líneas “Intentando publicar evento” con el número del evento.
-
-**Para pasar:** “Además de los logs, cada servicio dice si está bien.”
+**Para pasar:** “Los logs cuentan qué pasó. La salud dice cómo estamos ahora.”
 
 **Para leer más:** `docs/operaciones/observabilidad.md`
 
-### 40. Qué registran hoy los logs
-
-**En pantalla:**
-
-- Momento, nivel y servicio
-- Número de evento y de solicitud dentro del mensaje
-- La traza viaja entre servicios por el RestClient
-- Campos de destino y duración: propuesta
-
-| Campo | Hoy | Dónde |
-| --- | --- | --- |
-| @timestamp, log.level, logger | Registrado | Formato ECS de Spring Boot |
-| service | Registrado | Etiqueta que agrega Promtail |
-| eventoId e id de solicitud | Dentro del texto | PublicadorConReintento, ConsumoIdempotente |
-| Destino, intento y duración | Propuesto | Hoy van en el texto o no se registran |
-
-**Qué decir**
-
-> Para el equipo técnico: un buen log responde qué pasó, en qué servicio, cuándo y con qué identificadores. Hoy registramos el momento, el nivel, el servicio y los números de evento y de solicitud dentro del mensaje.
->
-> Las llamadas entre servicios usan un RestClient preparado para propagar la traza. Registrar el destino, el intento y la duración como campos separados queda como mejora propuesta.
-
-**Para pasar:** “Además de los logs, cada servicio dice si está bien.”
-
-### 41. Salud y monitoreo
+### 36. Salud de cada servicio
 
 **En pantalla · Capturas reales:**
 
@@ -1194,204 +1147,326 @@ Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** so
 
 **Ideas clave:**
 
-- Actuator expone la salud de cada servicio
-- Revisa, por ejemplo, la conexión con la base
+- Actuator expone health, info y métricas
+- La salud revisa la conexión con la base
 - Kubernetes y la UI la consultan
 - UP no garantiza que todos los avisos llegaron
 
-**Diagrama paso a paso · Recorrido de las métricas.** Cada número coincide con el de la flecha en la lámina.
-
-1. Cada servicio mide cosas como cuántas peticiones recibe.
-2. Actuator expone esas mediciones y también la salud del servicio.
-3. Un servidor Prometheus las guardaría en el tiempo. Hoy queda pendiente.
-4. Grafana las mostraría en gráficos. También queda pendiente.
-
 **Qué decir**
 
-> Cada servicio tiene una dirección de salud que responde si está bien. Por dentro revisa, por ejemplo, que pueda hablar con su base de datos. Kubernetes la usa para decidir si un Pod está listo, y la interfaz la muestra en la pestaña Salud.
+> Cada servicio expone su salud con Spring Boot Actuator: por dentro revisa, por ejemplo, que pueda hablar con su base. La interfaz la muestra en la pestaña Salud.
 >
-> Pero ojo: que un servicio diga UP solo significa que responde. No garantiza que todos los avisos llegaron. Para eso miramos la pestaña Enviadas y los logs.
->
-> Las métricas, como cuántas peticiones recibe cada servicio, ya se exponen. Guardarlas en el tiempo con Prometheus queda como siguiente paso.
+> Pero ojo: que un servicio diga UP solo significa que responde. No garantiza que todos los avisos llegaron. Para eso miramos los eventos pendientes y los logs.
 
 **Si preguntan:** Si todo está UP y falta un aviso, ¿qué miramos?
 
-**Respuesta corta:** Si el evento se entregó y se consumió, en Enviadas, y los logs del relevador y de notificaciones.
+**Respuesta corta:** Si el evento sigue pendiente en Enviadas, y los logs del relevador y de notificaciones.
 
-**Para pasar:** “Ya tenemos todas las piezas. Falta ensamblarlas con la interfaz.”
+**Para pasar:** “Esto es lo que aprendimos de la observabilidad.”
 
-## 7 · Ensamblaje: la UI · presenta Participante 7
+### 37. Observabilidad: lo que aprendimos
 
-### 42. Portada · Ensamblaje: la UI
+**En pantalla · Lo que aprendimos:**
 
-**En pantalla:** cinco preguntas con su respuesta corta.
+- Métrica: 1 lugar para buscar todos los logs
+- Métrica: 8 contenedores observados
+- Logs estructurados desde el día uno: JSON con formato ECS, sin cambiar el código de negocio. Valor: Buscar por campo en lugar de leer texto.
+- Un identificador que cruce servicios: traceId propagado por el RestClient y eventoId en cada log. Valor: Diagnosticar un fallo entre servicios en minutos.
+- Salud no es lo mismo que correcto: UP dice que responde; los pendientes dicen si entrega. Valor: Medir el resultado del negocio, no solo el proceso.
 
-- **¿Qué problema resuelve?** Dos servicios sueltos no son un producto: alguien tiene que poder usarlos y entenderlos.
-- **¿Cómo funciona?** Una interfaz web consume los dos servicios por un mismo origen y explica cómo funcionan.
-- **¿Cómo se ve?** Navegador → /api → nginx → solicitudes o notificaciones.
-- **¿Dónde está en ARKA-Lite?** arka-lite-ui: React, nginx como proxy, DataTables, Tom Select y SweetAlert2.
-- **¿Cómo lo comprobamos?** La demostración en vivo: crear, enviar, ver el aviso y reentregar sin duplicar.
+**Ideas clave:**
 
-**Qué decir**
-
-> Ahora vamos con ensamblaje: la ui. Primero, qué problema resuelve.
-
-**Qué hacer:** leer las cinco preguntas antes de avanzar.
-
-### 43. Cómo la UI consume los dos servicios
-
-**En pantalla:**
-
-- El navegador solo conoce /api
-- nginx reenvía cada ruta al servicio que corresponde
-- La UI registra cada petición que hace
-- Si un POST tarda, no lo repite sola
-
-**Diagrama paso a paso · Cómo funciona la UI.** Cada número coincide con el de la flecha en la lámina.
-
-1. La persona pulsa un botón en la pantalla.
-2. Si la acción cambia datos, la interfaz pide confirmarla antes de enviarla.
-3. El cliente HTTP mide el tiempo y, si tarda más de 10 segundos, no lo repite solo.
-4. El navegador llama a /api y nginx lo pasa al servicio que corresponde.
-5. nginx llega al servicio por su nombre interno.
-6. Vuelve la respuesta con su código: 200, 201, 404, 409 o un error si el servicio no responde.
-7. La petición queda registrada con su método, ruta, código y duración.
-8. La pantalla muestra el resultado con un mensaje claro.
-
-**Código (solo recorrido técnico):** `arka-lite-ui/despliegue/nginx.conf.template`
+- Logs estructurados desde el día uno
+- Un identificador que cruce servicios
+- Salud no es lo mismo que correcto
 
 **Qué decir**
 
-> La interfaz es una aplicación web hecha con React y servida por nginx. El navegador nunca conoce las direcciones internas de los servicios: siempre llama a /api, en la misma dirección de la página.
+> Primero: los logs estructurados se configuran desde el día uno. Después es mucho más caro.
 >
-> nginx funciona como una recepcionista: recibe cada petición y la pasa al servicio que corresponde. Lo que empieza con /api/solicitudes va a solicitudes; lo de notificaciones, a notificaciones.
+> Segundo: en un sistema distribuido hace falta un identificador que cruce los servicios. Sin el traceId o el eventoId, diagnosticar es adivinar.
 >
-> Y un detalle de cuidado: si una operación que cambia datos tarda demasiado, la interfaz no la repite por su cuenta, porque el cambio pudo haberse guardado aunque la respuesta no llegara.
+> Y tercero: salud no es lo mismo que correcto. Un servicio puede estar UP y tener avisos pendientes; hay que medir el resultado, no solo el proceso.
 
-**Para pasar:** “¿Y qué ve la persona cuando abre la interfaz?”
+**Para pasar:** “Todo esto también tiene que estar documentado.”
 
-**Para leer más:** `arka-lite-ui/README.md`
+## 7 · Documentación
 
-### 44. Una interfaz simple, con ayuda
+### 38. Contratos vivos con Swagger
 
 **En pantalla · Capturas reales:**
 
-- Captura de Solicitudes (localhost:8088/#/solicitudes): Crear, ver las tuyas y decidir.
-- Captura de Enviadas (localhost:8088/#/enviadas): El recorrido de cada evento y Reentregar.
-- Captura de Salud (localhost:8088/#/salud): Los dos servicios, Swagger y Grafana.
-- Captura de Ayuda (localhost:8088/#/ayuda): Diagramas paso a paso de cómo funciona.
+- Captura de Swagger de solicitudes (localhost:8080/swagger-ui/index.html)
 
 **Ideas clave:**
 
-- Solicitudes: crear, ver las tuyas, enviar, aprobar o rechazar
-- Enviadas: el recorrido de cada evento y Reentregar
-- Salud: validar los dos servicios
-- Ayuda: diagramas paso a paso de cómo funciona
+- Cada servicio publica su contrato OpenAPI
+- Swagger UI lo muestra y permite probarlo
+- Un endpoint nuevo aparece solo
+- La UI enlaza los dos Swagger
+
+**Comparación:** Como el menú de un restaurante: dice qué hay, qué lleva cada plato y qué te van a traer.
 
 **Qué decir**
 
-> La interfaz tiene solo cuatro pestañas. En Solicitudes creas una solicitud, ves las que creaste y tienes a la mano las acciones que corresponden a cada una. Antes de cada acción, la app te pide confirmar.
+> Un contrato de API es como el menú de un restaurante: dice qué se puede pedir, qué lleva cada pedido y qué te van a devolver.
 >
-> En Enviadas ves el recorrido de cada evento: registrado, entregado, consumido y aviso. En Salud validas que los dos servicios estén bien, y desde ahí también abres los contratos en Swagger y los logs en Grafana.
+> Cada servicio publica su contrato con el estándar OpenAPI, usando springdoc, y Swagger lo muestra como una página donde se puede ver cada endpoint, sus códigos de respuesta y probarlo en vivo.
 >
-> Y en Ayuda está la explicación: cada tema responde una pregunta, como qué pasa cuando envío una solicitud, con un diagrama que avanza paso a paso. Los colores de la plantilla se pueden personalizar desde la propia app.
-
-**Para pasar:** “Ahora sí, vamos a verlo funcionando.”
-
-### 45. Demostración en vivo
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Ver la salud: Los dos servicios en verde.
-- 2. Crear: Una solicitud nueva: DEMO-01.
-- 3. Enviar: Y ver llegar el evento y el aviso.
-- 4. Reentregar: El aviso no se duplica.
-
-**Ideas clave:**
-
-- Ver los dos servicios en verde
-- Crear una solicitud nueva
-- Enviarla y ver llegar el evento
-- Reentregarlo: el aviso no se duplica
-
-**Qué decir**
-
-> Abrimos la interfaz. Arriba a la derecha vemos que los dos servicios están en verde. Creamos una solicitud nueva, con un identificador propio. La app confirma que se creó y la marca como nuestra.
->
-> Ahora la enviamos. La app nos pide confirmar, confirmamos, y en la pestaña Enviadas vemos el evento registrado. En unos segundos, el relevador lo entrega, notificaciones lo recibe y aparece el aviso. Fíjense en la línea fina bajo la barra superior: se ilumina cuando un evento termina su viaje.
->
-> Y la prueba final: reentregamos a propósito el mismo evento. La app nos confirma que notificaciones lo reconoció y no creó otro aviso. Avisos duplicados: cero. Eso es la idempotencia, funcionando.
+> Lo importante para el staff: se genera desde el código. Cuando agregamos un endpoint, aparece solo, y nunca queda desactualizado. Un equipo que consume la API no tiene que pedirnos un documento.
 
 **Qué hacer** (no se dice)
 
-- Usar un identificador que no exista, por ejemplo DEMO-01. Si ya existe, la app muestra el mensaje 409: explicarlo y usar otro.
-- Si el evento tarda, esperar: la pestaña Enviadas se actualiza sola cada 5 segundos.
-- Mostrar: Solicitudes: crear DEMO-01 y enviarla. Enviadas: esperar el aviso y pulsar Reentregar. Debe verse: 201 al crear; evento entregado y consumido; 1 aviso; “El aviso no se duplicó”.
+- Mostrar: En la UI, pestaña Salud › Swagger · solicitudes, y ejecutar GET /solicitudes. Debe verse: La lista en JSON con código 200.
 
-**Para pasar:** “Para cerrar, repasemos lo que aprendimos.”
+**Para pasar:** “Y lo que no sale del código, lo documentamos junto al código.”
 
-## Cierre · presenta Participante 1
+### 39. La documentación viaja con el cambio
 
-### 46. Lo que aprendimos, en ARKA-Lite
+**En pantalla · Tarjetas:**
 
-**En pantalla:**
+- Contratos: OpenAPI y Swagger en cada servicio, generados del código.
+- docs/ en el repositorio: Inicio, arquitectura, operaciones, automatización y desarrollo.
+- Ayuda en la UI: Preguntas frecuentes con diagramas paso a paso.
+- Regla de trabajo: Cambia un endpoint, una variable o un comando: cambia la doc en el mismo PR.
 
-- Cada tema del curso tiene un lugar en el proyecto
-- Del primer endpoint al clúster
-- Con pruebas y una demostración que lo respaldan
+**Ideas clave:**
 
-| Tema del curso | Dónde está en ARKA-Lite |
-| --- | --- |
-| Spring Boot y endpoints REST | Los controladores de solicitudes y notificaciones |
-| Manejo global de errores | ManejadorGlobalDeErrores: 404, 409 y 400 |
-| Git, Swagger y pruebas | Ramas y Pull Requests, Swagger, JUnit y MockMvc |
-| Puertos y adaptadores | Los paquetes dominio y adaptadores, con @Primary |
-| De monolito a microservicios | Dos servicios, cada uno con su base |
-| Docker y Compose | Dockerfile en dos etapas y compose.yaml |
-| Integración y entrega continua | El pipeline de GitHub Actions |
-| Kubernetes | Deployments, Services, Secret y disco persistente |
-| Base de datos y consistencia | JPA, bandeja de salida, relevador e idempotencia |
-| Logs y monitoreo | Promtail, Loki, Grafana y la salud de cada servicio |
-| Ensamblaje del sistema | La interfaz: Solicitudes, Enviadas, Salud y Ayuda |
+- Swagger para los contratos
+- docs/ en el mismo repositorio
+- Ayuda con diagramas dentro de la UI
+- La presentación se genera desde la fuente
 
 **Qué decir**
 
-> Esta tabla resume el curso entero. Cada tema que vimos tiene un lugar concreto en ARKA-Lite, desde el primer endpoint con Spring Boot hasta el despliegue en Kubernetes y la centralización de logs.
+> Lo que no sale del código, vive junto al código. La carpeta docs del repositorio tiene cómo empezar, la arquitectura, la operación, el pipeline y nuestras convenciones de trabajo.
 >
-> Y no lo decimos solo en una lámina: lo acaban de ver funcionando, con pruebas automáticas que lo vigilan y un pipeline que lo valida en cada cambio.
+> Y tenemos una regla: si un Pull Request cambia un endpoint, una variable de entorno, un comando o un contrato, actualiza la documentación en el mismo Pull Request. Así la documentación no se queda atrás.
 
-**Para pasar:** “También queremos ser honestos con lo que le falta.”
+**Para pasar:** “Esto es lo que aprendimos de documentar.”
 
-### 47. Lo que le falta
+**Para leer más:** `docs/README.md`
 
-**En pantalla:**
+### 40. Documentación: lo que aprendimos
 
-- El texto de los avisos vive en memoria
-- No hay inicio de sesión: es un laboratorio
-- Sin mensajería dedicada ni métricas históricas
-- El pipeline publica, pero no despliega solo
+**En pantalla · Lo que aprendimos:**
 
-**Ojo:** Guardar el aviso en la base, junto con su número de evento (propuesta, no existe aún) · Autenticación y contraseñas fuera del repositorio (propuesta, no existe aún)
+- Métrica: 11 endpoints documentados solos
+- Métrica: 2 Swagger, uno por servicio
+- Lo que se genera no se desactualiza: OpenAPI sale de los controladores con springdoc. Valor: Cero horas manteniendo un documento de API aparte.
+- La doc se revisa en el mismo PR: El cambio y su explicación llegan juntos. Valor: Quien revisa entiende el porqué, no solo el qué.
+- Documentar para quien llega mañana: Guías en PowerShell, diagramas y la Ayuda de la UI. Valor: Menos tiempo para que alguien nuevo aporte.
+
+**Ideas clave:**
+
+- Lo que se genera no se desactualiza
+- La doc se revisa en el mismo PR
+- Documentar para quien llega mañana
 
 **Qué decir**
 
-> ARKA-Lite es un laboratorio, y lo decimos con claridad. El texto de los avisos se pierde si notificaciones se reinicia. No tiene inicio de sesión y las contraseñas son de prueba. No usa un sistema de mensajería dedicado, no guarda métricas en el tiempo y el pipeline publica las imágenes, pero no las despliega solo.
+> Primero: lo que se genera desde el código no se desactualiza. Es la mejor documentación de API que existe.
 >
-> Los siguientes pasos serían guardar el aviso en la base junto con su número de evento, agregar autenticación y sacar las contraseñas del repositorio.
+> Segundo: la documentación se revisa en el mismo Pull Request que el cambio.
+>
+> Y tercero: documentamos para la persona que llega mañana al equipo. Ese es el verdadero usuario de la documentación.
+
+**Para pasar:** “Para ver todo esto funcionando, construimos una interfaz.”
+
+## 8 · La UI como laboratorio
+
+### 41. Una UI para ver el sistema por dentro
+
+**En pantalla · Capturas reales:**
+
+- Captura de Solicitudes (localhost:8088/#/solicitudes): Crear, enviar y decidir.
+- Captura de Enviadas (localhost:8088/#/enviadas): Pendientes, entregados y Reentregar.
+- Captura de Salud (localhost:8088/#/salud): UP o DOWN, Swagger y Grafana.
+- Captura de Ayuda (localhost:8088/#/ayuda): Diagramas paso a paso.
+
+**Ideas clave:**
+
+- Solicitudes: crear, enviar, aprobar o rechazar
+- Enviadas: eventos pendientes, entregados y Reentregar
+- Salud: los dos servicios, Swagger y Grafana
+- Ayuda: diagramas de cómo funciona
+
+**Por qué importa:** Hace visible lo invisible: la bandeja de salida, los reintentos y la idempotencia.
+
+**Qué decir**
+
+> Una aclaración importante: esta interfaz no es parte del entregable. Los entregables son los dos microservicios y su plataforma. La interfaz la agregamos como laboratorio, para que cualquiera pueda ver lo que normalmente es invisible.
+>
+> En Solicitudes se crean y se envían. En Enviadas se ve la bandeja de salida: qué eventos están pendientes, cuáles se entregaron, y un botón para reentregar a propósito. En Salud, si cada servicio está UP o DOWN. Y en Ayuda, diagramas de cómo funciona.
+>
+> Donde más vale es cuando algo falla. Veamos eso.
+
+**Para pasar:** “Primer caso: el servicio de notificaciones se cae.”
+
+**Para leer más:** `arka-lite-ui/README.md`
+
+### 42. Si notificaciones se cae
+
+**En pantalla · Qué pasa cuando falla:**
+
+- Falla: notificaciones está caído: docker compose stop servicio-notificaciones
+- 1. [0 s] Enviar: Responde 200: solicitud ENVIADA y evento guardado.
+- 2. [cada 5 s] Reintenta: 3 intentos por ciclo; el evento sigue pendiente.
+- 3. [en la UI] Se ve: “Notificaciones no responde” y 1 en camino.
+- 4. [al volver] Entrega: Mismo eventoId: se crea el aviso.
+- Resultado: 1 aviso, 0 perdidos: Sin intervención y sin duplicados.
+
+**Ideas clave:**
+
+- Enviar responde bien aunque notificaciones esté caído
+- El evento queda pendiente en la bandeja
+- El relevador reintenta cada 5 segundos
+- Al volver, llega un solo aviso
+
+**Qué decir**
+
+> Detenemos notificaciones a propósito. En la pestaña Salud aparece en DOWN.
+>
+> Ahora enviamos una solicitud. La respuesta es buena: la solicitud queda enviada y su evento queda guardado. La persona no ve ningún error, porque no depende de que el otro servicio esté arriba.
+>
+> En Enviadas aparece un aviso: notificaciones no responde y el evento espera en la bandeja de salida. El relevador lo intenta cada cinco segundos y falla, pero no lo pierde. Cuando levantamos notificaciones, en el siguiente ciclo lo entrega con el mismo número, y aparece exactamente un aviso.
+
+**Qué hacer** (no se dice)
+
+- Antes: docker compose stop servicio-notificaciones. Mostrar Salud en DOWN.
+- Crear y enviar DEMO-01; mostrar en Enviadas el aviso amarillo “Notificaciones no responde” y “1 en camino”. No hace falta recargar: la pantalla se actualiza sola y el indicador de servicios vuelve a 2 de 2.
+- docker compose start servicio-notificaciones y esperar unos segundos: el evento pasa a entregado y aparece 1 aviso.
+- Mostrar: Detener notificaciones, enviar DEMO-01, mirar Enviadas y volver a iniciar notificaciones. Debe verse: Evento en camino mientras está caído; al volver, entregado y 1 aviso.
+
+**Si preguntan:** ¿Cuánto tiempo puede esperar un evento pendiente?
+
+**Respuesta corta:** Indefinidamente: está en la base. Se entrega en el primer ciclo después de que notificaciones vuelve.
+
+**Para pasar:** “Ese es el caso más importante, pero no el único.”
+
+### 43. Cómo se comporta cuando algo falla
+
+**En pantalla · Tabla de tres columnas:**
+
+- Qué falla: notificaciones está caído · Cómo reacciona el sistema: El evento queda pendiente y se reintenta cada 5 s · Qué se ve en la UI: Aviso “Notificaciones no responde” · 1 en camino
+- Qué falla: El evento llega dos veces · Cómo reacciona el sistema: ConsumoIdempotente lo reconoce y lo ignora · Qué se ve en la UI: “El aviso no se duplicó” · 0 duplicados
+- Qué falla: Enviar dos veces o aprobar un borrador · Cómo reacciona el sistema: El dominio rechaza la transición: 409 · Qué se ve en la UI: Diálogo con el motivo del 409
+- Qué falla: Faltan datos o el id ya existe · Cómo reacciona el sistema: Se valida antes de guardar: 400 o 409 · Qué se ve en la UI: Diálogo “Faltan datos” o “Ese identificador ya existe”
+- Qué falla: Un POST tarda o se corta · Cómo reacciona el sistema: La UI no lo repite sola: pudo haberse guardado · Qué se ve en la UI: Error de tiempo agotado, sin reintento automático
+
+**Ideas clave:**
+
+- Servicio caído: el evento espera
+- Evento repetido: se ignora
+- Acción inválida: 409 con mensaje
+- Datos incompletos: 400
+
+**Qué decir**
+
+> Esta tabla resume cómo se comporta el sistema ante cada falla que probamos, y qué ve la persona en la interfaz.
+>
+> Si un evento llega dos veces, se ignora. Si alguien intenta una acción que no corresponde, como enviar dos veces, recibe un 409 con el motivo. Si faltan datos, un 400 sin guardar nada.
+>
+> Y un detalle de diseño en la propia interfaz: si una operación que cambia datos tarda o se corta, no la repite sola, porque el cambio pudo haberse guardado aunque la respuesta no llegara. Ninguna falla queda sin una reacción prevista.
+
+**Qué hacer** (no se dice)
+
+- Mostrar: En Enviadas, Reentregar un evento ya consumido; en Solicitudes, enviar dos veces la misma solicitud. Debe verse: “El aviso no se duplicó” y el diálogo 409.
+
+**Para pasar:** “Esto es lo que aprendimos con la UI como laboratorio.”
+
+### 44. La UI como laboratorio: lo que aprendimos
+
+**En pantalla · Lo que aprendimos:**
+
+- Métrica: 5 fallas con reacción prevista
+- Métrica: 29 pruebas de la UI
+- Diseñar para la falla: Cada falla probada tiene una reacción y un mensaje. Valor: Menos incidentes y menos llamadas a soporte.
+- Hacer visible lo asíncrono: Pendientes, entregados y consumidos en una pantalla. Valor: Explicar el sistema a negocio sin abrir el código.
+- La demo también enseña: Ayuda con diagramas y botones para provocar fallas. Valor: Material de capacitación para quien llegue al equipo.
+
+**Ideas clave:**
+
+- Diseñar para la falla, no solo para el éxito
+- Hacer visible lo asíncrono
+- Una herramienta de demo también enseña
+
+**Qué decir**
+
+> Primero: hay que diseñar para la falla, no solo para el camino feliz. La pregunta no es si algo va a fallar, sino cómo se comporta cuando falle.
+>
+> Segundo: lo asíncrono hay que hacerlo visible. Sin la pestaña Enviadas, un evento pendiente sería invisible.
+>
+> Y tercero: una herramienta de demostración también sirve para capacitar. Esta interfaz se puede usar para explicarle el sistema a cualquiera.
+
+**Para pasar:** “Para cerrar, el valor que deja todo esto.”
+
+## Valor y cierre
+
+### 45. El valor agregado
+
+**En pantalla · Tabla de tres columnas:**
+
+- Pilar: Resiliencia · Qué construimos: Outbox, reintentos e idempotencia · Valor para el equipo: 0 avisos perdidos o duplicados ante caídas
+- Pilar: Reproducibilidad · Qué construimos: Docker, Compose y Kubernetes · Valor para el equipo: 1 comando y la misma imagen en todo ambiente
+- Pilar: Calidad · Qué construimos: 67 pruebas y pipeline por PR · Valor para el equipo: Errores detectados en minutos, antes de integrar
+- Pilar: Trazabilidad · Qué construimos: Logs centralizados, traceId e imagen por SHA · Valor para el equipo: Diagnóstico en minutos y versiones rastreables
+- Pilar: Contratos y diseño · Qué construimos: OpenAPI generado y puertos y adaptadores · Valor para el equipo: Integraciones claras y tecnología intercambiable
+
+**Ideas clave:**
+
+- Resiliencia ante fallas parciales
+- Entornos reproducibles
+- Calidad en cada cambio
+- Trazabilidad de punta a punta
+
+**Qué decir**
+
+> Si tuviéramos que resumir el valor en una lámina, sería esta. Construimos resiliencia: ante una caída parcial no se pierde ni se duplica un aviso. Reproducibilidad: un comando y la misma imagen en cualquier ambiente.
+>
+> Calidad: sesenta y siete pruebas en cada Pull Request. Trazabilidad: logs centralizados con traceId e imágenes rastreables a su commit. Y contratos claros con un diseño que permite cambiar tecnología sin tocar el negocio.
+>
+> Nada de esto es exclusivo de ARKA-Lite: son prácticas que cualquier equipo puede adoptar desde mañana.
+
+**Para pasar:** “Si nos llevamos solo tres ideas, que sean estas.”
+
+### 46. Lo que nos llevamos
+
+**En pantalla · Lo que aprendimos:**
+
+- Métrica: 0 avisos perdidos o duplicados
+- Métrica: 67 pruebas en cada cambio
+- Diseñar para la falla: Guardar primero, reintentar e ignorar duplicados. Valor: Sistemas que se recuperan solos.
+- Automatizar la confianza: Pruebas, pipeline, imágenes y estado declarado. Valor: Cambiar rápido sin miedo a romper.
+- Hacer visible el sistema: Logs, trazas, salud, Swagger y la UI laboratorio. Valor: Diagnosticar y explicar en minutos.
+
+**Ideas clave:**
+
+- Diseñar para la falla
+- Automatizar la confianza
+- Hacer visible el sistema
+
+**Qué decir**
+
+> Tres ideas. Diseñar para la falla: en un sistema distribuido, algo siempre va a fallar, y la diferencia está en cómo reacciona.
+>
+> Automatizar la confianza: pruebas, pipeline e infraestructura declarada nos permiten cambiar rápido sin miedo.
+>
+> Y hacer visible el sistema: lo que no se ve no se puede diagnosticar ni explicar.
 
 **Para pasar:** “Gracias por su atención.”
 
-### 48. Gracias
+### 47. Gracias
 
 **En pantalla:**
 
-- Equipo arka-litos · Upskilling Backend Java
-- ¿Preguntas?
+- Un laboratorio que cumplió su objetivo: aprender.
+- Proyecto final · Upskilling Backend Java
 
 **Qué decir**
 
-> Empezamos con un endpoint y terminamos con un sistema de dos microservicios, empaquetado, desplegado, observado y con una interfaz que cualquiera puede usar para comprobar cómo funciona.
+> ARKA-Lite fue un laboratorio, y cumplió su objetivo: aprender. Empezamos con un endpoint y terminamos con dos microservicios con su base de datos, empaquetados, desplegados, observados y documentados, que saben comportarse cuando algo falla.
 >
-> Muchas gracias por acompañarnos, de parte de todo el equipo arka-litos. Con gusto respondemos sus preguntas.
+> Muchas gracias por acompañarnos. Con gusto respondemos sus preguntas.
 
 **Para leer más:** `docs/inicio/proyecto.md`

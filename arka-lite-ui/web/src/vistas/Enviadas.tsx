@@ -11,30 +11,42 @@ import { rutaA } from "../rutas.ts";
 // Cada envío genera un evento. Esta pantalla cruza lo que dice cada servicio
 // y permite reentregar un evento para comprobar que el aviso no se duplica.
 
-const paso = (hecho: boolean, enCurso: boolean, texto: string) =>
-  `<span class="recorrido-paso ${hecho ? "hecho" : enCurso ? "en-curso" : ""}"><span class="recorrido-punto"></span>${esc(texto)}</span>`;
+const paso = (estado: "hecho" | "en-curso" | "perdido" | "", texto: string, titulo?: string) =>
+  `<span class="recorrido-paso ${estado}"${titulo ? ` title="${esc(titulo)}"` : ""}><span class="recorrido-punto"></span>${esc(texto)}</span>`;
 
-function recorrido(f: FilaEnviada): string {
+// Notificaciones guarda los textos de los avisos en memoria: si se reinicia,
+// un evento consumido queda sin aviso. No es un aviso pendiente.
+const SIN_AVISO = "El evento se consumió, pero notificaciones guarda los textos en memoria y se reinició.";
+
+const SIN_DATOS = "Notificaciones no responde: todavía no se sabe si lo consumió.";
+
+// Sin datos de notificaciones (nunca respondió en esta sesión), lo que pasa
+// después de entregar no se marca como hecho ni como en curso.
+function recorrido(f: FilaEnviada, sinDatos: boolean): string {
   const entregado = f.evento.procesado;
   const consumido = f.consumido;
   const aviso = f.avisos > 0;
-  return `<span class="recorrido">${paso(true, false, "Registrado")}${paso(entregado, !entregado, entregado ? "Entregado" : "Entregando")}${paso(consumido, entregado && !consumido, "Consumido")}${paso(aviso, consumido && !aviso, "Aviso")}</span>`;
+  const pasoConsumido = sinDatos ? paso("", "Consumido", SIN_DATOS) : paso(consumido ? "hecho" : entregado ? "en-curso" : "", "Consumido");
+  const pasoAviso = sinDatos ? paso("", "Aviso", SIN_DATOS) : aviso ? paso("hecho", "Aviso") : consumido ? paso("perdido", "Aviso no disponible", SIN_AVISO) : paso("", "Aviso");
+  return `<span class="recorrido">${paso("hecho", "Registrado")}${paso(entregado ? "hecho" : "en-curso", entregado ? "Entregado" : "Entregando")}${pasoConsumido}${pasoAviso}</span>`;
 }
 
 export function Enviadas() {
-  const { enviadas, pendientes, duplicados, salientes, cargado, reentregar, actualizar } = useDatos();
+  const { enviadas, pendientes, duplicados, salientes, consumidos: idsConsumidos, cargado, notificacionesSinRespuesta, reentregar, actualizar } = useDatos();
+  const sinDatos = idsConsumidos === null;
   const entregados = enviadas.filter((f) => f.evento.procesado).length;
   const consumidos = enviadas.filter((f) => f.consumido).length;
 
   const columnas = useMemo<Columna<FilaEnviada>[]>(() => [
     { titulo: "Solicitud", valor: (f) => f.solicitud.id, html: (f) => `<span class="celda-id">${esc(f.solicitud.id)}</span><br><span class="texto-tenue texto-chico">${esc(f.solicitud.tipo)} · evento ${esc(f.evento.eventoId.slice(0, 8))}…</span>` },
     { titulo: "Estado", valor: (f) => f.solicitud.estado, html: (f) => insignia(f.solicitud.estado) },
-    { titulo: "Recorrido del evento", valor: (f) => (f.consumido ? 3 : f.evento.procesado ? 2 : 1), html: recorrido },
-    { titulo: "Avisos", valor: (f) => f.avisos, html: (f) => `<b>${f.avisos}</b>` },
+    { titulo: "Recorrido del evento", valor: (f) => (f.consumido ? 3 : f.evento.procesado ? 2 : 1), html: (f) => recorrido(f, sinDatos) },
+    { titulo: "Avisos", valor: (f) => f.avisos, html: (f) => sinDatos ? `<span class="texto-tenue" title="${esc(SIN_DATOS)}">—</span>`
+      : f.avisos > 0 || !f.consumido ? `<b>${f.avisos}</b>` : `<span class="texto-tenue" title="${esc(SIN_AVISO)}">No disponible</span>` },
     { titulo: "Comprobar", valor: () => "", ordenable: false, clase: "dt-right", html: (f) => f.consumido
       ? `<button type="button" class="arka-boton arka-boton-chico arka-boton-acento" data-accion="reentregar" data-id="${esc(f.evento.eventoId)}" aria-label="Reentregar el evento de ${esc(f.solicitud.id)}">Reentregar</button>`
-      : '<span class="texto-tenue texto-chico">Se actualiza solo</span>' },
-  ], []);
+      : `<span class="texto-tenue texto-chico">${notificacionesSinRespuesta ? "Espera a notificaciones" : "Se actualiza solo"}</span>` },
+  ], [notificacionesSinRespuesta, sinDatos]);
 
   const alAccion = async (_accion: string, eventoId: string) => {
     const fila = enviadas.find((f) => f.evento.eventoId === eventoId);
@@ -65,7 +77,7 @@ export function Enviadas() {
   const tarjetas = [
     { titulo: "Eventos registrados", valor: enviadas.length, detalle: "en solicitudes" },
     { titulo: "Entregados", valor: entregados, detalle: pendientes > 0 ? `${pendientes} en camino` : "todos entregados" },
-    { titulo: "Consumidos", valor: consumidos, detalle: "en notificaciones" },
+    { titulo: "Consumidos", valor: sinDatos ? "—" : consumidos, detalle: sinDatos ? "notificaciones no responde" : "en notificaciones" },
   ];
 
   return (
@@ -88,7 +100,12 @@ export function Enviadas() {
         </div>
       </div>
 
-      {pendientes > 0 && (
+      {notificacionesSinRespuesta && salientes !== null ? (
+        <p role="status" className="m-0 flex items-center gap-2.5 rounded-recuadro bg-advertencia-suave text-advertencia-texto px-4 py-3 text-[14px] font-semibold">
+          <Icono nombre="aviso" tamano={18} />
+          Notificaciones no responde.{pendientes > 0 ? ` ${pendientes} evento${pendientes > 1 ? "s esperan" : " espera"} en la bandeja de salida de solicitudes:` : " Los eventos que envíes esperarán en la bandeja de salida:"} el relevador reintenta cada 5 segundos y los entrega cuando vuelva. No se pierde ninguno.
+        </p>
+      ) : pendientes > 0 && (
         <p role="status" className="m-0 flex items-center gap-2.5 rounded-recuadro bg-acc-suave text-acc-texto px-4 py-3 text-[14px] font-semibold">
           <span className="punto-viaje" aria-hidden="true" />
           {pendientes} evento{pendientes > 1 ? "s" : ""} en camino. El relevador revisa cada 5 segundos y esta pantalla se actualiza sola.

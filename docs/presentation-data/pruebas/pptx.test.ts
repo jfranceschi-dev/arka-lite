@@ -1,13 +1,20 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import JSZip from "jszip";
-import { agruparPasos, construirPresentacion } from "../generador-pptx/construir.ts";
+import { construirPresentacion, nombreArchivo } from "../generador-pptx/construir.ts";
 import { laminas } from "../contenido/index.ts";
 
 describe("generador PPTX", () => {
-  it("reparte los pasos sin perder ninguno", () => {
-    expect(agruparPasos(10, 3)).toEqual([[0, 3], [4, 6], [7, 9]]);
-    expect(agruparPasos(2, 5)).toEqual([[0, 0], [1, 1]]);
+  it("nombra un archivo por variante", () => {
+    expect(nombreArchivo("resumen")).toBe("ARKA-Lite-resumen.pptx");
+    expect(nombreArchivo("tecnico")).toBe("ARKA-Lite-tecnico.pptx");
+  });
+
+  it("el ejecutivo no repite diagramas paso a paso: una lámina por contenido", async () => {
+    const datos = (await construirPresentacion("ejecutivo").write({ outputType: "nodebuffer" })) as Buffer;
+    const zip = await JSZip.loadAsync(datos);
+    const diapositivas = Object.keys(zip.files).filter((f) => /^ppt\/slides\/slide\d+\.xml$/.test(f));
+    expect(diapositivas.length).toBe(laminas("ejecutivo").length);
   });
 
   it("produce un PPTX 16:9 con una nota por diapositiva", async () => {
@@ -22,7 +29,8 @@ describe("generador PPTX", () => {
     expect(notas.length).toBe(diapositivas.length);
     const portada = await zip.file("ppt/slides/slide1.xml")!.async("string");
     expect(portada).toContain("ARKA-Lite");
-    expect(portada).toContain("Recorrido ejecutivo");
+    expect(portada).toContain("VERSIÓN EJECUTIVO");
+    expect(portada).toContain("Base de datos");
     expect(portada).toContain("UPSKILLING BACKEND JAVA");
   });
 

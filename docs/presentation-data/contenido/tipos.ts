@@ -1,10 +1,14 @@
 import type { NombreIcono } from "../diseno/iconos.ts";
 
 // Modelo de la fuente de contenido de la presentación. El PPTX, el PDF, las
-// notas del expositor y los guiones (completos y por participante) leen estos
-// mismos objetos.
+// notas del expositor y los guiones leen estos mismos objetos.
 
-export type Recorrido = "ejecutivo" | "tecnico";
+// Variantes para el staff de tecnología: resumen (charla corta, ~13 láminas),
+// ejecutivo (todas las secciones, sin código) y técnico (agrega código y
+// diagramas detallados). Cada una contiene a la anterior.
+export type Recorrido = "resumen" | "ejecutivo" | "tecnico";
+export const RECORRIDOS: Recorrido[] = ["resumen", "ejecutivo", "tecnico"];
+export const NOMBRE_RECORRIDO: Record<Recorrido, string> = { resumen: "Resumen", ejecutivo: "Ejecutivo", tecnico: "Técnico" };
 
 export type Icono = NombreIcono;
 
@@ -38,11 +42,42 @@ export interface Captura {
 // Recurso visual principal de una lámina. En el PPTX reemplaza a las tarjetas,
 // la tabla o el diagrama de la lámina principal; el diagrama, si lo hay, sigue
 // en las láminas paso a paso. Los guiones y el PDF lo cuentan como texto.
+export interface Capa {
+  titulo: string;
+  tono: Tono;
+  elementos: ElementoVisual[];
+}
+
+export interface TablaDeBase {
+  nombre: string;
+  columnas: string[];
+}
+
+export interface Base {
+  titulo: string;
+  subtitulo?: string;
+  tono: Tono;
+  tablas: TablaDeBase[];
+}
+
 export type Visual =
-  // Las siete personas, agrupadas por área (sale de participantes.ts).
-  | { tipo: "equipo" }
-  // El recorrido de las siete partes con quién presenta (sale de las secciones).
+  // El recorrido de las partes numeradas (sale de las secciones).
   | { tipo: "ruta" }
+  // Lo que aprendimos en la sección: una o dos métricas y, por aprendizaje,
+  // qué aprendimos, cómo lo aplicamos y qué valor le deja al equipo.
+  | { tipo: "aprendizajes"; metricas: { valor: string; titulo: string }[]; items: (ElementoVisual & { valor: string })[] }
+  // Qué pasa cuando algo falla: la falla, la reacción del sistema en el
+  // tiempo y el resultado.
+  | { tipo: "escenario"; falla: ElementoVisual; pasos: (ElementoVisual & { momento: string })[]; resultado: ElementoVisual }
+  // Capas apiladas de arriba abajo, cada una con sus piezas.
+  | { tipo: "capas"; capas: Capa[] }
+  // Bases de datos con sus tablas y columnas, y qué las une.
+  | { tipo: "tablas"; bases: Base[]; enlace: string }
+  // Filas con tres columnas: por ejemplo, qué falla, cómo reacciona y qué se ve.
+  | { tipo: "matriz"; encabezados: [string, string, string]; filas: { icono: Icono; tono?: Tono; celdas: [string, string, string] }[] }
+  // Puertos y adaptadores: el dominio al centro, entrada a la izquierda y
+  // salida a la derecha.
+  | { tipo: "hexagono"; centro: ElementoVisual; puertos: string[]; entrada: ElementoVisual[]; salida: ElementoVisual[] }
   // Números grandes con su explicación.
   | { tipo: "cifras"; cifras: (ElementoVisual & { valor: string })[] }
   // Pasos en fila. El desvío cuelga de un paso: lo que pasa si algo falla.
@@ -119,24 +154,13 @@ export interface Diapositiva {
   // Por qué importa, en una línea: la franja inferior de la lámina.
   porque?: string;
   recorridos: Recorrido[];
+  // Diagrama detallado: se dibuja completo, con sus pasos numerados debajo.
   diagrama?: string;
-  // Paso del diagrama que representa la diapositiva en PPTX. Sin valor, se
-  // exporta un paso por diapositiva.
-  pasoEstatico?: number;
   tabla?: Tabla;
   // Solo se muestra en el recorrido técnico.
   codigo?: BloqueCodigo;
   marcas?: Marca[];
   guion: Guion;
-}
-
-// Las cinco preguntas que responde cada tema.
-export interface Claves {
-  problema: string;
-  sencillo: string;
-  visual: string;
-  aplicacion: string;
-  evidencia: string;
 }
 
 export interface Seccion {
@@ -145,21 +169,11 @@ export interface Seccion {
   numero: number | null;
   titulo: string;
   corto: string;
-  participante: string;
   // Frase de la portada de la sección: qué se va a ver.
   subtitulo?: string;
   // Temas del curso que aparecen en la sección (chips de la portada).
   temas?: string[];
-  // Ícono grande de la portada y de la ruta de la agenda.
+  // Ícono de la sección en la agenda y en las láminas de aprendizajes.
   icono?: Icono;
-  claves?: Claves;
   diapositivas: Diapositiva[];
-}
-
-export interface Participante {
-  id: string;
-  nombre: string;
-  // Área de la persona en el equipo.
-  perfil: "Desarrollo" | "DevOps" | "Base de datos";
-  rol: string;
 }

@@ -9,25 +9,38 @@ describe("fuente de contenido", () => {
     expect(validarContenido()).toEqual([]);
   });
 
-  it("organiza siete partes numeradas más apertura y cierre", () => {
-    expect(secciones.filter((s) => s.numero !== null).map((s) => s.numero)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+  it("organiza ocho partes numeradas más apertura y cierre", () => {
+    expect(secciones.filter((s) => s.numero !== null).map((s) => s.numero)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
     expect(secciones[0].titulo).toBe("Apertura");
-    expect(secciones[secciones.length - 1].titulo).toBe("Cierre");
+    expect(secciones.map((s) => s.titulo)).toContain("Base de datos");
+    expect(secciones[secciones.length - 1].titulo).toBe("Valor y cierre");
   });
 
-  it("el recorrido técnico contiene todo el ejecutivo más sus diapositivas propias", () => {
+  it("cada variante contiene a la anterior y sigue siendo corta", () => {
+    const resumen = laminas("resumen").map((l) => l.id);
     const ejecutivo = laminas("ejecutivo").map((l) => l.id);
     const tecnico = new Set(laminas("tecnico").map((l) => l.id));
-    const soloEjecutivo = ejecutivo.filter((id) => !tecnico.has(id));
-    expect(soloEjecutivo).toEqual([]);
-    expect(tecnico.size).toBeGreaterThan(ejecutivo.length);
+    expect(resumen.filter((id) => !ejecutivo.includes(id))).toEqual([]);
+    expect(ejecutivo.filter((id) => !tecnico.has(id))).toEqual([]);
+    expect(resumen.length).toBeLessThanOrEqual(20);
+    expect(ejecutivo.length).toBeLessThanOrEqual(40);
   });
 
-  it("abre con el mapa del sistema y usa todos los diagramas", () => {
-    expect(secciones[1].diapositivas[0].diagrama).toBe("arquitectura");
-    const usados = new Set(secciones.flatMap((s) => s.diapositivas.map((d) => d.diagrama)));
-    for (const d of diagramas) expect(usados.has(d.id), d.id).toBe(true);
-    expect(usados.has("macro") && usados.has("componentes")).toBe(true);
+  it("cada parte numerada termina con sus aprendizajes", () => {
+    for (const s of secciones.filter((x) => x.numero !== null)) {
+      expect(s.diapositivas[s.diapositivas.length - 1].visual?.tipo, s.id).toBe("aprendizajes");
+    }
+  });
+
+  it("muestra cómo se comporta el sistema cuando algo falla", () => {
+    const escenarios = laminas("resumen").filter((l) => l.diapositiva.visual?.tipo === "escenario");
+    expect(escenarios.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("no reparte láminas por persona", () => {
+    const texto = JSON.stringify(secciones);
+    expect(texto).not.toContain("Participante");
+    expect(texto).not.toContain("participante");
   });
 
   it("no gira alrededor de una sola solicitud de ejemplo", () => {

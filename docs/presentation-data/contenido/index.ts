@@ -1,38 +1,34 @@
 import type { Diapositiva, Recorrido, Seccion } from "./tipos.ts";
-import { apertura, sistema, servicio } from "./secciones-a.ts";
-import { diseno, datos } from "./secciones-b.ts";
-import { despliegue, observabilidad } from "./secciones-c.ts";
-import { ensamblaje, cierre } from "./secciones-d.ts";
+import { apertura, fundamentos, arquitectura } from "./secciones-a.ts";
+import { datos } from "./secciones-b.ts";
+import { plataforma, cicd, observabilidad } from "./secciones-c.ts";
+import { documentacion, laboratorio, cierre } from "./secciones-d.ts";
 
-// Orden de la presentación: del sistema visto por fuera a su ensamblaje.
+// Orden de la presentación: del código a la operación, la UI como laboratorio
+// y el valor que deja.
 export const secciones: Seccion[] = [
   apertura,
-  sistema,
-  servicio,
-  diseno,
+  fundamentos,
+  arquitectura,
   datos,
-  despliegue,
+  plataforma,
+  cicd,
   observabilidad,
-  ensamblaje,
+  documentacion,
+  laboratorio,
   cierre,
 ];
 
-// Una diapositiva del recorrido con su sección. Las secciones numeradas
-// empiezan con una portada generada desde sus cinco claves.
+// Una diapositiva del recorrido con su sección.
 export interface Lamina {
   seccion: Seccion;
-  diapositiva: Diapositiva | null;
+  diapositiva: Diapositiva;
   id: string;
-}
-
-export function idPortada(seccion: Seccion): string {
-  return `${seccion.id}-portada-seccion`;
 }
 
 export function laminas(recorrido: Recorrido): Lamina[] {
   const salida: Lamina[] = [];
   for (const s of secciones) {
-    if (s.claves) salida.push({ seccion: s, diapositiva: null, id: idPortada(s) });
     for (const d of s.diapositivas) {
       if (d.recorridos.includes(recorrido)) salida.push({ seccion: s, diapositiva: d, id: d.id });
     }
@@ -45,4 +41,3 @@ export function etiquetaSeccion(s: Seccion): string {
 }
 
 export * from "./tipos.ts";
-export { participantes, participantePorId } from "./participantes.ts";

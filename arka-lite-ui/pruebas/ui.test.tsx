@@ -4,9 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { App } from "../web/src/App.tsx";
 import { crearApiFalsa } from "./simulador.ts";
 
-function montar(hash = "") {
+function montar(hash = "", opciones: Parameters<typeof crearApiFalsa>[0] = {}) {
   window.location.hash = hash;
-  const api = crearApiFalsa();
+  const api = crearApiFalsa(opciones);
   const utilidades = render(<App cliente={{ fetchImpl: api.fetch as unknown as typeof fetch }} />);
   return { api, ...utilidades, usuario: userEvent.setup() };
 }
@@ -79,6 +79,24 @@ describe("Enviadas", () => {
     expect(await screen.findByText("El aviso no se duplicó")).toBeInTheDocument();
     expect(llamadas(api, "POST")).toEqual(["/api/eventos/solicitud-enviada"]);
     expect(screen.getByText("Avisos duplicados").parentElement).toHaveTextContent("0");
+  });
+
+  it("si notificaciones no responde, el evento queda en camino y la pantalla lo explica", async () => {
+    const { usuario } = montar("", { notificacionesCaido: true });
+    const tabla = screen.getByRole("table", { name: "Tabla de solicitudes" });
+    await waitFor(() => expect(within(tabla).getByText("INC-001")).toBeInTheDocument());
+    await usuario.click(within(tabla).getByRole("button", { name: "Enviar INC-001" }));
+    await usuario.click(await screen.findByRole("button", { name: "Sí, enviar" }));
+    await waitFor(() => expect(within(tabla).getAllByText("Enviada").length).toBeGreaterThan(1));
+
+    await usuario.click(screen.getByRole("link", { name: /Enviadas/ }));
+    const aviso = await screen.findByText(/Notificaciones no responde/);
+    expect(aviso).toHaveTextContent("1 evento espera en la bandeja de salida");
+    expect(aviso).toHaveTextContent("No se pierde ninguno");
+    expect(screen.getByText("Entregados").parentElement).toHaveTextContent("1 en camino");
+    expect(screen.getByText("Consumidos").parentElement).toHaveTextContent("notificaciones no responde");
+    const enviadas = screen.getByRole("table", { name: "Tabla de solicitudes enviadas" });
+    await waitFor(() => expect(within(enviadas).getAllByText("Espera a notificaciones").length).toBeGreaterThan(0));
   });
 });
 

@@ -5,7 +5,7 @@ Aplicación web minimalista para usar los dos microservicios de ARKA-Lite y ente
 | Pestaña | Ruta | Para qué sirve |
 | --- | --- | --- |
 | **Solicitudes** (inicio) | `#/solicitudes` | Crear una solicitud con `POST /solicitudes` (identificador y tipo con Tom Select), ver todas o solo las creadas desde este navegador en una tabla jQuery DataTables (buscar, ordenar, paginar) y ejecutar la acción que corresponde a cada una: Enviar, Aprobar o Rechazar. Cada acción pide confirmación con SweetAlert2. |
-| **Enviadas** | `#/enviadas` | El recorrido del evento de cada envío (registrado → entregado → consumido → aviso), los totales y **Reentregar**, que manda otra vez el mismo evento para comprobar que el aviso no se duplica. Se actualiza sola cada 5 s mientras hay eventos en camino. |
+| **Enviadas** | `#/enviadas` | El recorrido del evento de cada envío (registrado → entregado → consumido → aviso), los totales y **Reentregar**, que manda otra vez el mismo evento para comprobar que el aviso no se duplica. Se actualiza sola cada 5 s mientras hay eventos en camino. Si notificaciones no responde, lo dice, cuenta los eventos que esperan en la bandeja de salida y sigue consultando hasta que vuelva; un evento consumido cuyo aviso se perdió al reiniciar notificaciones aparece como “Aviso no disponible”. |
 | **Salud** | `#/salud` | **Validar servicios**: estado, tiempo de respuesta y base de datos de cada servicio, con accesos a los contratos Swagger y a Grafana. |
 | **Ayuda** | `#/ayuda/{tema}` | Explica la app con diagramas paso a paso: qué es ARKA-Lite, crear, enviar, por qué el aviso no se duplica, cómo saber si todo funciona, la arquitectura completa y, para el equipo técnico, cada flujo del código y los contratos de la API. |
 
@@ -83,6 +83,13 @@ docker compose ps
 | La usa el proxy | `http://servicio-solicitudes:8080` y `http://servicio-notificaciones:8080` |
 | Puerto publicado | `8088` |
 | Puerto del contenedor | `8080` (nginx sin privilegios) |
+
+Compose publica las API en `http://localhost:18080` (solicitudes) y
+`http://localhost:18081` (notificaciones). Los enlaces de Swagger se ajustan
+automáticamente con `SOLICITUDES_PORT` y `NOTIFICACIONES_PORT`; el proxy sigue
+usando los nombres y puertos internos. Para usar `npm run dev` contra estas API,
+definir `ARKA_SOLICITUDES_ORIGEN=http://localhost:18080` y
+`ARKA_NOTIFICACIONES_ORIGEN=http://localhost:18081` antes de iniciarlo.
 
 Diagnóstico:
 

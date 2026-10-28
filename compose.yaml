@@ -26,7 +26,7 @@ services:
 
   servicio-notificaciones:
     build: ./servicio-notificaciones
-    ports: ["8081:8080"]
+    ports: ["${NOTIFICACIONES_PORT:-18081}:8080"]
     environment:
       DB_URL: jdbc:postgresql://db-notificaciones:5432/db-notificaciones
       DB_USER: arka
@@ -42,7 +42,7 @@ services:
 
   servicio-solicitudes:
     build: ./servicio-solicitudes
-    ports: ["8080:8080"]
+    ports: ["${SOLICITUDES_PORT:-18080}:8080"]
     environment:
       NOTIFICACIONES_URL: "http://servicio-notificaciones:8080/eventos/solicitud-enviada"
       DB_URL: jdbc:postgresql://db-solicitudes:5432/db-solicitudes
@@ -62,8 +62,8 @@ services:
       ARKA_SOLICITUDES_ORIGEN: http://servicio-solicitudes:8080
       ARKA_NOTIFICACIONES_ORIGEN: http://servicio-notificaciones:8080
       # Enlaces que abre el navegador (puertos publicados en este archivo).
-      ARKA_ENLACE_SWAGGER_SOLICITUDES: http://localhost:8080/swagger-ui/index.html
-      ARKA_ENLACE_SWAGGER_NOTIFICACIONES: http://localhost:8081/swagger-ui/index.html
+      ARKA_ENLACE_SWAGGER_SOLICITUDES: http://localhost:${SOLICITUDES_PORT:-18080}/swagger-ui/index.html
+      ARKA_ENLACE_SWAGGER_NOTIFICACIONES: http://localhost:${NOTIFICACIONES_PORT:-18081}/swagger-ui/index.html
       ARKA_ENLACE_GRAFANA: http://localhost:3000
     depends_on:
       servicio-solicitudes:
