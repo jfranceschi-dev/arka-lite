@@ -7,6 +7,7 @@ import { diagramas } from "../diagramas/definiciones.ts";
 import { DIR_CAPTURAS } from "../entregables.ts";
 import { DIVISIONES } from "./reparto.ts";
 import { AMPLIAR } from "./ampliar.ts";
+import { RECORTES } from "./recomendaciones.ts";
 
 function validarVisual(id: string, v: Visual | undefined): string[] {
   if (!v) return [];
@@ -86,6 +87,9 @@ export function validarContenido(): string[] {
   const todas = new Map(secciones.flatMap((s) => s.diapositivas).map((d) => [d.id, d]));
   for (const id of Object.keys(AMPLIAR)) if (!todas.has(id)) errores.push(`ampliar: la lámina ${id} no existe`);
   for (const d of todas.values()) if (d.recorridos.includes("ejecutivo") && !d.id.endsWith("-gracias") && !AMPLIAR[d.id]) errores.push(`${d.id}: falta el material "si hay tiempo" en ampliar.ts`);
+
+  // Los recortes sugeridos son láminas del ejecutivo.
+  for (const r of RECORTES) if (!todas.get(r.id)?.recorridos.includes("ejecutivo")) errores.push(`recomendaciones: el recorte ${r.id} no es una lámina del ejecutivo`);
 
   for (const d of diagramas) {
     const nodos = new Set(d.nodos.map((n) => n.id));

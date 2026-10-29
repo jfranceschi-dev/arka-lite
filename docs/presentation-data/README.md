@@ -36,7 +36,7 @@ Cada lámina tiene un papel (el de su sección o uno propio), y [`contenido/repa
 | Infraestructura 1 | DevOps: qué es DevOps, Docker, Compose, la red, el orden de arranque y Codespaces; al final, la observabilidad |
 | Infraestructura 2 | DevOps: CI/CD (del push a la imagen, por dentro, cuando falla y trazabilidad) y Kubernetes |
 
-Las notas del expositor y el PDF dicen quién presenta cada lámina; los guiones traen el reparto con los minutos de cada persona, y `guiones/guion-ejecutivo-7-personas.md` le da a cada una solo lo suyo.
+Las notas del expositor y el PDF dicen quién presenta cada lámina; los guiones traen el reparto con los minutos de cada persona, `guiones/guion-ejecutivo-7-personas.md` le da a cada una solo lo suyo, y [`guiones/reparto-y-recomendaciones.md`](guiones/reparto-y-recomendaciones.md) trae las recomendaciones: por qué cada persona, la línea de tiempo, los relevos, consejos, a quién pasarle cada pregunta, qué saltar si falta tiempo y la lista del día. Las recomendaciones salen de [`contenido/recomendaciones.ts`](contenido/recomendaciones.ts).
 
 ## Variantes
 
