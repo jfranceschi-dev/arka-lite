@@ -14,7 +14,7 @@ La documentación está organizada por propósito para que una persona nueva pue
 
 ## Organización
 
-La [presentación del proyecto final](presentation-data/README.md) del curso Upskilling Backend Java tiene su propio contenido, sus generadores y sus entregables: PPTX, PDF y guiones en tres variantes para el staff de tecnología (resumen, ejecutivo y técnico). Explica lo aprendido, las métricas y el valor de ARKA-Lite: dos microservicios, su base de datos, su plataforma y una UI usada como laboratorio. Las versiones anteriores quedaron en `presentation-data/BackUp-pptx/`.
+La [presentación del proyecto final](presentation-data/README.md) del curso Upskilling Backend Java tiene su propio contenido, sus generadores y sus entregables: PPTX, PDF y guiones en tres variantes para el staff de tecnología (resumen, ejecutivo y técnico), con el reparto del equipo arka-litos. Cuenta ARKA-Lite de punta a punta: fundamentos y arquitectura en vista general; base de datos, interconexión de servicios y DevOps a fondo; y una demostración en vivo con la UI. Las versiones anteriores quedaron en `presentation-data/BackUp-pptx/`.
 
 La [UI arka-lite-ui](../arka-lite-ui/README.md) es una aplicación minimalista con cuatro pestañas: **Solicitudes** (crear, ver y decidir), **Enviadas** (el recorrido de cada evento y la prueba de idempotencia), **Salud** (validar los servicios y abrir Swagger y Grafana) y **Ayuda** (diagramas paso a paso de cómo funciona). Se levanta con el resto del sistema en `docker compose up` (`http://localhost:8088`) o con `k8s/arka-lite-ui.yaml`.
 
@@ -43,6 +43,7 @@ docs/
 │   ├── kubernetes-local.md
 │   ├── kubernetes-limpieza.md
 │   ├── correccion-arranque.md
+│   ├── codespaces.md
 │   ├── observabilidad.md
 │   └── infraestructura-y-entrega.md
 ├── automatizacion/
@@ -91,6 +92,7 @@ Construcción, ejecución y diagnóstico de la aplicación.
 - [Kubernetes local con Docker Desktop](operaciones/kubernetes-local.md)
 - [Limpieza de Kubernetes local](operaciones/kubernetes-limpieza.md)
 - [Diagnóstico del esquema y arranque](operaciones/correccion-arranque.md)
+- [Demostración en vivo con GitHub Codespaces](operaciones/codespaces.md)
 - [Observabilidad: logs, métricas y trazas](operaciones/observabilidad.md)
 - [Infraestructura y entrega](operaciones/infraestructura-y-entrega.md)
 

@@ -1,23 +1,29 @@
 import type { Diapositiva, Recorrido, Seccion } from "./tipos.ts";
 import { apertura, fundamentos, arquitectura } from "./secciones-a.ts";
-import { datos } from "./secciones-b.ts";
-import { plataforma, cicd, observabilidad } from "./secciones-c.ts";
-import { documentacion, laboratorio, cierre } from "./secciones-d.ts";
+import { datos, interconexion } from "./secciones-b.ts";
+import { devops, observabilidad } from "./secciones-c.ts";
+import { demostracion, cierre } from "./secciones-d.ts";
+import { AMPLIAR } from "./ampliar.ts";
 
-// Orden de la presentación: del código a la operación, la UI como laboratorio
-// y el valor que deja.
+// Orden de la presentación: las partes que el equipo anterior trabajó a fondo
+// (fundamentos y arquitectura) en vista general; después, a fondo, la base
+// de datos, la interconexión y DevOps; la observabilidad, la demostración en
+// vivo con la UI y el valor que deja.
 export const secciones: Seccion[] = [
   apertura,
   fundamentos,
   arquitectura,
   datos,
-  plataforma,
-  cicd,
+  interconexion,
+  devops,
   observabilidad,
-  documentacion,
-  laboratorio,
+  demostracion,
   cierre,
 ];
+
+// El material para decir si hay tiempo vive aparte, para que las secciones
+// sigan siendo fáciles de leer; aquí se suma a cada lámina.
+for (const s of secciones) for (const d of s.diapositivas) if (AMPLIAR[d.id]) d.guion.ampliar = AMPLIAR[d.id];
 
 // Una diapositiva del recorrido con su sección.
 export interface Lamina {

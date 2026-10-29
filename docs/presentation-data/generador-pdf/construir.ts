@@ -1,7 +1,8 @@
 import PDFDocument from "pdfkit";
 import { laminas, etiquetaSeccion, NOMBRE_RECORRIDO, secciones, type Lamina } from "../contenido/index.ts";
-import type { Recorrido, Tabla } from "../contenido/tipos.ts";
+import { CLIC, type Recorrido, type Tabla } from "../contenido/tipos.ts";
 import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
+import { quienPresenta, rolDe } from "../contenido/reparto.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
 import { numeroDePaso, posicionEtiqueta, posicionNumero, rutaArista } from "../diagramas/geometria.ts";
 import type { Diagrama } from "../diagramas/tipos.ts";
@@ -22,7 +23,7 @@ const CURSIVA = "Helvetica-Oblique";
 const MONO = "Courier";
 
 export function nombreArchivoPdf(recorrido: Recorrido): string {
-  return `ARKA-Lite-${recorrido}.pdf`;
+  return `ARKA-Lite-${recorrido}-guion.pdf`;
 }
 
 // Las fuentes estándar solo cubren WinAnsi: los símbolos fuera de ese juego
@@ -218,7 +219,7 @@ function portada(doc: Doc, recorrido: Recorrido) {
   doc.font(NEGRITA).fontSize(14).fillColor(color.cianClaro).text("ARKA-Lite", M, 120);
   doc.font(NEGRITA).fontSize(34).fillColor("#FFFFFF").text("Proyecto final · Upskilling Backend Java", M, 150, { width: CW });
   doc.moveDown(0.6).font(FUENTE).fontSize(15).fillColor(color.sobreOscuroSecundario)
-    .text("Una UI y dos microservicios Spring Boot: lo que aprendimos y cómo funciona.", { width: CW });
+    .text("Equipo arka-litos: dos microservicios Spring Boot, sus bases de datos y su plataforma, contados de punta a punta.", { width: CW });
   doc.moveDown(1.5).font(NEGRITA).fontSize(11).fillColor(color.cian)
     .text(`RECORRIDO ${NOMBRE_RECORRIDO[recorrido].toUpperCase()} · CONTENIDO Y GUION`, { characterSpacing: 1.5 });
   doc.moveDown(3).font(NEGRITA).fontSize(10).fillColor(color.cianClaro).text("PARTES", { characterSpacing: 1.2 });
@@ -249,6 +250,7 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
   doc.moveTo(M, doc.y).lineTo(M + CW, doc.y).lineWidth(0.6).stroke(color.borde);
   doc.moveDown(0.5);
   titulo(doc, `${numero}. ${d.titulo}`, 14);
+  parrafo(doc, `Presenta: ${quienPresenta(rolDe(l))}`, { fuente: CURSIVA, tamano: 9, c: color.secundario });
   if (d.visual && !d.tabla) {
     etiqueta(doc, `En pantalla · ${nombreDeVisual(d.visual)}`);
     vinetas(doc, lineasDeVisual(d.visual));
@@ -277,16 +279,24 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
     doc.x = M;
     doc.y = y + alto + 4;
   }
-  recuadro(doc, "Qué decir", d.guion.decir.map((t) => `“${t}”`), color.cianSuave, color.cianClaro);
+  if (d.valor) {
+    etiqueta(doc, "Lo que se lleva el staff", color.correcto);
+    parrafo(doc, d.valor, { fuente: NEGRITA });
+  }
+  recuadro(doc, "Qué decir (▶ = hacer clic)", d.guion.decir.map((t) => `“${t.replaceAll(CLIC, "▶")}”`), color.cianSuave, color.cianClaro);
   const hacer = [...(d.guion.instrucciones ?? []), ...(d.guion.demo ? [`Mostrar: ${d.guion.demo.accion} Debe verse: ${d.guion.demo.evidencia}`] : [])];
   if (hacer.length) {
     etiqueta(doc, "Qué hacer (no se dice)", color.advertenciaTexto);
     vinetas(doc, hacer);
   }
-  if (d.guion.pregunta) {
+  if (d.guion.ampliar?.length) {
+    etiqueta(doc, "Si hay tiempo, se puede agregar");
+    vinetas(doc, d.guion.ampliar);
+  }
+  for (const p of d.guion.preguntas ?? []) {
     etiqueta(doc, "Si preguntan");
-    parrafo(doc, d.guion.pregunta.texto, { fuente: NEGRITA });
-    parrafo(doc, d.guion.pregunta.respuesta);
+    parrafo(doc, p.texto, { fuente: NEGRITA });
+    parrafo(doc, p.respuesta);
   }
   if (d.guion.transicion) {
     etiqueta(doc, "Para pasar");

@@ -1,8 +1,10 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import JSZip from "jszip";
-import { construirPresentacion, nombreArchivo } from "../generador-pptx/construir.ts";
+import { construirPresentacion, generarPptx, nombreArchivo } from "../generador-pptx/construir.ts";
+import { clicsEnXml } from "../generador-pptx/posproceso.ts";
 import { laminas } from "../contenido/index.ts";
+import { clicsDeLamina } from "../contenido/validacion.ts";
 
 describe("generador PPTX", () => {
   it("nombra un archivo por variante", () => {
@@ -40,7 +42,18 @@ describe("generador PPTX", () => {
     const textos = await Promise.all(Object.keys(zip.files).filter((f) => f.startsWith("ppt/notesSlides/notesSlide")).map((f) => zip.file(f)!.async("string")));
     const todo = textos.join("\n");
     expect(todo).toContain("QUÉ DECIR");
+    expect(todo).toContain("PRESENTA:");
     expect(todo).toContain("QUÉ HACER (no se dice)");
     expect(todo).toContain("SI PREGUNTAN");
+  });
+
+  it("cada lámina entra con transición y arma su diagrama con los mismos clics que marca el guion", async () => {
+    const zip = await JSZip.loadAsync(await generarPptx("ejecutivo"));
+    const lista = laminas("ejecutivo");
+    for (let i = 0; i < lista.length; i++) {
+      const xml = await zip.file(`ppt/slides/slide${i + 1}.xml`)!.async("string");
+      expect(xml, lista[i].id).toContain("<p:transition");
+      expect(clicsEnXml(xml), lista[i].id).toBe(clicsDeLamina(lista[i].diapositiva));
+    }
   });
 });

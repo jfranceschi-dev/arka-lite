@@ -3,7 +3,7 @@ import type { NombreIcono } from "../diseno/iconos.ts";
 // Modelo de la fuente de contenido de la presentación. El PPTX, el PDF, las
 // notas del expositor y los guiones leen estos mismos objetos.
 
-// Variantes para el staff de tecnología: resumen (charla corta, ~13 láminas),
+// Variantes para el staff de tecnología: resumen (charla corta, ~19 láminas),
 // ejecutivo (todas las secciones, sin código) y técnico (agrega código y
 // diagramas detallados). Cada una contiene a la anterior.
 export type Recorrido = "resumen" | "ejecutivo" | "tecnico";
@@ -27,6 +27,15 @@ export interface Lado {
   titulo: string;
   icono: Icono;
   tono: Tono;
+  puntos: string[];
+}
+
+export interface LadoCodigo {
+  titulo: string;
+  icono: Icono;
+  tono: Tono;
+  lenguaje: BloqueCodigo["lenguaje"];
+  codigo: string;
   puntos: string[];
 }
 
@@ -60,9 +69,47 @@ export interface Base {
   tablas: TablaDeBase[];
 }
 
+// Una pieza con nombre y una línea que la explica: una columna de la clase o
+// de la tabla en el mapeo del ORM.
+export interface Campo {
+  nombre: string;
+  detalle?: string;
+}
+
 export type Visual =
-  // El recorrido de las partes numeradas (sale de las secciones).
+  // El recorrido de las partes numeradas (sale de las secciones), con su
+  // enfoque: vista general o a fondo.
   | { tipo: "ruta" }
+  // El equipo por área: cuántas personas, qué aporta cada una y qué partes
+  // presenta.
+  | { tipo: "equipo"; areas: (ElementoVisual & { cuantos: string; partes: string[] })[] }
+  // El sistema en la práctica: la persona, la UI, los dos servicios y sus
+  // bases, con las seis conexiones numeradas. El evento no es una pieza: es
+  // el dato que viaja entre los dos servicios.
+  | {
+      tipo: "sistema";
+      persona: ElementoVisual;
+      ui: ElementoVisual;
+      servicios: [ElementoVisual, ElementoVisual];
+      bases: [ElementoVisual, ElementoVisual];
+      // En orden: persona→UI, UI→servicio 1, servicio 1→base 1,
+      // servicio 1⇢servicio 2 (el evento), servicio 2→base 2, UI→servicio 2.
+      conexiones: [string, string, string, string, string, string];
+      evento: string;
+      nota: string;
+    }
+  // Dos o más maneras de recorrer el mismo camino, una por carril. El paso
+  // "regla" de cada carril lleva la marca de dónde vive la regla del negocio;
+  // los grupos marcan con un corchete qué pasos son una etapa (CI, CD).
+  | { tipo: "caminos"; caminos: { titulo: string; tono: Tono; pasos: ElementoVisual[]; flechas: string[]; regla?: number; grupos?: { desde: number; hasta: number; titulo: string; tono: Tono }[] }[] }
+  // La misma idea escrita de dos formas, en código, lado a lado, con lo que
+  // implica cada una debajo.
+  | { tipo: "codigos"; lados: [LadoCodigo, LadoCodigo] }
+  // De dónde sale un valor: varias fuentes llegan al centro, que lo usa para
+  // llegar al destino. La nota dice lo que nunca lo lleva.
+  | { tipo: "origenes"; fuentes: (ElementoVisual & { valor: string })[]; centro: ElementoVisual & { valor: string }; enlace: string; destino: ElementoVisual; nota: ElementoVisual }
+  // Cómo el ORM traduce una clase a una tabla y cada operación a SQL.
+  | { tipo: "mapeo"; clase: { titulo: string; subtitulo: string; campos: Campo[] }; tabla: { titulo: string; subtitulo: string; columnas: Campo[] }; operaciones: { codigo: string; sql: string }[] }
   // Lo que aprendimos en la sección: una o dos métricas y, por aprendizaje,
   // qué aprendimos, cómo lo aplicamos y qué valor le deja al equipo.
   | { tipo: "aprendizajes"; metricas: { valor: string; titulo: string }[]; items: (ElementoVisual & { valor: string })[] }
@@ -86,8 +133,9 @@ export type Visual =
   | { tipo: "tuberia"; etapas: ElementoVisual[] }
   // Estados en columnas; cada acción lleva de una columna a la siguiente.
   | { tipo: "estados"; columnas: ElementoVisual[][]; acciones: string[]; error?: ElementoVisual }
-  // Dos maneras de hacerlo, lado a lado.
-  | { tipo: "contraste"; lados: [Lado, Lado] }
+  // Dos maneras de hacerlo, lado a lado. Con union "+", los dos lados no
+  // compiten: se complementan.
+  | { tipo: "contraste"; lados: [Lado, Lado]; union?: "vs" | "+" }
   // Cuadrícula de tarjetas, con un comando opcional arriba.
   | { tipo: "tarjetas"; tarjetas: ElementoVisual[]; columnas?: number; comando?: string }
   // Capturas reales en un marco de navegador.
@@ -133,9 +181,17 @@ export interface Guion {
   instrucciones?: string[];
   transicion?: string;
   respaldo?: string;
-  pregunta?: Pregunta;
+  // Preguntas probables del staff, con su respuesta corta.
+  preguntas?: Pregunta[];
+  // Más para decir si hay tiempo o si preguntan: ejemplos y datos reales.
+  // No cuenta en los minutos. Sale de contenido/ampliar.ts.
+  ampliar?: string[];
   demo?: Demostracion;
 }
+
+// En el texto oral, [clic] marca el momento de hacer clic: la siguiente pieza
+// del diagrama aparece ahí. Hay tantas marcas como clics tiene el visual.
+export const CLIC = "[clic]";
 
 export interface Diapositiva {
   id: string;
@@ -153,7 +209,12 @@ export interface Diapositiva {
   visual?: Visual;
   // Por qué importa, en una línea: la franja inferior de la lámina.
   porque?: string;
+  // Lo que el staff se lleva de la lámina: el valor, en una frase. Va en el
+  // guion y en las notas, no en la pantalla.
+  valor?: string;
   recorridos: Recorrido[];
+  // Quién la presenta, si no es el rol de su sección.
+  rol?: Rol;
   // Diagrama detallado: se dibuja completo, con sus pasos numerados debajo.
   diagrama?: string;
   tabla?: Tabla;
@@ -175,5 +236,18 @@ export interface Seccion {
   temas?: string[];
   // Ícono de la sección en la agenda y en las láminas de aprendizajes.
   icono?: Icono;
+  // Todos los equipos presentan cada sección; cada equipo profundiza en las
+  // suyas y ve las demás de forma general.
+  enfoque?: Enfoque;
+  // Quién presenta la sección (ver reparto.ts).
+  rol: Rol;
   diapositivas: Diapositiva[];
 }
+
+// "vivo" es la demostración: ni vista general ni a fondo, sino todo junto.
+export type Enfoque = "general" | "fondo" | "vivo";
+export const NOMBRE_ENFOQUE: Record<Enfoque, string> = { general: "Vista general", fondo: "A fondo", vivo: "En vivo" };
+
+// Papeles de la presentación. Cada división del equipo asigna los papeles a
+// personas; así el contenido no cambia si el equipo es de 7 u 8.
+export type Rol = "orquestador" | "fundamentos" | "arquitectura" | "bd" | "orm" | "interconexion" | "plataforma" | "operacion" | "demostracion";

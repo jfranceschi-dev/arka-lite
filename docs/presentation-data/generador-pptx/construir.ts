@@ -6,7 +6,7 @@ import { diagramaPorId } from "../diagramas/definiciones.ts";
 import type { NombreIcono } from "../diseno/iconos.ts";
 import { color } from "../diseno/tokens.ts";
 import { colorCodigo, resaltar } from "../diseno/resaltado.ts";
-import { ACC, ACC_S, ACC_T, CW, FUENTE, H, M, MONO, PRI, PROF, halo, sombra, TITULO, W, encabezado, hex, icono, insignia, logo, mezclar, pie, type Slide } from "./base.ts";
+import { ACC, ACC_S, ACC_T, CW, FUENTE, H, M, MONO, PRI, PROF, halo, sombra, TITULO, W, encabezado, hex, icono, insignia, logo, marcarPasos, mezclar, pie, type Slide } from "./base.ts";
 import { diagrama } from "./diagrama.ts";
 import { generarBuffer } from "./posproceso.ts";
 import { tamQueCabe } from "./medidas.ts";
@@ -115,7 +115,7 @@ function franjaPorque(s: Slide, texto: string) {
 
 // ── Plantillas ────────────────────────────────────────────────────────────
 
-// Las ocho partes en órbita alrededor del sistema: el motivo de la portada y
+// Las partes numeradas en órbita alrededor del sistema: el motivo de la portada y
 // del cierre. Cada nodo es una parte de la presentación, con su número, su
 // ícono y su nombre corto; los rayos dicen que todas son el mismo sistema.
 function orbita(s: Slide, cx: number, cy: number, r: number, centro: { icono: NombreIcono; texto: string }) {
@@ -126,8 +126,9 @@ function orbita(s: Slide, cx: number, cy: number, r: number, centro: { icono: No
   anillo(r, 1.25, 50, "dash");
   anillo(r - 0.85, 0.75, 75);
 
+  const paso = 360 / partes.length;
   const nodos = partes.map((sec, i) => {
-    const a = ((-90 + 22.5 + i * 45) * Math.PI) / 180;
+    const a = ((-90 + paso / 2 + i * paso) * Math.PI) / 180;
     return { sec, a, x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
   });
   // Rayos del centro a cada parte, por debajo de los nodos.
@@ -173,9 +174,9 @@ function portadaGeneral(pptx: PptxGenJS, l: Lamina, recorrido: Recorrido) {
   s.addText(titulo, { x: 0.83, y: 1.88, w: 6.0, h: 1.95, margin: 0, fontFace: TITULO, fontSize: 54, bold: true, color: "FFFFFF", valign: "top", lineSpacingMultiple: 0.95, fit: "shrink" });
   s.addText(l.diapositiva.visible.join(" "), { x: 0.83, y: 3.92, w: 4.9, h: 0.8, margin: 0, fontFace: FUENTE, fontSize: 17, color: hex(color.sobreOscuroSecundario), valign: "top" });
 
-  // Las cifras clave del proyecto, tomadas de la lámina "en números".
-  const cifras = secciones[0].diapositivas.find((d) => d.visual?.tipo === "cifras")?.visual;
-  const kpis = cifras?.tipo === "cifras" ? [0, 1, 2, 5].map((i) => cifras.cifras[i]).filter(Boolean) : [];
+  // Las cifras clave del proyecto: el visual de la portada.
+  const cifras = l.diapositiva.visual;
+  const kpis = cifras?.tipo === "cifras" ? cifras.cifras.slice(0, 4) : [];
   const kw = 1.34;
   kpis.forEach((k, i) => {
     const x = 0.83 + i * (kw + 0.1);
@@ -301,6 +302,8 @@ function laminaDiagrama(s: Slide, d: Diapositiva, abajo: number) {
 function contenido(pptx: PptxGenJS, l: Lamina, recorrido: Recorrido) {
   const d = l.diapositiva;
   const s = pptx.addSlide();
+  // Las formas que el visual dibuja por pasos aparecen clic a clic.
+  marcarPasos(s);
   s.background = { color: "FFFFFF" };
   encabezado(s, etiquetaSeccion(l.seccion), d.titulo);
   avance(s, l);
@@ -347,7 +350,7 @@ export function construirPresentacion(recorrido: Recorrido): PptxGenJS {
   pptx.theme = { headFontFace: TITULO, bodyFontFace: FUENTE };
   for (const l of laminas(recorrido)) {
     if (l.id === "s00-portada") portadaGeneral(pptx, l, recorrido);
-    else if (l.id === "s09-gracias") cierreFinal(pptx, l);
+    else if (l.id.endsWith("-gracias")) cierreFinal(pptx, l);
     else contenido(pptx, l, recorrido);
   }
   return pptx;

@@ -1,34 +1,88 @@
 // Genera los guiones en Markdown desde la misma fuente que el PPTX, en
 // docs/presentation-data/guiones/: un guion por variante (resumen, ejecutivo y
-// técnico). No reparte láminas por persona: quién presenta cada parte se
-// decide aparte.
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+// técnico) y, para el ejecutivo, un guion por persona en cada división del
+// equipo (8 o 7 personas).
+import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { DIR_GUIONES } from "../entregables.ts";
 import { laminas, etiquetaSeccion, NOMBRE_RECORRIDO, RECORRIDOS, secciones, type Lamina } from "../contenido/index.ts";
-import type { Recorrido } from "../contenido/tipos.ts";
+import { CLIC, NOMBRE_ENFOQUE, type Recorrido } from "../contenido/tipos.ts";
+import { DIVISIONES, NOMBRE_ROL, PALABRAS_POR_MINUTO, palabras, personaCon, quienPresenta, rolDe, type Division, type Persona } from "../contenido/reparto.ts";
 import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
+import { GLOSARIO } from "../contenido/glosario.ts";
 
 const base = DIR_GUIONES;
 mkdirSync(base, { recursive: true });
-// Los guiones por participante de la versión anterior ya no se generan.
+// Los guiones de versiones anteriores que ya no se generan.
 rmSync(join(base, "participantes"), { recursive: true, force: true });
+for (const f of readdirSync(base)) if (f.endsWith(".md")) rmSync(join(base, f));
 
 const AVISO = "> Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.";
 
 const CERTEZA = { implementado: "ya existe en el código", ejemplo: "ejemplo para explicar", propuesta: "propuesta, no existe aún" } as const;
 
 const DESCRIPCION: Record<Recorrido, string> = {
-  resumen: "Charla corta para el staff: el sistema, la consistencia de datos, el comportamiento ante fallas, la plataforma, el valor y lo aprendido.",
-  ejecutivo: "Todas las partes, cada una con su lámina de aprendizajes, sin código.",
+  resumen: "Charla corta: el equipo, el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo y el valor.",
+  ejecutivo: "La presentación del equipo arka-litos: fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps a fondo; observabilidad y demostración en vivo.",
   tecnico: "El recorrido ejecutivo más el código, la configuración y los diagramas detallados.",
 };
 
-function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido): string {
+const LEER = [
+  "| Bloque | Qué es |",
+  "| --- | --- |",
+  "| **En pantalla** | Lo que ve el público. |",
+  "| **Lo que se lleva el staff** | El valor de la lámina en una frase: lo que el público tiene que recordar. |",
+  "| **Qué decir** | El texto para decir en voz alta. No hace falta leerlo palabra por palabra. **▶ clic** marca el momento de hacer clic: ahí aparece la siguiente pieza del diagrama. |",
+  "| **Qué hacer** | Indicaciones para quien expone, como las demostraciones. No se dicen. |",
+  "| **Si hay tiempo, se puede agregar** | Ejemplos y datos reales del proyecto para nutrir la explicación. No cuentan en los minutos. |",
+  "| **Si preguntan** | Preguntas probables del staff y su respuesta corta. |",
+  "| **Para pasar** | La frase que conecta con la lámina siguiente; si cambia quien presenta, es el relevo. |",
+];
+
+const minutos = (n: number) => Math.max(1, Math.round(n / PALABRAS_POR_MINUTO));
+
+// "1–4, 36–38": los números de lámina en rangos.
+function rangos(numeros: number[]): string {
+  const salida: string[] = [];
+  for (let i = 0; i < numeros.length; i++) {
+    let j = i;
+    while (j + 1 < numeros.length && numeros[j + 1] === numeros[j] + 1) j++;
+    salida.push(i === j ? `${numeros[i]}` : `${numeros[i]}–${numeros[j]}`);
+    i = j;
+  }
+  return salida.join(", ");
+}
+
+interface Turno {
+  persona: Persona;
+  laminas: { l: Lamina; numero: number }[];
+  palabras: number;
+}
+
+function turnos(division: Division, recorrido: Recorrido): Turno[] {
+  const lista = laminas(recorrido);
+  return division.personas
+    .map((persona) => {
+      const suyas = lista.map((l, i) => ({ l, numero: i + 1 })).filter(({ l }) => personaCon(division, rolDe(l)) === persona);
+      return { persona, laminas: suyas, palabras: suyas.reduce((a, { l }) => a + palabras(l), 0) };
+    })
+    .filter((t) => t.laminas.length > 0);
+}
+
+function tablaDivision(division: Division, recorrido: Recorrido): string[] {
+  return [
+    "| Persona | Área | Qué presenta | Láminas | Habla |",
+    "| --- | --- | --- | --- | --- |",
+    ...turnos(division, recorrido).map((t) => `| ${t.persona.nombre} | ${t.persona.area} | ${t.persona.roles.map((r) => NOMBRE_ROL[r]).join(" y ")} | ${rangos(t.laminas.map((x) => x.numero))} | ~${minutos(t.palabras)} min |`),
+  ];
+}
+
+function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido, conPresenta: boolean): string {
   const d = l.diapositiva;
   const salida: string[] = [];
   salida.push(`### ${numero}. ${d.titulo}`, "");
+  if (conPresenta) salida.push(`**Presenta:** ${quienPresenta(rolDe(l))}`, "");
   if (d.visual && !d.tabla) {
     salida.push(`**En pantalla · ${nombreDeVisual(d.visual)}:**`, "", ...lineasDeVisual(d.visual).map((v) => `- ${v}`), "");
     salida.push("**Ideas clave:**", "", ...d.visible.map((v) => `- ${v}`), "");
@@ -47,10 +101,12 @@ function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido): string {
   }
   if (d.marcas?.length) salida.push(`**Ojo:** ${d.marcas.map((m) => `${m.texto} (${CERTEZA[m.certeza]})`).join(" · ")}`, "");
   if (d.codigo && recorrido === "tecnico") salida.push(`**Código:** \`${d.codigo.archivo}\``, "");
-  salida.push("**Qué decir**", "", ...d.guion.decir.flatMap((t) => [`> ${t}`, ">"]).slice(0, -1), "");
+  if (d.valor) salida.push(`**Lo que se lleva el staff:** ${d.valor}`, "");
+  salida.push("**Qué decir**", "", ...d.guion.decir.flatMap((t) => [`> ${t.replaceAll(CLIC, "**▶ clic**")}`, ">"]).slice(0, -1), "");
   const hacer = [...(d.guion.instrucciones ?? []), ...(d.guion.demo ? [`Mostrar: ${d.guion.demo.accion} Debe verse: ${d.guion.demo.evidencia}`] : [])];
   if (hacer.length) salida.push("**Qué hacer** (no se dice)", "", ...hacer.map((t) => `- ${t}`), "");
-  if (d.guion.pregunta) salida.push(`**Si preguntan:** ${d.guion.pregunta.texto}`, "", `**Respuesta corta:** ${d.guion.pregunta.respuesta}`, "");
+  if (d.guion.ampliar?.length) salida.push("**Si hay tiempo, se puede agregar**", "", ...d.guion.ampliar.flatMap((t) => [`> ${t}`, ">"]).slice(0, -1), "");
+  for (const p of d.guion.preguntas ?? []) salida.push(`**Si preguntan:** ${p.texto}`, "", `**Respuesta corta:** ${p.respuesta}`, "");
   if (d.guion.transicion) salida.push(`**Para pasar:** “${d.guion.transicion}”`, "");
   if (d.guion.respaldo) salida.push(`**Para leer más:** \`${d.guion.respaldo}\``, "");
   return salida.join("\n");
@@ -58,32 +114,92 @@ function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido): string {
 
 function guion(recorrido: Recorrido): string {
   const lista = laminas(recorrido);
+  const total = lista.reduce((a, l) => a + palabras(l), 0);
+  const partes = secciones.filter((s) => s.numero !== null && s.diapositivas.some((d) => d.recorridos.includes(recorrido)));
+  const numeros = (id: string) => lista.map((l, i) => (l.seccion.id === id ? i + 1 : 0)).filter(Boolean);
   const salida = [
     `# Guion de ARKA-Lite · recorrido ${NOMBRE_RECORRIDO[recorrido].toLowerCase()}`,
     "",
     AVISO,
     "",
-    `${lista.length} láminas. ${DESCRIPCION[recorrido]}`,
+    `${lista.length} láminas, unos ${minutos(total)} minutos de exposición sin contar la demostración en vivo ni las preguntas. ${DESCRIPCION[recorrido]}`,
     "",
-    "## Partes",
+    "## Cómo está pensada",
     "",
-    ...secciones.filter((s) => s.numero !== null && s.diapositivas.some((d) => d.recorridos.includes(recorrido))).map((s) => `${s.numero}. **${s.titulo}**: ${s.subtitulo ?? ""}`),
+    "Todos los equipos presentan las mismas secciones, pero cada uno profundiza en algunas para no repetir contenido. El equipo anterior se enfoca en fundamentos y arquitectura hexagonal; nosotros los vemos en vista general y vamos a fondo en la base de datos, la interconexión de los servicios y DevOps. La presentación narra el proyecto de punta a punta: cada parte retoma lo que dejó la anterior.",
     "",
-    "El reparto no está fijo: cada parte se puede asignar a cualquier persona. Las notas de cada lámina del PPTX traen el mismo texto.",
+    "| Parte | Enfoque | Láminas | Qué se ve |",
+    "| --- | --- | --- | --- |",
+    ...partes.map((s) => `| ${s.numero}. ${s.titulo} | ${s.enfoque ? NOMBRE_ENFOQUE[s.enfoque] : ""} | ${rangos(numeros(s.id))} | ${s.subtitulo ?? ""} |`),
     "",
-    "Cómo leer este guion: **Qué decir** es el texto en voz alta; **Qué hacer** son indicaciones para quien expone; **Para pasar** es la frase que conecta con la lámina siguiente.",
+    "## Reparto",
+    "",
+    "Hay dos divisiones, según cuántas personas de desarrollo estén ese día. Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.",
+    "",
+    ...DIVISIONES.flatMap((div) => [`### Si somos ${div.titulo}`, "", div.cuando, "", ...tablaDivision(div, recorrido), ""]),
+    "Cada persona tiene su guion aparte en `guion-ejecutivo-8-personas.md` y `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.",
+    "",
+    "## Cómo leer este guion",
+    "",
+    ...LEER,
+    "",
+    "## Palabras clave, en una frase",
+    "",
+    "Para que todo el equipo explique igual y sin jerga. Si alguien del público no conoce una palabra, se dice esta frase.",
+    "",
+    "| Palabra | En una frase |",
+    "| --- | --- |",
+    ...GLOSARIO.map((g) => `| ${g.termino} | ${g.frase} |`),
     "",
   ];
   let seccionActual = "";
   lista.forEach((l, i) => {
     if (l.seccion.id !== seccionActual) {
       seccionActual = l.seccion.id;
-      salida.push(`## ${etiquetaSeccion(l.seccion)}`, "");
+      const enfoque = l.seccion.enfoque ? ` · ${NOMBRE_ENFOQUE[l.seccion.enfoque].toLowerCase()}` : "";
+      salida.push(`## ${etiquetaSeccion(l.seccion)}${enfoque}`, "", `Presenta: ${quienPresenta(l.seccion.rol)}.`, "");
     }
-    salida.push(bloqueLamina(l, i + 1, recorrido));
+    salida.push(bloqueLamina(l, i + 1, recorrido, rolDe(l) !== l.seccion.rol));
   });
   return salida.join("\n");
 }
 
+// El guion de cada persona en una división: solo sus láminas, con quién le
+// pasa la palabra y a quién se la entrega.
+function guionPorPersona(division: Division): string {
+  const recorrido: Recorrido = "ejecutivo";
+  const lista = laminas(recorrido);
+  const quien = (i: number) => (i >= 0 && i < lista.length ? personaCon(division, rolDe(lista[i])).nombre : null);
+  const salida = [
+    `# Guion por persona · ${division.titulo}`,
+    "",
+    AVISO,
+    "",
+    `${division.cuando} Recorrido ejecutivo, ${lista.length} láminas. Cada persona tiene aquí solo lo suyo, con el número de lámina del PPTX.`,
+    "",
+    ...tablaDivision(division, recorrido),
+    "",
+  ];
+  for (const t of turnos(division, recorrido)) {
+    salida.push(`## ${t.persona.nombre} · ${t.persona.roles.map((r) => NOMBRE_ROL[r]).join(" y ")}`, "", `Láminas ${rangos(t.laminas.map((x) => x.numero))} · unos ${minutos(t.palabras)} minutos.`, "");
+    // Los relevos: cada vez que le toca, quién le pasa la palabra y a quién
+    // se la entrega.
+    let anterior = -2;
+    for (const { l, numero } of t.laminas) {
+      const i = numero - 1;
+      if (i !== anterior + 1) {
+        const recibe = quien(i - 1);
+        salida.push(`> **Recibes la palabra** ${recibe ? `de ${recibe}, después de la lámina ${i}` : "al empezar la presentación"}.`, "");
+      }
+      salida.push(bloqueLamina(l, numero, recorrido, false));
+      const entrega = quien(i + 1);
+      if (entrega && entrega !== t.persona.nombre) salida.push(`> **Entregas la palabra** a ${entrega} (lámina ${numero + 1}).`, "");
+      anterior = i;
+    }
+  }
+  return salida.join("\n");
+}
+
 for (const r of RECORRIDOS) writeFileSync(join(base, `guion-${r}.md`), guion(r), "utf8");
-console.log(`Guiones generados en ${base}: ${RECORRIDOS.join(", ")}.`);
+for (const div of DIVISIONES) writeFileSync(join(base, `guion-ejecutivo-${div.id}.md`), guionPorPersona(div), "utf8");
+console.log(`Guiones generados en ${base}: ${RECORRIDOS.join(", ")} y ejecutivo por persona (${DIVISIONES.map((d) => d.titulo).join(" y ")}).`);

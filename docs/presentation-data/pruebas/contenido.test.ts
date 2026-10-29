@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { laminas, secciones } from "../contenido/index.ts";
 import { validarContenido } from "../contenido/validacion.ts";
+import { DIVISIONES, personaCon, rolDe } from "../contenido/reparto.ts";
 import { diagramas } from "../diagramas/definiciones.ts";
 import { estadoEnPaso, rutaArista } from "../diagramas/geometria.ts";
 
@@ -9,11 +10,16 @@ describe("fuente de contenido", () => {
     expect(validarContenido()).toEqual([]);
   });
 
-  it("organiza ocho partes numeradas más apertura y cierre", () => {
-    expect(secciones.filter((s) => s.numero !== null).map((s) => s.numero)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+  it("organiza siete partes numeradas más apertura y cierre", () => {
+    expect(secciones.filter((s) => s.numero !== null).map((s) => s.numero)).toEqual([1, 2, 3, 4, 5, 6, 7]);
     expect(secciones[0].titulo).toBe("Apertura");
     expect(secciones.map((s) => s.titulo)).toContain("Base de datos");
     expect(secciones[secciones.length - 1].titulo).toBe("Valor y cierre");
+  });
+
+  it("va a fondo en base de datos, interconexión y DevOps, y en vista general en fundamentos y arquitectura", () => {
+    const enfoque = Object.fromEntries(secciones.filter((s) => s.numero !== null).map((s) => [s.id, s.enfoque]));
+    expect(enfoque).toMatchObject({ s01: "general", s02: "general", s03: "fondo", s04: "fondo", s05: "fondo" });
   });
 
   it("cada variante contiene a la anterior y sigue siendo corta", () => {
@@ -37,10 +43,23 @@ describe("fuente de contenido", () => {
     expect(escenarios.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("no reparte láminas por persona", () => {
-    const texto = JSON.stringify(secciones);
-    expect(texto).not.toContain("Participante");
-    expect(texto).not.toContain("participante");
+  it("el equipo arka-litos aparece en todas las variantes", () => {
+    for (const r of ["resumen", "ejecutivo", "tecnico"] as const) expect(laminas(r).map((l) => l.id)).toContain("s00-equipo");
+  });
+
+  it("reparte cada lámina en las dos divisiones: 8 y 7 personas", () => {
+    expect(DIVISIONES.map((d) => d.personas.length)).toEqual([8, 7]);
+    for (const d of DIVISIONES) {
+      expect(d.personas.filter((p) => p.area === "Desarrollo").length).toBe(d.personas.length - 3);
+      for (const l of laminas("tecnico")) expect(() => personaCon(d, rolDe(l))).not.toThrow();
+    }
+  });
+
+  it("el evento es un dato que viaja, no una pieza del sistema", () => {
+    const mapa = secciones.flatMap((s) => s.diapositivas).find((d) => d.id === "s02-mapa")!;
+    expect(mapa.visual?.tipo).toBe("capas");
+    const piezas = mapa.visual?.tipo === "capas" ? mapa.visual.capas.flatMap((c) => c.elementos.map((e) => e.titulo)) : [];
+    expect(piezas.join(" ")).not.toContain("SolicitudEnviada");
   });
 
   it("no gira alrededor de una sola solicitud de ejemplo", () => {

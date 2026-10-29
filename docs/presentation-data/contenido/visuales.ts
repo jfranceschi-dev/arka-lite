@@ -1,5 +1,5 @@
 import { secciones } from "./index.ts";
-import type { ElementoVisual, Visual } from "./tipos.ts";
+import { NOMBRE_ENFOQUE, type ElementoVisual, type Visual } from "./tipos.ts";
 
 // El recurso visual de una lámina contado en texto, para los guiones y el
 // PDF. Dice lo mismo que se ve en el PPTX, en el mismo orden.
@@ -9,6 +9,12 @@ const linea = (e: ElementoVisual) => (e.texto ? `${e.titulo}: ${e.texto}` : e.ti
 export function nombreDeVisual(v: Visual): string {
   const nombres: Record<Visual["tipo"], string> = {
     ruta: "La ruta de las partes",
+    equipo: "El equipo por área",
+    sistema: "El sistema en la práctica",
+    mapeo: "De la clase a la tabla",
+    caminos: "Dos caminos, lado a lado",
+    codigos: "La misma idea, en dos códigos",
+    origenes: "De dónde sale cada valor",
     aprendizajes: "Lo que aprendimos",
     escenario: "Qué pasa cuando falla",
     capas: "Capas del sistema",
@@ -30,7 +36,38 @@ export function nombreDeVisual(v: Visual): string {
 export function lineasDeVisual(v: Visual): string[] {
   switch (v.tipo) {
     case "ruta":
-      return secciones.filter((s) => s.numero !== null).map((s) => `${s.numero}. ${s.titulo}${s.subtitulo ? `: ${s.subtitulo}` : ""}`);
+      return secciones.filter((s) => s.numero !== null).map((s) => `${s.numero}. ${s.titulo}${s.enfoque ? ` (${NOMBRE_ENFOQUE[s.enfoque].toLowerCase()})` : ""}${s.subtitulo ? `: ${s.subtitulo}` : ""}`);
+    case "equipo":
+      return v.areas.map((a) => `${linea(a)} (${a.cuantos}). Presenta: ${a.partes.join(", ")}.`);
+    case "sistema": {
+      const [s1, s2] = v.servicios;
+      const [b1, b2] = v.bases;
+      const pares = [[v.persona, v.ui], [v.ui, s1], [s1, b1], [s1, s2], [s2, b2], [v.ui, s2]];
+      return [
+        ...pares.map(([a, b], i) => `${i + 1}. ${a.titulo} ${i === 3 ? "⇢" : "→"} ${b.titulo}: ${v.conexiones[i]}${i === 3 ? ` (${v.evento})` : ""}`),
+        v.nota,
+      ];
+    }
+    case "caminos":
+      return v.caminos.map((c) => {
+        const grupos = (c.grupos ?? []).map((g) => `${g.titulo}: pasos ${g.desde + 1} a ${g.hasta + 1}`).join("; ");
+        return `${c.titulo}: ${c.pasos.map((p, i) => `${linea(p)}${i === c.regla ? " (aquí vive la regla)" : ""}${c.flechas[i] ? ` → [${c.flechas[i]}]` : i < c.pasos.length - 1 ? " →" : ""}`).join(" ")}${grupos ? ` (${grupos})` : ""}`;
+      });
+    case "codigos":
+      return v.lados.map((l) => `${l.titulo}: ${l.codigo.replaceAll("\n", " ")} · ${l.puntos.join("; ")}`);
+    case "origenes":
+      return [
+        `Centro: ${linea(v.centro)} (${v.centro.valor.replaceAll("\n", "; ")})`,
+        ...v.fuentes.map((f) => `Viene de ${linea(f)}: ${f.valor}`),
+        `Llega a ${linea(v.destino)} por ${v.enlace}`,
+        `Nunca: ${linea(v.nota)}`,
+      ];
+    case "mapeo":
+      return [
+        `${v.clase.titulo} (${v.clase.subtitulo}) ↔ ${v.tabla.titulo} (${v.tabla.subtitulo})`,
+        ...v.clase.campos.map((c, i) => `${c.nombre} ↔ ${v.tabla.columnas[i]?.nombre ?? ""}${v.tabla.columnas[i]?.detalle ? ` (${v.tabla.columnas[i].detalle})` : ""}`),
+        ...v.operaciones.map((o) => `${o.codigo} → ${o.sql}`),
+      ];
     case "aprendizajes":
       return [...v.metricas.map((m) => `Métrica: ${m.valor} ${m.titulo}`), ...v.items.map((e) => `${linea(e)} Valor: ${e.valor}`)];
     case "escenario":
@@ -70,5 +107,48 @@ export function lineasDeVisual(v: Visual): string[] {
       return v.capturas.map((c) => `Captura de ${c.titulo}${c.url ? ` (${c.url})` : ""}${c.texto ? `: ${c.texto}` : ""}`);
     case "ramas":
       return [`Rama ${v.rama} sale de ${v.principal}`, ...v.commits.map((c) => `Commit: ${c}`), `Vuelve a ${v.principal}: ${v.fusion}`];
+  }
+}
+
+// Bloques consecutivos de partes con el mismo enfoque: la agenda aparece por
+// bloques, no parte por parte.
+function bloquesDeEnfoque(): number[] {
+  const partes = secciones.filter((s) => s.numero !== null);
+  let bloque = 0;
+  return partes.map((s, i) => (i > 0 && s.enfoque !== partes[i - 1].enfoque ? ++bloque : bloque));
+}
+
+// Paso en el que aparece cada parte de la agenda.
+export function pasoDeParte(indice: number): number {
+  return bloquesDeEnfoque()[indice] ?? 0;
+}
+
+// Cuántos clics arma el visual: lo que se ve al llegar a la lámina es el
+// paso 0 y cada clic muestra el siguiente. Los dibujos del PPTX y las marcas
+// [clic] del texto oral siguen esta misma cuenta.
+export function clicsDeVisual(v: Visual | undefined): number {
+  if (!v) return 0;
+  switch (v.tipo) {
+    case "ruta": return Math.max(0, ...bloquesDeEnfoque());
+    case "equipo": return 0;
+    case "sistema": return 7;
+    case "mapeo": return 1 + v.operaciones.length;
+    case "caminos": return v.caminos.length - 1;
+    case "codigos": return 1;
+    case "origenes": return v.fuentes.length + 2;
+    case "aprendizajes": return v.items.length;
+    case "escenario": return v.pasos.length + 1;
+    case "capas": return v.capas.length - 1;
+    case "tablas": return v.bases.reduce((a, b) => a + b.tablas.length, 0);
+    case "matriz": return v.filas.length - 1;
+    case "hexagono": return 2;
+    case "cifras": return v.cifras.length - 1;
+    case "flujo": return v.pasos.length - 1 + (v.desvio ? 1 : 0);
+    case "tuberia": return v.etapas.length - 1;
+    case "estados": return v.columnas.length - 1 + (v.error ? 1 : 0);
+    case "contraste": return 1;
+    case "tarjetas": return v.comando || v.tarjetas.length > 6 ? 0 : v.tarjetas.length - 1;
+    case "captura": return v.capturas.length - 1;
+    case "ramas": return 1;
   }
 }

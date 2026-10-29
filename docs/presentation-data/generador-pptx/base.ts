@@ -85,3 +85,39 @@ export function flecha(s: Slide, x1: number, y1: number, x2: number, y2: number,
     line: { color: hex(c), width: ancho, endArrowType: "triangle", dashType: guion },
   });
 }
+
+// ── Pasos por clic ──────────────────────────────────────────────────────────
+// Lo que se dibuja dentro de conPaso(n, …) aparece en el clic n de la lámina;
+// el paso 0 ya está visible al llegar. Cada forma lleva la marca "[pN]" en
+// su nombre y el posproceso arma con ellas la secuencia de clics.
+let pasoActual = 0;
+
+export function conPaso<T>(n: number, dibujar: () => T): T {
+  const antes = pasoActual;
+  pasoActual = n;
+  try {
+    return dibujar();
+  } finally {
+    pasoActual = antes;
+  }
+}
+
+export const marcaDePaso = (n: number) => `[p${n}] `;
+
+// Hace que las formas de la lámina lleven la marca del paso actual.
+export function marcarPasos(s: Slide) {
+  const marcar = <T extends { objectName?: string }>(o: T | undefined): T | undefined =>
+    pasoActual > 0 ? ({ ...(o ?? {}), objectName: `${marcaDePaso(pasoActual)}${o?.objectName ?? "Forma"}` } as T) : o;
+  const forma = s.addShape.bind(s);
+  const texto = s.addText.bind(s);
+  const imagen = s.addImage.bind(s);
+  s.addShape = ((tipo, o) => forma(tipo, marcar(o)!)) as typeof s.addShape;
+  s.addText = ((t, o) => texto(t, marcar(o))) as typeof s.addText;
+  s.addImage = ((o) => imagen(marcar(o)!)) as typeof s.addImage;
+}
+
+// Versión sin bloque: fija el paso para lo que se dibuje a continuación.
+// dibujarVisual vuelve al paso 0 al terminar cada visual.
+export function fijarPaso(n: number) {
+  pasoActual = n;
+}

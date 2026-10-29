@@ -10,7 +10,7 @@ const PALABRAS: Record<BloqueCodigo["lenguaje"], string[]> = {
   yaml: ["true", "false", "null"],
   json: ["true", "false", "null"],
   bash: ["cd", "export", "docker", "kubectl", "npm", "git", "curl"],
-  sql: ["CREATE", "TABLE", "IF", "NOT", "EXISTS", "PRIMARY", "KEY", "REFERENCES", "DEFAULT", "NULL", "ALTER", "ADD", "COLUMN", "INDEX", "ON", "WHERE", "BOOLEAN", "UUID", "VARCHAR", "BIGSERIAL", "TRUE", "FALSE"],
+  sql: ["CREATE", "TABLE", "IF", "NOT", "EXISTS", "PRIMARY", "KEY", "REFERENCES", "DEFAULT", "NULL", "ALTER", "ADD", "COLUMN", "INDEX", "ON", "WHERE", "BOOLEAN", "UUID", "VARCHAR", "BIGSERIAL", "TRUE", "FALSE", "PROCEDURE", "AS", "BEGIN", "END", "SELECT", "FROM", "UPDATE", "SET", "THROW", "INSERT", "INTO", "VALUES"],
   properties: [],
   http: ["GET", "POST"],
   nginx: ["location", "proxy_pass", "listen", "server", "return", "proxy_set_header", "limit_except", "deny"],

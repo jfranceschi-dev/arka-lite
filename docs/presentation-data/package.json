@@ -15,6 +15,7 @@
     "verificar-pptx": "node generador-pptx/verificar.ts",
     "pdf": "node generador-pdf/cli.ts",
     "guiones": "node generador-guiones/generar.ts",
+    "pdf-laminas": "powershell -NoProfile -ExecutionPolicy Bypass -File generador-pdf/exportar-laminas.ps1",
     "todo": "npm run validar && npm run typecheck && npm test && npm run pptx && npm run verificar-pptx && npm run pdf && npm run guiones"
   },
   "dependencies": {
