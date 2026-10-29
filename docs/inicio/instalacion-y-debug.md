@@ -83,7 +83,7 @@ servicio-notificaciones/pom.xml
 servicio-notificaciones/mvnw.cmd
 ```
 
-Los archivos `pom.xml`, `src/` y Maven Wrapper de la raíz corresponden al monolito anterior. No se usan para probar ni iniciar la solución vigente.
+La raíz no contiene un proyecto Maven. Para probar o iniciar la solución, utiliza el `pom.xml` y el Maven Wrapper de cada microservicio.
 
 Comprobar el Wrapper de cada servicio:
 
@@ -126,6 +126,8 @@ Los reportes quedan en la carpeta `target/surefire-reports/` del servicio.
 
 ## 7. Ejecutar con Docker Compose
 
+Espera a que las aplicaciones estén listas antes de probar los endpoints. Las notificaciones se entregan en segundo plano; repite la consulta tras unos segundos si el aviso aún no aparece.
+
 Esta es la forma más sencilla de iniciar el sistema completo:
 
 ```powershell
@@ -134,7 +136,7 @@ docker compose up --build -d
 docker compose ps
 ```
 
-Probar el flujo:
+La interfaz web queda en `http://localhost:8088`. Probar el flujo desde la UI o con la API:
 
 ```powershell
 Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
@@ -150,7 +152,9 @@ docker compose down
 
 La [guía de Docker](../operaciones/docker-y-compose.md) explica el Dockerfile, `.dockerignore`, `.gitignore` y cada sección de Compose.
 
-## 8. Ejecutar sin Docker
+## 8. Ejecutar Java localmente
+
+Prepara primero las [bases de datos locales](bases-de-datos-locales.md). Este requisito también aplica a las ejecuciones desde IDE y JAR descritas más adelante.
 
 Abrir dos terminales desde la raíz del repositorio.
 
@@ -207,7 +211,7 @@ pa.gob.dntic.servicionotificaciones.ServicioNotificacionesApplication
 6. Usar como directorio de trabajo la carpeta del microservicio correspondiente.
 7. Iniciar primero notificaciones y luego solicitudes.
 
-No se debe ejecutar `pa.gob.dntic.arkalite.ArkaliteApplication`; pertenece al monolito legado de la raíz.
+Si el IDE conserva una configuración para `pa.gob.dntic.arkalite.ArkaliteApplication`, elimínala: esa clase pertenecía al monolito retirado.
 
 ## 10. Abrir en Visual Studio Code
 
@@ -266,9 +270,9 @@ cd servicio-solicitudes
 
 Corregir `JAVA_HOME`, cerrar la terminal y abrir otra. El IDE también puede tener un JDK de proyecto distinto.
 
-### El IDE solo reconoce el proyecto raíz legado
+### El IDE no reconoce los microservicios
 
-Importar explícitamente los dos `pom.xml` dentro de `servicio-solicitudes` y `servicio-notificaciones`. El `pom.xml` raíz no es un padre multi módulo.
+Importar explícitamente los dos `pom.xml` dentro de `servicio-solicitudes` y `servicio-notificaciones`. No existe un `pom.xml` padre en la raíz.
 
 ### Un puerto está ocupado
 
@@ -281,7 +285,7 @@ Detener el proceso anterior o usar otros puertos y actualizar `NOTIFICACIONES_UR
 
 ### La solicitud se envía, pero no aparece una notificación
 
-El diseño actual continúa aunque falle la llamada. Revisar:
+El envío registra un evento y la entrega ocurre en segundo plano. Espera unos segundos y vuelve a consultar. Si sigue sin aparecer, revisa los eventos pendientes, la conexión a PostgreSQL y los logs:
 
 ```powershell
 docker compose ps

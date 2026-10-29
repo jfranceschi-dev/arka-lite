@@ -1,0 +1,31 @@
+{
+  // Codespace para la demostración en vivo de ARKA-Lite: levanta el sistema
+  // completo con Docker dentro del contenedor (docker-in-docker), sin Docker
+  // en la computadora de quien presenta. Guía: docs/operaciones/codespaces.md
+  "name": "ARKA-Lite · demostración",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    // Docker dentro del contenedor: Promtail necesita el socket del mismo
+    // Docker que corre los contenedores, y los bind mounts de compose.yaml
+    // (observabilidad/promtail.yaml) deben existir donde corre ese Docker.
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  // Son ocho contenedores, dos de ellos Java, y la primera vez se compilan
+  // tres imágenes: con 4 núcleos (16 GB) la creación es más rápida.
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb"
+  },
+  "forwardPorts": [8088, 3000, 18080, 18081],
+  "portsAttributes": {
+    "8088": { "label": "UI de ARKA-Lite", "onAutoForward": "openBrowser" },
+    "3000": { "label": "Grafana", "onAutoForward": "silent" },
+    "18080": { "label": "solicitudes · Swagger", "onAutoForward": "silent" },
+    "18081": { "label": "notificaciones · Swagger", "onAutoForward": "silent" }
+  },
+  "otherPortsAttributes": { "onAutoForward": "ignore" },
+  // Las imágenes se construyen una sola vez, al crear el Codespace; cada vez
+  // que arranca, levantar.sh pone todo arriba y espera a que responda.
+  "postCreateCommand": "bash .devcontainer/levantar.sh --solo-construir",
+  "postStartCommand": "bash .devcontainer/levantar.sh"
+}

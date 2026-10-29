@@ -1,2 +1,3 @@
-/mvnw text eol=lf
 *.cmd text eol=crlf
+# Los scripts de Bash corren en Linux (CI, contenedores y Codespaces).
+*.sh text eol=lf

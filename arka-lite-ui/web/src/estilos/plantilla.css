@@ -1,0 +1,155 @@
+/* Plantilla de arka-lite-ui (propuesta A · Minimal).
+   El tema se cambia en tiempo de ejecución desde la UI (estado/tema.tsx).
+   Estos valores son los de fábrica: TGS, marino y cian. */
+:root {
+  --tema-pri: #0B2350;
+  --tema-prof: #08192F;
+  --tema-acc: #2BA6CB;
+  --tema-acc-texto: #0B6E8A;
+  --tema-acc-suave: #E3F4FA;
+  --tema-sobre-acc: #0A1430;
+  --tema-sobre-pri: #FFFFFF;
+  --sombra-flotante: 0 16px 40px rgba(11, 26, 60, .14);
+}
+:focus-visible { outline-color: var(--tema-acc); }
+a { color: var(--tema-acc-texto); }
+a:hover { color: var(--tema-pri); }
+
+/* ── Botones ── */
+.arka-boton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid transparent; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; white-space: nowrap; transition: background-color var(--mov-rapido) ease, border-color var(--mov-rapido) ease, transform var(--mov-rapido) ease, box-shadow var(--mov-rapido) ease, color var(--mov-rapido) ease; }
+.arka-boton:active { transform: translateY(1px); }
+.arka-boton:disabled { opacity: .6; cursor: not-allowed; }
+.arka-boton-grande { height: 46px; }
+.arka-boton-chico { height: 32px; padding: 0 12px; font-size: 13px; border-radius: 7px; }
+.arka-boton-primario, .arka-boton-primario:hover { color: var(--tema-sobre-pri); }
+.arka-boton-primario { background: var(--tema-pri); }
+.arka-boton-primario:hover { background: var(--tema-prof); box-shadow: 0 6px 16px color-mix(in srgb, var(--tema-pri) 25%, transparent); }
+.arka-boton-secundario, .arka-boton-secundario:hover { background: #FFFFFF; color: var(--color-texto); }
+.arka-boton-secundario { border-color: var(--color-linea); }
+.arka-boton-secundario:hover { border-color: var(--color-secundario); }
+.arka-boton-acento { background: var(--tema-acc-suave); color: var(--tema-acc-texto); border-color: color-mix(in srgb, var(--tema-acc) 45%, transparent); }
+.arka-boton-acento:hover { background: var(--tema-acc); color: var(--tema-sobre-acc); }
+.arka-boton-exito { background: #FFFFFF; color: var(--color-correcto); border-color: var(--color-linea); }
+.arka-boton-exito:hover { background: var(--color-correcto-suave); }
+.arka-boton-peligro-suave { background: #FFFFFF; color: var(--color-error); border-color: var(--color-linea); }
+.arka-boton-peligro-suave:hover { background: var(--color-error-suave); }
+.arka-boton-peligro { background: var(--color-error); color: #FFFFFF; }
+.boton-fantasma { color: var(--color-secundario); background: transparent; border: 1px solid transparent; cursor: pointer; font: inherit; }
+.boton-fantasma:hover, .boton-fantasma[aria-expanded="true"] { background: var(--color-fondo); color: var(--color-texto); border-color: var(--color-linea); }
+.grupo-botones { display: inline-flex; gap: 6px; }
+
+/* ── Campos, chips e insignias ── */
+.campo { height: 44px; padding: 0 12px; border: 1px solid var(--color-linea); border-radius: 8px; background: #FFFFFF; color: var(--color-texto); font-size: 14px; transition: border-color var(--mov-rapido), box-shadow var(--mov-rapido); }
+.campo:focus { outline: none; border-color: var(--tema-acc); box-shadow: 0 0 0 3px var(--tema-acc-suave); }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--color-linea); background: #FFFFFF; color: var(--color-texto); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background-color var(--mov-rapido), border-color var(--mov-rapido); }
+.chip:hover { border-color: var(--color-secundario); }
+.chip-activo, .chip-activo:hover { background: var(--tema-pri); border-color: var(--tema-pri); color: var(--tema-sobre-pri); font-weight: 700; }
+.chip-cuenta { font-size: 11px; opacity: .75; }
+.insignia { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.insignia-borrador { background: #EEF1F6; color: #3D4A66; }
+.insignia-enviada { background: var(--tema-acc-suave); color: var(--tema-acc-texto); }
+.insignia-aprobada { background: var(--color-correcto-suave); color: var(--color-correcto); }
+.insignia-rechazada { background: var(--color-error-suave); color: var(--color-error); }
+.insignia-codigo { background: var(--color-fondo); color: var(--color-texto); font-family: var(--font-mono); }
+.celda-id { font-family: var(--font-mono); font-weight: 700; }
+.marca-tuya { font-size: 11px; font-weight: 700; color: var(--tema-acc-texto); }
+.texto-tenue { color: var(--color-secundario); }
+.texto-chico { font-size: 12px; }
+.nota-vacia { border-radius: 12px; background: var(--color-fondo); padding: 16px; color: var(--color-secundario); }
+.cifra { font-variant-numeric: tabular-nums; }
+
+/* ── Recorrido del evento ── */
+.recorrido { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 12.5px; font-weight: 600; color: var(--color-secundario); }
+.recorrido-paso { display: inline-flex; align-items: center; gap: 6px; }
+.recorrido-paso + .recorrido-paso::before { content: ""; width: 16px; height: 2px; background: var(--color-linea); margin-right: 2px; }
+.recorrido-punto { width: 9px; height: 9px; border-radius: 999px; border: 2px solid var(--color-linea); background: #FFFFFF; box-sizing: border-box; }
+.recorrido-paso.hecho { color: var(--color-correcto); }
+.recorrido-paso.hecho .recorrido-punto { background: var(--color-correcto); border-color: var(--color-correcto); }
+.recorrido-paso.hecho + .recorrido-paso::before { background: var(--color-correcto); }
+.recorrido-paso.en-curso { color: var(--tema-acc-texto); }
+.recorrido-paso.en-curso .recorrido-punto { border-color: var(--tema-acc); animation: latido 1.4s ease-in-out infinite; }
+.recorrido-paso.perdido { color: var(--color-secundario); font-weight: 500; cursor: help; }
+.recorrido-paso.perdido .recorrido-punto { border-style: dashed; border-color: var(--color-secundario); }
+
+/* ── jQuery DataTables con el estilo de la plantilla ── */
+.arka-tabla { font-size: 14px; }
+.arka-tabla .dt-container { display: flex; flex-direction: column; gap: 12px; }
+.arka-tabla .dt-layout-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 0 !important; }
+.arka-tabla .dt-layout-cell { padding: 0 !important; }
+.arka-tabla .dt-layout-table { display: block !important; overflow-x: auto; }
+.arka-tabla .dt-length, .arka-tabla .dt-search, .arka-tabla .dt-info { color: var(--color-secundario); font-size: 13px; }
+.arka-tabla .dt-search input, .arka-tabla .dt-length select { height: 34px; border: 1px solid var(--color-linea) !important; border-radius: 8px !important; padding: 0 10px !important; background: #FFFFFF !important; color: var(--color-texto); font: inherit; font-size: 13px; margin-left: 8px; }
+.arka-tabla .dt-length select { margin: 0 6px 0 8px; }
+.arka-tabla .dt-search input:focus, .arka-tabla .dt-length select:focus { outline: none; border-color: var(--tema-acc) !important; box-shadow: 0 0 0 3px var(--tema-acc-suave); }
+.arka-tabla table.dataTable { width: 100% !important; min-width: 600px; border-collapse: collapse; margin: 0 !important; }
+.arka-tabla table.dataTable > thead > tr > th { text-align: left; font-size: 12px; font-weight: 700; color: var(--color-secundario); padding: 10px 12px !important; border-bottom: 1px solid var(--color-linea) !important; background: #FFFFFF; }
+.arka-tabla table.dataTable > tbody > tr > td { padding: 12px !important; border-top: 1px solid var(--color-linea) !important; vertical-align: middle; }
+.arka-tabla table.dataTable > tbody > tr:first-child > td { border-top: none !important; }
+.arka-tabla table.dataTable > tbody > tr:hover > td { background: var(--color-fondo); }
+.arka-tabla table.dataTable td.dt-right, .arka-tabla table.dataTable th.dt-right { text-align: right; }
+/* La hoja de DataTables usa div.dt-container y color: inherit !important en
+   la página actual; estas reglas llevan más especificidad para ganarle en
+   todos los estados (normal, hover, actual y deshabilitado). */
+.arka-tabla div.dt-container .dt-paging .dt-paging-button { min-width: 32px; height: 32px; padding: 0 10px !important; margin-left: 4px !important; border: 1px solid var(--color-linea) !important; border-radius: 8px !important; background: #FFFFFF !important; color: var(--color-texto) !important; font-size: 13px; }
+.arka-tabla div.dt-container .dt-paging .dt-paging-button:not(.disabled):not(.current):hover { background: var(--tema-acc-suave) !important; border-color: var(--tema-acc) !important; color: var(--tema-acc-texto) !important; }
+.arka-tabla div.dt-container .dt-paging .dt-paging-button.current, .arka-tabla div.dt-container .dt-paging .dt-paging-button.current:hover { background: var(--tema-pri) !important; border-color: var(--tema-pri) !important; color: var(--tema-sobre-pri) !important; font-weight: 700; }
+.arka-tabla div.dt-container .dt-paging .dt-paging-button.disabled, .arka-tabla div.dt-container .dt-paging .dt-paging-button.disabled:hover { background: #FFFFFF !important; color: var(--color-secundario) !important; }
+.arka-tabla .dt-paging .dt-paging-button.disabled { opacity: .45; }
+.arka-tabla .dt-empty { color: var(--color-secundario); padding: 24px !important; text-align: center; }
+@keyframes destello { from { background: var(--tema-acc-suave); } to { background: transparent; } }
+.arka-tabla tr.fila-nueva > td { animation: destello 2.4s ease-out 1; }
+
+/* ── Tom Select con el estilo de la plantilla ── */
+.ts-wrapper .ts-control { min-height: 44px; border: 1px solid var(--color-linea); border-radius: 8px; padding: 10px 12px; font: inherit; font-size: 14px; box-shadow: none; background: #FFFFFF; }
+.ts-wrapper.focus .ts-control { border-color: var(--tema-acc); box-shadow: 0 0 0 3px var(--tema-acc-suave); }
+.ts-dropdown { border: 1px solid var(--color-linea); border-radius: 10px; box-shadow: var(--sombra-flotante); margin-top: 6px; font-size: 14px; overflow: hidden; }
+.ts-dropdown .option, .ts-dropdown .create, .ts-dropdown .no-results { padding: 9px 12px; }
+.ts-dropdown .active { background: var(--tema-acc-suave); color: var(--tema-acc-texto); }
+.ts-dropdown .selected { font-weight: 700; }
+
+/* ── SweetAlert2 con el estilo de la plantilla ── */
+.arka-swal { border-radius: 16px !important; padding: 28px 24px 22px !important; font-family: var(--font-sans) !important; color: var(--color-texto) !important; box-shadow: 0 24px 60px rgba(11, 26, 60, .22); border-top: 4px solid var(--tema-acc) !important; }
+.arka-swal-titulo { font-size: 20px !important; font-weight: 800 !important; color: var(--color-texto) !important; padding: 8px 8px 0 !important; }
+.arka-swal-texto { font-size: 15px !important; line-height: 1.55 !important; color: var(--color-secundario) !important; }
+.arka-swal-acciones { gap: 10px; margin-top: 20px !important; }
+.arka-swal-fondo.swal2-backdrop-show { background: color-mix(in srgb, var(--tema-prof) 45%, transparent) !important; backdrop-filter: blur(2px); }
+.arka-swal-icono.swal2-question { border-color: var(--tema-acc) !important; color: var(--tema-acc-texto) !important; }
+.arka-swal-toast { border-top-width: 3px !important; padding: 12px 16px !important; box-shadow: var(--sombra-flotante); }
+.arka-swal-toast .arka-swal-titulo { font-size: 15px !important; padding: 0 !important; }
+.arka-swal-toast .arka-swal-texto { font-size: 13px !important; margin: 2px 0 0 !important; }
+.arka-swal-progreso { background: var(--tema-acc) !important; }
+@keyframes swal-entra { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes swal-sale { to { opacity: 0; transform: translateY(6px) scale(.98); } }
+.arka-swal-entra { animation: swal-entra var(--mov-normal) var(--ease-arka); }
+.arka-swal-sale { animation: swal-sale var(--mov-rapido) ease-in forwards; }
+
+/* ── Pestañas, menús y ayuda ── */
+.pestana { position: relative; }
+.pestana-activa::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 0; height: 2px; border-radius: 2px; background: var(--tema-acc); }
+.menu-flotante { animation: swal-entra var(--mov-normal) var(--ease-arka); }
+.enlace-herramienta { transition: border-color var(--mov-rapido), transform var(--mov-rapido), box-shadow var(--mov-rapido); }
+.enlace-herramienta:hover { border-color: var(--tema-acc); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(11, 26, 60, .08); }
+.paso-ayuda { cursor: pointer; font: inherit; color: inherit; transition: border-color var(--mov-normal), background-color var(--mov-normal), opacity var(--mov-normal), box-shadow var(--mov-normal); }
+.paso-ayuda-actual { background: var(--tema-acc-suave); border-color: var(--tema-acc) !important; box-shadow: inset 3px 0 0 var(--tema-acc); }
+
+/* ── Firma de movimiento de ARKA-Lite: el "hilo de eventos" ──
+   Una línea fina bajo la barra por la que viaja un destello cada vez que un
+   evento termina su recorrido entre los dos servicios. Cada pantalla, además,
+   entra subiendo 6 px. Todo se apaga con "sin movimiento". */
+.hilo { position: relative; height: 2px; background: linear-gradient(90deg, transparent, var(--color-linea) 12%, var(--color-linea) 88%, transparent); overflow: hidden; }
+.hilo > span { position: absolute; top: 0; left: -30%; width: 30%; height: 2px; }
+.hilo > span.hilo-viaje { background: linear-gradient(90deg, transparent, var(--tema-acc), transparent); animation: viaje 1.6s var(--ease-arka) 1; }
+@keyframes viaje { from { left: -30%; } to { left: 100%; } }
+@keyframes entrada { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.entrada { animation: entrada var(--mov-lento) var(--ease-arka); }
+@keyframes latido { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); } 50% { box-shadow: 0 0 0 4px transparent; } }
+.latido { animation: latido 2.4s ease-in-out infinite; }
+.punto-viaje { position: relative; width: 28px; height: 2px; background: color-mix(in srgb, var(--tema-acc) 35%, transparent); border-radius: 2px; overflow: hidden; flex: none; }
+.punto-viaje::after { content: ""; position: absolute; top: -2px; left: -6px; width: 6px; height: 6px; border-radius: 999px; background: var(--tema-acc); animation: viaje-punto 1.2s ease-in-out infinite; }
+@keyframes viaje-punto { to { left: 28px; } }
+
+[data-movimiento="reducido"] .hilo > span, [data-movimiento="reducido"] .entrada, [data-movimiento="reducido"] .latido,
+[data-movimiento="reducido"] .punto-viaje::after, [data-movimiento="reducido"] .fila-nueva > td, [data-movimiento="reducido"] .recorrido-punto { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .hilo > span, .entrada, .latido, .punto-viaje::after, .fila-nueva > td, .recorrido-punto, .arka-swal-entra, .menu-flotante { animation: none !important; }
+}

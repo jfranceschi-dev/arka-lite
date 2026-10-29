@@ -11,7 +11,7 @@ servicio-solicitudes/
 servicio-notificaciones/
 ```
 
-Cada carpeta es un proyecto Maven completo con su propio `pom.xml`, código, pruebas, Maven Wrapper y Dockerfile. No forman un proyecto Maven multi módulo y no se compilan desde el `pom.xml` de la raíz.
+Cada carpeta es un proyecto Maven completo con su propio `pom.xml`, código, pruebas, Maven Wrapper y Dockerfile. No forman un proyecto Maven multi módulo; se compilan desde la carpeta de cada microservicio.
 
 Las clases principales son:
 
@@ -20,7 +20,7 @@ Las clases principales son:
 | Solicitudes | `ServicioSolicitudesApplication` | `8080` |
 | Notificaciones | `ServicioNotificacionesApplication` | `8081` al usar Compose; internamente escucha en `8080`. |
 
-La clase `ArkaliteApplication` ubicada en el `src/` de la raíz pertenece al monolito anterior y no participa en la ejecución vigente.
+El monolito anterior y su clase `ArkaliteApplication` se retiraron del proyecto.
 
 ## Estructura estándar de cada servicio
 
@@ -64,7 +64,7 @@ adaptador de entrada (controller)
 dominio (servicio, entidades y puertos)
      |
      v
-adaptador de salida (memoria o cliente HTTP)
+adaptador de salida (JPA, memoria o cliente HTTP)
 ```
 
 - El **dominio** contiene las reglas de negocio.
@@ -83,7 +83,8 @@ pa.gob.dntic.servicio...
 ├── dominio/                Entidades, reglas, servicios y puertos
 ├── adaptadores/
 │   ├── entrada/            Controladores HTTP y manejo de errores
-│   └── salida/             Memoria y comunicación con otros servicios
+│   ├── salida/             Memoria, publicación y relevador de eventos
+│   └── persistencia/       Entidades y repositorios JPA
 ├── config/                 Conexión de componentes, cuando aplica
 └── eventos/                Contratos intercambiados entre servicios
 ```
@@ -127,8 +128,8 @@ Spring encuentra una instancia compatible y la entrega al crear el controlador. 
 | --- | --- |
 | `ServicioSolicitudesApplication` | Ejecuta `SpringApplication.run` y arranca Spring Boot. |
 | `ConfiguracionDominio` | Crea `ServicioDeSolicitudes` mediante `@Bean`. |
-| `ConfiguracionDominio.datosDeEjemplo` | Ejecuta un `CommandLineRunner` después del arranque y carga datos de demostración. |
-| `application.properties` | Define el nombre del servicio y la URL de notificaciones. |
+| `ConfiguracionDominio.seed` | Ejecuta un `CommandLineRunner` después del arranque y carga datos de demostración. |
+| `application.properties` | Configura PostgreSQL, inicialización SQL, URL de notificaciones y observabilidad. |
 
 Al arrancar se crean estas solicitudes:
 
@@ -157,7 +158,7 @@ BORRADOR -> ENVIADA -> APROBADA
                     -> RECHAZADA
 ```
 
-Intentar enviar algo que no esté en `BORRADOR`, o aprobar/rechazar algo que no esté en `ENVIADA`, produce `IllegalStateException`.
+Intentar enviar algo que no esté en `BORRADOR`, o aprobar/rechazar algo que no esté en `ENVIADA`, produce `TransicionNoPermitida` (subclase de `IllegalStateException`).
 
 ### Adaptadores de entrada
 
@@ -169,20 +170,24 @@ Intentar enviar algo que no esté en `BORRADOR`, o aprobar/rechazar algo que no 
 
 `SolicitudController` no almacena datos. Por ejemplo, el método `enviar` toma el `id` de la ruta y llama a `servicio.enviar(id)`.
 
-El endpoint `/solicitudes/crear` es demostrativo: siempre registra `INC-002` con tipo `Incidencia`. Todavía no recibe datos del usuario mediante `@RequestBody`.
+`POST /solicitudes` recibe `NuevaSolicitud(id, tipo)` mediante `@RequestBody` y llama a `ServicioDeSolicitudes.crear()`, que rechaza datos vacíos y no pisa un id existente (`SolicitudYaExiste`). El endpoint `/solicitudes/crear` se conserva como atajo demostrativo: siempre registra `INC-002` con tipo `Incidencia`.
 
-`IllegalStateException` no tiene un manejador específico. Actualmente Spring la convierte en una respuesta de error del servidor.
+`ManejadorGlobalDeErrores` traduce `SolicitudYaExiste` y `TransicionNoPermitida` a `409 Conflict`, e `IllegalArgumentException` a `400 Bad Request`, siempre con `ErrorRespuesta(estado, mensaje)`. `EventoSalienteController` expone `GET /eventos` a través del puerto de consulta `ConsultaDeEventosSalientes`, que implementa `RegistradorDeEventosJpa`.
 
 ### Adaptadores de salida
 
 | Componente | Responsabilidad |
 | --- | --- |
-| `RepositorioQueRegistra` | Implementación en memoria seleccionada mediante `@Primary`; además escribe cada guardado en la salida estándar. |
+| `RepositorioJpa` | Adaptador activo, seleccionado con `@Primary`; persiste solicitudes en PostgreSQL. |
+| `RepositorioQueRegistra` | Alternativa en memoria que registra cada guardado; no es el adaptador principal. |
 | `RepositorioEnMemoria` | Segunda implementación del mismo puerto; existe como bean nombrado, pero no es la elegida para `ServicioDeSolicitudes`. |
 | `PublicadorRest` | Implementa `PublicadorDeEventos` enviando un `POST` HTTP a notificaciones. |
-| `SolicitudEnviada` | `record` que se serializa como JSON con `id` y `tipo`. |
+| `SolicitudEnviada` | Contrato JSON con `eventoId`, `id` y `tipo`. |
+| `RegistradorDeEventosJpa` | Guarda el evento pendiente en PostgreSQL. |
+| `RelevadorDeEventosPendientes` | Consulta y publica eventos pendientes en segundo plano. |
+| `PublicadorConReintento` | Publicador activo con `@Primary`; realiza hasta tres intentos HTTP. |
 
-Como hay dos implementaciones de `RepositorioDeSolicitudes`, `@Primary` indica a Spring que debe inyectar `RepositorioQueRegistra`.
+`RepositorioJpa` tiene `@Primary` entre las implementaciones de `RepositorioDeSolicitudes`. `PublicadorConReintento` es el publicador principal; `PublicadorRest` queda como alternativa. `OperacionEnviar` no participa en el flujo activo.
 
 `PublicadorRest` lee esta propiedad:
 
@@ -192,7 +197,7 @@ notificaciones.url=${NOTIFICACIONES_URL:http://localhost:8081/eventos/solicitud-
 
 Primero busca la variable `NOTIFICACIONES_URL`. Si no existe, usa la dirección local después de los dos puntos. Compose establece la variable con el nombre interno del servicio.
 
-El publicador captura errores de red. La solicitud permanece enviada aunque notificaciones no responda.
+`ServicioDeSolicitudes.enviar` guarda el estado y el outbox en una misma transacción. El relevador publica en segundo plano con cinco segundos de espera entre ciclos. Si se agotan los tres intentos HTTP, el evento conserva `procesado=false` para otro ciclo; la solicitud ya está enviada.
 
 ## Componentes de `servicio-notificaciones`
 
@@ -202,7 +207,7 @@ El publicador captura errores de red. La solicitud permanece enviada aunque noti
 | --- | --- |
 | `ServicioNotificacionesApplication` | Arranca la segunda aplicación Spring Boot. |
 | `ConfiguracionNotificaciones` | Crea `ServicioDeNotificaciones` y le inyecta el repositorio. |
-| `application.properties` | Define `spring.application.name=servicio-notificaciones`. |
+| `application.properties` | Configura nombre, PostgreSQL, Hibernate y observabilidad. |
 
 ### Dominio
 
@@ -216,13 +221,14 @@ El publicador captura errores de red. La solicitud permanece enviada aunque noti
 
 El contrato `SolicitudEnviada` aparece una vez en cada microservicio. No comparten una clase Java: comparten la forma del JSON.
 
-El servicio de notificaciones también contiene `Estado`, `NotificacionNoEncontrada`, `ErrorRespuesta` y `ManejadorDeEventos`. Actualmente no participan en el flujo HTTP: `EventoController` llama directamente a `ServicioDeNotificaciones`, y `ManejadorDeEventos` no está registrado como componente Spring.
+`EventoController` delega en `ConsumoIdempotente`, que consulta `EventoProcesadoRepository` antes de llamar al dominio y registra el `eventoId` procesado. `Estado`, `NotificacionNoEncontrada` y `ErrorRespuesta` no participan en este flujo.
 
 ### Adaptadores de entrada
 
 | Componente | Ruta | Responsabilidad |
 | --- | --- | --- |
-| `EventoController` | `POST /eventos/solicitud-enviada` | Convierte el JSON en `SolicitudEnviada` y lo entrega al dominio. |
+| `EventoController` | `POST /eventos/solicitud-enviada` | Convierte el JSON y lo entrega a `ConsumoIdempotente`. |
+| `EventoController` | `GET /eventos/procesados` | Lista los identificadores persistidos. |
 | `NotificacionController` | `GET /notificaciones` | Devuelve todas las notificaciones guardadas. |
 
 ## Cómo inicia Spring
@@ -252,7 +258,7 @@ SolicitudController.crearNueva
 ServicioDeSolicitudes.registrar
         |
         v
-RepositorioQueRegistra.guardar
+RepositorioJpa.guardar
 ```
 
 La respuesta es un JSON similar a:
@@ -267,39 +273,23 @@ La respuesta es un JSON similar a:
 
 ## Flujo entre los dos microservicios
 
-```text
-POST /solicitudes/INC-002/enviar
-        |
-        v
-SolicitudController.enviar
-        |
-        v
-ServicioDeSolicitudes.enviar
-        | actualiza el repositorio
-        v
-PublicadorRest.publicar
-        | POST con {"id":"INC-002","tipo":"Incidencia"}
-        v
-EventoController.recibir
-        |
-        v
-ServicioDeNotificaciones.alRecibirSolicitudEnviada
-        |
-        v
-RepositorioEnMemoria.guardar
-```
-
-La respuesta de solicitudes y la recepción en notificaciones ocurren en procesos Java diferentes conectados por HTTP.
+1. `SolicitudController.enviar` llama a `ServicioDeSolicitudes.enviar`.
+2. Una transacción guarda la solicitud enviada con `RepositorioJpa` y el evento con `RegistradorDeEventosJpa`.
+3. La API responde sin esperar la entrega HTTP.
+4. `RelevadorDeEventosPendientes` consulta el outbox y llama a `PublicadorConReintento`.
+5. El POST contiene `eventoId`, `id` y `tipo`. Actualmente el outbox usa `SolicitudEnviada` como tipo del evento.
+6. `EventoController` llama a `ConsumoIdempotente`, que comprueba el identificador, crea el aviso en memoria y registra el identificador en PostgreSQL.
+7. Cuando el POST termina correctamente, el relevador marca el evento como procesado. Si falla, vuelve a intentarlo en ciclos posteriores.
 
 ## Persistencia y ciclo de vida
 
-Los repositorios actuales usan `Map` y `List` en memoria:
-
-- Los datos existen solo dentro de la JVM que los creó.
-- Cada microservicio tiene su propia memoria.
-- Reiniciar la aplicación elimina sus datos.
-- Ejecutar varias réplicas crearía almacenes independientes.
-- No existen archivos de datos, base de datos ni migraciones.
+- Solicitudes y eventos pendientes viven en PostgreSQL mediante JPA.
+- Notificaciones guarda los identificadores procesados en su propia base, pero los textos de los avisos siguen en memoria.
+- Reiniciar notificaciones borra los textos; reenviar un identificador ya procesado no los reconstruye.
+- La comprobación de duplicados no constituye una garantía de procesamiento exactamente una vez ante concurrencia o fallos entre la memoria y la base.
+- El arranque de solicitudes vuelve a registrar `INC-001` y `CAM-002` y envía esta última: puede sobrescribir el estado de esos datos de demostración y generar otro evento.
+- Solicitudes inicializa `schema.sql` y valida con Hibernate; notificaciones usa `ddl-auto=update`. No hay migraciones versionadas.
+- Compose no declara volúmenes persistentes propios para las bases. Los manifiestos Kubernetes sí incluyen PVC.
 
 ## Dependencias y compilación Maven
 
@@ -309,7 +299,11 @@ Cada `pom.xml` declara Java 26, Spring Boot 4.1.1 y el plugin `spring-boot-maven
 | --- | --- | --- |
 | `spring-boot-starter-webmvc` | Ambos | Servidor HTTP, controladores, conversión JSON y cliente `RestClient`. |
 | `springdoc-openapi-starter-webmvc-ui` | Ambos | Genera OpenAPI y Swagger UI. |
-| `spring-boot-starter-webmvc-test` | Ambos, alcance de prueba | Proporciona JUnit y soporte de pruebas para Spring MVC. |
+| `spring-boot-starter-test` | Ambos, alcance de prueba | JUnit, Mockito y soporte de pruebas Spring. |
+| `spring-boot-starter-data-jpa` y `postgresql` | Ambos | Persistencia y conexión a PostgreSQL. |
+| `spring-boot-starter-actuator` | Ambos | Salud y métricas. |
+| `micrometer-tracing-bridge-brave` y `micrometer-registry-prometheus` | Ambos | Trazas y exportación de métricas. |
+| `spring-boot-starter-restclient` | Solicitudes | Cliente HTTP. |
 
 El Maven Wrapper (`mvnw` o `mvnw.cmd`) descarga y ejecuta la versión Maven configurada por el proyecto. `spring-boot-maven-plugin` vuelve ejecutable el JAR producido por `package`.
 
@@ -325,9 +319,9 @@ docker compose ps
 docker compose logs -f
 ```
 
-Compose construye los dos JAR dentro de imágenes separadas, crea una red e inicia notificaciones antes de solicitudes.
+Compose construye los dos JAR dentro de imágenes separadas, crea una red e inicia notificaciones antes de solicitudes. También construye la UI, que queda en `http://localhost:8088`.
 
-Al arrancar ya deben existir `INC-001` y `CAM-002`. Como `CAM-002` se envía durante el inicio, también debe existir una notificación inicial.
+Después de completar el arranque existen `INC-001` y `CAM-002`. La notificación inicial aparece cuando el relevador entrega el evento. Si una consulta no muestra el aviso, repítela tras unos segundos; lo mismo aplica al enviar `INC-002`.
 
 ```powershell
 Invoke-RestMethod http://localhost:8080/solicitudes
@@ -352,7 +346,7 @@ Consultar [Docker y Docker Compose](../operaciones/docker-y-compose.md) para com
 
 ## Ejecutar desde Maven
 
-Se necesita JDK 26 y se usan dos terminales. Ambas aplicaciones usan el puerto 8080 de forma predeterminada fuera de Compose, por lo que notificaciones se inicia explícitamente en 8081.
+Se necesita JDK 26, las [bases de datos locales](../inicio/bases-de-datos-locales.md) y dos terminales. Las mismas bases se requieren al ejecutar un JAR o desde el IDE. Ambas aplicaciones usan el puerto 8080 de forma predeterminada fuera de Compose, por lo que notificaciones se inicia explícitamente en 8081.
 
 Primero notificaciones:
 
@@ -422,7 +416,7 @@ En la configuración de notificaciones agregar el argumento:
 --server.port=8081
 ```
 
-Después iniciar notificaciones y solicitudes. En modo **Debug** se puede colocar un breakpoint en `ServicioDeSolicitudes.enviar`, `PublicadorRest.publicar` y `EventoController.recibir` para observar el salto entre procesos.
+Después iniciar notificaciones y solicitudes. En modo **Debug** se puede colocar un breakpoint en `ServicioDeSolicitudes.enviar`, `PublicadorConReintento.publicar` y `EventoController.recibir` para observar el salto entre procesos.
 
 ## Ejecutar pruebas
 
@@ -438,7 +432,7 @@ Push-Location servicio-notificaciones
 Pop-Location
 ```
 
-Cada proyecto contiene actualmente una prueba `contextLoads`. `@SpringBootTest` intenta crear todo el contexto de Spring y la prueba pasa si los componentes pueden conectarse entre sí dentro de esa aplicación. Todavía no hay pruebas exhaustivas de controladores, transiciones de estado ni integración HTTP entre los dos servicios.
+Hay pruebas de dominio, controladores y repositorios en memoria. Las clases `*ApplicationTests` construyen componentes con repositorios en memoria y dobles de prueba; no son pruebas `contextLoads` ni acreditan el arranque con PostgreSQL. El workflow comprueba por separado el arranque real de solicitudes con una base PostgreSQL.
 
 Para ejecutar una prueba concreta:
 
@@ -464,9 +458,9 @@ cd servicio-solicitudes
 | --- | --- |
 | Un servicio indica que el puerto 8080 está ocupado | Los dos se iniciaron localmente sin cambiar notificaciones a 8081. |
 | Solicitudes arranca, pero no crea la notificación inicial | Notificaciones no estaba disponible o `NOTIFICACIONES_URL` apunta a otra dirección. |
-| Spring encuentra dos repositorios de solicitudes | `RepositorioQueRegistra` debe conservar `@Primary` o se debe seleccionar un bean explícitamente. |
+| Spring encuentra dos repositorios de solicitudes | `RepositorioJpa` debe conservar `@Primary` o se debe seleccionar un bean explícitamente. |
 | Un identificador inexistente devuelve 404 | Es el comportamiento de `SolicitudNoEncontrada` y `ManejadorGlobalDeErrores`. |
-| Una transición inválida devuelve error del servidor | `Solicitud` lanza `IllegalStateException` y todavía no existe un manejador HTTP específico. |
-| Los datos desaparecen | Los repositorios actuales solo viven en memoria. |
+| Una transición inválida devuelve 409 | `Solicitud` lanza `TransicionNoPermitida` y `ManejadorGlobalDeErrores` la traduce a `409 Conflict`. |
+| Los datos desaparecen | Los avisos están en memoria; para solicitudes y eventos, revisar la base conectada y la conservación de sus datos. |
 
 Para instalación detallada, variables y depuración remota, consultar [Instalación del entorno y depuración](../inicio/instalacion-y-debug.md).

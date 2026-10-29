@@ -2,7 +2,9 @@
 
 Desde la raíz del repositorio.
 
-## Eliminar los pods y servicios
+## Eliminar los recursos del laboratorio
+
+El comando siguiente también elimina los PVC y el Secret definidos en `k8s/`. Según la política del almacenamiento, borrar los PVC puede eliminar los datos de ambas bases. Úsalo para desmontar el laboratorio completo.
 
 ```powershell
 kubectl delete -R -f k8s/ --ignore-not-found

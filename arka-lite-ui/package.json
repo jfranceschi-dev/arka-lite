@@ -1,0 +1,45 @@
+{
+  "name": "arka-lite-ui",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Interfaz de ARKA-Lite: modo App para usar los dos microservicios y modo Entender con diagramas paso a paso.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "tokens": "node diseno/generar-css.ts",
+    "dev": "npm run tokens && vite",
+    "build": "npm run tokens && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "validar": "node contenido/validar.ts",
+    "test": "vitest run",
+    "todo": "npm run validar && npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "datatables.net-dt": "^2.3.4",
+    "jquery": "^3.7.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sweetalert2": "^11.22.5",
+    "tom-select": "^2.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/jquery": "^3.5.32",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^29.1.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}
