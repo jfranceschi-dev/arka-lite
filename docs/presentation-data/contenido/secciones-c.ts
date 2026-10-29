@@ -210,7 +210,7 @@ export const devops: Seccion = {
           { icono: "cloud", titulo: "Máquina en la nube", texto: "4 núcleos y Docker adentro.", tono: "marino" },
           { icono: "container", titulo: "levantar.sh", texto: "Construye y levanta los 8 contenedores.", tono: "cian" },
           { icono: "globe", titulo: "Puertos https", texto: "UI, Grafana y Swagger, privados.", tono: "cian" },
-          { icono: "monitor", titulo: "Demo", texto: "Desde el navegador.", tono: "correcto" },
+          { icono: "monitor", titulo: "Usarlo", texto: "Desde el navegador.", tono: "correcto" },
         ],
       },
       guion: {

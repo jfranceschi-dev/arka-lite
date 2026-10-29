@@ -1,8 +1,8 @@
-# Guion de ARKA-Lite · recorrido resumen
+# Guion de ARKA-Lite · resumen
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-19 láminas, unos 18 minutos de exposición sin contar la demostración en vivo ni las preguntas. Charla corta: el equipo, el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo y el valor.
+19 láminas, unos 21 minutos contando la demostración en vivo; las preguntas van aparte. Charla corta: el equipo, el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo y el valor.
 
 ## Cómo está pensada
 
@@ -20,7 +20,7 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 
 ## Reparto
 
-Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.
+Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto, más la demostración en vivo o lo que duren los videos.
 
 ### 7 personas
 
@@ -29,7 +29,7 @@ Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infr
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
 | Desarrollo 1 · orquesta | Desarrollo | Apertura, el negocio y el cierre y Fundamentos | 1–4, 16–19 | ~7 min |
-| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 5–6, 15 | ~3 min |
+| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 5–6, 15 | ~6 min |
 | Desarrollo 3 | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión | 9 | ~1 min |
 | Desarrollo 4 | Desarrollo | Interconexión de servicios | 10–11 | ~3 min |
 | Base de datos | Base de datos | Base de datos | 7–8 | ~2 min |

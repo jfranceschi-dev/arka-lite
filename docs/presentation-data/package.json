@@ -16,6 +16,7 @@
     "pdf": "node generador-pdf/cli.ts",
     "guiones": "node generador-guiones/generar.ts",
     "pdf-laminas": "powershell -NoProfile -ExecutionPolicy Bypass -File generador-pdf/exportar-laminas.ps1",
+    "videos": "node capturas/grabar-videos.ts",
     "todo": "npm run validar && npm run typecheck && npm test && npm run pptx && npm run verificar-pptx && npm run pdf && npm run guiones"
   },
   "dependencies": {
@@ -26,6 +27,8 @@
   "devDependencies": {
     "@types/node": "^24.19.2",
     "@types/pdfkit": "^0.17.7",
+    "mediabunny": "1.61.4",
+    "playwright-core": "1.64.1",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
   }

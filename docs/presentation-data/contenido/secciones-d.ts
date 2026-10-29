@@ -109,7 +109,7 @@ export const demostracion: Seccion = {
     {
       id: "s07-aprendizajes",
       titulo: "Demostración: lo que aprendimos",
-      visible: ["Diseñar para la falla, no solo para el éxito", "Hacer visible lo asíncrono", "Mostrar en vivo explica más que una lámina"],
+      visible: ["Diseñar para la falla, no solo para el éxito", "Hacer visible lo asíncrono", "Verlo funcionar explica más que una lámina"],
       valor: "Una herramienta que explica el sistema a cualquiera, también a quien llegue nuevo al equipo.",
       recorridos: ["ejecutivo", "tecnico"],
       visual: {
@@ -118,12 +118,12 @@ export const demostracion: Seccion = {
         items: [
           { icono: "siren", titulo: "Diseñar para la falla", texto: "Cada falla probada tiene una reacción y un mensaje.", valor: "Menos incidentes y menos llamadas a soporte." },
           { icono: "eye", titulo: "Hacer visible lo asíncrono", texto: "Pendientes, entregados y consumidos en una pantalla.", valor: "Explicar el sistema sin abrir el código." },
-          { icono: "lightbulb", titulo: "Mostrar en vivo explica más", texto: "Botones para provocar fallas y ver la reacción.", valor: "Material de capacitación para quien llegue al equipo." },
+          { icono: "lightbulb", titulo: "Verlo funcionar explica más", texto: "Botones para provocar fallas y ver la reacción.", valor: "Material de capacitación para quien llegue al equipo." },
         ],
       },
       guion: {
         decir: [
-          "Tres aprendizajes de la demostración. [clic] Hay que diseñar para la falla, no solo para el camino feliz. [clic] Lo asíncrono hay que hacerlo visible: sin la pestaña Enviadas, un evento pendiente sería invisible. [clic] Y mostrarlo en vivo explica más que cualquier lámina; esta misma interfaz sirve para capacitar a quien llegue al equipo.",
+          "Tres aprendizajes de la demostración. [clic] Hay que diseñar para la falla, no solo para el camino feliz. [clic] Lo asíncrono hay que hacerlo visible: sin la pestaña Enviadas, un evento pendiente sería invisible. [clic] Y verlo funcionar explica más que cualquier lámina; esta misma interfaz sirve para capacitar a quien llegue al equipo.",
         ],
         transicion: "Para cerrar, el valor que deja todo esto.",
       },

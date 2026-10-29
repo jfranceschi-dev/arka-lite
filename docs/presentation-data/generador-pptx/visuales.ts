@@ -1,11 +1,11 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { secciones } from "../contenido/index.ts";
 import { NOMBRE_ENFOQUE, type Captura, type ElementoVisual, type Enfoque, type Icono, type Tono, type Visual } from "../contenido/tipos.ts";
-import { DIR_CAPTURAS } from "../entregables.ts";
+import { DIR_CAPTURAS, DIR_VIDEOS } from "../entregables.ts";
 import { color } from "../diseno/tokens.ts";
 import { ACC, ACC_S, ACC_T, FUENTE, H, MONO, PRI, PROF, fijarPaso, halo, sombra, TITULO, colorDeTono, flecha, hex, icono, insignia, mezclar, type Slide } from "./base.ts";
-import { pasoDeParte } from "../contenido/visuales.ts";
+import { duracion, partesDeRuta, pasoDeParte } from "../contenido/visuales.ts";
+import { segundosDeVideo } from "../contenido/videos.ts";
 import { tamQueCabe } from "./medidas.ts";
 import { colorCodigo, resaltar } from "../diseno/resaltado.ts";
 
@@ -37,22 +37,23 @@ const estiloEnfoque: Record<Enfoque, { fondo: string; texto: string; borde: stri
   fondo: { fondo: ACC, texto: PROF, borde: ACC },
   general: { fondo: "#FFFFFF", texto: color.secundario, borde: color.linea },
   vivo: { fondo: "#5B3FC4", texto: "#FFFFFF", borde: "#5B3FC4" },
+  video: { fondo: "#5B3FC4", texto: "#FFFFFF", borde: "#5B3FC4" },
 };
 
-function ruta(s: Slide, c: Caja) {
-  const partes = secciones.filter((x) => x.numero !== null);
+function ruta(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ruta" }>) {
+  const partes = partesDeRuta(v);
   const paso = c.w / partes.length;
   const d = Math.min(1.05, paso - 0.45);
   const bloque = 0.3 + d + 1.25 + 1.0;
   const yc = c.y + Math.max(0.1, (c.h - bloque) / 2) + 0.3 + d / 2;
   s.addShape("line", { x: c.x + paso / 2, y: yc, w: paso * (partes.length - 1), h: 0, line: { color: hex(mezclar(ACC, "#FFFFFF", 0.35)), width: 4 } });
   partes.forEach((sec, i) => {
-    fijarPaso(pasoDeParte(i));
+    fijarPaso(pasoDeParte(partes, i));
     const cx = c.x + i * paso + paso / 2;
     const enfoque = sec.enfoque ?? "general";
     const fondo = enfoque === "fondo";
     const dd = fondo ? d : d * 0.78;
-    const relleno = enfoque === "general" ? mezclar(PRI, "#FFFFFF", 0.3) : enfoque === "vivo" ? "#5B3FC4" : PRI;
+    const relleno = enfoque === "general" ? mezclar(PRI, "#FFFFFF", 0.3) : enfoque === "vivo" || enfoque === "video" ? "#5B3FC4" : PRI;
     s.addShape("ellipse", { x: cx - dd / 2, y: yc - dd / 2, w: dd, h: dd, fill: { color: hex(relleno) }, line: { color: fondo ? hex(ACC) : "FFFFFF", width: fondo ? 3.5 : 3 }, shadow: fondo ? halo() : sombra() });
     icono(s, sec.icono ?? "flag", cx - dd * 0.25, yc - dd * 0.25, dd * 0.5, "#FFFFFF");
     s.addText(String(sec.numero), { x: cx + dd * 0.16, y: yc - dd / 2 - 0.08, w: 0.34, h: 0.34, shape: "ellipse", margin: 0, fill: { color: hex(ACC) }, line: { color: "FFFFFF", width: 1.5 }, fontFace: TITULO, fontSize: 11.5, bold: true, color: hex(PROF), align: "center", valign: "middle" });
@@ -523,13 +524,20 @@ function tarjetas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "tarjetas" }>) {
 // ── Capturas ──────────────────────────────────────────────────────────────
 
 const PROPORCION = 1350 / 2160;
+const PROPORCION_VIDEO = 1080 / 1920;
 
-function marcoNavegador(s: Slide, cap: Captura, x: number, y: number, w: number) {
+// La barra y el borde del navegador; devuelve el alto de la barra.
+function ventana(s: Slide, url: string | undefined, x: number, y: number, w: number, hImg: number): number {
   const barra = Math.max(0.24, w * 0.035);
-  const hImg = w * PROPORCION;
   s.addShape("roundRect", { x, y, w, h: barra + hImg, rectRadius: 0.1, fill: { color: "E9EEF5" }, line: { color: "C7D2E2", width: 1 }, shadow: { type: "outer", blur: 14, offset: 4, angle: 90, color: "0B1F3A", opacity: 0.22 } });
   ["E5484D", "F5A524", "30A46C"].forEach((c, i) => s.addShape("ellipse", { x: x + 0.12 + i * barra * 0.45, y: y + barra * 0.32, w: barra * 0.34, h: barra * 0.34, fill: { color: c }, line: { color: c, width: 0 } }));
-  if (cap.url) s.addText(cap.url, { x: x + 0.2 + barra * 1.5, y: y + barra * 0.16, w: Math.min(w * 0.55, 4.2), h: barra * 0.68, shape: "roundRect", rectRadius: barra * 0.3, margin: [0, 6, 0, 6], fill: { color: "FFFFFF" }, line: { color: "FFFFFF", width: 0 }, fontFace: FUENTE, fontSize: Math.max(7, barra * 26), color: hex(color.secundario), valign: "middle", fit: "shrink" });
+  if (url) s.addText(url, { x: x + 0.2 + barra * 1.5, y: y + barra * 0.16, w: Math.min(w * 0.55, 4.2), h: barra * 0.68, shape: "roundRect", rectRadius: barra * 0.3, margin: [0, 6, 0, 6], fill: { color: "FFFFFF" }, line: { color: "FFFFFF", width: 0 }, fontFace: FUENTE, fontSize: Math.max(7, barra * 26), color: hex(color.secundario), valign: "middle", fit: "shrink" });
+  return barra;
+}
+
+function marcoNavegador(s: Slide, cap: Captura, x: number, y: number, w: number) {
+  const hImg = w * PROPORCION;
+  const barra = ventana(s, cap.url, x, y, w, hImg);
   const ruta = join(DIR_CAPTURAS, cap.archivo);
   if (existsSync(ruta)) s.addImage({ path: ruta, x, y: y + barra, w, h: hImg, altText: cap.titulo });
   else texto(s, `Falta la captura ${cap.archivo}: ejecutar capturas/capturar.ps1`, { x, y: y + barra, w, h: hImg }, { tam: 12, color: color.error, alinear: "center", vertical: "middle" });
@@ -568,6 +576,42 @@ function captura(s: Slide, c: Caja, v: Extract<Visual, { tipo: "captura" }>, lat
     texto(s, cap.titulo, { x: tx + 0.5, y: ty + alto / 2 - 0.66, w: tw - 0.5, h: 0.48 }, { tam: 20, negrita: true, fuente: TITULO, vertical: "middle", color: PRI });
     if (cap.texto) texto(s, cap.texto, { x: tx, y: ty + alto / 2 - 0.08, w: tw, h: alto / 2 }, { tam: 14, color: color.secundario });
   });
+}
+
+// ── Video ─────────────────────────────────────────────────────────────────
+
+// El video en un marco de navegador y, al lado, qué van a ver: los mismos
+// pasos que los rótulos numerados del video. El video se reproduce en el
+// clic 1 (posproceso.ts lo reconoce por la marca [v1]).
+function video(s: Slide, c: Caja, v: Extract<Visual, { tipo: "video" }>) {
+  const lado = 4.1;
+  const w = Math.min(c.w - lado - 0.4, (c.h - 0.05) / (PROPORCION_VIDEO + 0.035));
+  const hImg = w * PROPORCION_VIDEO;
+  const barra = Math.max(0.24, w * 0.035);
+  const y = c.y + (c.h - barra - hImg) / 2;
+  ventana(s, v.url, c.x, y, w, hImg);
+  const archivo = join(DIR_VIDEOS, v.archivo);
+  const portada = join(DIR_VIDEOS, v.portada);
+  if (existsSync(archivo) && existsSync(portada)) {
+    s.addMedia({ type: "video", path: archivo, cover: `data:image/png;base64,${readFileSync(portada).toString("base64")}`, x: c.x, y: y + barra, w, h: hImg, objectName: `[v1] Video ${v.archivo}` });
+  } else {
+    texto(s, `Falta el video ${v.archivo}: ejecutar npm run videos con el sistema arriba`, { x: c.x, y: y + barra, w, h: hImg }, { tam: 12, color: color.error, alinear: "center", vertical: "middle" });
+  }
+
+  const x = c.x + w + 0.4;
+  const ancho = c.x + c.w - x;
+  texto(s, "QUÉ VAN A VER", { x, y: c.y, w: ancho, h: 0.3 }, { tam: 11, negrita: true, color: ACC_T });
+  const seg = segundosDeVideo(v.archivo);
+  const pista = `▶ Clic para reproducir${seg ? ` · ${duracion(seg)}` : ""} · Alt+P pausa`;
+  const yPasos = c.y + 0.42;
+  const hPasos = c.y + c.h - 0.5 - yPasos;
+  const fila = Math.min(0.78, hPasos / v.pasos.length);
+  v.pasos.forEach((p, i) => {
+    const yf = yPasos + i * fila;
+    s.addText(String(i + 1), { x, y: yf + (fila - 0.36) / 2, w: 0.36, h: 0.36, shape: "ellipse", margin: 0, fill: { color: hex(ACC) }, line: { color: hex(ACC), width: 0 }, fontFace: TITULO, fontSize: 12, bold: true, color: hex(PROF), align: "center", valign: "middle" });
+    texto(s, p, { x: x + 0.5, y: yf, w: ancho - 0.5, h: fila }, { tam: 13.5, vertical: "middle" });
+  });
+  s.addText(pista, { x, y: c.y + c.h - 0.4, w: ancho, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 0, fill: { color: hex(ACC_S) }, line: { color: hex(ACC_S), width: 0 }, fontFace: FUENTE, fontSize: 11, bold: true, color: hex(ACC_T), align: "center", valign: "middle", fit: "shrink" });
 }
 
 // ── Ramas de Git ──────────────────────────────────────────────────────────
@@ -1079,7 +1123,7 @@ export function dibujarVisual(s: Slide, v: Visual, c: Caja, lateral?: (caja: Caj
 
 function dibujarSegunTipo(s: Slide, v: Visual, c: Caja, lateral?: (caja: Caja) => void, iconoSeccion?: Icono) {
   switch (v.tipo) {
-    case "ruta": return ruta(s, c);
+    case "ruta": return ruta(s, c, v);
     case "equipo": return equipo(s, c, v);
     case "sistema": return sistema(s, c, v);
     case "mapeo": return mapeo(s, c, v);
@@ -1099,6 +1143,7 @@ function dibujarSegunTipo(s: Slide, v: Visual, c: Caja, lateral?: (caja: Caja) =
     case "contraste": return contraste(s, c, v);
     case "tarjetas": return tarjetas(s, c, v);
     case "captura": return captura(s, c, v, lateral);
+    case "video": return video(s, c, v);
     case "ramas": return ramas(s, c, v);
   }
 }

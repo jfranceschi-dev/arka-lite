@@ -1,17 +1,17 @@
 // Genera los guiones en Markdown desde la misma fuente que el PPTX, en
-// docs/presentation-data/guiones/: un guion por variante (resumen, ejecutivo y
-// técnico) y, para el ejecutivo, un guion por persona en cada división del
-// equipo (8 o 7 personas).
+// docs/presentation-data/guiones/: un guion por variante (resumen, ejecutivo,
+// técnico y el ejecutivo con videos o sin demostración), un guion por persona
+// para cada versión del ejecutivo y el reparto con recomendaciones.
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { DIR_GUIONES } from "../entregables.ts";
-import { laminas, etiquetaSeccion, NOMBRE_RECORRIDO, RECORRIDOS, secciones, type Lamina } from "../contenido/index.ts";
-import { CLIC, NOMBRE_ENFOQUE, type Recorrido } from "../contenido/tipos.ts";
-import { DIVISIONES, NOMBRE_ROL, PALABRAS_POR_MINUTO, palabras, personaCon, quienPresenta, rolDe, type Division, type Persona } from "../contenido/reparto.ts";
+import { laminas, etiquetaSeccion, modoDe, nombreVariante, partesDe, recorridoDe, seccionesDe, VARIANTES, type Lamina, type Variante } from "../contenido/index.ts";
+import { CLIC, NOMBRE_ENFOQUE, type ModoDemo } from "../contenido/tipos.ts";
+import { DIVISIONES, minutosDeLamina, NOMBRE_ROL, personaCon, quienPresenta, rolDe, type Division, type Persona } from "../contenido/reparto.ts";
 import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
 import { GLOSARIO } from "../contenido/glosario.ts";
-import { CHECKLIST, CONSEJOS, GENERALES, MINUTOS_DEMO_EN_VIVO, PERFIL, PREGUNTAS_A_QUIEN, RECORTES } from "../contenido/recomendaciones.ts";
+import { CHECKLIST, CONSEJOS, GENERALES, PERFIL, PREGUNTAS_A_QUIEN, RECORTES, VERSIONES } from "../contenido/recomendaciones.ts";
 
 const base = DIR_GUIONES;
 mkdirSync(base, { recursive: true });
@@ -23,11 +23,18 @@ const AVISO = "> Archivo generado por `npm run guiones` desde `docs/presentation
 
 const CERTEZA = { implementado: "ya existe en el código", ejemplo: "ejemplo para explicar", propuesta: "propuesta, no existe aún" } as const;
 
-const DESCRIPCION: Record<Recorrido, string> = {
+const DESCRIPCION: Record<Variante, string> = {
   resumen: "Charla corta: el equipo, el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo y el valor.",
   ejecutivo: "La presentación del equipo arka-litos: fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps a fondo; observabilidad y demostración en vivo.",
   tecnico: "El recorrido ejecutivo más el código, la configuración y los diagramas detallados.",
+  "ejecutivo-con-videos": "El recorrido ejecutivo con la demostración grabada: dos videos de la UI real dentro del PPTX, para cuando no se puede hacer en vivo.",
+  "ejecutivo-sin-demo": "El recorrido ejecutivo sin la parte 7: la observabilidad pasa directo al cierre.",
 };
+
+// Las variantes del ejecutivo: cada una tiene su guion por persona.
+const POR_PERSONA = VARIANTES.filter((v) => recorridoDe(v) === "ejecutivo");
+
+const CON_DEMO: Record<ModoDemo, string> = { vivo: "contando la demostración en vivo", video: "contando los videos", sin: "" };
 
 const LEER = [
   "| Bloque | Qué es |",
@@ -41,7 +48,9 @@ const LEER = [
   "| **Para pasar** | La frase que conecta con la lámina siguiente; si cambia quien presenta, es el relevo. |",
 ];
 
-const minutos = (n: number) => Math.max(1, Math.round(n / PALABRAS_POR_MINUTO));
+const minutos = (m: number) => Math.max(1, Math.round(m));
+
+const archivoPorPersona = (v: Variante, division: Division) => `guion-${v}-${division.id}.md`;
 
 // "1–4, 36–38": los números de lámina en rangos.
 function rangos(numeros: number[]): string {
@@ -58,28 +67,32 @@ function rangos(numeros: number[]): string {
 interface Turno {
   persona: Persona;
   laminas: { l: Lamina; numero: number }[];
-  palabras: number;
+  minutos: number;
 }
 
-function turnos(division: Division, recorrido: Recorrido): Turno[] {
-  const lista = laminas(recorrido);
+function turnos(division: Division, variante: Variante): Turno[] {
+  const lista = laminas(variante);
   return division.personas
     .map((persona) => {
       const suyas = lista.map((l, i) => ({ l, numero: i + 1 })).filter(({ l }) => personaCon(division, rolDe(l)) === persona);
-      return { persona, laminas: suyas, palabras: suyas.reduce((a, { l }) => a + palabras(l), 0) };
+      return { persona, laminas: suyas, minutos: suyas.reduce((a, { l }) => a + minutosDeLamina(l), 0) };
     })
     .filter((t) => t.laminas.length > 0);
 }
 
-function tablaDivision(division: Division, recorrido: Recorrido): string[] {
+// Los papeles que la persona presenta de verdad en la variante: sin
+// demostración, quien solo la tenía a su cargo presenta uno menos.
+const rolesDe = (t: Turno) => t.persona.roles.filter((r) => t.laminas.some(({ l }) => rolDe(l) === r));
+
+function tablaDivision(division: Division, variante: Variante): string[] {
   return [
     "| Persona | Área | Qué presenta | Láminas | Habla |",
     "| --- | --- | --- | --- | --- |",
-    ...turnos(division, recorrido).map((t) => `| ${t.persona.nombre} | ${t.persona.area} | ${t.persona.roles.map((r) => NOMBRE_ROL[r]).join(" y ")} | ${rangos(t.laminas.map((x) => x.numero))} | ~${minutos(t.palabras)} min |`),
+    ...turnos(division, variante).map((t) => `| ${t.persona.nombre} | ${t.persona.area} | ${rolesDe(t).map((r) => NOMBRE_ROL[r]).join(" y ")} | ${rangos(t.laminas.map((x) => x.numero))} | ~${minutos(t.minutos)} min |`),
   ];
 }
 
-function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido, conPresenta: boolean): string {
+function bloqueLamina(l: Lamina, numero: number, variante: Variante, conPresenta: boolean): string {
   const d = l.diapositiva;
   const salida: string[] = [];
   salida.push(`### ${numero}. ${d.titulo}`, "");
@@ -101,7 +114,7 @@ function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido, conPresen
     salida.push(`| ${d.tabla.encabezados.map(celda).join(" | ")} |`, `| ${d.tabla.encabezados.map(() => "---").join(" | ")} |`, ...d.tabla.filas.map((f) => `| ${f.map(celda).join(" | ")} |`), "");
   }
   if (d.marcas?.length) salida.push(`**Ojo:** ${d.marcas.map((m) => `${m.texto} (${CERTEZA[m.certeza]})`).join(" · ")}`, "");
-  if (d.codigo && recorrido === "tecnico") salida.push(`**Código:** \`${d.codigo.archivo}\``, "");
+  if (d.codigo && recorridoDe(variante) === "tecnico") salida.push(`**Código:** \`${d.codigo.archivo}\``, "");
   if (d.valor) salida.push(`**Lo que se lleva el staff:** ${d.valor}`, "");
   salida.push("**Qué decir**", "", ...d.guion.decir.flatMap((t) => [`> ${t.replaceAll(CLIC, "**▶ clic**")}`, ">"]).slice(0, -1), "");
   const hacer = [...(d.guion.instrucciones ?? []), ...(d.guion.demo ? [`Mostrar: ${d.guion.demo.accion} Debe verse: ${d.guion.demo.evidencia}`] : [])];
@@ -113,17 +126,19 @@ function bloqueLamina(l: Lamina, numero: number, recorrido: Recorrido, conPresen
   return salida.join("\n");
 }
 
-function guion(recorrido: Recorrido): string {
-  const lista = laminas(recorrido);
-  const total = lista.reduce((a, l) => a + palabras(l), 0);
-  const partes = secciones.filter((s) => s.numero !== null && s.diapositivas.some((d) => d.recorridos.includes(recorrido)));
+function guion(variante: Variante): string {
+  const lista = laminas(variante);
+  const total = lista.reduce((a, l) => a + minutosDeLamina(l), 0);
+  const partes = partesDe(variante).filter((s) => lista.some((l) => l.seccion.id === s.id));
   const numeros = (id: string) => lista.map((l, i) => (l.seccion.id === id ? i + 1 : 0)).filter(Boolean);
+  const demo = CON_DEMO[modoDe(variante)];
+  const porPersona = POR_PERSONA.includes(variante) ? variante : "ejecutivo";
   const salida = [
-    `# Guion de ARKA-Lite · recorrido ${NOMBRE_RECORRIDO[recorrido].toLowerCase()}`,
+    `# Guion de ARKA-Lite · ${nombreVariante(variante).toLowerCase()}`,
     "",
     AVISO,
     "",
-    `${lista.length} láminas, unos ${minutos(total)} minutos de exposición sin contar la demostración en vivo ni las preguntas. ${DESCRIPCION[recorrido]}`,
+    `${lista.length} láminas, unos ${minutos(total)} minutos${demo ? ` ${demo}` : ""}; las preguntas van aparte. ${DESCRIPCION[variante]}`,
     "",
     "## Cómo está pensada",
     "",
@@ -135,10 +150,10 @@ function guion(recorrido: Recorrido): string {
     "",
     "## Reparto",
     "",
-    "Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.",
+    "Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto, más la demostración en vivo o lo que duren los videos.",
     "",
-    ...DIVISIONES.flatMap((div) => [`### ${div.titulo}`, "", div.cuando, "", ...tablaDivision(div, recorrido), ""]),
-    `Cada persona tiene su guion aparte en ${DIVISIONES.map((d) => `\`guion-ejecutivo-${d.id}.md\``).join(" y ")}. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.`,
+    ...DIVISIONES.flatMap((div) => [`### ${div.titulo}`, "", div.cuando, "", ...tablaDivision(div, variante), ""]),
+    `Cada persona tiene su guion aparte en ${DIVISIONES.map((d) => `\`${archivoPorPersona(porPersona, d)}\``).join(" y ")}. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.`,
     "",
     "## Cómo leer este guion",
     "",
@@ -160,29 +175,28 @@ function guion(recorrido: Recorrido): string {
       const enfoque = l.seccion.enfoque ? ` · ${NOMBRE_ENFOQUE[l.seccion.enfoque].toLowerCase()}` : "";
       salida.push(`## ${etiquetaSeccion(l.seccion)}${enfoque}`, "", `Presenta: ${quienPresenta(l.seccion.rol)}.`, "");
     }
-    salida.push(bloqueLamina(l, i + 1, recorrido, rolDe(l) !== l.seccion.rol));
+    salida.push(bloqueLamina(l, i + 1, variante, rolDe(l) !== l.seccion.rol));
   });
   return salida.join("\n");
 }
 
 // El guion de cada persona en una división: solo sus láminas, con quién le
 // pasa la palabra y a quién se la entrega.
-function guionPorPersona(division: Division): string {
-  const recorrido: Recorrido = "ejecutivo";
-  const lista = laminas(recorrido);
+function guionPorPersona(division: Division, variante: Variante): string {
+  const lista = laminas(variante);
   const quien = (i: number) => (i >= 0 && i < lista.length ? personaCon(division, rolDe(lista[i])).nombre : null);
   const salida = [
-    `# Guion por persona · ${division.titulo}`,
+    `# Guion por persona · ${nombreVariante(variante).toLowerCase()} · ${division.titulo}`,
     "",
     AVISO,
     "",
-    `${division.cuando} Recorrido ejecutivo, ${lista.length} láminas. Cada persona tiene aquí solo lo suyo, con el número de lámina del PPTX.`,
+    `${division.cuando} ${nombreVariante(variante)}, ${lista.length} láminas. Cada persona tiene aquí solo lo suyo, con el número de lámina del PPTX.`,
     "",
-    ...tablaDivision(division, recorrido),
+    ...tablaDivision(division, variante),
     "",
   ];
-  for (const t of turnos(division, recorrido)) {
-    salida.push(`## ${t.persona.nombre} · ${t.persona.roles.map((r) => NOMBRE_ROL[r]).join(" y ")}`, "", `Láminas ${rangos(t.laminas.map((x) => x.numero))} · unos ${minutos(t.palabras)} minutos.`, "");
+  for (const t of turnos(division, variante)) {
+    salida.push(`## ${t.persona.nombre} · ${rolesDe(t).map((r) => NOMBRE_ROL[r]).join(" y ")}`, "", `Láminas ${rangos(t.laminas.map((x) => x.numero))} · unos ${minutos(t.minutos)} minutos.`, "");
     // Los relevos: cada vez que le toca, quién le pasa la palabra y a quién
     // se la entrega.
     let anterior = -2;
@@ -192,7 +206,7 @@ function guionPorPersona(division: Division): string {
         const recibe = quien(i - 1);
         salida.push(`> **Recibes la palabra** ${recibe ? `de ${recibe}, después de la lámina ${i}` : "al empezar la presentación"}.`, "");
       }
-      salida.push(bloqueLamina(l, numero, recorrido, false));
+      salida.push(bloqueLamina(l, numero, variante, false));
       const entrega = quien(i + 1);
       if (entrega && entrega !== t.persona.nombre) salida.push(`> **Entregas la palabra** a ${entrega} (lámina ${numero + 1}).`, "");
       anterior = i;
@@ -206,10 +220,10 @@ function guionPorPersona(division: Division): string {
 // qué, la línea de tiempo, los relevos, los consejos por persona, a quién
 // pasarle cada pregunta, qué saltar si falta tiempo y la lista del día.
 function repartoYRecomendaciones(division: Division): string {
-  const recorrido: Recorrido = "ejecutivo";
+  const recorrido: Variante = "ejecutivo";
   const lista = laminas(recorrido);
   const persona = (l: Lamina) => personaCon(division, rolDe(l));
-  const min = (l: Lamina) => palabras(l) / PALABRAS_POR_MINUTO + (l.seccion.enfoque === "vivo" && l.diapositiva.guion.demo ? MINUTOS_DEMO_EN_VIVO : 0);
+  const min = minutosDeLamina;
   const fmt = (m: number) => {
     const seg = Math.round(m * 60);
     return `${Math.floor(seg / 60)}:${String(seg % 60).padStart(2, "0")}`;
@@ -226,10 +240,7 @@ function repartoYRecomendaciones(division: Division): string {
     "",
     "| Persona | Área | Láminas | Qué presenta | Minutos | Por qué esta persona |",
     "| --- | --- | --- | --- | --- | --- |",
-    ...turnos(division, recorrido).map((t) => {
-      const m = t.laminas.reduce((a, { l }) => a + min(l), 0);
-      return `| ${t.persona.nombre} | ${t.persona.area} | ${rangos(t.laminas.map((x) => x.numero))} | ${t.persona.roles.map((r) => NOMBRE_ROL[r]).join(" · ")} | ~${Math.round(m)} | ${t.persona.roles.map((r) => PERFIL[r]).join(" ")} |`;
-    }),
+    ...turnos(division, recorrido).map((t) => `| ${t.persona.nombre} | ${t.persona.area} | ${rangos(t.laminas.map((x) => x.numero))} | ${t.persona.roles.map((r) => NOMBRE_ROL[r]).join(" · ")} | ~${Math.round(t.minutos)} | ${t.persona.roles.map((r) => PERFIL[r]).join(" ")} |`),
     "",
     "## Línea de tiempo",
     "",
@@ -239,7 +250,7 @@ function repartoYRecomendaciones(division: Division): string {
     "| --- | --- | --- | --- | --- |",
   ];
   let reloj = 0;
-  for (const sec of secciones) {
+  for (const sec of seccionesDe(recorrido)) {
     const suyas = lista.map((l, i) => ({ l, numero: i + 1 })).filter(({ l }) => l.seccion.id === sec.id);
     if (!suyas.length) continue;
     const desde = reloj;
@@ -263,11 +274,28 @@ function repartoYRecomendaciones(division: Division): string {
   const recortes = RECORTES.map((r) => ({ r, i: lista.findIndex((l) => l.id === r.id) })).filter((x) => x.i >= 0);
   const ahorro = recortes.reduce((a, { i }) => a + min(lista[i]), 0);
   salida.push("## Si falta tiempo", "", `Estas láminas se pueden saltar en vivo (en PowerPoint: Ocultar diapositiva) sin tocar las partes que van a fondo. Juntas ahorran unos ${Math.round(ahorro)} minutos.`, "", "| Lámina | Por qué se puede saltar |", "| --- | --- |", ...recortes.map(({ r, i }) => `| ${i + 1}. ${lista[i].diapositiva.titulo} | ${r.motivo} |`), "");
+  salida.push(
+    "## Si no se puede hacer la demostración en vivo",
+    "",
+    "El ejecutivo tiene tres versiones, con las mismas láminas salvo la demostración. Cada una tiene su PPTX, sus PDF y su guion por persona.",
+    "",
+    "| Versión | Láminas | Minutos | Cuándo usarla | Qué cambia | Archivos |",
+    "| --- | --- | --- | --- | --- | --- |",
+    ...POR_PERSONA.map((v) => {
+      const l = laminas(v);
+      const m = l.reduce((a, x) => a + min(x), 0);
+      const { cuando, cambia } = VERSIONES[modoDe(v)];
+      return `| ${nombreVariante(v)} | ${l.length} | ~${Math.round(m)} | ${cuando} | ${cambia} | \`pptx/ARKA-Lite-${v}.pptx\` y \`guiones/${archivoPorPersona(v, division)}\` |`;
+    }),
+    "",
+    "Los videos se graban con `npm run videos` y el sistema arriba: el script maneja la UI en Edge sin ventana, detiene y vuelve a iniciar notificaciones, y deja los MP4 en `capturas/videos/`.",
+    "",
+  );
   salida.push("## El día de la presentación", "", ...CHECKLIST.map((c) => `- [ ] ${c}`), "");
   return salida.join("\n");
 }
 
-for (const r of RECORRIDOS) writeFileSync(join(base, `guion-${r}.md`), guion(r), "utf8");
-for (const div of DIVISIONES) writeFileSync(join(base, `guion-ejecutivo-${div.id}.md`), guionPorPersona(div), "utf8");
+for (const v of VARIANTES) writeFileSync(join(base, `guion-${v}.md`), guion(v), "utf8");
+for (const v of POR_PERSONA) for (const div of DIVISIONES) writeFileSync(join(base, archivoPorPersona(v, div)), guionPorPersona(div, v), "utf8");
 writeFileSync(join(base, "reparto-y-recomendaciones.md"), repartoYRecomendaciones(DIVISIONES[0]), "utf8");
-console.log(`Guiones generados en ${base}: ${RECORRIDOS.join(", ")}, ejecutivo por persona (${DIVISIONES.map((d) => d.titulo).join(" y ")}) y reparto con recomendaciones.`);
+console.log(`Guiones generados en ${base}: ${VARIANTES.join(", ")}, por persona (${POR_PERSONA.join(", ")}) y reparto con recomendaciones.`);

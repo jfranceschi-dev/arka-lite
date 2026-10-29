@@ -1,4 +1,4 @@
-import type { Rol } from "./tipos.ts";
+import type { ModoDemo, Rol } from "./tipos.ts";
 
 // Recomendaciones para repartir y ensayar la presentación. Las usa el
 // generador de guiones para armar guiones/reparto-y-recomendaciones.md con los
@@ -6,6 +6,23 @@ import type { Rol } from "./tipos.ts";
 
 // Minutos que suma la demostración en vivo además del texto oral.
 export const MINUTOS_DEMO_EN_VIVO = 3;
+
+// Las tres versiones del ejecutivo según cómo se muestra la UI: cuándo usar
+// cada una y qué cambia respecto de la versión en vivo.
+export const VERSIONES: Record<ModoDemo, { cuando: string; cambia: string }> = {
+  vivo: {
+    cuando: "Hay sistema arriba (Compose local o Codespace) y red confiable en la sala.",
+    cambia: "Es la versión de referencia: la parte 7 se hace en la UI real.",
+  },
+  video: {
+    cuando: "No se puede operar el sistema en vivo: sin red, sin Codespace o con poco tiempo para prepararlo.",
+    cambia: "La parte 7 muestra dos videos grabados con la UI real, dentro del PPTX; un clic los reproduce. La portada y la agenda dicen «en video» y no se propone ninguna demostración en las otras láminas.",
+  },
+  sin: {
+    cuando: "Falta tiempo, o el público ya vio la UI.",
+    cambia: "No hay parte 7: la observabilidad pasa directo al cierre. La portada, la agenda, Codespaces y los logs ya no anuncian una demostración.",
+  },
+};
 
 export const GENERALES: string[] = [
   "Ensayen juntos al menos una vez con el PowerPoint en modo presentación: los clics y los relevos son lo que más se nota.",
@@ -70,7 +87,7 @@ export const CONSEJOS: Record<Rol, string[]> = {
   demostracion: [
     "Abrir el Codespace, o el Compose local, 15 minutos antes y comprobar que Salud muestra los dos servicios en verde.",
     "Practicar la secuencia: detener notificaciones, enviar una solicitud, mirar Enviadas, levantar notificaciones y Reentregar.",
-    "Plan B: si la red falla, contar la demostración con los clics de la lámina; las capturas de la UI ya están en la presentación.",
+    "Plan B: si el sistema o la red fallan, presentar con ARKA-Lite-ejecutivo-con-videos.pptx: las mismas láminas, con la demostración grabada. Si falla en plena presentación, contarla con los clics de la lámina.",
   ],
 };
 
@@ -96,7 +113,7 @@ export const RECORTES: { id: string; motivo: string }[] = [
 
 export const CHECKLIST: string[] = [
   "Descargar la última versión del PPTX ejecutivo de la rama y abrirla en modo presentación.",
-  "Codespace arrancado 15 minutos antes, con Salud en verde y Grafana abierto en otra pestaña.",
+  "Codespace arrancado 15 minutos antes, con Salud en verde y Grafana abierto en otra pestaña. Si no se puede, llevar la versión con videos.",
   "Cada persona con su guion a mano: el PDF de guion o `guion-ejecutivo-7-personas.md` en el teléfono.",
   "Probar el clicker o el teclado con un diagrama que se arme por clics.",
   "Acordar con quien orquesta la seña de tiempo.",

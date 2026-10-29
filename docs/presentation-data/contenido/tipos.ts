@@ -10,6 +10,26 @@ export type Recorrido = "resumen" | "ejecutivo" | "tecnico";
 export const RECORRIDOS: Recorrido[] = ["resumen", "ejecutivo", "tecnico"];
 export const NOMBRE_RECORRIDO: Record<Recorrido, string> = { resumen: "Resumen", ejecutivo: "Ejecutivo", tecnico: "Técnico" };
 
+// Cómo se muestra la UI en la demostración: en vivo, con videos grabados
+// (cuando no se puede en vivo) o sin demostración.
+export type ModoDemo = "vivo" | "video" | "sin";
+
+// Lo que se genera: cada recorrido con la demostración en vivo y, además, el
+// ejecutivo con videos y sin demostración. Las dos variantes extra salen del
+// ejecutivo con los cambios de contenido/variantes.ts.
+export type Variante = Recorrido | "ejecutivo-con-videos" | "ejecutivo-sin-demo";
+export const VARIANTES: Variante[] = [...RECORRIDOS, "ejecutivo-con-videos", "ejecutivo-sin-demo"];
+const DEFINICION: Record<Variante, { recorrido: Recorrido; demo: ModoDemo; nombre: string }> = {
+  resumen: { recorrido: "resumen", demo: "vivo", nombre: "Resumen" },
+  ejecutivo: { recorrido: "ejecutivo", demo: "vivo", nombre: "Ejecutivo" },
+  tecnico: { recorrido: "tecnico", demo: "vivo", nombre: "Técnico" },
+  "ejecutivo-con-videos": { recorrido: "ejecutivo", demo: "video", nombre: "Ejecutivo con videos" },
+  "ejecutivo-sin-demo": { recorrido: "ejecutivo", demo: "sin", nombre: "Ejecutivo sin demostración" },
+};
+export const recorridoDe = (v: Variante): Recorrido => DEFINICION[v].recorrido;
+export const modoDe = (v: Variante): ModoDemo => DEFINICION[v].demo;
+export const nombreVariante = (v: Variante): string => DEFINICION[v].nombre;
+
 export type Icono = NombreIcono;
 
 // Color de un elemento visual. Dice si algo es bueno, malo o neutro, y a qué
@@ -77,9 +97,9 @@ export interface Campo {
 }
 
 export type Visual =
-  // El recorrido de las partes numeradas (sale de las secciones), con su
-  // enfoque: vista general o a fondo.
-  | { tipo: "ruta" }
+  // El recorrido de las partes numeradas, con su enfoque: vista general o a
+  // fondo. laminas() pone las partes de la variante; sin ellas, son todas.
+  | { tipo: "ruta"; partes?: Seccion[] }
   // El equipo por área: cuántas personas, qué aporta cada una y qué partes
   // presenta.
   | { tipo: "equipo"; areas: (ElementoVisual & { cuantos: string; partes: string[] })[] }
@@ -141,6 +161,10 @@ export type Visual =
   | { tipo: "tarjetas"; tarjetas: ElementoVisual[]; columnas?: number; comando?: string }
   // Capturas reales en un marco de navegador.
   | { tipo: "captura"; capturas: Captura[] }
+  // Un video grabado con la UI (capturas/videos/) en un marco de navegador,
+  // con sus pasos al lado: los mismos rótulos numerados del video. Un clic lo
+  // reproduce.
+  | { tipo: "video"; archivo: string; portada: string; url: string; pasos: string[] }
   // Una rama de trabajo que vuelve a main por Pull Request.
   | { tipo: "ramas"; principal: string; rama: string; commits: string[]; fusion: string };
 
@@ -246,8 +270,9 @@ export interface Seccion {
 }
 
 // "vivo" es la demostración: ni vista general ni a fondo, sino todo junto.
-export type Enfoque = "general" | "fondo" | "vivo";
-export const NOMBRE_ENFOQUE: Record<Enfoque, string> = { general: "Vista general", fondo: "A fondo", vivo: "En vivo" };
+// "video" es la misma demostración, grabada.
+export type Enfoque = "general" | "fondo" | "vivo" | "video";
+export const NOMBRE_ENFOQUE: Record<Enfoque, string> = { general: "Vista general", fondo: "A fondo", vivo: "En vivo", video: "En video" };
 
 // Papeles de la presentación. Cada división del equipo asigna los papeles a
 // personas; así el contenido no cambia si el equipo es de 7 u 8.

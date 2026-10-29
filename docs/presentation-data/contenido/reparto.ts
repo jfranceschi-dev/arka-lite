@@ -1,5 +1,7 @@
 import type { Lamina } from "./index.ts";
-import type { Rol } from "./tipos.ts";
+import { MINUTOS_DEMO_EN_VIVO } from "./recomendaciones.ts";
+import { CLIC, type Rol } from "./tipos.ts";
+import { segundosDeVideo } from "./videos.ts";
 
 // Quién presenta qué. Cada lámina tiene un papel (el de su sección o uno
 // propio), y la división del equipo asigna los papeles a personas: 7 personas,
@@ -70,8 +72,24 @@ export function quienPresenta(rol: Rol): string {
 
 // Palabras de la parte oral: a unas 130 por minuto, da los minutos de cada
 // persona y de toda la presentación.
+const contar = (texto: string) => texto.split(/\s+/).filter(Boolean).length;
+
 export function palabras(l: Lamina): number {
-  return l.diapositiva.guion.decir.join(" ").split(/\s+/).filter(Boolean).length;
+  return contar(l.diapositiva.guion.decir.join(" "));
 }
 
 export const PALABRAS_POR_MINUTO = 130;
+
+// Cuánto dura una lámina: el texto oral, más la demostración en vivo si la
+// hay. Con un video, lo que se dice después del clic va encima del video:
+// cuenta lo que dure más, la narración o el video.
+export function minutosDeLamina(l: Lamina): number {
+  const d = l.diapositiva;
+  const hablado = palabras(l) / PALABRAS_POR_MINUTO;
+  if (l.seccion.enfoque === "vivo" && d.guion.demo) return hablado + MINUTOS_DEMO_EN_VIVO;
+  if (d.visual?.tipo !== "video") return hablado;
+  const texto = d.guion.decir.join(" ");
+  const corte = Math.max(0, texto.indexOf(CLIC));
+  const encima = contar(texto.slice(corte)) / PALABRAS_POR_MINUTO;
+  return contar(texto.slice(0, corte)) / PALABRAS_POR_MINUTO + Math.max(encima, (segundosDeVideo(d.visual.archivo) ?? 0) / 60);
+}

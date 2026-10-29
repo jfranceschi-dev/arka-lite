@@ -14,7 +14,7 @@ La documentación está organizada por propósito para que una persona nueva pue
 
 ## Organización
 
-La [presentación del proyecto final](presentation-data/README.md) del curso Upskilling Backend Java tiene su propio contenido, sus generadores y sus entregables: PPTX, PDF y guiones en tres variantes para el staff de tecnología (resumen, ejecutivo y técnico), con el reparto del equipo arka-litos. Cuenta ARKA-Lite de punta a punta: fundamentos y arquitectura en vista general; base de datos, interconexión de servicios y DevOps a fondo; y una demostración en vivo con la UI. Las versiones anteriores quedaron en `presentation-data/BackUp-pptx/`.
+La [presentación del proyecto final](presentation-data/README.md) del curso Upskilling Backend Java tiene su propio contenido, sus generadores y sus entregables: PPTX, PDF y guiones en tres variantes para el staff de tecnología (resumen, ejecutivo y técnico), más el ejecutivo con la demostración en video o sin demostración, con el reparto del equipo arka-litos. Cuenta ARKA-Lite de punta a punta: fundamentos y arquitectura en vista general; base de datos, interconexión de servicios y DevOps a fondo; y una demostración en vivo con la UI. Las versiones anteriores quedaron en `presentation-data/BackUp-pptx/`.
 
 La [UI arka-lite-ui](../arka-lite-ui/README.md) es una aplicación minimalista con cuatro pestañas: **Solicitudes** (crear, ver y decidir), **Enviadas** (el recorrido de cada evento y la prueba de idempotencia), **Salud** (validar los servicios y abrir Swagger y Grafana) y **Ayuda** (diagramas paso a paso de cómo funciona). Se levanta con el resto del sistema en `docker compose up` (`http://localhost:8088`) o con `k8s/arka-lite-ui.yaml`.
 

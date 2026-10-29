@@ -1,8 +1,8 @@
-# Guion de ARKA-Lite · recorrido técnico
+# Guion de ARKA-Lite · técnico
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-53 láminas, unos 46 minutos de exposición sin contar la demostración en vivo ni las preguntas. El recorrido ejecutivo más el código, la configuración y los diagramas detallados.
+53 láminas, unos 52 minutos contando la demostración en vivo; las preguntas van aparte. El recorrido ejecutivo más el código, la configuración y los diagramas detallados.
 
 ## Cómo está pensada
 
@@ -20,7 +20,7 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 
 ## Reparto
 
-Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.
+Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto, más la demostración en vivo o lo que duren los videos.
 
 ### 7 personas
 
@@ -29,7 +29,7 @@ Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infr
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
 | Desarrollo 1 · orquesta | Desarrollo | Apertura, el negocio y el cierre y Fundamentos | 1–6, 50–53 | ~8 min |
-| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 7–12, 46–49 | ~7 min |
+| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 7–12, 46–49 | ~13 min |
 | Desarrollo 3 | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión | 17–20 | ~5 min |
 | Desarrollo 4 | Desarrollo | Interconexión de servicios | 23–27 | ~5 min |
 | Base de datos | Base de datos | Base de datos | 13–16, 21–22 | ~5 min |
@@ -1462,7 +1462,7 @@ Presenta: Infraestructura 1.
 - 2. Máquina en la nube: 4 núcleos y Docker adentro.
 - 3. levantar.sh: Construye y levanta los 8 contenedores.
 - 4. Puertos https: UI, Grafana y Swagger, privados.
-- 5. Demo: Desde el navegador.
+- 5. Usarlo: Desde el navegador.
 
 **Ideas clave:**
 
@@ -2069,19 +2069,19 @@ Presenta: Desarrollo 2.
 - Métrica: 4 pantallas para ver el sistema por dentro
 - Diseñar para la falla: Cada falla probada tiene una reacción y un mensaje. Valor: Menos incidentes y menos llamadas a soporte.
 - Hacer visible lo asíncrono: Pendientes, entregados y consumidos en una pantalla. Valor: Explicar el sistema sin abrir el código.
-- Mostrar en vivo explica más: Botones para provocar fallas y ver la reacción. Valor: Material de capacitación para quien llegue al equipo.
+- Verlo funcionar explica más: Botones para provocar fallas y ver la reacción. Valor: Material de capacitación para quien llegue al equipo.
 
 **Ideas clave:**
 
 - Diseñar para la falla, no solo para el éxito
 - Hacer visible lo asíncrono
-- Mostrar en vivo explica más que una lámina
+- Verlo funcionar explica más que una lámina
 
 **Lo que se lleva el staff:** Una herramienta que explica el sistema a cualquiera, también a quien llegue nuevo al equipo.
 
 **Qué decir**
 
-> Tres aprendizajes de la demostración. **▶ clic** Hay que diseñar para la falla, no solo para el camino feliz. **▶ clic** Lo asíncrono hay que hacerlo visible: sin la pestaña Enviadas, un evento pendiente sería invisible. **▶ clic** Y mostrarlo en vivo explica más que cualquier lámina; esta misma interfaz sirve para capacitar a quien llegue al equipo.
+> Tres aprendizajes de la demostración. **▶ clic** Hay que diseñar para la falla, no solo para el camino feliz. **▶ clic** Lo asíncrono hay que hacerlo visible: sin la pestaña Enviadas, un evento pendiente sería invisible. **▶ clic** Y verlo funcionar explica más que cualquier lámina; esta misma interfaz sirve para capacitar a quien llegue al equipo.
 
 **Si hay tiempo, se puede agregar**
 

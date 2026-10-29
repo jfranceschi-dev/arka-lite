@@ -1,8 +1,8 @@
 import PptxGenJS from "pptxgenjs";
-import { laminas, etiquetaSeccion, NOMBRE_RECORRIDO, secciones, type Lamina } from "../contenido/index.ts";
+import { laminas, etiquetaSeccion, nombreVariante, partesDe, recorridoDe, type Lamina, type Seccion, type Variante } from "../contenido/index.ts";
 import { textoNotas } from "../contenido/notas.ts";
 import { NOMBRE_EQUIPO } from "../contenido/reparto.ts";
-import type { BloqueCodigo, Certeza, Diapositiva, Recorrido, Tabla } from "../contenido/tipos.ts";
+import type { BloqueCodigo, Certeza, Diapositiva, Tabla } from "../contenido/tipos.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
 import type { NombreIcono } from "../diseno/iconos.ts";
 import { color } from "../diseno/tokens.ts";
@@ -20,8 +20,8 @@ import { dibujarVisual, type Caja } from "./visuales.ts";
 // láminas de impacto (cifras, flujos, capturas, escenarios de falla) y, en el
 // recorrido técnico, diagramas detallados con sus pasos en la misma lámina.
 
-export function nombreArchivo(recorrido: Recorrido): string {
-  return `ARKA-Lite-${recorrido}.pptx`;
+export function nombreArchivo(variante: Variante): string {
+  return `ARKA-Lite-${variante}.pptx`;
 }
 
 // ── Piezas comunes ────────────────────────────────────────────────────────
@@ -119,8 +119,7 @@ function franjaPorque(s: Slide, texto: string) {
 // Las partes numeradas en órbita alrededor del sistema: el motivo de la portada y
 // del cierre. Cada nodo es una parte de la presentación, con su número, su
 // ícono y su nombre corto; los rayos dicen que todas son el mismo sistema.
-function orbita(s: Slide, cx: number, cy: number, r: number, centro: { icono: NombreIcono; texto: string }) {
-  const partes = secciones.filter((x) => x.numero !== null);
+function orbita(s: Slide, partes: Seccion[], cx: number, cy: number, r: number, centro: { icono: NombreIcono; texto: string }) {
   const anillo = (radio: number, ancho: number, transparencia: number, guion?: "dash") =>
     s.addShape("ellipse", { x: cx - radio, y: cy - radio, w: 2 * radio, h: 2 * radio, fill: { color: hex(PROF), transparency: 100 }, line: { color: hex(ACC), width: ancho, transparency: transparencia, dashType: guion } });
   anillo(r + 0.75, 0.75, 82);
@@ -155,7 +154,10 @@ function orbita(s: Slide, cx: number, cy: number, r: number, centro: { icono: No
     s.addText(String(n.sec.numero), { x: n.x + dn / 2 - 0.2, y: n.y - dn / 2 - 0.08, w: 0.26, h: 0.26, shape: "ellipse", margin: 0, fill: { color: hex(ACC) }, line: { color: hex(PROF), width: 1 }, fontFace: TITULO, fontSize: 9, bold: true, color: hex(PROF), align: "center", valign: "middle" });
     const derecha = Math.cos(n.a) > 0;
     const lw = 1.25;
-    s.addText(n.sec.corto, { x: derecha ? n.x + dn / 2 + 0.1 : n.x - dn / 2 - 0.1 - lw, y: n.y - 0.16, w: lw, h: 0.32, margin: 0, fontFace: FUENTE, fontSize: 10.5, bold: true, color: hex(color.sobreOscuro), align: derecha ? "left" : "right", valign: "middle" });
+    // Al lado del nodo; si no cabe en la lámina, debajo.
+    const cabe = !derecha || n.x + dn / 2 + 0.1 + lw <= W - 0.05;
+    const caja = cabe ? { x: derecha ? n.x + dn / 2 + 0.1 : n.x - dn / 2 - 0.1 - lw, y: n.y - 0.16 } : { x: n.x - lw / 2, y: n.y + dn / 2 + 0.04 };
+    s.addText(n.sec.corto, { ...caja, w: lw, h: 0.32, margin: 0, fontFace: FUENTE, fontSize: 10.5, bold: true, color: hex(color.sobreOscuro), align: cabe ? (derecha ? "left" : "right") : "center", valign: "middle" });
   }
 }
 
@@ -164,10 +166,10 @@ function fondoOscuro(s: Slide) {
   s.addShape("rect", { x: 0, y: 0, w: 0.12, h: H, fill: { color: hex(ACC) }, line: { color: hex(ACC), width: 0 } });
 }
 
-function portadaGeneral(pptx: PptxGenJS, l: Lamina, recorrido: Recorrido) {
+function portadaGeneral(pptx: PptxGenJS, l: Lamina, variante: Variante) {
   const s = pptx.addSlide();
   fondoOscuro(s);
-  orbita(s, 9.55, 3.72, 2.15, { icono: "ship-wheel", texto: "ARKA-Lite" });
+  orbita(s, partesDe(variante), 9.55, 3.72, 2.15, { icono: "ship-wheel", texto: "ARKA-Lite" });
   logo(s, 0.83, 0.58, true);
   // El nombre del equipo, arriba del título.
   s.addText(`${NOMBRE_EQUIPO.toUpperCase()} · UPSKILLING BACKEND JAVA`, { x: 0.83, y: 1.5, w: 6.2, h: 0.3, margin: 0, fontFace: FUENTE, fontSize: 12, bold: true, color: hex(ACC), charSpacing: 3, fit: "shrink" });
@@ -188,15 +190,15 @@ function portadaGeneral(pptx: PptxGenJS, l: Lamina, recorrido: Recorrido) {
     s.addText(k.titulo, { x: x + 0.16, y: 5.44, w: kw - 0.22, h: 0.42, margin: 0, fontFace: FUENTE, fontSize: tamQueCabe(k.titulo, kw - 0.26, 0.4, 10, 7.5), color: hex(color.sobreOscuroSecundario), valign: "top" });
   });
 
-  const variante = `VERSIÓN ${NOMBRE_RECORRIDO[recorrido].toUpperCase()} · STAFF DE TECNOLOGÍA`;
-  s.addText(variante, { x: 0.83, y: 6.28, w: 0.5 + variante.length * 0.1, h: 0.36, shape: "roundRect", rectRadius: 0.18, margin: 0, fill: { color: hex(mezclar(PROF, ACC, 0.2)) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, fontSize: 10, bold: true, color: hex(ACC), align: "center", valign: "middle", charSpacing: 1 });
+  const version = `VERSIÓN ${nombreVariante(variante).toUpperCase()} · STAFF DE TECNOLOGÍA`;
+  s.addText(version, { x: 0.83, y: 6.28, w: 0.5 + version.length * 0.1, h: 0.36, shape: "roundRect", rectRadius: 0.18, margin: 0, fill: { color: hex(mezclar(PROF, ACC, 0.2)) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, fontSize: 10, bold: true, color: hex(ACC), align: "center", valign: "middle", charSpacing: 1 });
   s.addNotes(textoNotas(l));
 }
 
-function cierreFinal(pptx: PptxGenJS, l: Lamina) {
+function cierreFinal(pptx: PptxGenJS, l: Lamina, variante: Variante) {
   const s = pptx.addSlide();
   fondoOscuro(s);
-  orbita(s, 9.55, 3.72, 2.15, { icono: "sparkles", texto: "¿Preguntas?" });
+  orbita(s, partesDe(variante), 9.55, 3.72, 2.15, { icono: "sparkles", texto: "¿Preguntas?" });
   logo(s, 0.83, 0.58, true);
   s.addText(l.diapositiva.titulo, { x: 0.83, y: 2.2, w: 6, h: 1.4, margin: 0, fontFace: TITULO, fontSize: 72, bold: true, color: "FFFFFF" });
   s.addShape("rect", { x: 0.83, y: 3.75, w: 0.9, h: 0.06, fill: { color: hex(ACC) }, line: { color: hex(ACC), width: 0 } });
@@ -268,8 +270,7 @@ function laminaVisual(s: Slide, d: Diapositiva, abajo: number, iconoSeccion?: No
 
 // Avance de las partes numeradas, arriba a la derecha: orienta sin gastar una
 // lámina de portada por sección.
-function avance(s: Slide, l: Lamina) {
-  const total = secciones.filter((x) => x.numero !== null).length;
+function avance(s: Slide, l: Lamina, total: number) {
   const n = l.seccion.numero;
   if (n === null) return;
   const ancho = 0.3;
@@ -301,15 +302,16 @@ function laminaDiagrama(s: Slide, d: Diapositiva, abajo: number) {
   });
 }
 
-function contenido(pptx: PptxGenJS, l: Lamina, recorrido: Recorrido) {
+function contenido(pptx: PptxGenJS, l: Lamina, variante: Variante) {
+  const partes = partesDe(variante).length;
   const d = l.diapositiva;
   const s = pptx.addSlide();
   // Las formas que el visual dibuja por pasos aparecen clic a clic.
   marcarPasos(s);
   s.background = { color: "FFFFFF" };
   encabezado(s, etiquetaSeccion(l.seccion), d.titulo);
-  avance(s, l);
-  const conCodigo = recorrido === "tecnico" && !!d.codigo;
+  avance(s, l, partes);
+  const conCodigo = recorridoDe(variante) === "tecnico" && !!d.codigo;
   const conPorque = !!d.porque && (!d.diagrama || !!d.visual) && (!d.tabla || !!d.visual);
   const baseAbajo = conPorque ? H - 1.12 : H - 0.55;
   const abajo = d.marcas?.length ? baseAbajo - 0.45 : baseAbajo;
@@ -335,30 +337,30 @@ function contenido(pptx: PptxGenJS, l: Lamina, recorrido: Recorrido) {
     const sc = pptx.addSlide();
     sc.background = { color: "FFFFFF" };
     encabezado(sc, etiquetaSeccion(l.seccion), `${d.titulo} · el código`);
-    avance(sc, l);
+    avance(sc, l, partes);
     codigo(sc, d.codigo, { x: M, y: 1.5, w: CW, h: H - 2.15 });
     pie(sc, `ARKA-Lite · ${etiquetaSeccion(l.seccion)}`);
     sc.addNotes(`QUÉ HACER (no se dice)\nMostrar el archivo ${d.codigo.archivo} y leer solo las líneas que se mencionan en el texto de la lámina anterior.`);
   }
 }
 
-export function construirPresentacion(recorrido: Recorrido): PptxGenJS {
+export function construirPresentacion(variante: Variante): PptxGenJS {
   const pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_WIDE";
   pptx.author = "Upskilling Backend Java";
   pptx.company = "ARKA-Lite";
-  pptx.title = `ARKA-Lite · Recorrido ${NOMBRE_RECORRIDO[recorrido].toLowerCase()}`;
+  pptx.title = `ARKA-Lite · ${nombreVariante(variante)}`;
   pptx.subject = "Proyecto final de Upskilling Backend Java";
   pptx.theme = { headFontFace: TITULO, bodyFontFace: FUENTE };
-  for (const l of laminas(recorrido)) {
-    if (l.id === "s00-portada") portadaGeneral(pptx, l, recorrido);
-    else if (l.id.endsWith("-gracias")) cierreFinal(pptx, l);
-    else contenido(pptx, l, recorrido);
+  for (const l of laminas(variante)) {
+    if (l.id === "s00-portada") portadaGeneral(pptx, l, variante);
+    else if (l.id.endsWith("-gracias")) cierreFinal(pptx, l, variante);
+    else contenido(pptx, l, variante);
   }
   return pptx;
 }
 
 // El archivo final: la presentación con el posproceso de los íconos.
-export function generarPptx(recorrido: Recorrido): Promise<Buffer> {
-  return generarBuffer(construirPresentacion(recorrido));
+export function generarPptx(variante: Variante): Promise<Buffer> {
+  return generarBuffer(construirPresentacion(variante));
 }

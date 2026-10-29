@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { laminas, secciones } from "../contenido/index.ts";
+import { laminas, partesDe, secciones } from "../contenido/index.ts";
 import { validarContenido } from "../contenido/validacion.ts";
-import { DIVISIONES, personaCon, rolDe } from "../contenido/reparto.ts";
+import { DIVISIONES, minutosDeLamina, personaCon, rolDe } from "../contenido/reparto.ts";
 import { diagramas } from "../diagramas/definiciones.ts";
 import { estadoEnPaso, rutaArista } from "../diagramas/geometria.ts";
 
@@ -65,6 +65,27 @@ describe("fuente de contenido", () => {
     expect(mapa.visual?.tipo).toBe("capas");
     const piezas = mapa.visual?.tipo === "capas" ? mapa.visual.capas.flatMap((c) => c.elementos.map((e) => e.titulo)) : [];
     expect(piezas.join(" ")).not.toContain("SolicitudEnviada");
+  });
+
+  it("el ejecutivo sin demostración no tiene la parte 7 ni la anuncia", () => {
+    const lista = laminas("ejecutivo-sin-demo");
+    expect(lista.some((l) => l.seccion.id === "s07")).toBe(false);
+    expect(partesDe("ejecutivo-sin-demo").map((s) => s.numero)).toEqual([1, 2, 3, 4, 5, 6]);
+    const agenda = lista.find((l) => l.id === "s00-agenda")!.diapositiva;
+    expect(agenda.visual?.tipo === "ruta" ? agenda.visual.partes?.length : 0).toBe(6);
+    expect(JSON.stringify(lista.map((l) => l.diapositiva.guion))).not.toMatch(/demostraci[oó]n/i);
+    expect(lista.length).toBe(laminas("ejecutivo").length - laminas("ejecutivo").filter((l) => l.seccion.id === "s07").length);
+  });
+
+  it("el ejecutivo con videos cambia la demostración en vivo por dos videos de un clic", () => {
+    const lista = laminas("ejecutivo-con-videos");
+    expect(lista.map((l) => l.id)).toEqual(laminas("ejecutivo").map((l) => l.id));
+    const videos = lista.filter((l) => l.diapositiva.visual?.tipo === "video");
+    expect(videos.map((l) => l.id)).toEqual(["s07-ui", "s07-caida"]);
+    expect(lista.find((l) => l.seccion.id === "s07")!.seccion.enfoque).toBe("video");
+    expect(lista.some((l) => l.diapositiva.guion.demo)).toBe(false);
+    // Lo que se dice encima del video no suma: manda lo que dure el video.
+    for (const l of videos) expect(minutosDeLamina(l)).toBeGreaterThan(0.8);
   });
 
   it("no gira alrededor de una sola solicitud de ejemplo", () => {

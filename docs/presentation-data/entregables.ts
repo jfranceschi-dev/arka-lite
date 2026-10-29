@@ -10,3 +10,6 @@ export const DIR_GUIONES = join(ENTREGABLES, "guiones");
 // Capturas reales de la UI y de Swagger que usan las láminas. No se generan
 // con npm run todo: se toman con capturas/capturar.ps1 con el sistema arriba.
 export const DIR_CAPTURAS = join(ENTREGABLES, "capturas");
+// Videos de la demostración con la UI, para la variante con videos. Se graban
+// con capturas/grabar-videos.ts (npm run videos) con el sistema arriba.
+export const DIR_VIDEOS = join(DIR_CAPTURAS, "videos");

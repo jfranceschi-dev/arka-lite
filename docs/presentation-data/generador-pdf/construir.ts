@@ -1,6 +1,6 @@
 import PDFDocument from "pdfkit";
-import { laminas, etiquetaSeccion, NOMBRE_RECORRIDO, secciones, type Lamina } from "../contenido/index.ts";
-import { CLIC, type Recorrido, type Tabla } from "../contenido/tipos.ts";
+import { laminas, etiquetaSeccion, nombreVariante, partesDe, recorridoDe, type Lamina, type Variante } from "../contenido/index.ts";
+import { CLIC, type Tabla } from "../contenido/tipos.ts";
 import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
 import { quienPresenta, rolDe } from "../contenido/reparto.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
@@ -22,8 +22,8 @@ const NEGRITA = "Helvetica-Bold";
 const CURSIVA = "Helvetica-Oblique";
 const MONO = "Courier";
 
-export function nombreArchivoPdf(recorrido: Recorrido): string {
-  return `ARKA-Lite-${recorrido}-guion.pdf`;
+export function nombreArchivoPdf(variante: Variante): string {
+  return `ARKA-Lite-${variante}-guion.pdf`;
 }
 
 // Las fuentes estándar solo cubren WinAnsi: los símbolos fuera de ese juego
@@ -213,7 +213,7 @@ function diagrama(doc: Doc, d: Diagrama) {
   doc.y = y + 14;
 }
 
-function portada(doc: Doc, recorrido: Recorrido) {
+function portada(doc: Doc, variante: Variante) {
   doc.rect(0, 0, ANCHO, ALTO).fill(color.marino);
   doc.rect(0, 0, 10, ALTO).fill(color.cian);
   doc.font(NEGRITA).fontSize(14).fillColor(color.cianClaro).text("ARKA-Lite", M, 120);
@@ -221,10 +221,10 @@ function portada(doc: Doc, recorrido: Recorrido) {
   doc.moveDown(0.6).font(FUENTE).fontSize(15).fillColor(color.sobreOscuroSecundario)
     .text("Equipo arka-litos: dos microservicios Spring Boot, sus bases de datos y su plataforma, contados de punta a punta.", { width: CW });
   doc.moveDown(1.5).font(NEGRITA).fontSize(11).fillColor(color.cian)
-    .text(`RECORRIDO ${NOMBRE_RECORRIDO[recorrido].toUpperCase()} · CONTENIDO Y GUION`, { characterSpacing: 1.5 });
+    .text(`${nombreVariante(variante).toUpperCase()} · CONTENIDO Y GUION`, { characterSpacing: 1.5 });
   doc.moveDown(3).font(NEGRITA).fontSize(10).fillColor(color.cianClaro).text("PARTES", { characterSpacing: 1.2 });
   doc.moveDown(0.4);
-  for (const sec of secciones.filter((x) => x.numero !== null)) {
+  for (const sec of partesDe(variante)) {
     doc.font(NEGRITA).fontSize(10.5).fillColor("#FFFFFF").text(`${sec.numero}. ${sec.titulo}`, M, doc.y, { continued: true })
       .font(FUENTE).fillColor(color.sobreOscuroSecundario).text(`  ${texto(sec.subtitulo ?? "")}`);
     doc.moveDown(0.3);
@@ -243,7 +243,7 @@ function encabezadoSeccion(doc: Doc, l: Lamina) {
   doc.y = y + 58;
 }
 
-function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
+function lamina(doc: Doc, l: Lamina, numero: number, variante: Variante) {
   const d = l.diapositiva;
   espacio(doc, 90);
   doc.moveDown(0.6);
@@ -268,7 +268,7 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
     if (fig.nota) parrafo(doc, fig.nota, { fuente: CURSIVA, tamano: 9.5, c: color.secundario });
   }
   if (d.tabla) tabla(doc, d.tabla);
-  if (d.codigo && recorrido === "tecnico") {
+  if (d.codigo && recorridoDe(variante) === "tecnico") {
     etiqueta(doc, `Código · ${d.codigo.archivo}`);
     doc.font(MONO).fontSize(8);
     const alto = doc.heightOfString(texto(d.codigo.texto), { width: CW - 20 }) + 16;
@@ -304,24 +304,24 @@ function lamina(doc: Doc, l: Lamina, numero: number, recorrido: Recorrido) {
   }
 }
 
-export function construirPdf(recorrido: Recorrido): Doc {
-  const doc = new PDFDocument({ size: "LETTER", margins: { top: M, bottom: M, left: M, right: M }, bufferPages: true, info: { Title: `ARKA-Lite · recorrido ${NOMBRE_RECORRIDO[recorrido].toLowerCase()}`, Subject: "Proyecto final de Upskilling Backend Java" } });
-  portada(doc, recorrido);
+export function construirPdf(variante: Variante): Doc {
+  const doc = new PDFDocument({ size: "LETTER", margins: { top: M, bottom: M, left: M, right: M }, bufferPages: true, info: { Title: `ARKA-Lite · ${nombreVariante(variante).toLowerCase()}`, Subject: "Proyecto final de Upskilling Backend Java" } });
+  portada(doc, variante);
   doc.addPage();
   let seccion = "";
-  laminas(recorrido).forEach((l, i) => {
+  laminas(variante).forEach((l, i) => {
     if (l.seccion.id !== seccion) {
       seccion = l.seccion.id;
       encabezadoSeccion(doc, l);
     }
-    lamina(doc, l, i + 1, recorrido);
+    lamina(doc, l, i + 1, variante);
   });
   // Pie con número de página, salvo en la portada.
   const paginas = doc.bufferedPageRange();
   for (let i = 1; i < paginas.count; i++) {
     doc.switchToPage(i);
     doc.font(FUENTE).fontSize(8).fillColor(color.secundario)
-      .text(`ARKA-Lite · recorrido ${NOMBRE_RECORRIDO[recorrido].toLowerCase()} · ${i + 1}/${paginas.count}`, M, ALTO - M + 18, { width: CW, align: "right", lineBreak: false });
+      .text(`ARKA-Lite · ${nombreVariante(variante).toLowerCase()} · ${i + 1}/${paginas.count}`, M, ALTO - M + 18, { width: CW, align: "right", lineBreak: false });
   }
   return doc;
 }

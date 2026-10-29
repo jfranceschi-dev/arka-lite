@@ -1,5 +1,6 @@
 import { secciones } from "./index.ts";
-import { NOMBRE_ENFOQUE, type ElementoVisual, type Visual } from "./tipos.ts";
+import { NOMBRE_ENFOQUE, type ElementoVisual, type Seccion, type Visual } from "./tipos.ts";
+import { segundosDeVideo } from "./videos.ts";
 
 // El recurso visual de una lámina contado en texto, para los guiones y el
 // PDF. Dice lo mismo que se ve en el PPTX, en el mismo orden.
@@ -28,6 +29,7 @@ export function nombreDeVisual(v: Visual): string {
     contraste: "Dos maneras, lado a lado",
     tarjetas: "Tarjetas",
     captura: "Capturas reales",
+    video: "Video de la UI",
     ramas: "Una rama de Git",
   };
   return nombres[v.tipo];
@@ -36,7 +38,7 @@ export function nombreDeVisual(v: Visual): string {
 export function lineasDeVisual(v: Visual): string[] {
   switch (v.tipo) {
     case "ruta":
-      return secciones.filter((s) => s.numero !== null).map((s) => `${s.numero}. ${s.titulo}${s.enfoque ? ` (${NOMBRE_ENFOQUE[s.enfoque].toLowerCase()})` : ""}${s.subtitulo ? `: ${s.subtitulo}` : ""}`);
+      return partesDeRuta(v).map((s) => `${s.numero}. ${s.titulo}${s.enfoque ? ` (${NOMBRE_ENFOQUE[s.enfoque].toLowerCase()})` : ""}${s.subtitulo ? `: ${s.subtitulo}` : ""}`);
     case "equipo":
       return v.areas.map((a) => `${a.titulo}: ${a.cuantos} ${a.cuantos === "1" ? "persona" : "personas"}. ${a.texto ?? ""} Presenta: ${a.partes.join(", ")}.`);
     case "sistema": {
@@ -105,22 +107,36 @@ export function lineasDeVisual(v: Visual): string[] {
       return [...(v.comando ? [`Comando: ${v.comando}`] : []), ...v.tarjetas.map(linea)];
     case "captura":
       return v.capturas.map((c) => `Captura de ${c.titulo}${c.url ? ` (${c.url})` : ""}${c.texto ? `: ${c.texto}` : ""}`);
+    case "video": {
+      const seg = segundosDeVideo(v.archivo);
+      return [`Video capturas/videos/${v.archivo}${seg ? `, ${duracion(seg)}` : ""}. Un clic lo reproduce.`, ...v.pasos.map((p, i) => `${i + 1}. ${p}`)];
+    }
     case "ramas":
       return [`Rama ${v.rama} sale de ${v.principal}`, ...v.commits.map((c) => `Commit: ${c}`), `Vuelve a ${v.principal}: ${v.fusion}`];
   }
 }
 
+// Duración legible de un video: 1:16.
+export function duracion(segundos: number): string {
+  const s = Math.round(segundos);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+// Las partes que muestra la agenda: las de la variante o, sin ellas, todas.
+export function partesDeRuta(v: Extract<Visual, { tipo: "ruta" }>): Seccion[] {
+  return v.partes ?? secciones.filter((s) => s.numero !== null);
+}
+
 // Bloques consecutivos de partes con el mismo enfoque: la agenda aparece por
 // bloques, no parte por parte.
-function bloquesDeEnfoque(): number[] {
-  const partes = secciones.filter((s) => s.numero !== null);
+function bloquesDeEnfoque(partes: Seccion[]): number[] {
   let bloque = 0;
   return partes.map((s, i) => (i > 0 && s.enfoque !== partes[i - 1].enfoque ? ++bloque : bloque));
 }
 
 // Paso en el que aparece cada parte de la agenda.
-export function pasoDeParte(indice: number): number {
-  return bloquesDeEnfoque()[indice] ?? 0;
+export function pasoDeParte(partes: Seccion[], indice: number): number {
+  return bloquesDeEnfoque(partes)[indice] ?? 0;
 }
 
 // Cuántos clics arma el visual: lo que se ve al llegar a la lámina es el
@@ -129,7 +145,7 @@ export function pasoDeParte(indice: number): number {
 export function clicsDeVisual(v: Visual | undefined): number {
   if (!v) return 0;
   switch (v.tipo) {
-    case "ruta": return Math.max(0, ...bloquesDeEnfoque());
+    case "ruta": return Math.max(0, ...bloquesDeEnfoque(partesDeRuta(v)));
     case "equipo": return 0;
     case "sistema": return 7;
     case "mapeo": return 1 + v.operaciones.length;
@@ -149,6 +165,8 @@ export function clicsDeVisual(v: Visual | undefined): number {
     case "contraste": return 1;
     case "tarjetas": return v.comando || v.tarjetas.length > 6 ? 0 : v.tarjetas.length - 1;
     case "captura": return v.capturas.length - 1;
+    // Un clic reproduce el video.
+    case "video": return 1;
     case "ramas": return 1;
   }
 }

@@ -66,7 +66,7 @@ Cada vez que cambia quien presenta. La frase de relevo está en el **Para pasar*
 - En «Cómo funciona en la práctica», remarcar que el evento es un dato que viaja, no una pieza del sistema.
 - Abrir el Codespace, o el Compose local, 15 minutos antes y comprobar que Salud muestra los dos servicios en verde.
 - Practicar la secuencia: detener notificaciones, enviar una solicitud, mirar Enviadas, levantar notificaciones y Reentregar.
-- Plan B: si la red falla, contar la demostración con los clics de la lámina; las capturas de la UI ya están en la presentación.
+- Plan B: si el sistema o la red fallan, presentar con ARKA-Lite-ejecutivo-con-videos.pptx: las mismas láminas, con la demostración grabada. Si falla en plena presentación, contarla con los clics de la lámina.
 
 ### Desarrollo 3
 
@@ -130,10 +130,22 @@ Estas láminas se pueden saltar en vivo (en PowerPoint: Ocultar diapositiva) sin
 | 45. El valor agregado | «Lo que pueden aplicar desde mañana» lleva el mensaje más útil para el staff. |
 | 41. Observabilidad: lo que aprendimos | Su mensaje cabe en una frase al final de la lámina de logs. |
 
+## Si no se puede hacer la demostración en vivo
+
+El ejecutivo tiene tres versiones, con las mismas láminas salvo la demostración. Cada una tiene su PPTX, sus PDF y su guion por persona.
+
+| Versión | Láminas | Minutos | Cuándo usarla | Qué cambia | Archivos |
+| --- | --- | --- | --- | --- | --- |
+| Ejecutivo | 48 | ~47 | Hay sistema arriba (Compose local o Codespace) y red confiable en la sala. | Es la versión de referencia: la parte 7 se hace en la UI real. | `pptx/ARKA-Lite-ejecutivo.pptx` y `guiones/guion-ejecutivo-7-personas.md` |
+| Ejecutivo con videos | 48 | ~44 | No se puede operar el sistema en vivo: sin red, sin Codespace o con poco tiempo para prepararlo. | La parte 7 muestra dos videos grabados con la UI real, dentro del PPTX; un clic los reproduce. La portada y la agenda dicen «en video» y no se propone ninguna demostración en las otras láminas. | `pptx/ARKA-Lite-ejecutivo-con-videos.pptx` y `guiones/guion-ejecutivo-con-videos-7-personas.md` |
+| Ejecutivo sin demostración | 45 | ~41 | Falta tiempo, o el público ya vio la UI. | No hay parte 7: la observabilidad pasa directo al cierre. La portada, la agenda, Codespaces y los logs ya no anuncian una demostración. | `pptx/ARKA-Lite-ejecutivo-sin-demo.pptx` y `guiones/guion-ejecutivo-sin-demo-7-personas.md` |
+
+Los videos se graban con `npm run videos` y el sistema arriba: el script maneja la UI en Edge sin ventana, detiene y vuelve a iniciar notificaciones, y deja los MP4 en `capturas/videos/`.
+
 ## El día de la presentación
 
 - [ ] Descargar la última versión del PPTX ejecutivo de la rama y abrirla en modo presentación.
-- [ ] Codespace arrancado 15 minutos antes, con Salud en verde y Grafana abierto en otra pestaña.
+- [ ] Codespace arrancado 15 minutos antes, con Salud en verde y Grafana abierto en otra pestaña. Si no se puede, llevar la versión con videos.
 - [ ] Cada persona con su guion a mano: el PDF de guion o `guion-ejecutivo-7-personas.md` en el teléfono.
 - [ ] Probar el clicker o el teclado con un diagrama que se arme por clics.
 - [ ] Acordar con quien orquesta la seña de tiempo.

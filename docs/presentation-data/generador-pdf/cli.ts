@@ -1,9 +1,9 @@
-// Genera el PDF de contenido y guion de cada recorrido en
+// Genera el PDF de contenido y guion de cada variante en
 // docs/presentation-data/pdf/.
 //   npm run pdf
 import { createWriteStream, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { RECORRIDOS } from "../contenido/tipos.ts";
+import { RECORRIDOS, VARIANTES } from "../contenido/tipos.ts";
 import { DIR_PDF } from "../entregables.ts";
 import { construirPdf, nombreArchivoPdf } from "./construir.ts";
 
@@ -18,7 +18,7 @@ for (const r of RECORRIDOS) {
   }
 }
 
-for (const r of RECORRIDOS) {
+for (const r of VARIANTES) {
   const ruta = join(DIR_PDF, nombreArchivoPdf(r));
   const doc = construirPdf(r);
   await new Promise<void>((listo, fallo) => {

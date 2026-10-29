@@ -15,5 +15,5 @@
     "noUnusedParameters": true,
     "types": ["node"]
   },
-  "include": ["entregables.ts", "vitest.config.ts", "contenido", "diagramas", "diseno", "generador-pptx", "generador-pdf", "generador-guiones", "pruebas"]
+  "include": ["entregables.ts", "vitest.config.ts", "capturas/grabar-videos.ts", "contenido", "diagramas", "diseno", "generador-pptx", "generador-pdf", "generador-guiones", "pruebas"]
 }

@@ -1,13 +1,14 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { secciones } from "./index.ts";
-import { CLIC, type Diapositiva, type Visual } from "./tipos.ts";
+import { laminas, secciones } from "./index.ts";
+import { CLIC, modoDe, VARIANTES, type Diapositiva, type ModoDemo, type Visual } from "./tipos.ts";
 import { clicsDeVisual } from "./visuales.ts";
 import { diagramas } from "../diagramas/definiciones.ts";
-import { DIR_CAPTURAS } from "../entregables.ts";
+import { DIR_CAPTURAS, DIR_VIDEOS } from "../entregables.ts";
 import { DIVISIONES } from "./reparto.ts";
 import { AMPLIAR } from "./ampliar.ts";
 import { RECORTES } from "./recomendaciones.ts";
+import { CAMBIOS } from "./variantes.ts";
 
 function validarVisual(id: string, v: Visual | undefined): string[] {
   if (!v) return [];
@@ -15,6 +16,10 @@ function validarVisual(id: string, v: Visual | undefined): string[] {
   if (v.tipo === "captura") {
     for (const c of v.capturas) if (!existsSync(join(DIR_CAPTURAS, c.archivo))) errores.push(`${id}: falta la captura capturas/${c.archivo} (ejecutar capturas/capturar.ps1)`);
     if (v.capturas.length === 0 || v.capturas.length > 4) errores.push(`${id}: una lámina lleva de 1 a 4 capturas`);
+  }
+  if (v.tipo === "video") {
+    for (const f of [v.archivo, v.portada]) if (!existsSync(join(DIR_VIDEOS, f))) errores.push(`${id}: falta capturas/videos/${f} (ejecutar npm run videos con el sistema arriba)`);
+    if (v.pasos.length < 2 || v.pasos.length > 7) errores.push(`${id}: un video lleva de 2 a 7 pasos`);
   }
   if (v.tipo === "estados" && v.acciones.length !== v.columnas.length - 1) errores.push(`${id}: cada paso entre columnas de estados necesita su acción`);
   if (v.tipo === "flujo" && v.desvio && (v.desvio.desde < 0 || v.desvio.desde >= v.pasos.length)) errores.push(`${id}: el desvío cuelga de un paso que no existe`);
@@ -36,6 +41,10 @@ function validarVisual(id: string, v: Visual | undefined): string[] {
   if (v.tipo === "origenes" && (v.fuentes.length < 1 || v.fuentes.length > 3)) errores.push(`${id}: de 1 a 3 fuentes`);
   return errores;
 }
+
+// Lo que una variante no puede decir: con videos, nada es «en vivo»; sin
+// demostración, nada la anuncia.
+const PROHIBIDO: Record<Exclude<ModoDemo, "vivo">, RegExp> = { video: /en vivo/i, sin: /demostraci[oó]n/i };
 
 // La portada y el cierre no se arman por clics.
 export function clicsDeLamina(d: Diapositiva): number {
@@ -90,6 +99,34 @@ export function validarContenido(): string[] {
 
   // Los recortes sugeridos son láminas del ejecutivo.
   for (const r of RECORTES) if (!todas.get(r.id)?.recorridos.includes("ejecutivo")) errores.push(`recomendaciones: el recorte ${r.id} no es una lámina del ejecutivo`);
+
+  // Las variantes de la demostración: cada reemplazo encuentra su texto, los
+  // clics siguen cuadrando y ninguna lámina anuncia lo que no se hace.
+  for (const [modo, m] of Object.entries(CAMBIOS)) {
+    for (const id of m.sinSecciones ?? []) if (!secciones.some((s) => s.id === id)) errores.push(`variantes ${modo}: la sección ${id} no existe`);
+    for (const [id, c] of Object.entries(m.laminas)) {
+      const d = todas.get(id);
+      if (!d) {
+        errores.push(`variantes ${modo}: la lámina ${id} no existe`);
+        continue;
+      }
+      const json = JSON.stringify(d);
+      for (const [antes] of c.reemplazos ?? []) if (!json.includes(JSON.stringify(antes).slice(1, -1))) errores.push(`variantes ${modo} · ${id}: ya no dice «${antes}»`);
+    }
+  }
+  for (const v of VARIANTES) {
+    const modo = modoDe(v);
+    for (const l of laminas(v)) {
+      const d = l.diapositiva;
+      const marcas = d.guion.decir.join(" ").split(CLIC).length - 1;
+      if (modo !== "vivo" && marcas !== clicsDeLamina(d)) errores.push(`${v} · ${d.id}: el texto oral tiene ${marcas} marcas ${CLIC} y el visual arma ${clicsDeLamina(d)} clics`);
+      // La agenda lleva las secciones completas: se revisa solo el texto propio.
+      const propio = JSON.stringify({ ...d, visual: d.visual?.tipo === "ruta" ? undefined : d.visual });
+      const prohibido = modo === "vivo" ? null : propio.match(new RegExp(`.{0,40}${PROHIBIDO[modo].source}.{0,40}`, "i"));
+      if (prohibido) errores.push(`${v} · ${d.id}: todavía dice «${prohibido[0]}»`);
+      if (modo !== "vivo" || d.visual?.tipo === "video") errores.push(...validarVisual(`${v} · ${d.id}`, d.visual).filter((e) => !errores.includes(e)));
+    }
+  }
 
   for (const d of diagramas) {
     const nodos = new Set(d.nodos.map((n) => n.id));

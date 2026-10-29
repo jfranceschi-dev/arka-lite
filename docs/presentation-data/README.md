@@ -45,8 +45,15 @@ Hay tres variantes; cada una contiene a la anterior y comparten el mismo texto o
 | Variante | Láminas | Para qué |
 | --- | --- | --- |
 | Resumen | 19 | Charla corta: el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo, el valor y lo que pueden aplicar desde mañana. |
-| Ejecutivo | 48 | La presentación del equipo, unos 47 minutos con la demostración: todas las partes con sus aprendizajes, sin código. |
+| Ejecutivo | 48 | La presentación del equipo, unos 47 minutos con la demostración en vivo: todas las partes con sus aprendizajes, sin código. |
 | Técnico | 53 | El ejecutivo más el código, la configuración, el esquema SQL y los diagramas detallados. |
+
+El ejecutivo tiene, además, dos versiones para cuando la demostración en vivo no es posible. Salen del mismo contenido con los cambios de [`contenido/variantes.ts`](contenido/variantes.ts):
+
+| Variante | Láminas | Para qué |
+| --- | --- | --- |
+| Ejecutivo con videos | 48 | Unos 44 minutos. La parte 7 muestra dos videos grabados con la UI real, dentro del PPTX: el recorrido (crear, enviar y seguir una solicitud) y la caída de notificaciones con la reentrega. Un clic reproduce cada video y Alt+P lo pausa; al lado, la lista con los mismos pasos que los rótulos del video. |
+| Ejecutivo sin demostración | 45 | Unos 41 minutos. No hay parte 7: la observabilidad pasa directo al cierre, y la portada, la agenda, Codespaces y los logs ya no anuncian una demostración. |
 
 ## Entregables
 
@@ -55,8 +62,10 @@ Hay tres variantes; cada una contiene a la anterior y comparten el mismo texto o
 | [`pptx/ARKA-Lite-ejecutivo.pptx`](pptx/ARKA-Lite-ejecutivo.pptx) | La presentación del equipo. |
 | [`pptx/ARKA-Lite-resumen.pptx`](pptx/ARKA-Lite-resumen.pptx) | Versión corta. |
 | [`pptx/ARKA-Lite-tecnico.pptx`](pptx/ARKA-Lite-tecnico.pptx) | Con código, contratos y configuración. |
+| [`pptx/ARKA-Lite-ejecutivo-con-videos.pptx`](pptx/ARKA-Lite-ejecutivo-con-videos.pptx) | La presentación del equipo con la demostración grabada: no necesita el sistema ni internet. |
+| [`pptx/ARKA-Lite-ejecutivo-sin-demo.pptx`](pptx/ARKA-Lite-ejecutivo-sin-demo.pptx) | La presentación del equipo sin la parte 7. |
 | [`pdf/`](pdf/) | Por variante, dos PDF: `ARKA-Lite-<variante>-laminas.pdf`, las láminas para compartir, y `ARKA-Lite-<variante>-guion.pdf`, el contenido con el guion para ensayar o imprimir. |
-| [`guiones/`](guiones/) | `guion-resumen.md`, `guion-ejecutivo.md` y `guion-tecnico.md`, más el guion de cada persona: `guion-ejecutivo-7-personas.md`. |
+| [`guiones/`](guiones/) | Un guion por variante (`guion-<variante>.md`), el guion de cada persona para cada versión del ejecutivo (`guion-ejecutivo-7-personas.md`, `guion-ejecutivo-con-videos-7-personas.md` y `guion-ejecutivo-sin-demo-7-personas.md`) y el reparto con recomendaciones. |
 | [`BackUp-pptx/`](BackUp-pptx/) | Versiones anteriores. `version-8-partes/` es la versión de ocho partes sin reparto (18, 39 y 62 láminas) con su fuente de contenido; `version-7-partes/` es la presentación larga (93 y 139 láminas) con sus guiones por participante; `version-3-variantes/` es la primera versión corta (16, 34 y 53 láminas). |
 
 Los PPTX tienen texto, tablas, diagramas e íconos editables, y las notas del expositor en cada lámina. Los entregables se generan; no se editan a mano.
@@ -83,6 +92,8 @@ Los PPTX tienen texto, tablas, diagramas e íconos editables, y las notas del ex
 | Íconos | Trazos vectoriales nativos de PowerPoint ([Lucide](https://lucide.dev), licencia ISC). |
 
 Las capturas viven en [`capturas/`](capturas/) y no se generan con `npm run todo`: se toman con el sistema arriba (`docker compose up --build -d`) y el script [`capturas/capturar.ps1`](capturas/capturar.ps1). Si falta una, la validación lo avisa.
+
+Los videos de la versión con videos viven en [`capturas/videos/`](capturas/videos/) y tampoco se generan con `npm run todo`. Se graban con el sistema arriba y `npm run videos` ([`capturas/grabar-videos.ts`](capturas/grabar-videos.ts)): Edge sin ventana abre la UI, un guion mueve un cursor visible, escribe, hace clic y muestra rótulos numerados (los pasos de [`contenido/videos.ts`](contenido/videos.ts), los mismos que lista la lámina), y para la caída detiene y vuelve a iniciar `servicio-notificaciones` de verdad, con una terminal en pantalla que muestra el comando. Las esperas, como el arranque de notificaciones, se aceleran ×4 y el video lo dice. El mismo Edge codifica los cuadros en MP4 H.264 con WebCodecs ([`mediabunny`](https://mediabunny.dev)), sin instalar ffmpeg; `videos.json` guarda la duración real, que usan los minutos y la lámina. `npm run videos -- caida` graba solo uno.
 
 ## Cómo leer un guion
 
@@ -133,9 +144,9 @@ npm ci --prefix docs/presentation-data
 npm run todo --prefix docs/presentation-data
 ```
 
-`npm run todo` valida el contenido, revisa los tipos, corre las pruebas y genera PPTX, PDF de guion y guiones. Los PDF de láminas los exporta PowerPoint, así que van aparte y solo en Windows: `npm run pdf-laminas`, después de `npm run todo`. Para una sola parte: `npm run pptx`, `npm run pdf` o `npm run guiones`; para una sola variante: `npm run pptx -- resumen`.
+`npm run todo` valida el contenido, revisa los tipos, corre las pruebas y genera PPTX, PDF de guion y guiones de las cinco variantes. Los PDF de láminas los exporta PowerPoint, así que van aparte y solo en Windows: `npm run pdf-laminas`, después de `npm run todo`. Para una sola parte: `npm run pptx`, `npm run pdf` o `npm run guiones`; para una sola variante: `npm run pptx -- ejecutivo-con-videos`. Si cambia la UI o los pasos de un video, grabar otra vez con `npm run videos` antes de `npm run todo`.
 
-La validación exige que cada parte numerada termine con su lámina de aprendizajes y diga su enfoque, que cada variante contenga a la anterior, que las dos divisiones del equipo tengan a alguien para cada lámina y que el texto oral marque cada clic del diagrama.
+La validación exige que cada parte numerada termine con su lámina de aprendizajes y diga su enfoque, que cada variante contenga a la anterior, que las dos divisiones del equipo tengan a alguien para cada lámina y que el texto oral marque cada clic del diagrama. En las versiones con videos y sin demostración, además, que cada texto a reemplazar exista, que los videos estén grabados y que ninguna lámina diga «en vivo» o anuncie una demostración que no se hace.
 
 Para usar un ícono que no está en [`diseno/iconos.ts`](diseno/iconos.ts), agregarlo desde el paquete `lucide-static` con su misma estructura. `node generador-pptx/muestra-iconos.ts <salida.pptx>` genera una lámina con todos los íconos para revisarlos.
 
