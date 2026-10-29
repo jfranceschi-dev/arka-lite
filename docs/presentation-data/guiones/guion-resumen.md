@@ -20,38 +20,23 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 
 ## Reparto
 
-Hay dos divisiones, según cuántas personas de desarrollo estén ese día. Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.
+Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.
 
-### Si somos 8 personas
+### 7 personas
 
-Si estamos los cinco de desarrollo.
-
-| Persona | Área | Qué presenta | Láminas | Habla |
-| --- | --- | --- | --- | --- |
-| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–3, 16–19 | ~6 min |
-| Desarrollo 2 | Desarrollo | Fundamentos | 4 | ~1 min |
-| Desarrollo 3 | Desarrollo | Arquitectura | 5–6 | ~2 min |
-| Desarrollo 4 | Desarrollo | El ORM por dentro y Demostración con la UI | 15 | ~1 min |
-| Desarrollo 5 | Desarrollo | Interconexión de servicios | 10–11 | ~3 min |
-| Base de datos | Base de datos | Base de datos | 7–9 | ~3 min |
-| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 12 | ~1 min |
-| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 13–14 | ~2 min |
-
-### Si somos 7 personas
-
-Si somos cuatro de desarrollo: fundamentos y arquitectura, las dos partes en vista general, quedan en una sola persona.
+Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infraestructura. En base de datos, una persona de desarrollo apoya con la parte de código.
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
-| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–3, 16–19 | ~6 min |
-| Desarrollo 2 | Desarrollo | Fundamentos y Arquitectura | 4–6 | ~3 min |
-| Desarrollo 3 | Desarrollo | El ORM por dentro y Demostración con la UI | 15 | ~1 min |
+| Desarrollo 1 · orquesta | Desarrollo | Apertura, el negocio y el cierre y Fundamentos | 1–4, 16–19 | ~7 min |
+| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 5–6, 15 | ~3 min |
+| Desarrollo 3 | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión | 9 | ~1 min |
 | Desarrollo 4 | Desarrollo | Interconexión de servicios | 10–11 | ~3 min |
-| Base de datos | Base de datos | Base de datos | 7–9 | ~3 min |
-| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 12 | ~1 min |
-| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 13–14 | ~2 min |
+| Base de datos | Base de datos | Base de datos | 7–8 | ~2 min |
+| Infraestructura 1 | Infraestructura | DevOps: construir y entregar (Docker, Compose, Codespaces y CI/CD) | 12 | ~1 min |
+| Infraestructura 2 | Infraestructura | DevOps: operar y observar (Kubernetes y observabilidad) | 13–14 | ~2 min |
 
-Cada persona tiene su guion aparte en `guion-ejecutivo-8-personas.md` y `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
+Cada persona tiene su guion aparte en `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
 ## Cómo leer este guion
 
@@ -96,7 +81,7 @@ Para que todo el equipo explique igual y sin jerga. Si alguien del público no c
 
 ## Apertura
 
-Presenta: Orquestador.
+Presenta: Desarrollo 1 · orquesta.
 
 ### 1. Del endpoint al clúster
 
@@ -179,11 +164,11 @@ Presenta: Orquestador.
 
 ## 1 · Fundamentos · vista general
 
-Presenta: Desarrollo 2.
+Presenta: Desarrollo 1 · orquesta.
 
 ### 3. Primero el qué: el negocio en una lámina
 
-**Presenta:** Orquestador
+**Presenta:** Desarrollo 1 · orquesta
 
 **En pantalla · Flujo paso a paso:**
 
@@ -223,7 +208,7 @@ Presenta: Desarrollo 2.
 
 **Respuesta corta:** Porque cambian por motivos distintos, y así el trámite sigue funcionando aunque el servicio de avisos esté caído.
 
-**Para pasar:** “Con el qué claro, el cómo: código que se pueda cambiar sin miedo. Le paso la palabra a mi compañero.”
+**Para pasar:** “Con el qué claro, el cómo: código que se pueda cambiar sin miedo.”
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
@@ -251,7 +236,7 @@ Presenta: Desarrollo 2.
 
 **Qué decir**
 
-> Gracias. Con el qué claro, viene el cómo. El equipo anterior ya cubrió los fundamentos, así que nos quedamos con seis prácticas que nos sirvieron y que se pueden usar en cualquier lenguaje, sea Java, C#, Python o PL/SQL. Primera: cada pieza hace una sola tarea; la que recibe la petición no decide, y la que decide no guarda.
+> Con el qué claro, viene el cómo. El equipo anterior ya cubrió los fundamentos, así que nos quedamos con seis prácticas que nos sirvieron y que se pueden usar en cualquier lenguaje, sea Java, C#, Python o PL/SQL. Primera: cada pieza hace una sola tarea; la que recibe la petición no decide, y la que decide no guarda.
 >
 > **▶ clic** Segunda: las piezas se conectan desde afuera, así se pueden cambiar o probar por separado. **▶ clic** Tercera: las reglas del negocio viven en un solo lugar, no repetidas en la pantalla y en la base. **▶ clic** Cuarta: los errores responden siempre igual: un 400 si faltan datos, un 404 si algo no existe, un 409 si la regla no lo permite.
 >
@@ -273,7 +258,7 @@ Presenta: Desarrollo 2.
 
 ## 2 · Arquitectura · vista general
 
-Presenta: Desarrollo 3 (8 personas) · Desarrollo 2 (7 personas).
+Presenta: Desarrollo 2.
 
 ### 5. El sistema de un vistazo
 
@@ -444,11 +429,13 @@ Presenta: Base de datos.
 
 **Respuesta corta:** No. Se puede empezar por las reglas que más cambian; los reportes y los procesos masivos pueden seguir en la base.
 
-**Para pasar:** “Veámoslo con una regla real, escrita de las dos formas.”
+**Para pasar:** “Mi compañero de desarrollo se los muestra con una regla real, escrita de las dos formas.”
 
 **Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
 
 ### 9. ¿Dónde está la cadena de conexión?
+
+**Presenta:** Desarrollo 3
 
 **En pantalla · De dónde sale cada valor:**
 
@@ -472,7 +459,7 @@ Presenta: Base de datos.
 
 **Qué decir**
 
-> Gracias. Esta es la pregunta que siempre nos hacen: ¿dónde está la cadena de conexión? Empecemos por el centro: el servicio, al arrancar, lee su archivo de configuración, y ese archivo no tiene la dirección ni la clave. Solo tiene marcadores: DB_URL, DB_USER y DB_PASSWORD.
+> Esta es la pregunta que siempre nos hacen: ¿dónde está la cadena de conexión? Empecemos por el centro: el servicio, al arrancar, lee su archivo de configuración, y ese archivo no tiene la dirección ni la clave. Solo tiene marcadores: DB_URL, DB_USER y DB_PASSWORD.
 >
 > ¿Quién llena esos marcadores? El ambiente donde corre. **▶ clic** En Docker Compose, las variables se definen para cada servicio en el archivo compose.yaml. **▶ clic** En Kubernetes, la dirección y el usuario van en el Deployment, **▶ clic** y la clave se guarda aparte, en un Secret: un objeto del clúster hecho para datos sensibles, que el contenedor recibe como variable al arrancar.
 >
@@ -498,13 +485,13 @@ Presenta: Base de datos.
 
 **Respuesta corta:** Quien tenga permiso de leer Secrets en ese espacio del clúster; ese acceso se controla con roles.
 
-**Para pasar:** “Con la conexión resuelta, veamos qué pasa cuando se guarda: la transacción.”
+**Para pasar:** “Con la conexión resuelta, mi compañero de base de datos les cuenta qué pasa cuando se guarda: la transacción.”
 
 **Para leer más:** `docs/inicio/bases-de-datos-locales.md`
 
 ## 4 · Interconexión de servicios · a fondo
 
-Presenta: Desarrollo 5 (8 personas) · Desarrollo 4 (7 personas).
+Presenta: Desarrollo 4.
 
 ### 10. Síncrono o asíncrono
 
@@ -621,7 +608,7 @@ Presenta: Infraestructura 1.
 
 **Qué decir**
 
-> Gracias. Docker y Kubernetes muchas veces se presentan como si uno reemplazara al otro, y no es así: no compiten, se complementan. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia y que corre igual en una laptop o en un servidor.
+> Docker y Kubernetes muchas veces se presentan como si uno reemplazara al otro, y no es así: no compiten, se complementan. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia y que corre igual en una laptop o en un servidor.
 >
 > **▶ clic** Kubernetes empieza donde termina Docker. No empaqueta nada: toma esas imágenes y las administra. Decide dónde corre cada contenedor, lo vigila y, si uno se cae, levanta otro.
 >
@@ -641,7 +628,7 @@ Presenta: Infraestructura 1.
 
 **Respuesta corta:** No. Para un sistema pequeño basta Docker Compose en un servidor. Kubernetes vale la pena cuando hay varios servicios, varias copias o hay que recuperarse solo.
 
-**Para pasar:** “Primero, cómo cada cambio se convierte en una imagen: el pipeline.”
+**Para pasar:** “Veamos cómo nace un contenedor.”
 
 **Para leer más:** `docs/operaciones/docker-y-compose.md`
 
@@ -669,7 +656,7 @@ Presenta: Infraestructura 1.
 
 **Qué decir**
 
-> Kubernetes funciona como un termostato: no le decimos qué hacer paso a paso, le decimos el estado que queremos, por ejemplo una copia de cada servicio, y él lo mantiene. Veamos qué pasa si se cae el Pod de solicitudes.
+> Ya vimos que Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Veamos qué pasa cuando se cae el Pod de solicitudes, por un error, porque se reinició el servidor o porque alguien lo borró.
 >
 > **▶ clic** En el mismo instante, el Deployment detecta que falta una copia. **▶ clic** En un segundo, crea un Pod nuevo con la misma imagen. **▶ clic** El Pod nuevo espera a que su base y notificaciones respondan, **▶ clic** y solo cuando su prueba de salud contesta, vuelve a recibir tráfico.
 >
@@ -737,7 +724,7 @@ Presenta: Infraestructura 2.
 
 ## 7 · Demostración con la UI · en vivo
 
-Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
+Presenta: Desarrollo 2.
 
 ### 15. En vivo: si notificaciones se cae
 
@@ -790,7 +777,7 @@ Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
 
 ## Valor y cierre
 
-Presenta: Orquestador.
+Presenta: Desarrollo 1 · orquesta.
 
 ### 16. El valor agregado
 

@@ -98,6 +98,22 @@ export const AMPLIAR: Record<string, string[]> = {
   "s04-aprendizajes": [
     "Juntos, Outbox e idempotencia logran lo que en la industria se llama entrega al menos una vez con efecto exactamente una vez. Es la base de muchos sistemas de pagos y de notificaciones.",
   ],
+  "s05-devops": [
+    "En ARKA-Lite, cada paso del camino tiene su herramienta: Git y GitHub para el código, Maven para construir, las pruebas automáticas, Docker para empaquetar, GHCR para publicar, Kubernetes para operar y Loki con Grafana para observar.",
+    "Lo que más se nota en el día a día es que nadie hace pasos a mano: no se copian archivos a un servidor ni se corren pruebas de memoria. Si un paso falla, el camino se detiene y se sabe dónde.",
+  ],
+  "s05-docker": [
+    "La primera etapa descarga las dependencias de Maven en una capa aparte. Mientras el pom.xml no cambie, esa capa se reutiliza y las siguientes construcciones tardan mucho menos.",
+    "Separar la compilación de la imagen final también es seguridad: la imagen que corre no lleva Maven ni el código fuente, solo lo necesario para ejecutar.",
+  ],
+  "s05-compose": [
+    "Compose arranca las piezas en orden: primero las bases, y cada servicio espera a que su base esté sana antes de arrancar.",
+    "La base de solicitudes no se publica hacia afuera; solo la ven los contenedores de la misma red. La de notificaciones sí, en el puerto 5433, para poder consultarla con cualquier herramienta.",
+  ],
+  "s05-k8s-como": [
+    "Todos los manifiestos de ARKA-Lite están en la carpeta k8s del repositorio: cinco archivos, uno por componente, con su Deployment, su Service y, en las bases, su disco persistente.",
+    "Como el estado deseado está en archivos versionados, reconstruir el sistema completo en otro clúster es volver a aplicar esos archivos.",
+  ],
   "s05-complemento": [
     "La imagen de cada servicio se construye en dos etapas: una con Maven para compilar y otra solo con Java para correr. Así la imagen final es más liviana y no lleva herramientas de compilación.",
     "Además, el contenedor corre con un usuario sin privilegios: si alguien comprometiera la aplicación, no sería administrador del contenedor.",

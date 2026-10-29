@@ -166,7 +166,7 @@ export const datos: Seccion = {
           { texto: "¿Y el rendimiento? ¿El SQL que genera Hibernate es bueno?", respuesta: "Para guardar y buscar por llave, sí. Para consultas complejas se puede escribir SQL propio; además, los índices y las restricciones siguen siendo trabajo de la base." },
           { texto: "¿Hay que migrar todos los procedimientos?", respuesta: "No. Se puede empezar por las reglas que más cambian; los reportes y los procesos masivos pueden seguir en la base." },
         ],
-        transicion: "Veámoslo con una regla real, escrita de las dos formas.",
+        transicion: "Mi compañero de desarrollo se los muestra con una regla real, escrita de las dos formas.",
         respaldo: "docs/arquitectura/datos-y-consistencia.md",
       },
     },
@@ -176,6 +176,7 @@ export const datos: Seccion = {
       idea: "Regla del negocio: solo se puede enviar una solicitud que está en borrador.",
       visible: ["Hoy: la regla dentro de un procedimiento almacenado", "ARKA-Lite: la misma regla en un método Java", "El SQL rutinario lo escribe Hibernate", "La base sigue cuidando llaves, CHECK e índices"],
       valor: "La misma regla, más fácil de probar y de cambiar, sin que la base pierda su papel.",
+      rol: "orm",
       recorridos: ["ejecutivo", "tecnico"],
       visual: {
         tipo: "codigos",
@@ -200,12 +201,12 @@ export const datos: Seccion = {
       },
       guion: {
         decir: [
-          "Tomemos una regla real del negocio: solo se puede enviar una solicitud que está en borrador. A la izquierda, cómo la escribiríamos hoy: un procedimiento que consulta el estado, lanza un error si no está en borrador y hace el UPDATE. La regla y el dato viven juntos en la base, y para probarla hace falta una base con datos.",
+          "Gracias. Tomemos una regla real del negocio: solo se puede enviar una solicitud que está en borrador. A la izquierda, cómo la escribiríamos hoy: un procedimiento que consulta el estado, lanza un error si no está en borrador y hace el UPDATE. La regla y el dato viven juntos en la base, y para probarla hace falta una base con datos.",
           "[clic] A la derecha, la misma regla en ARKA-Lite: el método enviar de la clase Solicitud. Si el estado no es borrador, lanza un error; si lo es, devuelve la solicitud enviada. No hay SQL: el UPDATE lo escribe Hibernate cuando el servicio guarda, siempre con parámetros.",
           "¿Qué ganamos? Esa regla se prueba en milisegundos, sin base de datos, y si cambia, se cambia en un solo lugar junto con su prueba. ¿Qué no perdemos? La base sigue cuidando lo suyo: la llave primaria, el CHECK de los estados y los índices.",
         ],
         preguntas: [{ texto: "¿Y si la regla necesita consultar muchos datos?", respuesta: "Para decidir, el servicio pide solo lo que necesita por llave. Si es un cálculo sobre millones de filas, ese trabajo puede seguir en la base, como una consulta o un procedimiento bien delimitado." }],
-        transicion: "Mi compañero de desarrollo les va a mostrar cómo hace Hibernate esa traducción.",
+        transicion: "Ahora veamos cómo hace Hibernate esa traducción.",
       },
     },
     {
@@ -233,7 +234,7 @@ export const datos: Seccion = {
       },
       guion: {
         decir: [
-          "Gracias. Esta es la traducción, lado a lado. A la izquierda, una clase Java: SolicitudEntity. Con la anotación arroba Entity le decimos a Hibernate que esta clase representa una tabla, y con arroba Table, cuál: la tabla solicitud. [clic] Cada campo de la clase corresponde a una columna, y arroba Id marca la llave primaria.",
+          "Esta es la traducción, lado a lado. A la izquierda, una clase Java: SolicitudEntity. Con la anotación arroba Entity le decimos a Hibernate que esta clase representa una tabla, y con arroba Table, cuál: la tabla solicitud. [clic] Cada campo de la clase corresponde a una columna, y arroba Id marca la llave primaria.",
           "Con eso, Hibernate ya sabe todo. Abajo ven qué pasa cuando el código llama a un método. [clic] Guardar una solicitud nueva se convierte en un INSERT. [clic] Buscar por identificador, en un SELECT con su WHERE. [clic] Y guardar una que ya existe, por ejemplo cuando se envía, en un UPDATE.",
           "Fíjense en los signos de interrogación: los valores viajan siempre como parámetros, nunca pegados al texto del SQL. Es lo mismo que hacemos con los parámetros de un procedimiento, y es lo que nos protege de la inyección SQL.",
           "Nosotros no escribimos ninguna de esas consultas. Lo que sí cuidamos fue el diseño de las tablas, porque el ORM confía en que la base esté bien hecha.",
@@ -271,7 +272,7 @@ export const datos: Seccion = {
           "[clic] Ese objeto pasa por las reglas del negocio, que revisan, por ejemplo, que el identificador no exista. Hasta aquí no hay ni una línea de SQL. [clic] Cuando las reglas dicen que sí, Hibernate lo traduce a un INSERT con sus parámetros. [clic] El driver toma una conexión del pool, y PostgreSQL guarda la fila y confirma con un COMMIT.",
           "Y de regreso, el mismo camino al revés: la fila se vuelve objeto, el objeto se vuelve JSON y la pantalla muestra la solicitud creada, con un 201.",
         ],
-        transicion: "Para hablar con la base, la aplicación necesita su dirección, su usuario y su clave. Le devuelvo la palabra a mi compañero de base de datos.",
+        transicion: "Para hablar con la base, la aplicación necesita su dirección, su usuario y su clave. ¿Dónde están?",
       },
     },
     {
@@ -281,6 +282,7 @@ export const datos: Seccion = {
       visible: ["El código solo tiene marcadores: ${DB_URL}", "Compose los llena con variables de entorno", "Kubernetes: la dirección en el Deployment y la clave en un Secret", "La imagen no lleva ni dirección ni clave"],
       porque: "Cambiar de servidor o rotar una clave no obliga a recompilar ni a tocar el código.",
       valor: "Las claves fuera del código: rotarlas o cambiar de servidor no requiere recompilar.",
+      rol: "orm",
       recorridos: ["resumen", "ejecutivo", "tecnico"],
       visual: {
         tipo: "origenes",
@@ -301,7 +303,7 @@ export const datos: Seccion = {
       },
       guion: {
         decir: [
-          "Gracias. Esta es la pregunta que siempre nos hacen: ¿dónde está la cadena de conexión? Empecemos por el centro: el servicio, al arrancar, lee su archivo de configuración, y ese archivo no tiene la dirección ni la clave. Solo tiene marcadores: DB_URL, DB_USER y DB_PASSWORD.",
+          "Esta es la pregunta que siempre nos hacen: ¿dónde está la cadena de conexión? Empecemos por el centro: el servicio, al arrancar, lee su archivo de configuración, y ese archivo no tiene la dirección ni la clave. Solo tiene marcadores: DB_URL, DB_USER y DB_PASSWORD.",
           "¿Quién llena esos marcadores? El ambiente donde corre. [clic] En Docker Compose, las variables se definen para cada servicio en el archivo compose.yaml. [clic] En Kubernetes, la dirección y el usuario van en el Deployment, [clic] y la clave se guarda aparte, en un Secret: un objeto del clúster hecho para datos sensibles, que el contenedor recibe como variable al arrancar.",
           "[clic] Con esos valores, el servicio abre su pool de conexiones contra la base.",
           "[clic] ¿Y la imagen Docker? No lleva ni dirección ni clave. Es la misma imagen en desarrollo, en pruebas y en producción. Cambiar de servidor de base de datos o rotar una clave no obliga a recompilar ni a tocar el código.",
@@ -311,7 +313,7 @@ export const datos: Seccion = {
           { texto: "¿Y si no usamos Kubernetes?", respuesta: "La misma idea funciona con variables de entorno del servidor o con un gestor de secretos. Lo importante es que la clave no viva en el código ni en el paquete que se despliega." },
           { texto: "¿Quién puede ver la clave en Kubernetes?", respuesta: "Quien tenga permiso de leer Secrets en ese espacio del clúster; ese acceso se controla con roles." },
         ],
-        transicion: "Con la conexión resuelta, veamos qué pasa cuando se guarda: la transacción.",
+        transicion: "Con la conexión resuelta, mi compañero de base de datos les cuenta qué pasa cuando se guarda: la transacción.",
         respaldo: "docs/inicio/bases-de-datos-locales.md",
       },
     },
@@ -335,7 +337,7 @@ export const datos: Seccion = {
       },
       guion: {
         decir: [
-          "Para quienes administran bases de datos, esto es terreno conocido, solo que configurado desde la aplicación. Cuando llega una petición, el pool de conexiones, HikariCP, le presta una de sus conexiones abiertas; por defecto mantiene hasta diez y las reutiliza.",
+          "Gracias. Para quienes administran bases de datos, esto es terreno conocido, solo que configurado desde la aplicación. Cuando llega una petición, el pool de conexiones, HikariCP, le presta una de sus conexiones abiertas; por defecto mantiene hasta diez y las reutiliza.",
           "[clic] Cuando un método lleva la anotación Transactional, empieza una transacción: es el BEGIN de siempre. [clic] Al enviar una solicitud, primero se actualiza su estado a enviada, [clic] y en la misma transacción se anota el aviso pendiente en la tabla evento. [clic] Al final, el COMMIT guarda las dos cosas juntas.",
           "[clic] Y si algo falla en el medio, se hace ROLLBACK de todo: no queda una solicitud enviada sin su aviso, ni un aviso sin su solicitud. Esa garantía es la base de lo que les va a explicar mi compañero de interconexión.",
         ],

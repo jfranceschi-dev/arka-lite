@@ -2,7 +2,7 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-46 láminas, unos 39 minutos de exposición sin contar la demostración en vivo ni las preguntas. El recorrido ejecutivo más el código, la configuración y los diagramas detallados.
+48 láminas, unos 42 minutos de exposición sin contar la demostración en vivo ni las preguntas. El recorrido ejecutivo más el código, la configuración y los diagramas detallados.
 
 ## Cómo está pensada
 
@@ -14,44 +14,29 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 | 2. Arquitectura | Vista general | 7–12 | El sistema por fuera: qué piezas hay y cómo trabajan juntas. |
 | 3. Base de datos | A fondo | 13–22 | Dos bases PostgreSQL, el ORM, la cadena de conexión y las transacciones. |
 | 4. Interconexión de servicios | A fondo | 23–27 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
-| 5. DevOps: Docker y Kubernetes | A fondo | 28–35 | Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio. |
-| 6. Observabilidad | Vista general | 36–38 | Logs en un solo lugar, trazas entre servicios y salud de cada componente. |
-| 7. Demostración con la UI | En vivo | 39–42 | La UI ejemplifica en vivo lo que contamos: estados, Outbox, idempotencia y salud. |
+| 5. DevOps: Docker y Kubernetes | A fondo | 28–37 | Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio. |
+| 6. Observabilidad | Vista general | 38–40 | Logs en un solo lugar, trazas entre servicios y salud de cada componente. |
+| 7. Demostración con la UI | En vivo | 41–44 | La UI ejemplifica en vivo lo que contamos: estados, Outbox, idempotencia y salud. |
 
 ## Reparto
 
-Hay dos divisiones, según cuántas personas de desarrollo estén ese día. Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.
+Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto.
 
-### Si somos 8 personas
+### 7 personas
 
-Si estamos los cinco de desarrollo.
-
-| Persona | Área | Qué presenta | Láminas | Habla |
-| --- | --- | --- | --- | --- |
-| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–3, 43–46 | ~6 min |
-| Desarrollo 2 | Desarrollo | Fundamentos | 4–6 | ~2 min |
-| Desarrollo 3 | Desarrollo | Arquitectura | 7–12 | ~4 min |
-| Desarrollo 4 | Desarrollo | El ORM por dentro y Demostración con la UI | 18–19, 39–42 | ~5 min |
-| Desarrollo 5 | Desarrollo | Interconexión de servicios | 23–27 | ~5 min |
-| Base de datos | Base de datos | Base de datos | 13–17, 20–22 | ~8 min |
-| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 28–32 | ~5 min |
-| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 33–38 | ~4 min |
-
-### Si somos 7 personas
-
-Si somos cuatro de desarrollo: fundamentos y arquitectura, las dos partes en vista general, quedan en una sola persona.
+Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infraestructura. En base de datos, una persona de desarrollo apoya con la parte de código.
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
-| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–3, 43–46 | ~6 min |
-| Desarrollo 2 | Desarrollo | Fundamentos y Arquitectura | 4–12 | ~7 min |
-| Desarrollo 3 | Desarrollo | El ORM por dentro y Demostración con la UI | 18–19, 39–42 | ~5 min |
+| Desarrollo 1 · orquesta | Desarrollo | Apertura, el negocio y el cierre y Fundamentos | 1–6, 45–48 | ~8 min |
+| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 7–12, 41–44 | ~7 min |
+| Desarrollo 3 | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión | 17–20 | ~5 min |
 | Desarrollo 4 | Desarrollo | Interconexión de servicios | 23–27 | ~5 min |
-| Base de datos | Base de datos | Base de datos | 13–17, 20–22 | ~8 min |
-| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 28–32 | ~5 min |
-| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 33–38 | ~4 min |
+| Base de datos | Base de datos | Base de datos | 13–16, 21–22 | ~5 min |
+| Infraestructura 1 | Infraestructura | DevOps: construir y entregar (Docker, Compose, Codespaces y CI/CD) | 28–33 | ~6 min |
+| Infraestructura 2 | Infraestructura | DevOps: operar y observar (Kubernetes y observabilidad) | 34–40 | ~5 min |
 
-Cada persona tiene su guion aparte en `guion-ejecutivo-8-personas.md` y `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
+Cada persona tiene su guion aparte en `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
 ## Cómo leer este guion
 
@@ -96,7 +81,7 @@ Para que todo el equipo explique igual y sin jerga. Si alguien del público no c
 
 ## Apertura
 
-Presenta: Orquestador.
+Presenta: Desarrollo 1 · orquesta.
 
 ### 1. Del endpoint al clúster
 
@@ -179,11 +164,11 @@ Presenta: Orquestador.
 
 ## 1 · Fundamentos · vista general
 
-Presenta: Desarrollo 2.
+Presenta: Desarrollo 1 · orquesta.
 
 ### 3. Primero el qué: el negocio en una lámina
 
-**Presenta:** Orquestador
+**Presenta:** Desarrollo 1 · orquesta
 
 **En pantalla · Flujo paso a paso:**
 
@@ -223,7 +208,7 @@ Presenta: Desarrollo 2.
 
 **Respuesta corta:** Porque cambian por motivos distintos, y así el trámite sigue funcionando aunque el servicio de avisos esté caído.
 
-**Para pasar:** “Con el qué claro, el cómo: código que se pueda cambiar sin miedo. Le paso la palabra a mi compañero.”
+**Para pasar:** “Con el qué claro, el cómo: código que se pueda cambiar sin miedo.”
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
@@ -253,7 +238,7 @@ Presenta: Desarrollo 2.
 
 **Qué decir**
 
-> Gracias. Con el qué claro, viene el cómo. El equipo anterior ya cubrió los fundamentos, así que nos quedamos con seis prácticas que nos sirvieron y que se pueden usar en cualquier lenguaje, sea Java, C#, Python o PL/SQL. Primera: cada pieza hace una sola tarea; la que recibe la petición no decide, y la que decide no guarda.
+> Con el qué claro, viene el cómo. El equipo anterior ya cubrió los fundamentos, así que nos quedamos con seis prácticas que nos sirvieron y que se pueden usar en cualquier lenguaje, sea Java, C#, Python o PL/SQL. Primera: cada pieza hace una sola tarea; la que recibe la petición no decide, y la que decide no guarda.
 >
 > **▶ clic** Segunda: las piezas se conectan desde afuera, así se pueden cambiar o probar por separado. **▶ clic** Tercera: las reglas del negocio viven en un solo lugar, no repetidas en la pantalla y en la base. **▶ clic** Cuarta: los errores responden siempre igual: un 400 si faltan datos, un 404 si algo no existe, un 409 si la regla no lo permite.
 >
@@ -342,7 +327,7 @@ Presenta: Desarrollo 2.
 
 ## 2 · Arquitectura · vista general
 
-Presenta: Desarrollo 3 (8 personas) · Desarrollo 2 (7 personas).
+Presenta: Desarrollo 2.
 
 ### 7. El sistema de un vistazo
 
@@ -715,11 +700,13 @@ Presenta: Base de datos.
 
 **Respuesta corta:** No. Se puede empezar por las reglas que más cambian; los reportes y los procesos masivos pueden seguir en la base.
 
-**Para pasar:** “Veámoslo con una regla real, escrita de las dos formas.”
+**Para pasar:** “Mi compañero de desarrollo se los muestra con una regla real, escrita de las dos formas.”
 
 **Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
 
 ### 17. La misma regla, escrita de las dos formas
+
+**Presenta:** Desarrollo 3
 
 **En pantalla · La misma idea, en dos códigos:**
 
@@ -737,7 +724,7 @@ Presenta: Base de datos.
 
 **Qué decir**
 
-> Tomemos una regla real del negocio: solo se puede enviar una solicitud que está en borrador. A la izquierda, cómo la escribiríamos hoy: un procedimiento que consulta el estado, lanza un error si no está en borrador y hace el UPDATE. La regla y el dato viven juntos en la base, y para probarla hace falta una base con datos.
+> Gracias. Tomemos una regla real del negocio: solo se puede enviar una solicitud que está en borrador. A la izquierda, cómo la escribiríamos hoy: un procedimiento que consulta el estado, lanza un error si no está en borrador y hace el UPDATE. La regla y el dato viven juntos en la base, y para probarla hace falta una base con datos.
 >
 > **▶ clic** A la derecha, la misma regla en ARKA-Lite: el método enviar de la clase Solicitud. Si el estado no es borrador, lanza un error; si lo es, devuelve la solicitud enviada. No hay SQL: el UPDATE lo escribe Hibernate cuando el servicio guarda, siempre con parámetros.
 >
@@ -753,11 +740,11 @@ Presenta: Base de datos.
 
 **Respuesta corta:** Para decidir, el servicio pide solo lo que necesita por llave. Si es un cálculo sobre millones de filas, ese trabajo puede seguir en la base, como una consulta o un procedimiento bien delimitado.
 
-**Para pasar:** “Mi compañero de desarrollo les va a mostrar cómo hace Hibernate esa traducción.”
+**Para pasar:** “Ahora veamos cómo hace Hibernate esa traducción.”
 
 ### 18. El ORM por dentro: una clase es una tabla
 
-**Presenta:** Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas)
+**Presenta:** Desarrollo 3
 
 **En pantalla · De la clase a la tabla:**
 
@@ -782,7 +769,7 @@ Presenta: Base de datos.
 
 **Qué decir**
 
-> Gracias. Esta es la traducción, lado a lado. A la izquierda, una clase Java: SolicitudEntity. Con la anotación arroba Entity le decimos a Hibernate que esta clase representa una tabla, y con arroba Table, cuál: la tabla solicitud. **▶ clic** Cada campo de la clase corresponde a una columna, y arroba Id marca la llave primaria.
+> Esta es la traducción, lado a lado. A la izquierda, una clase Java: SolicitudEntity. Con la anotación arroba Entity le decimos a Hibernate que esta clase representa una tabla, y con arroba Table, cuál: la tabla solicitud. **▶ clic** Cada campo de la clase corresponde a una columna, y arroba Id marca la llave primaria.
 >
 > Con eso, Hibernate ya sabe todo. Abajo ven qué pasa cuando el código llama a un método. **▶ clic** Guardar una solicitud nueva se convierte en un INSERT. **▶ clic** Buscar por identificador, en un SELECT con su WHERE. **▶ clic** Y guardar una que ya existe, por ejemplo cuando se envía, en un UPDATE.
 >
@@ -808,7 +795,7 @@ Presenta: Base de datos.
 
 ### 19. El viaje de un dato: de la pantalla a la fila
 
-**Presenta:** Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas)
+**Presenta:** Desarrollo 3
 
 **En pantalla · Flujo paso a paso:**
 
@@ -844,9 +831,11 @@ Presenta: Base de datos.
 >
 > Si el identificador ya existe, el viaje se corta en las reglas: no se toca la base y la persona recibe un 409 con el motivo.
 
-**Para pasar:** “Para hablar con la base, la aplicación necesita su dirección, su usuario y su clave. Le devuelvo la palabra a mi compañero de base de datos.”
+**Para pasar:** “Para hablar con la base, la aplicación necesita su dirección, su usuario y su clave. ¿Dónde están?”
 
 ### 20. ¿Dónde está la cadena de conexión?
+
+**Presenta:** Desarrollo 3
 
 **En pantalla · De dónde sale cada valor:**
 
@@ -872,7 +861,7 @@ Presenta: Base de datos.
 
 **Qué decir**
 
-> Gracias. Esta es la pregunta que siempre nos hacen: ¿dónde está la cadena de conexión? Empecemos por el centro: el servicio, al arrancar, lee su archivo de configuración, y ese archivo no tiene la dirección ni la clave. Solo tiene marcadores: DB_URL, DB_USER y DB_PASSWORD.
+> Esta es la pregunta que siempre nos hacen: ¿dónde está la cadena de conexión? Empecemos por el centro: el servicio, al arrancar, lee su archivo de configuración, y ese archivo no tiene la dirección ni la clave. Solo tiene marcadores: DB_URL, DB_USER y DB_PASSWORD.
 >
 > ¿Quién llena esos marcadores? El ambiente donde corre. **▶ clic** En Docker Compose, las variables se definen para cada servicio en el archivo compose.yaml. **▶ clic** En Kubernetes, la dirección y el usuario van en el Deployment, **▶ clic** y la clave se guarda aparte, en un Secret: un objeto del clúster hecho para datos sensibles, que el contenedor recibe como variable al arrancar.
 >
@@ -898,7 +887,7 @@ Presenta: Base de datos.
 
 **Respuesta corta:** Quien tenga permiso de leer Secrets en ese espacio del clúster; ese acceso se controla con roles.
 
-**Para pasar:** “Con la conexión resuelta, veamos qué pasa cuando se guarda: la transacción.”
+**Para pasar:** “Con la conexión resuelta, mi compañero de base de datos les cuenta qué pasa cuando se guarda: la transacción.”
 
 **Para leer más:** `docs/inicio/bases-de-datos-locales.md`
 
@@ -925,7 +914,7 @@ Presenta: Base de datos.
 
 **Qué decir**
 
-> Para quienes administran bases de datos, esto es terreno conocido, solo que configurado desde la aplicación. Cuando llega una petición, el pool de conexiones, HikariCP, le presta una de sus conexiones abiertas; por defecto mantiene hasta diez y las reutiliza.
+> Gracias. Para quienes administran bases de datos, esto es terreno conocido, solo que configurado desde la aplicación. Cuando llega una petición, el pool de conexiones, HikariCP, le presta una de sus conexiones abiertas; por defecto mantiene hasta diez y las reutiliza.
 >
 > **▶ clic** Cuando un método lleva la anotación Transactional, empieza una transacción: es el BEGIN de siempre. **▶ clic** Al enviar una solicitud, primero se actualiza su estado a enviada, **▶ clic** y en la misma transacción se anota el aviso pendiente en la tabla evento. **▶ clic** Al final, el COMMIT guarda las dos cosas juntas.
 >
@@ -981,7 +970,7 @@ Presenta: Base de datos.
 
 ## 4 · Interconexión de servicios · a fondo
 
-Presenta: Desarrollo 5 (8 personas) · Desarrollo 4 (7 personas).
+Presenta: Desarrollo 4.
 
 ### 23. Quién habla con quién, y cómo
 
@@ -1211,7 +1200,51 @@ Presenta: Desarrollo 5 (8 personas) · Desarrollo 4 (7 personas).
 
 Presenta: Infraestructura 1.
 
-### 28. Docker y Kubernetes: no compiten, se complementan
+### 28. ¿Qué es DevOps? Del código a la operación
+
+**En pantalla · Las etapas del pipeline:**
+
+- 1. Código: Ramas y Pull Request.
+- 2. Construir: Maven compila.
+- 3. Probar: En cada cambio.
+- 4. Imagen: Docker la empaqueta.
+- 5. Publicar: En GHCR.
+- 6. Operar: Kubernetes la despliega.
+- 7. Observar: Loki y Grafana.
+
+**Ideas clave:**
+
+- El código entra por ramas y Pull Request
+- Se construye y se prueba solo, en cada cambio
+- Se empaqueta en una imagen y se publica
+- Se despliega y se opera en Kubernetes
+- Se observa, y lo aprendido vuelve al código
+
+**Lo que se lleva el staff:** Un camino único y automático del código a producción: menos pasos manuales y menos errores.
+
+**Qué decir**
+
+> Gracias. DevOps no es una herramienta ni un puesto: es una forma de trabajar en la que desarrollo y operación dejan de ser dos mundos separados. Todo cambio recorre el mismo camino, de forma automática y repetible. Empieza en el código, en una rama con su Pull Request.
+>
+> **▶ clic** Se construye, **▶ clic** y se prueba solo, en cada cambio. **▶ clic** Se empaqueta en una imagen Docker **▶ clic** que se publica en un registro. **▶ clic** Esa imagen se despliega y se opera en Kubernetes, **▶ clic** y lo que pasa adentro se observa con los logs en un solo lugar. Lo que aprendemos al observar vuelve al código, y el ciclo empieza otra vez.
+>
+> En las próximas láminas recorremos ese camino con ARKA-Lite, pieza por pieza: primero Docker y Kubernetes, después el pipeline, y al final cómo se opera.
+
+**Si hay tiempo, se puede agregar**
+
+> En ARKA-Lite, cada paso del camino tiene su herramienta: Git y GitHub para el código, Maven para construir, las pruebas automáticas, Docker para empaquetar, GHCR para publicar, Kubernetes para operar y Loki con Grafana para observar.
+>
+> Lo que más se nota en el día a día es que nadie hace pasos a mano: no se copian archivos a un servidor ni se corren pruebas de memoria. Si un paso falla, el camino se detiene y se sabe dónde.
+
+**Si preguntan:** ¿DevOps es un equipo aparte?
+
+**Respuesta corta:** Es una práctica. Puede haber personas que la impulsen, pero funciona cuando desarrollo e infraestructura comparten el mismo camino y las mismas herramientas.
+
+**Para pasar:** “Empecemos por las dos herramientas que más se nombran: Docker y Kubernetes.”
+
+**Para leer más:** `docs/operaciones/infraestructura-y-entrega.md`
+
+### 29. Docker y Kubernetes: no compiten, se complementan
 
 **En pantalla · Dos maneras, lado a lado:**
 
@@ -1231,7 +1264,7 @@ Presenta: Infraestructura 1.
 
 **Qué decir**
 
-> Gracias. Docker y Kubernetes muchas veces se presentan como si uno reemplazara al otro, y no es así: no compiten, se complementan. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia y que corre igual en una laptop o en un servidor.
+> Docker y Kubernetes muchas veces se presentan como si uno reemplazara al otro, y no es así: no compiten, se complementan. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia y que corre igual en una laptop o en un servidor.
 >
 > **▶ clic** Kubernetes empieza donde termina Docker. No empaqueta nada: toma esas imágenes y las administra. Decide dónde corre cada contenedor, lo vigila y, si uno se cae, levanta otro.
 >
@@ -1251,11 +1284,11 @@ Presenta: Infraestructura 1.
 
 **Respuesta corta:** No. Para un sistema pequeño basta Docker Compose en un servidor. Kubernetes vale la pena cuando hay varios servicios, varias copias o hay que recuperarse solo.
 
-**Para pasar:** “Primero, cómo cada cambio se convierte en una imagen: el pipeline.”
+**Para pasar:** “Veamos cómo nace un contenedor.”
 
 **Para leer más:** `docs/operaciones/docker-y-compose.md`
 
-### 29. De código a contenedor
+### 30. De código a contenedor
 
 **En pantalla · Flujo paso a paso:**
 
@@ -1273,17 +1306,27 @@ Presenta: Infraestructura 1.
 
 **Código:** `servicio-solicitudes/Dockerfile`
 
+**Lo que se lleva el staff:** La receta queda escrita: cualquiera construye la misma imagen, en cualquier computadora.
+
 **Qué decir**
 
-> El Dockerfile es la receta. **▶ clic** La primera etapa trae Maven y compila. **▶ clic** La segunda solo lleva Java y el JAR, así la imagen final es más liviana.
+> Así nace un contenedor. Todo empieza en el Dockerfile, que es la receta: qué se instala y qué se copia. **▶ clic** En una primera etapa, Maven compila el código y produce el archivo JAR, que es la aplicación lista para correr.
 >
-> **▶ clic** Y corre con un usuario sin privilegios: si alguien comprometiera el proceso, no sería administrador del contenedor.
+> **▶ clic** En la segunda etapa se arma la imagen final, solo con Java y ese JAR: más liviana y sin herramientas de compilación. Una imagen es un paquete que no cambia: la misma que probamos es la que se despliega.
+>
+> **▶ clic** Cuando la imagen corre, se llama contenedor. El nuestro corre con un usuario sin privilegios: si alguien comprometiera la aplicación, no sería administrador del contenedor.
+
+**Si hay tiempo, se puede agregar**
+
+> La primera etapa descarga las dependencias de Maven en una capa aparte. Mientras el pom.xml no cambie, esa capa se reutiliza y las siguientes construcciones tardan mucho menos.
+>
+> Separar la compilación de la imagen final también es seguridad: la imagen que corre no lleva Maven ni el código fuente, solo lo necesario para ejecutar.
 
 **Para pasar:** “Un contenedor solo no es el sistema. Necesitamos levantarlos todos juntos.”
 
 **Para leer más:** `docs/operaciones/docker-y-compose.md`
 
-### 30. Todo el sistema con un comando
+### 31. Todo el sistema con un comando
 
 **En pantalla · Tarjetas:**
 
@@ -1318,13 +1361,62 @@ Presenta: Infraestructura 1.
 
 - Mostrar: docker compose ps Debe verse: La UI, los servicios y las bases arriba y sanos.
 
+**Si hay tiempo, se puede agregar**
+
+> Compose arranca las piezas en orden: primero las bases, y cada servicio espera a que su base esté sana antes de arrancar.
+>
+> La base de solicitudes no se publica hacia afuera; solo la ven los contenedores de la misma red. La de notificaciones sí, en el puerto 5433, para poder consultarla con cualquier herramienta.
+
 **Si preguntan:** Dentro de un contenedor, ¿a dónde lleva localhost?
 
 **Respuesta corta:** Al mismo contenedor, no a otro servicio. Por eso usamos el nombre del servicio.
 
-**Para pasar:** “Ahora, cómo cada cambio se convierte en una imagen: el pipeline.”
+**Para pasar:** “Y ese mismo comando también corre en la nube: Codespaces.”
 
-### 31. CI/CD: del push a la imagen publicada
+### 32. Sin instalar nada: GitHub Codespaces
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. Una rama: Code › Codespaces › Crear.
+- 2. Máquina en la nube: 4 núcleos y Docker adentro.
+- 3. levantar.sh: Construye y levanta los 8 contenedores.
+- 4. Puertos https: UI, Grafana y Swagger, privados.
+- 5. Demo: Desde el navegador.
+
+**Ideas clave:**
+
+- Se crea desde una rama del repositorio
+- Una máquina en la nube con Docker adentro
+- Un script construye y levanta los 8 contenedores
+- La UI, Grafana y Swagger se abren por https
+
+**Por qué importa:** Probar o mostrar el sistema no depende de la computadora de nadie ni de la red de la oficina.
+
+**Lo que se lleva el staff:** Cualquiera del equipo prueba o muestra el sistema desde un navegador, sin instalar nada.
+
+**Qué decir**
+
+> Una pieza que nos resolvió la demostración: GitHub Codespaces. Desde una rama del repositorio se crea una máquina en la nube lista para trabajar. **▶ clic** La configuración vive en el mismo repositorio, en la carpeta .devcontainer: pide cuatro núcleos y Docker adentro.
+>
+> **▶ clic** Al crearla, un script construye las imágenes y levanta los ocho contenedores, igual que en nuestra computadora. **▶ clic** Cada puerto queda publicado por https y privado para la cuenta que lo abrió: la interfaz, Grafana y los dos Swagger. **▶ clic** Y la demostración se hace desde el navegador.
+>
+> El valor: cualquiera del equipo puede probar o mostrar el sistema sin instalar nada y sin depender de la red de la oficina. Lo verificamos con la prueba de humo completa: siete de siete.
+
+**Si hay tiempo, se puede agregar**
+
+> La máquina publica cuatro puertos: la interfaz, Grafana y los dos Swagger. Un script escribe la dirección pública de cada puerto para que los enlaces de la interfaz también funcionen en la nube.
+>
+> Un Codespace sin uso se detiene solo a los treinta minutos, y se borra al terminar. Para el día de la presentación lo arrancamos quince minutos antes.
+
+**Si preguntan:** ¿Cuánto cuesta?
+
+**Respuesta corta:** GitHub lo cobra por horas de núcleo: esta máquina de 4 núcleos consume 4 por cada hora encendida. Se detiene al terminar y deja de consumir.
+
+**Para pasar:** “¿Y quién construye y publica las imágenes en cada cambio? El pipeline.”
+
+**Para leer más:** `docs/operaciones/codespaces.md`
+
+### 33. CI/CD: del push a la imagen publicada
 
 **En pantalla · Dos caminos, lado a lado:**
 
@@ -1368,54 +1460,57 @@ Presenta: Infraestructura 1.
 
 **Respuesta corta:** No: GitHub crea un PostgreSQL temporal para cada ejecución, con una clave distinta cada vez, y lo descarta al terminar.
 
-**Para pasar:** “Y para probar o mostrar todo esto sin instalar nada, usamos Codespaces.”
+**Para pasar:** “La imagen ya está publicada. Ahora, dónde corre: Kubernetes. Le paso la palabra a mi compañero.”
 
 **Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
 
-### 32. Sin instalar nada: GitHub Codespaces
+### 34. Cómo trabaja Kubernetes: del archivo al Pod
+
+**Presenta:** Infraestructura 2
 
 **En pantalla · Flujo paso a paso:**
 
-- 1. Una rama: Code › Codespaces › Crear.
-- 2. Máquina en la nube: 4 núcleos y Docker adentro.
-- 3. levantar.sh: Construye y levanta los 8 contenedores.
-- 4. Puertos https: UI, Grafana y Swagger, privados.
-- 5. Demo: Desde el navegador.
+- 1. Manifiesto YAML: Qué imagen, cuántas copias y qué variables.
+- 2. kubectl apply: Se lo entrega al clúster.
+- 3. Deployment: Crea los Pods con la imagen.
+- 4. Service: Un nombre fijo para encontrarlos.
+- 5. Ciclo de control: Compara lo que hay con lo pedido y corrige.
 
 **Ideas clave:**
 
-- Se crea desde una rama del repositorio
-- Una máquina en la nube con Docker adentro
-- Un script construye y levanta los 8 contenedores
-- La UI, Grafana y Swagger se abren por https
+- Escribimos el estado deseado en YAML
+- kubectl apply se lo entrega al clúster
+- El Deployment crea los Pods
+- El Service les da un nombre fijo
+- Kubernetes compara y corrige sin parar
 
-**Por qué importa:** Probar o mostrar el sistema no depende de la computadora de nadie ni de la red de la oficina.
+**Comparación:** Como un termostato: no le decimos cuándo prender el aire, le decimos la temperatura que queremos y él se encarga.
 
-**Lo que se lleva el staff:** Cualquiera del equipo prueba o muestra el sistema desde un navegador, sin instalar nada.
+**Lo que se lleva el staff:** El clúster se mantiene solo como lo describimos, sin intervención manual.
 
 **Qué decir**
 
-> Una pieza que nos resolvió la demostración: GitHub Codespaces. Desde una rama del repositorio se crea una máquina en la nube lista para trabajar. **▶ clic** La configuración vive en el mismo repositorio, en la carpeta .devcontainer: pide cuatro núcleos y Docker adentro.
+> Gracias. Para entender Kubernetes hay que cambiar el chip: no le damos órdenes paso a paso, le decimos cómo queremos que esté el sistema. Eso se escribe en un archivo YAML, un manifiesto: qué imagen usar, cuántas copias de cada servicio y qué variables recibe.
 >
-> **▶ clic** Al crearla, un script construye las imágenes y levanta los ocho contenedores, igual que en nuestra computadora. **▶ clic** Cada puerto queda publicado por https y privado para la cuenta que lo abrió: la interfaz, Grafana y los dos Swagger. **▶ clic** Y la demostración se hace desde el navegador.
+> **▶ clic** Con kubectl apply, ese archivo se le entrega al clúster. **▶ clic** El Deployment lee el manifiesto y crea los Pods, que son donde corren los contenedores. **▶ clic** El Service les da un nombre fijo, para que los demás los encuentren aunque un Pod se reemplace.
 >
-> El valor: cualquiera del equipo puede probar o mostrar el sistema sin instalar nada y sin depender de la red de la oficina. Lo verificamos con la prueba de humo completa: siete de siete.
+> **▶ clic** Y lo más importante: Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Si falta algo, lo crea; si sobra, lo quita. A eso se le llama ciclo de control, y es lo que hace que el sistema se repare solo.
 
 **Si hay tiempo, se puede agregar**
 
-> La máquina publica cuatro puertos: la interfaz, Grafana y los dos Swagger. Un script escribe la dirección pública de cada puerto para que los enlaces de la interfaz también funcionen en la nube.
+> Todos los manifiestos de ARKA-Lite están en la carpeta k8s del repositorio: cinco archivos, uno por componente, con su Deployment, su Service y, en las bases, su disco persistente.
 >
-> Un Codespace sin uso se detiene solo a los treinta minutos, y se borra al terminar. Para el día de la presentación lo arrancamos quince minutos antes.
+> Como el estado deseado está en archivos versionados, reconstruir el sistema completo en otro clúster es volver a aplicar esos archivos.
 
-**Si preguntan:** ¿Cuánto cuesta?
+**Si preguntan:** ¿Qué pasa si alguien cambia algo a mano en el clúster?
 
-**Respuesta corta:** GitHub lo cobra por horas de núcleo: esta máquina de 4 núcleos consume 4 por cada hora encendida. Se detiene al terminar y deja de consumir.
+**Respuesta corta:** El ciclo de control lo devuelve a lo que dice el manifiesto. Por eso los cambios se hacen en el archivo, versionado en el repositorio, y no a mano.
 
-**Para pasar:** “Ahora, el clúster: qué piezas de Kubernetes usamos. Le paso la palabra a mi compañero.”
+**Para pasar:** “Veamos las piezas que usamos en ARKA-Lite.”
 
-**Para leer más:** `docs/operaciones/codespaces.md`
+**Para leer más:** `docs/operaciones/kubernetes-local.md`
 
-### 33. Los recursos de Kubernetes
+### 35. Los recursos de Kubernetes
 
 **Presenta:** Infraestructura 2
 
@@ -1439,7 +1534,7 @@ Presenta: Infraestructura 1.
 
 **Qué decir**
 
-> Gracias. En Kubernetes no damos órdenes paso a paso: describimos en archivos YAML cómo queremos que esté el sistema, y Kubernetes lo mantiene así. Arriba, el acceso: un Service le da a cada componente un nombre fijo, para que los demás lo encuentren aunque el contenedor cambie.
+> Estas son las piezas que usamos en ARKA-Lite. Arriba, el acceso: un Service le da a cada componente un nombre fijo, para que los demás lo encuentren aunque el contenedor cambie.
 >
 > **▶ clic** Luego, el cómputo: un Deployment por componente, cinco en total, que dice cuántas copias queremos. Antes de arrancar, cada servicio espera a que su base responda, y una prueba de salud evita mandarle tráfico antes de tiempo.
 >
@@ -1459,7 +1554,7 @@ Presenta: Infraestructura 1.
 
 **Para leer más:** `docs/operaciones/kubernetes-local.md`
 
-### 34. Cuando un Pod se cae
+### 36. Cuando un Pod se cae
 
 **Presenta:** Infraestructura 2
 
@@ -1483,7 +1578,7 @@ Presenta: Infraestructura 1.
 
 **Qué decir**
 
-> Kubernetes funciona como un termostato: no le decimos qué hacer paso a paso, le decimos el estado que queremos, por ejemplo una copia de cada servicio, y él lo mantiene. Veamos qué pasa si se cae el Pod de solicitudes.
+> Ya vimos que Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Veamos qué pasa cuando se cae el Pod de solicitudes, por un error, porque se reinició el servidor o porque alguien lo borró.
 >
 > **▶ clic** En el mismo instante, el Deployment detecta que falta una copia. **▶ clic** En un segundo, crea un Pod nuevo con la misma imagen. **▶ clic** El Pod nuevo espera a que su base y notificaciones respondan, **▶ clic** y solo cuando su prueba de salud contesta, vuelve a recibir tráfico.
 >
@@ -1505,7 +1600,7 @@ Presenta: Infraestructura 1.
 
 **Para pasar:** “Esto es lo que aprendimos de DevOps.”
 
-### 35. DevOps: lo que aprendimos
+### 37. DevOps: lo que aprendimos
 
 **Presenta:** Infraestructura 2
 
@@ -1543,7 +1638,7 @@ Presenta: Infraestructura 1.
 
 Presenta: Infraestructura 2.
 
-### 36. Todos los logs, en un solo lugar
+### 38. Todos los logs, en un solo lugar
 
 **En pantalla · Flujo paso a paso:**
 
@@ -1583,7 +1678,7 @@ Presenta: Infraestructura 2.
 
 **Para leer más:** `docs/operaciones/observabilidad.md`
 
-### 37. Salud de cada servicio
+### 39. Salud de cada servicio
 
 **En pantalla · Capturas reales:**
 
@@ -1608,7 +1703,7 @@ Presenta: Infraestructura 2.
 
 **Para pasar:** “Esto es lo que aprendimos de la observabilidad.”
 
-### 38. Observabilidad: lo que aprendimos
+### 40. Observabilidad: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1638,9 +1733,9 @@ Presenta: Infraestructura 2.
 
 ## 7 · Demostración con la UI · en vivo
 
-Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
+Presenta: Desarrollo 2.
 
-### 39. La UI: lo que contamos, en vivo
+### 41. La UI: lo que contamos, en vivo
 
 **En pantalla · Capturas reales:**
 
@@ -1682,7 +1777,7 @@ Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
 
 **Para leer más:** `arka-lite-ui/README.md`
 
-### 40. En vivo: si notificaciones se cae
+### 42. En vivo: si notificaciones se cae
 
 **En pantalla · Qué pasa cuando falla:**
 
@@ -1731,7 +1826,7 @@ Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
 
 **Para pasar:** “Esto es lo que aprendimos de la demostración.”
 
-### 41. Cómo se comporta cuando algo falla
+### 43. Cómo se comporta cuando algo falla
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -1760,7 +1855,7 @@ Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
 
 **Para pasar:** “Esto es lo que aprendimos de la demostración.”
 
-### 42. Demostración: lo que aprendimos
+### 44. Demostración: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1790,9 +1885,9 @@ Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
 
 ## Valor y cierre
 
-Presenta: Orquestador.
+Presenta: Desarrollo 1 · orquesta.
 
-### 43. El valor agregado
+### 45. El valor agregado
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -1824,7 +1919,7 @@ Presenta: Orquestador.
 
 **Para pasar:** “Y lo más importante: qué pueden aplicar ustedes desde mañana.”
 
-### 44. Lo que pueden aplicar desde mañana
+### 46. Lo que pueden aplicar desde mañana
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -1864,7 +1959,7 @@ Presenta: Orquestador.
 
 **Para pasar:** “Si nos llevamos solo tres ideas, que sean estas.”
 
-### 45. Lo que nos llevamos
+### 47. Lo que nos llevamos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1892,7 +1987,7 @@ Presenta: Orquestador.
 
 **Para pasar:** “Gracias por su atención.”
 
-### 46. Gracias
+### 48. Gracias
 
 **En pantalla:**
 

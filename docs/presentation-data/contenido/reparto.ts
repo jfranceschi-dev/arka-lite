@@ -2,9 +2,9 @@ import type { Lamina } from "./index.ts";
 import type { Rol } from "./tipos.ts";
 
 // Quién presenta qué. Cada lámina tiene un papel (el de su sección o uno
-// propio); cada división del equipo asigna los papeles a personas. Hay dos
-// divisiones porque el equipo puede ser de 8 (cinco de desarrollo) o de 7
-// (cuatro de desarrollo, si una persona no está).
+// propio), y la división del equipo asigna los papeles a personas: 7 personas,
+// 4 de desarrollo (una de ellas orquesta), 1 de base de datos y 2 de
+// infraestructura.
 
 // El nombre del equipo: va en la portada y en el cierre.
 export const NOMBRE_EQUIPO = "Equipo arka-litos";
@@ -14,10 +14,10 @@ export const NOMBRE_ROL: Record<Rol, string> = {
   fundamentos: "Fundamentos",
   arquitectura: "Arquitectura",
   bd: "Base de datos",
-  orm: "El ORM por dentro",
+  orm: "Apoyo en base de datos: la misma regla, el ORM y la conexión",
   interconexion: "Interconexión de servicios",
-  plataforma: "Docker, CI/CD y Codespaces",
-  operacion: "Kubernetes, autocuración y observabilidad",
+  plataforma: "DevOps: construir y entregar (Docker, Compose, Codespaces y CI/CD)",
+  operacion: "DevOps: operar y observar (Kubernetes y observabilidad)",
   demostracion: "Demostración con la UI",
 };
 
@@ -34,36 +34,19 @@ export interface Division {
   personas: Persona[];
 }
 
-const comunes: Persona[] = [
-  { nombre: "Base de datos", area: "Base de datos", roles: ["bd"] },
-  { nombre: "Infraestructura 1", area: "Infraestructura", roles: ["plataforma"] },
-  { nombre: "Infraestructura 2", area: "Infraestructura", roles: ["operacion"] },
-];
-
 export const DIVISIONES: Division[] = [
-  {
-    id: "8-personas",
-    titulo: "8 personas",
-    cuando: "Si estamos los cinco de desarrollo.",
-    personas: [
-      { nombre: "Orquestador", area: "Desarrollo", roles: ["orquestador"] },
-      { nombre: "Desarrollo 2", area: "Desarrollo", roles: ["fundamentos"] },
-      { nombre: "Desarrollo 3", area: "Desarrollo", roles: ["arquitectura"] },
-      { nombre: "Desarrollo 4", area: "Desarrollo", roles: ["orm", "demostracion"] },
-      { nombre: "Desarrollo 5", area: "Desarrollo", roles: ["interconexion"] },
-      ...comunes,
-    ],
-  },
   {
     id: "7-personas",
     titulo: "7 personas",
-    cuando: "Si somos cuatro de desarrollo: fundamentos y arquitectura, las dos partes en vista general, quedan en una sola persona.",
+    cuando: "Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infraestructura. En base de datos, una persona de desarrollo apoya con la parte de código.",
     personas: [
-      { nombre: "Orquestador", area: "Desarrollo", roles: ["orquestador"] },
-      { nombre: "Desarrollo 2", area: "Desarrollo", roles: ["fundamentos", "arquitectura"] },
-      { nombre: "Desarrollo 3", area: "Desarrollo", roles: ["orm", "demostracion"] },
+      { nombre: "Desarrollo 1 · orquesta", area: "Desarrollo", roles: ["orquestador", "fundamentos"] },
+      { nombre: "Desarrollo 2", area: "Desarrollo", roles: ["arquitectura", "demostracion"] },
+      { nombre: "Desarrollo 3", area: "Desarrollo", roles: ["orm"] },
       { nombre: "Desarrollo 4", area: "Desarrollo", roles: ["interconexion"] },
-      ...comunes,
+      { nombre: "Base de datos", area: "Base de datos", roles: ["bd"] },
+      { nombre: "Infraestructura 1", area: "Infraestructura", roles: ["plataforma"] },
+      { nombre: "Infraestructura 2", area: "Infraestructura", roles: ["operacion"] },
     ],
   },
 ];
@@ -78,8 +61,7 @@ export function personaCon(division: Division, rol: Rol): Persona {
   return p;
 }
 
-// "Desarrollo 3 (8 personas) · Desarrollo 2 (7 personas)", o un solo nombre
-// si coincide en las dos divisiones.
+// El nombre de quien presenta; si hubiera varias divisiones, uno por división.
 export function quienPresenta(rol: Rol): string {
   const nombres = DIVISIONES.map((d) => personaCon(d, rol).nombre);
   if (nombres.every((n) => n === nombres[0])) return nombres[0];

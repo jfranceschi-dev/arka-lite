@@ -363,8 +363,14 @@ function tuberia(s: Slide, c: Caja, etapas: ElementoVisual[]) {
   const n = etapas.length;
   const solape = 0.18;
   const w = (c.w + solape * (n - 1)) / n;
-  const h = Math.min(1.9, c.h * 0.45);
+  // Con muchas etapas las flechas son angostas: más bajas, la muesca es menor
+  // y el título cabe más grande.
+  const h = Math.min(1.9, c.h * 0.45, w * 0.8);
   const y = c.y + Math.max(0.2, (c.h - h - 1.2) / 2);
+  // Todos los títulos con el mismo tamaño: el que le cabe al más largo.
+  const muescaT = Math.min(w, h) * 0.5;
+  const anchoTitulo = w - muescaT * 0.8 - muescaT * 0.35;
+  const tamTitulo = Math.min(...etapas.map((e) => tamQueCabe(e.titulo, anchoTitulo, 0.42, 16, 9, true)));
   etapas.forEach((e, i) => {
     fijarPaso(i);
     const x = c.x + i * (w - solape);
@@ -376,7 +382,7 @@ function tuberia(s: Slide, c: Caja, etapas: ElementoVisual[]) {
     const x1 = x + w - muesca * 0.35;
     const ti = Math.min(0.62, h * 0.34);
     icono(s, e.icono, (x0 + x1) / 2 - ti / 2, y + h * 0.18, ti, "#FFFFFF");
-    texto(s, e.titulo, { x: x0, y: y + h * 0.18 + ti + 0.1, w: x1 - x0, h: 0.42 }, { tam: 16, negrita: true, color: "#FFFFFF", alinear: "center", fuente: TITULO });
+    texto(s, e.titulo, { x: x0, y: y + h * 0.18 + ti + 0.1, w: x1 - x0, h: 0.42 }, { tam: tamTitulo, negrita: true, color: "#FFFFFF", alinear: "center", fuente: TITULO });
     if (e.texto) texto(s, e.texto, { x: x + 0.12, y: y + h + 0.22, w: w - 0.24, h: Math.min(1.0, c.h - h - 0.3) }, { tam: 14, color: color.secundario, alinear: "center" });
     if (e.texto) s.addShape("line", { x: x + w / 2 - 0.05, y: y + h + 0.06, w: 0, h: 0.12, line: { color: hex(fondo), width: 2 } });
   });

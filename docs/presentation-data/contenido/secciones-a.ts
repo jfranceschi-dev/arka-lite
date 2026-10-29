@@ -101,7 +101,7 @@ export const fundamentos: Seccion = {
           "[clic] Igual de importante es lo que no se permite: enviar dos veces la misma solicitud, o aprobar una que todavía nadie ha enviado. El sistema no lo hace y explica por qué. Esas son las reglas del negocio, y con ellas claras, el código salió simple: un servicio para las solicitudes y otro para los avisos.",
         ],
         preguntas: [{ texto: "¿Por qué los avisos van en otro servicio?", respuesta: "Porque cambian por motivos distintos, y así el trámite sigue funcionando aunque el servicio de avisos esté caído." }],
-        transicion: "Con el qué claro, el cómo: código que se pueda cambiar sin miedo. Le paso la palabra a mi compañero.",
+        transicion: "Con el qué claro, el cómo: código que se pueda cambiar sin miedo.",
         respaldo: "docs/inicio/proyecto.md",
       },
     },
@@ -131,7 +131,7 @@ export const fundamentos: Seccion = {
       },
       guion: {
         decir: [
-          "Gracias. Con el qué claro, viene el cómo. El equipo anterior ya cubrió los fundamentos, así que nos quedamos con seis prácticas que nos sirvieron y que se pueden usar en cualquier lenguaje, sea Java, C#, Python o PL/SQL. Primera: cada pieza hace una sola tarea; la que recibe la petición no decide, y la que decide no guarda.",
+          "Con el qué claro, viene el cómo. El equipo anterior ya cubrió los fundamentos, así que nos quedamos con seis prácticas que nos sirvieron y que se pueden usar en cualquier lenguaje, sea Java, C#, Python o PL/SQL. Primera: cada pieza hace una sola tarea; la que recibe la petición no decide, y la que decide no guarda.",
           "[clic] Segunda: las piezas se conectan desde afuera, así se pueden cambiar o probar por separado. [clic] Tercera: las reglas del negocio viven en un solo lugar, no repetidas en la pantalla y en la base. [clic] Cuarta: los errores responden siempre igual: un 400 si faltan datos, un 404 si algo no existe, un 409 si la regla no lo permite.",
           "[clic] Quinta: los nombres son los del negocio, así el código se lee como el proceso. [clic] Y sexta: cada regla tiene una prueba automática que avisa si un cambio rompió algo. El resultado: cuando cambia una regla, se toca un solo lugar.",
         ],

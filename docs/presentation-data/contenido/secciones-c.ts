@@ -15,6 +15,36 @@ export const devops: Seccion = {
   rol: "plataforma",
   diapositivas: [
     {
+      id: "s05-devops",
+      titulo: "¿Qué es DevOps? Del código a la operación",
+      idea: "No es una herramienta: es un solo camino, automático y repetible, del código a producción y de vuelta.",
+      visible: ["El código entra por ramas y Pull Request", "Se construye y se prueba solo, en cada cambio", "Se empaqueta en una imagen y se publica", "Se despliega y se opera en Kubernetes", "Se observa, y lo aprendido vuelve al código"],
+      valor: "Un camino único y automático del código a producción: menos pasos manuales y menos errores.",
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "tuberia",
+        etapas: [
+          { icono: "git-branch", titulo: "Código", texto: "Ramas y Pull Request." },
+          { icono: "settings", titulo: "Construir", texto: "Maven compila." },
+          { icono: "flask-conical", titulo: "Probar", texto: "En cada cambio." },
+          { icono: "package", titulo: "Imagen", texto: "Docker la empaqueta." },
+          { icono: "cloud-upload", titulo: "Publicar", texto: "En GHCR." },
+          { icono: "ship-wheel", titulo: "Operar", texto: "Kubernetes la despliega." },
+          { icono: "chart-line", titulo: "Observar", texto: "Loki y Grafana." },
+        ],
+      },
+      guion: {
+        decir: [
+          "Gracias. DevOps no es una herramienta ni un puesto: es una forma de trabajar en la que desarrollo y operación dejan de ser dos mundos separados. Todo cambio recorre el mismo camino, de forma automática y repetible. Empieza en el código, en una rama con su Pull Request.",
+          "[clic] Se construye, [clic] y se prueba solo, en cada cambio. [clic] Se empaqueta en una imagen Docker [clic] que se publica en un registro. [clic] Esa imagen se despliega y se opera en Kubernetes, [clic] y lo que pasa adentro se observa con los logs en un solo lugar. Lo que aprendemos al observar vuelve al código, y el ciclo empieza otra vez.",
+          "En las próximas láminas recorremos ese camino con ARKA-Lite, pieza por pieza: primero Docker y Kubernetes, después el pipeline, y al final cómo se opera.",
+        ],
+        preguntas: [{ texto: "¿DevOps es un equipo aparte?", respuesta: "Es una práctica. Puede haber personas que la impulsen, pero funciona cuando desarrollo e infraestructura comparten el mismo camino y las mismas herramientas." }],
+        transicion: "Empecemos por las dos herramientas que más se nombran: Docker y Kubernetes.",
+        respaldo: "docs/operaciones/infraestructura-y-entrega.md",
+      },
+    },
+    {
       id: "s05-complemento",
       titulo: "Docker y Kubernetes: no compiten, se complementan",
       idea: "Docker construye la caja; Kubernetes la pone a correr y la cuida.",
@@ -33,7 +63,7 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "Gracias. Docker y Kubernetes muchas veces se presentan como si uno reemplazara al otro, y no es así: no compiten, se complementan. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia y que corre igual en una laptop o en un servidor.",
+          "Docker y Kubernetes muchas veces se presentan como si uno reemplazara al otro, y no es así: no compiten, se complementan. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia y que corre igual en una laptop o en un servidor.",
           "[clic] Kubernetes empieza donde termina Docker. No empaqueta nada: toma esas imágenes y las administra. Decide dónde corre cada contenedor, lo vigila y, si uno se cae, levanta otro.",
           "Piénsenlo como el transporte de carga: Docker es el contenedor estándar y Kubernetes es el puerto que los acomoda y reemplaza el que se daña. En nuestra computadora, Docker Compose levanta los ocho contenedores del sistema con un solo comando; en el clúster, esas mismas imágenes las administra Kubernetes, sin recompilar nada.",
         ],
@@ -41,7 +71,7 @@ export const devops: Seccion = {
           { texto: "¿Docker es una máquina virtual?", respuesta: "No. Es más liviano: comparte el sistema operativo y solo aísla la aplicación y lo que necesita." },
           { texto: "¿Necesitamos Kubernetes para todo?", respuesta: "No. Para un sistema pequeño basta Docker Compose en un servidor. Kubernetes vale la pena cuando hay varios servicios, varias copias o hay que recuperarse solo." },
         ],
-        transicion: "Primero, cómo cada cambio se convierte en una imagen: el pipeline.",
+        transicion: "Veamos cómo nace un contenedor.",
         respaldo: "docs/operaciones/docker-y-compose.md",
       },
     },
@@ -50,7 +80,8 @@ export const devops: Seccion = {
       titulo: "De código a contenedor",
       idea: "Una receta que da el mismo resultado en cualquier computadora.",
       visible: ["Dockerfile: la receta", "Etapa build: compila con Maven", "Imagen: solo Java y el JAR", "Contenedor: corre sin privilegios"],
-      recorridos: ["tecnico"],
+      valor: "La receta queda escrita: cualquiera construye la misma imagen, en cualquier computadora.",
+      recorridos: ["ejecutivo", "tecnico"],
       visual: {
         tipo: "flujo",
         pasos: [
@@ -67,8 +98,9 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "El Dockerfile es la receta. [clic] La primera etapa trae Maven y compila. [clic] La segunda solo lleva Java y el JAR, así la imagen final es más liviana.",
-          "[clic] Y corre con un usuario sin privilegios: si alguien comprometiera el proceso, no sería administrador del contenedor.",
+          "Así nace un contenedor. Todo empieza en el Dockerfile, que es la receta: qué se instala y qué se copia. [clic] En una primera etapa, Maven compila el código y produce el archivo JAR, que es la aplicación lista para correr.",
+          "[clic] En la segunda etapa se arma la imagen final, solo con Java y ese JAR: más liviana y sin herramientas de compilación. Una imagen es un paquete que no cambia: la misma que probamos es la que se despliega.",
+          "[clic] Cuando la imagen corre, se llama contenedor. El nuestro corre con un usuario sin privilegios: si alguien comprometiera la aplicación, no sería administrador del contenedor.",
         ],
         transicion: "Un contenedor solo no es el sistema. Necesitamos levantarlos todos juntos.",
         respaldo: "docs/operaciones/docker-y-compose.md",
@@ -80,7 +112,7 @@ export const devops: Seccion = {
       idea: "Ocho contenedores, una red y la configuración por variables de entorno.",
       visible: ["Servicios, bases, UI y logs en un archivo", "Cada servicio se llama por su nombre", "La configuración entra por variables", "La misma imagen sirve en Compose y en Kubernetes"],
       valor: "Una persona nueva levanta el sistema completo en minutos, no en un día.",
-      recorridos: ["tecnico"],
+      recorridos: ["ejecutivo", "tecnico"],
       visual: {
         tipo: "tarjetas",
         comando: "docker compose up --build -d",
@@ -104,7 +136,36 @@ export const devops: Seccion = {
         ],
         demo: { accion: "docker compose ps", evidencia: "La UI, los servicios y las bases arriba y sanos." },
         preguntas: [{ texto: "Dentro de un contenedor, ¿a dónde lleva localhost?", respuesta: "Al mismo contenedor, no a otro servicio. Por eso usamos el nombre del servicio." }],
-        transicion: "Ahora, cómo cada cambio se convierte en una imagen: el pipeline.",
+        transicion: "Y ese mismo comando también corre en la nube: Codespaces.",
+      },
+    },
+    {
+      id: "s05-codespaces",
+      titulo: "Sin instalar nada: GitHub Codespaces",
+      idea: "El sistema completo, levantado en la nube desde una rama: así hacemos la demostración.",
+      visible: ["Se crea desde una rama del repositorio", "Una máquina en la nube con Docker adentro", "Un script construye y levanta los 8 contenedores", "La UI, Grafana y Swagger se abren por https"],
+      porque: "Probar o mostrar el sistema no depende de la computadora de nadie ni de la red de la oficina.",
+      valor: "Cualquiera del equipo prueba o muestra el sistema desde un navegador, sin instalar nada.",
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "git-branch", titulo: "Una rama", texto: "Code › Codespaces › Crear.", tono: "marino" },
+          { icono: "cloud", titulo: "Máquina en la nube", texto: "4 núcleos y Docker adentro.", tono: "marino" },
+          { icono: "container", titulo: "levantar.sh", texto: "Construye y levanta los 8 contenedores.", tono: "cian" },
+          { icono: "globe", titulo: "Puertos https", texto: "UI, Grafana y Swagger, privados.", tono: "cian" },
+          { icono: "monitor", titulo: "Demo", texto: "Desde el navegador.", tono: "correcto" },
+        ],
+      },
+      guion: {
+        decir: [
+          "Una pieza que nos resolvió la demostración: GitHub Codespaces. Desde una rama del repositorio se crea una máquina en la nube lista para trabajar. [clic] La configuración vive en el mismo repositorio, en la carpeta .devcontainer: pide cuatro núcleos y Docker adentro.",
+          "[clic] Al crearla, un script construye las imágenes y levanta los ocho contenedores, igual que en nuestra computadora. [clic] Cada puerto queda publicado por https y privado para la cuenta que lo abrió: la interfaz, Grafana y los dos Swagger. [clic] Y la demostración se hace desde el navegador.",
+          "El valor: cualquiera del equipo puede probar o mostrar el sistema sin instalar nada y sin depender de la red de la oficina. Lo verificamos con la prueba de humo completa: siete de siete.",
+        ],
+        preguntas: [{ texto: "¿Cuánto cuesta?", respuesta: "GitHub lo cobra por horas de núcleo: esta máquina de 4 núcleos consume 4 por cada hora encendida. Se detiene al terminar y deja de consumir." }],
+        transicion: "¿Y quién construye y publica las imágenes en cada cambio? El pipeline.",
+        respaldo: "docs/operaciones/codespaces.md",
       },
     },
     {
@@ -164,37 +225,39 @@ export const devops: Seccion = {
           { texto: "¿Por qué no se despliega solo?", respuesta: "Porque es un laboratorio con un clúster local. En un ambiente real se agrega un paso de despliegue con aprobación, o una herramienta que aplica en el clúster lo que está en main." },
           { texto: "¿Las pruebas usan la base real?", respuesta: "No: GitHub crea un PostgreSQL temporal para cada ejecución, con una clave distinta cada vez, y lo descarta al terminar." },
         ],
-        transicion: "Y para probar o mostrar todo esto sin instalar nada, usamos Codespaces.",
+        transicion: "La imagen ya está publicada. Ahora, dónde corre: Kubernetes. Le paso la palabra a mi compañero.",
         respaldo: "docs/automatizacion/ci-yaml-paso-a-paso.md",
       },
     },
     {
-      id: "s05-codespaces",
-      titulo: "Sin instalar nada: GitHub Codespaces",
-      idea: "El sistema completo, levantado en la nube desde una rama: así hacemos la demostración.",
-      visible: ["Se crea desde una rama del repositorio", "Una máquina en la nube con Docker adentro", "Un script construye y levanta los 8 contenedores", "La UI, Grafana y Swagger se abren por https"],
-      porque: "Probar o mostrar el sistema no depende de la computadora de nadie ni de la red de la oficina.",
-      valor: "Cualquiera del equipo prueba o muestra el sistema desde un navegador, sin instalar nada.",
+      id: "s05-k8s-como",
+      titulo: "Cómo trabaja Kubernetes: del archivo al Pod",
+      idea: "Describimos en un archivo cómo queremos el sistema; Kubernetes hace lo necesario para que así sea, todo el tiempo.",
+      visible: ["Escribimos el estado deseado en YAML", "kubectl apply se lo entrega al clúster", "El Deployment crea los Pods", "El Service les da un nombre fijo", "Kubernetes compara y corrige sin parar"],
+      comparacion: "Como un termostato: no le decimos cuándo prender el aire, le decimos la temperatura que queremos y él se encarga.",
+      iconoComparacion: "thermometer",
+      valor: "El clúster se mantiene solo como lo describimos, sin intervención manual.",
+      rol: "operacion",
       recorridos: ["ejecutivo", "tecnico"],
       visual: {
         tipo: "flujo",
         pasos: [
-          { icono: "git-branch", titulo: "Una rama", texto: "Code › Codespaces › Crear.", tono: "marino" },
-          { icono: "cloud", titulo: "Máquina en la nube", texto: "4 núcleos y Docker adentro.", tono: "marino" },
-          { icono: "container", titulo: "levantar.sh", texto: "Construye y levanta los 8 contenedores.", tono: "cian" },
-          { icono: "globe", titulo: "Puertos https", texto: "UI, Grafana y Swagger, privados.", tono: "cian" },
-          { icono: "monitor", titulo: "Demo", texto: "Desde el navegador.", tono: "correcto" },
+          { icono: "file-code", titulo: "Manifiesto YAML", texto: "Qué imagen, cuántas copias y qué variables.", tono: "marino" },
+          { icono: "terminal", titulo: "kubectl apply", texto: "Se lo entrega al clúster.", tono: "marino" },
+          { icono: "layers", titulo: "Deployment", texto: "Crea los Pods con la imagen.", tono: "cian" },
+          { icono: "network", titulo: "Service", texto: "Un nombre fijo para encontrarlos.", tono: "cian" },
+          { icono: "refresh-cw", titulo: "Ciclo de control", texto: "Compara lo que hay con lo pedido y corrige.", tono: "correcto" },
         ],
       },
       guion: {
         decir: [
-          "Una pieza que nos resolvió la demostración: GitHub Codespaces. Desde una rama del repositorio se crea una máquina en la nube lista para trabajar. [clic] La configuración vive en el mismo repositorio, en la carpeta .devcontainer: pide cuatro núcleos y Docker adentro.",
-          "[clic] Al crearla, un script construye las imágenes y levanta los ocho contenedores, igual que en nuestra computadora. [clic] Cada puerto queda publicado por https y privado para la cuenta que lo abrió: la interfaz, Grafana y los dos Swagger. [clic] Y la demostración se hace desde el navegador.",
-          "El valor: cualquiera del equipo puede probar o mostrar el sistema sin instalar nada y sin depender de la red de la oficina. Lo verificamos con la prueba de humo completa: siete de siete.",
+          "Gracias. Para entender Kubernetes hay que cambiar el chip: no le damos órdenes paso a paso, le decimos cómo queremos que esté el sistema. Eso se escribe en un archivo YAML, un manifiesto: qué imagen usar, cuántas copias de cada servicio y qué variables recibe.",
+          "[clic] Con kubectl apply, ese archivo se le entrega al clúster. [clic] El Deployment lee el manifiesto y crea los Pods, que son donde corren los contenedores. [clic] El Service les da un nombre fijo, para que los demás los encuentren aunque un Pod se reemplace.",
+          "[clic] Y lo más importante: Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Si falta algo, lo crea; si sobra, lo quita. A eso se le llama ciclo de control, y es lo que hace que el sistema se repare solo.",
         ],
-        preguntas: [{ texto: "¿Cuánto cuesta?", respuesta: "GitHub lo cobra por horas de núcleo: esta máquina de 4 núcleos consume 4 por cada hora encendida. Se detiene al terminar y deja de consumir." }],
-        transicion: "Ahora, el clúster: qué piezas de Kubernetes usamos. Le paso la palabra a mi compañero.",
-        respaldo: "docs/operaciones/codespaces.md",
+        preguntas: [{ texto: "¿Qué pasa si alguien cambia algo a mano en el clúster?", respuesta: "El ciclo de control lo devuelve a lo que dice el manifiesto. Por eso los cambios se hacen en el archivo, versionado en el repositorio, y no a mano." }],
+        transicion: "Veamos las piezas que usamos en ARKA-Lite.",
+        respaldo: "docs/operaciones/kubernetes-local.md",
       },
     },
     {
@@ -229,7 +292,7 @@ export const devops: Seccion = {
       codigo: { lenguaje: "bash", archivo: "despliegue local", texto: "bash construir.sh           # imágenes de los 3 componentes\nkubectl apply -f k8s/\nkubectl get pods,svc,pvc\nkubectl port-forward svc/arka-lite-ui 8088:8080" },
       guion: {
         decir: [
-          "Gracias. En Kubernetes no damos órdenes paso a paso: describimos en archivos YAML cómo queremos que esté el sistema, y Kubernetes lo mantiene así. Arriba, el acceso: un Service le da a cada componente un nombre fijo, para que los demás lo encuentren aunque el contenedor cambie.",
+          "Estas son las piezas que usamos en ARKA-Lite. Arriba, el acceso: un Service le da a cada componente un nombre fijo, para que los demás lo encuentren aunque el contenedor cambie.",
           "[clic] Luego, el cómputo: un Deployment por componente, cinco en total, que dice cuántas copias queremos. Antes de arrancar, cada servicio espera a que su base responda, y una prueba de salud evita mandarle tráfico antes de tiempo.",
           "[clic] La configuración: la clave de la base en un Secret, como vimos en la parte de datos, y el resto en variables de entorno. [clic] Y los datos: cada base tiene su disco persistente, que sobrevive aunque el Pod se recree. Todo se aplica con un solo comando: kubectl apply sobre la carpeta k8s.",
         ],
@@ -259,7 +322,7 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "Kubernetes funciona como un termostato: no le decimos qué hacer paso a paso, le decimos el estado que queremos, por ejemplo una copia de cada servicio, y él lo mantiene. Veamos qué pasa si se cae el Pod de solicitudes.",
+          "Ya vimos que Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Veamos qué pasa cuando se cae el Pod de solicitudes, por un error, porque se reinició el servidor o porque alguien lo borró.",
           "[clic] En el mismo instante, el Deployment detecta que falta una copia. [clic] En un segundo, crea un Pod nuevo con la misma imagen. [clic] El Pod nuevo espera a que su base y notificaciones respondan, [clic] y solo cuando su prueba de salud contesta, vuelve a recibir tráfico.",
           "[clic] Nadie intervino. Y como los avisos pendientes están en la base, no en memoria, nada se pierde mientras tanto. Aquí se juntan las tres partes que vimos a fondo: la base guarda, el Outbox espera y Kubernetes repara.",
         ],

@@ -29,7 +29,7 @@ describe("fuente de contenido", () => {
     expect(resumen.filter((id) => !ejecutivo.includes(id))).toEqual([]);
     expect(ejecutivo.filter((id) => !tecnico.has(id))).toEqual([]);
     expect(resumen.length).toBeLessThanOrEqual(20);
-    expect(ejecutivo.length).toBeLessThanOrEqual(40);
+    expect(ejecutivo.length).toBeLessThanOrEqual(45);
   });
 
   it("cada parte numerada termina con sus aprendizajes", () => {
@@ -52,8 +52,8 @@ describe("fuente de contenido", () => {
     }
   });
 
-  it("reparte cada lámina en las dos divisiones: 8 y 7 personas", () => {
-    expect(DIVISIONES.map((d) => d.personas.length)).toEqual([8, 7]);
+  it("reparte cada lámina entre 7 personas: 4 de desarrollo, 1 de base de datos y 2 de infraestructura", () => {
+    expect(DIVISIONES.map((d) => d.personas.length)).toEqual([7]);
     for (const d of DIVISIONES) {
       expect(d.personas.filter((p) => p.area === "Desarrollo").length).toBe(d.personas.length - 3);
       for (const l of laminas("tecnico")) expect(() => personaCon(d, rolDe(l))).not.toThrow();
