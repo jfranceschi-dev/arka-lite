@@ -9,7 +9,7 @@ export const devops: Seccion = {
   titulo: "DevOps: Docker y Kubernetes",
   corto: "DevOps",
   subtitulo: "Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio.",
-  temas: ["Docker y Compose", "Kubernetes", "CI/CD con GitHub Actions"],
+  temas: ["Docker y Compose", "CI/CD con GitHub Actions", "Kubernetes"],
   icono: "container",
   enfoque: "fondo",
   rol: "plataforma",
@@ -37,7 +37,7 @@ export const devops: Seccion = {
         decir: [
           "Gracias. DevOps no es una herramienta ni un puesto: es una forma de trabajar en la que desarrollo y operación dejan de ser dos mundos separados. Todo cambio recorre el mismo camino, de forma automática y repetible. Empieza en el código, en una rama con su Pull Request.",
           "[clic] Se construye, [clic] y se prueba solo, en cada cambio. [clic] Se empaqueta en una imagen Docker [clic] que se publica en un registro. [clic] Esa imagen se despliega y se opera en Kubernetes, [clic] y lo que pasa adentro se observa con los logs en un solo lugar. Lo que aprendemos al observar vuelve al código, y el ciclo empieza otra vez.",
-          "En las próximas láminas recorremos ese camino con ARKA-Lite, pieza por pieza: primero Docker y Kubernetes, después el pipeline, y al final cómo se opera.",
+          "En las próximas láminas recorremos ese camino con ARKA-Lite, pieza por pieza: primero Docker, después el pipeline y al final Kubernetes.",
         ],
         preguntas: [{ texto: "¿DevOps es un equipo aparte?", respuesta: "Es una práctica. Puede haber personas que la impulsen, pero funciona cuando desarrollo e infraestructura comparten el mismo camino y las mismas herramientas." }],
         transicion: "Empecemos por las dos herramientas que más se nombran: Docker y Kubernetes.",
@@ -131,12 +131,68 @@ export const devops: Seccion = {
       guion: {
         decir: [
           "Con Docker, cada servicio viaja con su receta, y con Docker Compose levantamos el sistema completo con un solo comando: los dos servicios, sus dos bases, la interfaz y las herramientas de logs. Ocho contenedores en total.",
-          "Dentro de la red de Compose, cada servicio encuentra al otro por su nombre, no por localhost. Y la configuración, como la cadena de conexión que vimos en la parte de datos, entra por variables de entorno. Así la misma imagen sirve en nuestra computadora y en el clúster, sin recompilar.",
+          "La configuración, como la cadena de conexión que vimos en la parte de datos, entra por variables de entorno. Así la misma imagen sirve en nuestra computadora y en el clúster, sin recompilar.",
           "Para alguien que llega nuevo al equipo, esto es la diferencia entre un día configurando su máquina y cinco minutos.",
         ],
         demo: { accion: "docker compose ps", evidencia: "La UI, los servicios y las bases arriba y sanos." },
         preguntas: [{ texto: "Dentro de un contenedor, ¿a dónde lleva localhost?", respuesta: "Al mismo contenedor, no a otro servicio. Por eso usamos el nombre del servicio." }],
+        transicion: "¿Y cómo se encuentran entre ellos?",
+      },
+    },
+    {
+      id: "s05-red",
+      titulo: "La red de Compose: nombres adentro, puertos afuera",
+      idea: "Adentro, cada contenedor se llama por su nombre; afuera, solo se publica lo que hace falta.",
+      visible: ["Adentro, los contenedores se llaman por su nombre", "Cada uno escucha en su puerto, sin chocar", "Afuera solo se publican los puertos necesarios", "La base de solicitudes no se publica"],
+      valor: "Saber qué se expone y qué no: menos superficie de ataque y menos confusiones al configurar.",
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "matriz",
+        encabezados: ["Contenedor", "Su nombre dentro de la red", "Desde nuestra computadora"],
+        filas: [
+          { icono: "monitor", tono: "violeta", celdas: ["La UI", "arka-lite-ui:8080", "localhost:8088"] },
+          { icono: "clipboard-list", tono: "marino", celdas: ["Solicitudes", "servicio-solicitudes:8080", "localhost:18080"] },
+          { icono: "bell", tono: "cian", celdas: ["Notificaciones", "servicio-notificaciones:8080", "localhost:18081"] },
+          { icono: "database", tono: "neutro", celdas: ["Base de solicitudes", "db-solicitudes:5432", "No se publica"] },
+          { icono: "database", tono: "neutro", celdas: ["Base de notificaciones", "db-notificaciones:5432", "localhost:5433"] },
+        ],
+      },
+      guion: {
+        decir: [
+          "Una duda muy común: si todo está en contenedores, ¿cómo se encuentran? Docker Compose crea una red privada y, adentro, cada contenedor se llama por su nombre. La interfaz, por ejemplo, es arka-lite-ui y escucha en el 8080; desde nuestra computadora la abrimos en el 8088.",
+          "[clic] Solicitudes, adentro, es servicio-solicitudes en el 8080; afuera la vemos en el 18080. [clic] Notificaciones, lo mismo, en el 18081. Fíjense que adentro los dos usan el 8080 y no chocan: cada contenedor tiene su propia dirección.",
+          "[clic] La base de solicitudes no se publica: solo la alcanzan los contenedores de la red. [clic] La de notificaciones sí, en el 5433, para consultarla con cualquier herramienta. Y una trampa clásica: dentro de un contenedor, localhost es el mismo contenedor; por eso los servicios se buscan por nombre.",
+        ],
+        preguntas: [{ texto: "¿Por qué 18080 y no 8080 afuera?", respuesta: "Para no chocar con otros programas que ya usan el 8080 en la computadora. Se puede cambiar con una variable, sin tocar el archivo." }],
+        transicion: "¿Y en qué orden arrancan?",
+        respaldo: "docs/operaciones/docker-y-compose.md",
+      },
+    },
+    {
+      id: "s05-arranque",
+      titulo: "El orden de arranque: nadie empieza antes de tiempo",
+      idea: "Cada contenedor espera a que lo que necesita esté sano: así no hay errores al arrancar.",
+      visible: ["Las bases avisan cuando aceptan conexiones", "Notificaciones espera a su base", "Solicitudes espera a su base y a notificaciones", "La UI arranca al final, con su propia prueba de salud"],
+      valor: "Arranques sin errores ni pasos manuales: el orden queda escrito en el archivo.",
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "database", titulo: "Las bases", texto: "pg_isready: ya aceptan conexiones.", tono: "neutro" },
+          { icono: "bell", titulo: "Notificaciones", texto: "Arranca cuando su base está sana.", tono: "cian" },
+          { icono: "clipboard-list", titulo: "Solicitudes", texto: "Espera a su base y a notificaciones.", tono: "marino" },
+          { icono: "monitor", titulo: "La UI", texto: "Arranca al final y vigila su salud.", tono: "violeta" },
+        ],
+      },
+      guion: {
+        decir: [
+          "Levantar ocho contenedores juntos tiene un riesgo: que un servicio arranque antes que su base y falle. Compose lo resuelve con pruebas de salud y dependencias. Primero arrancan las bases, y cada una avisa cuando ya acepta conexiones.",
+          "[clic] Notificaciones arranca solo cuando su base está sana. [clic] Solicitudes espera a su base y también a notificaciones, porque le va a mandar eventos. [clic] Y la interfaz arranca al final, con su propia prueba de salud.",
+          "Es la misma idea que vamos a ver en Kubernetes con otro nombre: nadie recibe trabajo antes de estar listo.",
+        ],
+        preguntas: [{ texto: "¿Qué pasa si una base no arranca?", respuesta: "Su servicio no arranca tampoco, y docker compose ps muestra cuál quedó esperando. El error aparece en el lugar correcto, no como una falla rara más adelante." }],
         transicion: "Y ese mismo comando también corre en la nube: Codespaces.",
+        respaldo: "docs/operaciones/docker-y-compose.md",
       },
     },
     {
@@ -164,7 +220,7 @@ export const devops: Seccion = {
           "El valor: cualquiera del equipo puede probar o mostrar el sistema sin instalar nada y sin depender de la red de la oficina. Lo verificamos con la prueba de humo completa: siete de siete.",
         ],
         preguntas: [{ texto: "¿Cuánto cuesta?", respuesta: "GitHub lo cobra por horas de núcleo: esta máquina de 4 núcleos consume 4 por cada hora encendida. Se detiene al terminar y deja de consumir." }],
-        transicion: "¿Y quién construye y publica las imágenes en cada cambio? El pipeline.",
+        transicion: "¿Y quién construye y publica las imágenes en cada cambio? El pipeline. Le paso la palabra a mi compañero.",
         respaldo: "docs/operaciones/codespaces.md",
       },
     },
@@ -175,6 +231,7 @@ export const devops: Seccion = {
       visible: ["Un push a una rama de trabajo, solo, no dispara nada", "Pull Request: el CI compila, prueba, arranca y construye", "Fusión a main: el mismo CI y luego el CD publica la imagen", "Desplegar en Kubernetes hoy es un paso manual"],
       porque: "Un cambio roto se detecta en el Pull Request, en minutos, antes de llegar a main.",
       valor: "Un error se detecta antes de llegar a main, y cada imagen se rastrea hasta su commit.",
+      rol: "operacion",
       recorridos: ["ejecutivo", "tecnico"],
       visual: {
         tipo: "caminos",
@@ -217,7 +274,7 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "Así funciona el pipeline, desde el momento del push. Primero, algo que sorprende: un push a una rama de trabajo, por sí solo, no dispara nada. El pipeline arranca cuando se abre o se actualiza un Pull Request hacia main. Ahí corre la integración continua, el CI: un servidor de GitHub compila cada servicio, corre todas sus pruebas contra un PostgreSQL temporal, arranca el servicio de verdad hasta ver sus datos iniciales y construye la imagen Docker. El resultado queda en el mismo Pull Request: verde o rojo.",
+          "Gracias. Así funciona el pipeline, desde el momento del push. Primero, algo que sorprende: un push a una rama de trabajo, por sí solo, no dispara nada. El pipeline arranca cuando se abre o se actualiza un Pull Request hacia main. Ahí corre la integración continua, el CI: un servidor de GitHub compila cada servicio, corre todas sus pruebas contra un PostgreSQL temporal, arranca el servicio de verdad hasta ver sus datos iniciales y construye la imagen Docker. El resultado queda en el mismo Pull Request: verde o rojo.",
           "[clic] Cuando el Pull Request se aprueba y se fusiona a main, corre otra vez el mismo CI, y después viene el CD, la entrega continua: la imagen se publica en el registro de GitHub, etiquetada con el código del commit, lista para desplegar.",
           "Y una distinción que vale la pena: CD puede ser entrega continua, que es dejar la imagen lista, o despliegue continuo, que es instalarla sola en el ambiente. Nosotros llegamos a la entrega; el despliegue en Kubernetes es un paso aparte, con kubectl apply. Automatizarlo es el siguiente paso natural, con una aprobación de por medio.",
         ],
@@ -225,8 +282,106 @@ export const devops: Seccion = {
           { texto: "¿Por qué no se despliega solo?", respuesta: "Porque es un laboratorio con un clúster local. En un ambiente real se agrega un paso de despliegue con aprobación, o una herramienta que aplica en el clúster lo que está en main." },
           { texto: "¿Las pruebas usan la base real?", respuesta: "No: GitHub crea un PostgreSQL temporal para cada ejecución, con una clave distinta cada vez, y lo descarta al terminar." },
         ],
-        transicion: "La imagen ya está publicada. Ahora, dónde corre: Kubernetes. Le paso la palabra a mi compañero.",
+        transicion: "Veamos qué hace el pipeline por dentro.",
         respaldo: "docs/automatizacion/ci-yaml-paso-a-paso.md",
+      },
+    },
+    {
+      id: "s05-trabajos",
+      titulo: "Por dentro del pipeline: tres trabajos en paralelo",
+      idea: "Cada servicio y la UI se prueban por separado y al mismo tiempo: si algo falla, se sabe dónde.",
+      visible: ["Cada servicio con su propia base temporal", "Solicitudes además prueba que arranca", "La UI se valida, se prueba y se construye", "Todo corre a la vez: el resultado llega antes"],
+      valor: "Diagnóstico inmediato: el pipeline dice qué pieza falló y en qué paso.",
+      rol: "operacion",
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "capas",
+        paralelas: true,
+        capas: [
+          { titulo: "Solicitudes", tono: "marino", elementos: [
+            { icono: "flask-conical", titulo: "Compila y prueba", texto: "mvn verify con su PostgreSQL" },
+            { icono: "power", titulo: "Arranca", texto: "Espera ver CAM-002" },
+            { icono: "package", titulo: "Imagen", texto: "docker build" },
+            { icono: "cloud-upload", titulo: "Publica", texto: "En GHCR, con el SHA" },
+          ] },
+          { titulo: "Notificaciones", tono: "cian", elementos: [
+            { icono: "flask-conical", titulo: "Compila y prueba", texto: "mvn verify con su PostgreSQL" },
+            { icono: "package", titulo: "Imagen", texto: "docker build" },
+            { icono: "cloud-upload", titulo: "Publica", texto: "En GHCR, con el SHA" },
+          ] },
+          { titulo: "La UI", tono: "violeta", elementos: [
+            { icono: "list-checks", titulo: "Valida y prueba", texto: "Contenido, tipos y pruebas" },
+            { icono: "settings", titulo: "Construye", texto: "La aplicación y su imagen" },
+            { icono: "file-check", titulo: "Valida Compose", texto: "docker compose config" },
+            { icono: "cloud-upload", titulo: "Publica", texto: "Solo al llegar a main" },
+          ] },
+        ],
+      },
+      guion: {
+        decir: [
+          "Veamos qué hace el pipeline por dentro. Son tres trabajos que corren al mismo tiempo, cada uno en su propia máquina de GitHub. El de solicitudes levanta su propio PostgreSQL, compila y corre todas las pruebas, arranca el servicio de verdad y espera ver la solicitud de ejemplo CAM-002. Si todo pasa, construye la imagen y la publica.",
+          "[clic] El de notificaciones hace lo mismo con su propia base: compila, prueba, construye y publica. [clic] Y el de la interfaz valida su contenido, corre sus pruebas, construye la aplicación y su imagen, y además comprueba que el archivo de Compose sea válido. Su imagen solo se publica cuando el cambio llega a main.",
+          "Que corran en paralelo tiene dos ventajas: el resultado llega antes, y si algo falla, el pipeline dice exactamente en cuál de las tres piezas y en qué paso.",
+        ],
+        preguntas: [{ texto: "¿Dónde se ven los resultados?", respuesta: "En la pestaña Actions de GitHub y en el mismo Pull Request: cada trabajo con sus pasos y su registro." }],
+        transicion: "¿Y qué pasa cuando un cambio rompe algo?",
+        respaldo: "docs/automatizacion/ci-yaml-paso-a-paso.md",
+      },
+    },
+    {
+      id: "s05-falla-ci",
+      titulo: "Cuando un cambio rompe algo",
+      idea: "El pipeline es la red de seguridad: un error se detiene en el Pull Request, no en producción.",
+      visible: ["El cambio llega por Pull Request", "Una prueba falla y el PR queda en rojo", "Se ve qué trabajo y qué paso fallaron", "Se corrige y el pipeline vuelve a correr"],
+      valor: "Los errores se detienen en el Pull Request, antes de llegar a main o a una imagen.",
+      rol: "operacion",
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "escenario",
+        falla: { icono: "bug", titulo: "Un cambio rompe una regla", texto: "Por ejemplo, ahora deja enviar dos veces la misma solicitud.", tono: "error" },
+        pasos: [
+          { momento: "push", icono: "git-pull-request", titulo: "Se actualiza el PR", texto: "El pipeline arranca solo.", tono: "marino" },
+          { momento: "minutos", icono: "flask-conical", titulo: "Falla una prueba", texto: "La de esa regla: queda en rojo.", tono: "error" },
+          { momento: "en el PR", icono: "eye", titulo: "Se ve", texto: "Qué trabajo, qué paso y por qué.", tono: "advertencia" },
+          { momento: "corrección", icono: "refresh-cw", titulo: "Se corrige", texto: "Nuevo push: vuelve a correr.", tono: "cian" },
+        ],
+        resultado: { icono: "shield-check", titulo: "El error nunca llegó a main", texto: "Y no se publicó ninguna imagen: publicar va después de las pruebas.", tono: "correcto" },
+      },
+      guion: {
+        decir: [
+          "Veamos el caso que más valor tiene: un cambio que rompe algo. Imaginen que alguien, sin querer, cambia la regla y ahora se puede enviar dos veces la misma solicitud.",
+          "[clic] Al actualizar el Pull Request, el pipeline arranca solo. [clic] En pocos minutos, la prueba de esa regla falla y el Pull Request queda en rojo. [clic] GitHub muestra qué trabajo falló, en qué paso y el mensaje de la prueba. [clic] La persona corrige, sube el cambio y el pipeline vuelve a correr.",
+          "[clic] El resultado: el error nunca llegó a main, y no se publicó ninguna imagen con él, porque el paso de publicar va después de las pruebas. Esa es la red de seguridad de la integración continua.",
+        ],
+        preguntas: [{ texto: "¿Y si alguien se salta el pipeline?", respuesta: "Nadie sube directo a main: todo entra por Pull Request. Además, GitHub permite exigir que el pipeline esté en verde antes de fusionar." }],
+        transicion: "Y cuando todo pasa, cada imagen queda marcada con su commit.",
+      },
+    },
+    {
+      id: "s05-trazabilidad",
+      titulo: "De la imagen al commit: qué código está corriendo",
+      idea: "Cada imagen lleva el código de su commit: siempre se sabe qué versión corre y se puede volver atrás.",
+      visible: ["Cada imagen se etiqueta con el SHA del commit", "El SHA lleva al cambio exacto", "Del commit, al Pull Request y su revisión", "Volver atrás es desplegar la imagen anterior"],
+      valor: "Saber siempre qué código está corriendo y poder volver atrás con certeza.",
+      rol: "operacion",
+      recorridos: ["ejecutivo", "tecnico"],
+      visual: {
+        tipo: "flujo",
+        pasos: [
+          { icono: "package", titulo: "La imagen", texto: "servicio-solicitudes:<SHA>", tono: "marino" },
+          { icono: "git-commit-horizontal", titulo: "El commit", texto: "El SHA es el código exacto.", tono: "marino" },
+          { icono: "git-pull-request", titulo: "El Pull Request", texto: "Quién lo pidió y quién lo revisó.", tono: "cian" },
+          { icono: "rotate-ccw", titulo: "Volver atrás", texto: "Desplegar la imagen anterior.", tono: "correcto" },
+        ],
+      },
+      guion: {
+        decir: [
+          "Cuando todo pasa, queda algo muy valioso: trazabilidad. Cada imagen publicada lleva como etiqueta el SHA del commit, ese código largo que identifica un cambio en Git. [clic] Con ese código llegamos al cambio exacto: qué líneas cambiaron.",
+          "[clic] Del commit llegamos al Pull Request: quién lo pidió, quién lo revisó y qué pruebas pasó. [clic] Y si una versión da problemas, volver atrás es desplegar la imagen del commit anterior, que sigue publicada en el registro.",
+          "Para operación, esto cambia la conversación: ya no es “¿qué versión tenemos?”, sino “esta imagen es este commit, revisado por estas personas”.",
+        ],
+        preguntas: [{ texto: "¿Por qué no usar la etiqueta latest?", respuesta: "Porque latest cambia con cada publicación y no dice qué código es. Con el SHA, la etiqueta nunca miente." }],
+        transicion: "La imagen ya está publicada y rastreada. Ahora, dónde corre: Kubernetes.",
       },
     },
     {
@@ -251,7 +406,7 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "Gracias. Para entender Kubernetes hay que cambiar el chip: no le damos órdenes paso a paso, le decimos cómo queremos que esté el sistema. Eso se escribe en un archivo YAML, un manifiesto: qué imagen usar, cuántas copias de cada servicio y qué variables recibe.",
+          "Para entender Kubernetes hay que cambiar el chip: no le damos órdenes paso a paso, le decimos cómo queremos que esté el sistema. Eso se escribe en un archivo YAML, un manifiesto: qué imagen usar, cuántas copias de cada servicio y qué variables recibe.",
           "[clic] Con kubectl apply, ese archivo se le entrega al clúster. [clic] El Deployment lee el manifiesto y crea los Pods, que son donde corren los contenedores. [clic] El Service les da un nombre fijo, para que los demás los encuentren aunque un Pod se reemplace.",
           "[clic] Y lo más importante: Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Si falta algo, lo crea; si sobra, lo quita. A eso se le llama ciclo de control, y es lo que hace que el sistema se repare solo.",
         ],
@@ -353,7 +508,7 @@ export const devops: Seccion = {
           "Cuatro aprendizajes de DevOps. [clic] Docker y Kubernetes no compiten: uno empaqueta y el otro ejecuta y cuida. [clic] La imagen es el entregable: lo que prueba el pipeline es exactamente lo que se despliega.",
           "[clic] Configurar por variables y no por código, empezando por la cadena de conexión. [clic] Y declarar el estado que queremos, y probar que el servicio arranca, no solo que compila.",
         ],
-        transicion: "Ya está desplegado. ¿Cómo sabemos qué pasa adentro?",
+        transicion: "Ya está desplegado. ¿Cómo sabemos qué pasa adentro? Le devuelvo la palabra a mi compañero.",
       },
     },
   ],
@@ -368,7 +523,7 @@ export const observabilidad: Seccion = {
   temas: ["Logs centralizados", "Trazas", "Salud con Actuator"],
   icono: "chart-line",
   enfoque: "general",
-  rol: "operacion",
+  rol: "plataforma",
   diapositivas: [
     {
       id: "s06-logs",
@@ -390,7 +545,7 @@ export const observabilidad: Seccion = {
       },
       guion: {
         decir: [
-          "La observabilidad la vemos de forma general. Con varios servicios, cada uno tiene sus logs, y si algo falla no queremos entrar contenedor por contenedor. Cada servicio escribe sus logs en JSON, con un formato estándar. [clic] Promtail los recoge de todos los contenedores, [clic] Loki los guarda etiquetados por servicio [clic] y Grafana nos deja buscarlos en un solo lugar.",
+          "Gracias. La observabilidad la vemos de forma general. Con varios servicios, cada uno tiene sus logs, y si algo falla no queremos entrar contenedor por contenedor. Cada servicio escribe sus logs en JSON, con un formato estándar. [clic] Promtail los recoge de todos los contenedores, [clic] Loki los guarda etiquetados por servicio [clic] y Grafana nos deja buscarlos en un solo lugar.",
           "Como cada llamada lleva su traceId, con una sola búsqueda vemos el viaje completo de un evento: cuándo lo publicó el relevador y cuándo lo consumió notificaciones. Y cada servicio expone su salud, que la interfaz muestra en verde o en rojo; lo van a ver en la demostración.",
         ],
         demo: { accion: "Grafana › Explore › Loki: {service=\"servicio-notificaciones\"} |= \"evento\".", evidencia: "Las líneas “Consume evento” y “aviso creado” con el número del evento." },

@@ -735,7 +735,7 @@ function capas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "capas" }>) {
       texto(s, e.titulo, { x: tx, y: y + 0.14, w: x + w - tx - 0.1, h: hc * 0.5 - 0.02 }, { tam: 15, negrita: true, fuente: TITULO, vertical: "bottom", color: te.fuerte });
       if (e.texto) texto(s, e.texto, { x: tx, y: y + 0.14 + hc * 0.5, w: x + w - tx - 0.1, h: hc * 0.5 - 0.1 }, { tam: 12, color: color.secundario });
     });
-    if (i < n - 1) {
+    if (i < n - 1 && !v.paralelas) {
       fijarPaso(i + 1);
       flecha(s, c.x + etiquetaW / 2, y + h - 0.02, c.x + etiquetaW / 2, y + h + gap + 0.02, PRI, 2.5);
     }

@@ -117,7 +117,8 @@ export type Visual =
   // tiempo y el resultado.
   | { tipo: "escenario"; falla: ElementoVisual; pasos: (ElementoVisual & { momento: string })[]; resultado: ElementoVisual }
   // Capas apiladas de arriba abajo, cada una con sus piezas.
-  | { tipo: "capas"; capas: Capa[] }
+  // Con paralelas, las capas ocurren al mismo tiempo: sin flechas entre ellas.
+  | { tipo: "capas"; capas: Capa[]; paralelas?: boolean }
   // Bases de datos con sus tablas y columnas, y qué las une.
   | { tipo: "tablas"; bases: Base[]; enlace: string }
   // Filas con tres columnas: por ejemplo, qué falla, cómo reacciona y qué se ve.

@@ -2,7 +2,7 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-43 láminas, unos 39 minutos de exposición sin contar la demostración en vivo ni las preguntas. La presentación del equipo arka-litos: fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps a fondo; observabilidad y demostración en vivo.
+48 láminas, unos 44 minutos de exposición sin contar la demostración en vivo ni las preguntas. La presentación del equipo arka-litos: fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps a fondo; observabilidad y demostración en vivo.
 
 ## Cómo está pensada
 
@@ -14,9 +14,9 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 | 2. Arquitectura | Vista general | 7–10 | El sistema por fuera: qué piezas hay y cómo trabajan juntas. |
 | 3. Base de datos | A fondo | 11–19 | Dos bases PostgreSQL, el ORM, la cadena de conexión y las transacciones. |
 | 4. Interconexión de servicios | A fondo | 20–24 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
-| 5. DevOps: Docker y Kubernetes | A fondo | 25–34 | Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio. |
-| 6. Observabilidad | Vista general | 35–36 | Logs en un solo lugar, trazas entre servicios y salud de cada componente. |
-| 7. Demostración con la UI | En vivo | 37–39 | La UI ejemplifica en vivo lo que contamos: estados, Outbox, idempotencia y salud. |
+| 5. DevOps: Docker y Kubernetes | A fondo | 25–39 | Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio. |
+| 6. Observabilidad | Vista general | 40–41 | Logs en un solo lugar, trazas entre servicios y salud de cada componente. |
+| 7. Demostración con la UI | En vivo | 42–44 | La UI ejemplifica en vivo lo que contamos: estados, Outbox, idempotencia y salud. |
 
 ## Reparto
 
@@ -28,13 +28,13 @@ Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infr
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
-| Desarrollo 1 · orquesta | Desarrollo | Apertura, el negocio y el cierre y Fundamentos | 1–6, 40–43 | ~8 min |
-| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 7–10, 37–39 | ~5 min |
+| Desarrollo 1 · orquesta | Desarrollo | Apertura, el negocio y el cierre y Fundamentos | 1–6, 45–48 | ~8 min |
+| Desarrollo 2 | Desarrollo | Arquitectura y Demostración con la UI | 7–10, 42–44 | ~5 min |
 | Desarrollo 3 | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión | 14–17 | ~5 min |
 | Desarrollo 4 | Desarrollo | Interconexión de servicios | 20–24 | ~5 min |
 | Base de datos | Base de datos | Base de datos | 11–13, 18–19 | ~5 min |
-| Infraestructura 1 | Infraestructura | DevOps: construir y entregar (Docker, Compose, Codespaces y CI/CD) | 25–30 | ~6 min |
-| Infraestructura 2 | Infraestructura | DevOps: operar y observar (Kubernetes y observabilidad) | 31–36 | ~5 min |
+| Infraestructura 1 | Infraestructura | DevOps: Docker, Compose y Codespaces, y la observabilidad | 25–31, 40–41 | ~8 min |
+| Infraestructura 2 | Infraestructura | DevOps: CI/CD y Kubernetes | 32–39 | ~8 min |
 
 Cada persona tiene su guion aparte en `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
@@ -1133,7 +1133,7 @@ Presenta: Infraestructura 1.
 >
 > **▶ clic** Se construye, **▶ clic** y se prueba solo, en cada cambio. **▶ clic** Se empaqueta en una imagen Docker **▶ clic** que se publica en un registro. **▶ clic** Esa imagen se despliega y se opera en Kubernetes, **▶ clic** y lo que pasa adentro se observa con los logs en un solo lugar. Lo que aprendemos al observar vuelve al código, y el ciclo empieza otra vez.
 >
-> En las próximas láminas recorremos ese camino con ARKA-Lite, pieza por pieza: primero Docker y Kubernetes, después el pipeline, y al final cómo se opera.
+> En las próximas láminas recorremos ese camino con ARKA-Lite, pieza por pieza: primero Docker, después el pipeline y al final Kubernetes.
 
 **Si hay tiempo, se puede agregar**
 
@@ -1256,7 +1256,7 @@ Presenta: Infraestructura 1.
 
 > Con Docker, cada servicio viaja con su receta, y con Docker Compose levantamos el sistema completo con un solo comando: los dos servicios, sus dos bases, la interfaz y las herramientas de logs. Ocho contenedores en total.
 >
-> Dentro de la red de Compose, cada servicio encuentra al otro por su nombre, no por localhost. Y la configuración, como la cadena de conexión que vimos en la parte de datos, entra por variables de entorno. Así la misma imagen sirve en nuestra computadora y en el clúster, sin recompilar.
+> La configuración, como la cadena de conexión que vimos en la parte de datos, entra por variables de entorno. Así la misma imagen sirve en nuestra computadora y en el clúster, sin recompilar.
 >
 > Para alguien que llega nuevo al equipo, esto es la diferencia entre un día configurando su máquina y cinco minutos.
 
@@ -1274,9 +1274,90 @@ Presenta: Infraestructura 1.
 
 **Respuesta corta:** Al mismo contenedor, no a otro servicio. Por eso usamos el nombre del servicio.
 
+**Para pasar:** “¿Y cómo se encuentran entre ellos?”
+
+### 29. La red de Compose: nombres adentro, puertos afuera
+
+**En pantalla · Tabla de tres columnas:**
+
+- Contenedor: La UI · Su nombre dentro de la red: arka-lite-ui:8080 · Desde nuestra computadora: localhost:8088
+- Contenedor: Solicitudes · Su nombre dentro de la red: servicio-solicitudes:8080 · Desde nuestra computadora: localhost:18080
+- Contenedor: Notificaciones · Su nombre dentro de la red: servicio-notificaciones:8080 · Desde nuestra computadora: localhost:18081
+- Contenedor: Base de solicitudes · Su nombre dentro de la red: db-solicitudes:5432 · Desde nuestra computadora: No se publica
+- Contenedor: Base de notificaciones · Su nombre dentro de la red: db-notificaciones:5432 · Desde nuestra computadora: localhost:5433
+
+**Ideas clave:**
+
+- Adentro, los contenedores se llaman por su nombre
+- Cada uno escucha en su puerto, sin chocar
+- Afuera solo se publican los puertos necesarios
+- La base de solicitudes no se publica
+
+**Lo que se lleva el staff:** Saber qué se expone y qué no: menos superficie de ataque y menos confusiones al configurar.
+
+**Qué decir**
+
+> Una duda muy común: si todo está en contenedores, ¿cómo se encuentran? Docker Compose crea una red privada y, adentro, cada contenedor se llama por su nombre. La interfaz, por ejemplo, es arka-lite-ui y escucha en el 8080; desde nuestra computadora la abrimos en el 8088.
+>
+> **▶ clic** Solicitudes, adentro, es servicio-solicitudes en el 8080; afuera la vemos en el 18080. **▶ clic** Notificaciones, lo mismo, en el 18081. Fíjense que adentro los dos usan el 8080 y no chocan: cada contenedor tiene su propia dirección.
+>
+> **▶ clic** La base de solicitudes no se publica: solo la alcanzan los contenedores de la red. **▶ clic** La de notificaciones sí, en el 5433, para consultarla con cualquier herramienta. Y una trampa clásica: dentro de un contenedor, localhost es el mismo contenedor; por eso los servicios se buscan por nombre.
+
+**Si hay tiempo, se puede agregar**
+
+> Los puertos de afuera se pueden cambiar con variables, SOLICITUDES_PORT y NOTIFICACIONES_PORT, sin tocar el archivo de Compose.
+>
+> En Kubernetes pasa algo parecido: cada componente tiene un Service con un nombre fijo, y desde afuera solo se abre la interfaz.
+
+**Si preguntan:** ¿Por qué 18080 y no 8080 afuera?
+
+**Respuesta corta:** Para no chocar con otros programas que ya usan el 8080 en la computadora. Se puede cambiar con una variable, sin tocar el archivo.
+
+**Para pasar:** “¿Y en qué orden arrancan?”
+
+**Para leer más:** `docs/operaciones/docker-y-compose.md`
+
+### 30. El orden de arranque: nadie empieza antes de tiempo
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. Las bases: pg_isready: ya aceptan conexiones.
+- 2. Notificaciones: Arranca cuando su base está sana.
+- 3. Solicitudes: Espera a su base y a notificaciones.
+- 4. La UI: Arranca al final y vigila su salud.
+
+**Ideas clave:**
+
+- Las bases avisan cuando aceptan conexiones
+- Notificaciones espera a su base
+- Solicitudes espera a su base y a notificaciones
+- La UI arranca al final, con su propia prueba de salud
+
+**Lo que se lleva el staff:** Arranques sin errores ni pasos manuales: el orden queda escrito en el archivo.
+
+**Qué decir**
+
+> Levantar ocho contenedores juntos tiene un riesgo: que un servicio arranque antes que su base y falle. Compose lo resuelve con pruebas de salud y dependencias. Primero arrancan las bases, y cada una avisa cuando ya acepta conexiones.
+>
+> **▶ clic** Notificaciones arranca solo cuando su base está sana. **▶ clic** Solicitudes espera a su base y también a notificaciones, porque le va a mandar eventos. **▶ clic** Y la interfaz arranca al final, con su propia prueba de salud.
+>
+> Es la misma idea que vamos a ver en Kubernetes con otro nombre: nadie recibe trabajo antes de estar listo.
+
+**Si hay tiempo, se puede agregar**
+
+> La prueba de salud de las bases usa pg_isready, la misma herramienta de PostgreSQL que usaría un DBA para saber si la base responde.
+>
+> Sin estas dependencias, el primer arranque fallaría a menudo y habría que levantar los servicios a mano, en orden.
+
+**Si preguntan:** ¿Qué pasa si una base no arranca?
+
+**Respuesta corta:** Su servicio no arranca tampoco, y docker compose ps muestra cuál quedó esperando. El error aparece en el lugar correcto, no como una falla rara más adelante.
+
 **Para pasar:** “Y ese mismo comando también corre en la nube: Codespaces.”
 
-### 29. Sin instalar nada: GitHub Codespaces
+**Para leer más:** `docs/operaciones/docker-y-compose.md`
+
+### 31. Sin instalar nada: GitHub Codespaces
 
 **En pantalla · Flujo paso a paso:**
 
@@ -1315,11 +1396,13 @@ Presenta: Infraestructura 1.
 
 **Respuesta corta:** GitHub lo cobra por horas de núcleo: esta máquina de 4 núcleos consume 4 por cada hora encendida. Se detiene al terminar y deja de consumir.
 
-**Para pasar:** “¿Y quién construye y publica las imágenes en cada cambio? El pipeline.”
+**Para pasar:** “¿Y quién construye y publica las imágenes en cada cambio? El pipeline. Le paso la palabra a mi compañero.”
 
 **Para leer más:** `docs/operaciones/codespaces.md`
 
-### 30. CI/CD: del push a la imagen publicada
+### 32. CI/CD: del push a la imagen publicada
+
+**Presenta:** Infraestructura 2
 
 **En pantalla · Dos caminos, lado a lado:**
 
@@ -1339,7 +1422,7 @@ Presenta: Infraestructura 1.
 
 **Qué decir**
 
-> Así funciona el pipeline, desde el momento del push. Primero, algo que sorprende: un push a una rama de trabajo, por sí solo, no dispara nada. El pipeline arranca cuando se abre o se actualiza un Pull Request hacia main. Ahí corre la integración continua, el CI: un servidor de GitHub compila cada servicio, corre todas sus pruebas contra un PostgreSQL temporal, arranca el servicio de verdad hasta ver sus datos iniciales y construye la imagen Docker. El resultado queda en el mismo Pull Request: verde o rojo.
+> Gracias. Así funciona el pipeline, desde el momento del push. Primero, algo que sorprende: un push a una rama de trabajo, por sí solo, no dispara nada. El pipeline arranca cuando se abre o se actualiza un Pull Request hacia main. Ahí corre la integración continua, el CI: un servidor de GitHub compila cada servicio, corre todas sus pruebas contra un PostgreSQL temporal, arranca el servicio de verdad hasta ver sus datos iniciales y construye la imagen Docker. El resultado queda en el mismo Pull Request: verde o rojo.
 >
 > **▶ clic** Cuando el Pull Request se aprueba y se fusiona a main, corre otra vez el mismo CI, y después viene el CD, la entrega continua: la imagen se publica en el registro de GitHub, etiquetada con el código del commit, lista para desplegar.
 >
@@ -1361,11 +1444,134 @@ Presenta: Infraestructura 1.
 
 **Respuesta corta:** No: GitHub crea un PostgreSQL temporal para cada ejecución, con una clave distinta cada vez, y lo descarta al terminar.
 
-**Para pasar:** “La imagen ya está publicada. Ahora, dónde corre: Kubernetes. Le paso la palabra a mi compañero.”
+**Para pasar:** “Veamos qué hace el pipeline por dentro.”
 
 **Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
 
-### 31. Cómo trabaja Kubernetes: del archivo al Pod
+### 33. Por dentro del pipeline: tres trabajos en paralelo
+
+**Presenta:** Infraestructura 2
+
+**En pantalla · Capas del sistema:**
+
+- Solicitudes: Compila y prueba: mvn verify con su PostgreSQL; Arranca: Espera ver CAM-002; Imagen: docker build; Publica: En GHCR, con el SHA
+- Notificaciones: Compila y prueba: mvn verify con su PostgreSQL; Imagen: docker build; Publica: En GHCR, con el SHA
+- La UI: Valida y prueba: Contenido, tipos y pruebas; Construye: La aplicación y su imagen; Valida Compose: docker compose config; Publica: Solo al llegar a main
+
+**Ideas clave:**
+
+- Cada servicio con su propia base temporal
+- Solicitudes además prueba que arranca
+- La UI se valida, se prueba y se construye
+- Todo corre a la vez: el resultado llega antes
+
+**Lo que se lleva el staff:** Diagnóstico inmediato: el pipeline dice qué pieza falló y en qué paso.
+
+**Qué decir**
+
+> Veamos qué hace el pipeline por dentro. Son tres trabajos que corren al mismo tiempo, cada uno en su propia máquina de GitHub. El de solicitudes levanta su propio PostgreSQL, compila y corre todas las pruebas, arranca el servicio de verdad y espera ver la solicitud de ejemplo CAM-002. Si todo pasa, construye la imagen y la publica.
+>
+> **▶ clic** El de notificaciones hace lo mismo con su propia base: compila, prueba, construye y publica. **▶ clic** Y el de la interfaz valida su contenido, corre sus pruebas, construye la aplicación y su imagen, y además comprueba que el archivo de Compose sea válido. Su imagen solo se publica cuando el cambio llega a main.
+>
+> Que corran en paralelo tiene dos ventajas: el resultado llega antes, y si algo falla, el pipeline dice exactamente en cuál de las tres piezas y en qué paso.
+
+**Si hay tiempo, se puede agregar**
+
+> La clave de cada base de pruebas se arma con el número de la ejecución: nunca hay una clave fija en el pipeline.
+>
+> Para publicar en el registro de GitHub no se guarda ninguna contraseña: el pipeline usa un token temporal que GitHub le entrega a cada ejecución.
+
+**Si preguntan:** ¿Dónde se ven los resultados?
+
+**Respuesta corta:** En la pestaña Actions de GitHub y en el mismo Pull Request: cada trabajo con sus pasos y su registro.
+
+**Para pasar:** “¿Y qué pasa cuando un cambio rompe algo?”
+
+**Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
+
+### 34. Cuando un cambio rompe algo
+
+**Presenta:** Infraestructura 2
+
+**En pantalla · Qué pasa cuando falla:**
+
+- Falla: Un cambio rompe una regla: Por ejemplo, ahora deja enviar dos veces la misma solicitud.
+- 1. [push] Se actualiza el PR: El pipeline arranca solo.
+- 2. [minutos] Falla una prueba: La de esa regla: queda en rojo.
+- 3. [en el PR] Se ve: Qué trabajo, qué paso y por qué.
+- 4. [corrección] Se corrige: Nuevo push: vuelve a correr.
+- Resultado: El error nunca llegó a main: Y no se publicó ninguna imagen: publicar va después de las pruebas.
+
+**Ideas clave:**
+
+- El cambio llega por Pull Request
+- Una prueba falla y el PR queda en rojo
+- Se ve qué trabajo y qué paso fallaron
+- Se corrige y el pipeline vuelve a correr
+
+**Lo que se lleva el staff:** Los errores se detienen en el Pull Request, antes de llegar a main o a una imagen.
+
+**Qué decir**
+
+> Veamos el caso que más valor tiene: un cambio que rompe algo. Imaginen que alguien, sin querer, cambia la regla y ahora se puede enviar dos veces la misma solicitud.
+>
+> **▶ clic** Al actualizar el Pull Request, el pipeline arranca solo. **▶ clic** En pocos minutos, la prueba de esa regla falla y el Pull Request queda en rojo. **▶ clic** GitHub muestra qué trabajo falló, en qué paso y el mensaje de la prueba. **▶ clic** La persona corrige, sube el cambio y el pipeline vuelve a correr.
+>
+> **▶ clic** El resultado: el error nunca llegó a main, y no se publicó ninguna imagen con él, porque el paso de publicar va después de las pruebas. Esa es la red de seguridad de la integración continua.
+
+**Si hay tiempo, se puede agregar**
+
+> Por eso cada regla del negocio tiene su prueba: la prueba es la que hace sonar la alarma.
+>
+> Se puede ir más lejos con una regla del repositorio que impida fusionar un Pull Request mientras el pipeline esté en rojo. Es configuración de GitHub, sin tocar el código.
+
+**Si preguntan:** ¿Y si alguien se salta el pipeline?
+
+**Respuesta corta:** Nadie sube directo a main: todo entra por Pull Request. Además, GitHub permite exigir que el pipeline esté en verde antes de fusionar.
+
+**Para pasar:** “Y cuando todo pasa, cada imagen queda marcada con su commit.”
+
+### 35. De la imagen al commit: qué código está corriendo
+
+**Presenta:** Infraestructura 2
+
+**En pantalla · Flujo paso a paso:**
+
+- 1. La imagen: servicio-solicitudes:<SHA>
+- 2. El commit: El SHA es el código exacto.
+- 3. El Pull Request: Quién lo pidió y quién lo revisó.
+- 4. Volver atrás: Desplegar la imagen anterior.
+
+**Ideas clave:**
+
+- Cada imagen se etiqueta con el SHA del commit
+- El SHA lleva al cambio exacto
+- Del commit, al Pull Request y su revisión
+- Volver atrás es desplegar la imagen anterior
+
+**Lo que se lleva el staff:** Saber siempre qué código está corriendo y poder volver atrás con certeza.
+
+**Qué decir**
+
+> Cuando todo pasa, queda algo muy valioso: trazabilidad. Cada imagen publicada lleva como etiqueta el SHA del commit, ese código largo que identifica un cambio en Git. **▶ clic** Con ese código llegamos al cambio exacto: qué líneas cambiaron.
+>
+> **▶ clic** Del commit llegamos al Pull Request: quién lo pidió, quién lo revisó y qué pruebas pasó. **▶ clic** Y si una versión da problemas, volver atrás es desplegar la imagen del commit anterior, que sigue publicada en el registro.
+>
+> Para operación, esto cambia la conversación: ya no es “¿qué versión tenemos?”, sino “esta imagen es este commit, revisado por estas personas”.
+
+**Si hay tiempo, se puede agregar**
+
+> Etiquetar con el SHA, y no con latest, evita la duda clásica de si la imagen que corre es la nueva o la vieja.
+>
+> En Kubernetes, el manifiesto dice qué imagen usar; cambiar de versión es cambiar esa línea y volver a aplicar.
+
+**Si preguntan:** ¿Por qué no usar la etiqueta latest?
+
+**Respuesta corta:** Porque latest cambia con cada publicación y no dice qué código es. Con el SHA, la etiqueta nunca miente.
+
+**Para pasar:** “La imagen ya está publicada y rastreada. Ahora, dónde corre: Kubernetes.”
+
+### 36. Cómo trabaja Kubernetes: del archivo al Pod
 
 **Presenta:** Infraestructura 2
 
@@ -1391,7 +1597,7 @@ Presenta: Infraestructura 1.
 
 **Qué decir**
 
-> Gracias. Para entender Kubernetes hay que cambiar el chip: no le damos órdenes paso a paso, le decimos cómo queremos que esté el sistema. Eso se escribe en un archivo YAML, un manifiesto: qué imagen usar, cuántas copias de cada servicio y qué variables recibe.
+> Para entender Kubernetes hay que cambiar el chip: no le damos órdenes paso a paso, le decimos cómo queremos que esté el sistema. Eso se escribe en un archivo YAML, un manifiesto: qué imagen usar, cuántas copias de cada servicio y qué variables recibe.
 >
 > **▶ clic** Con kubectl apply, ese archivo se le entrega al clúster. **▶ clic** El Deployment lee el manifiesto y crea los Pods, que son donde corren los contenedores. **▶ clic** El Service les da un nombre fijo, para que los demás los encuentren aunque un Pod se reemplace.
 >
@@ -1411,7 +1617,7 @@ Presenta: Infraestructura 1.
 
 **Para leer más:** `docs/operaciones/kubernetes-local.md`
 
-### 32. Los recursos de Kubernetes
+### 37. Los recursos de Kubernetes
 
 **Presenta:** Infraestructura 2
 
@@ -1453,7 +1659,7 @@ Presenta: Infraestructura 1.
 
 **Para leer más:** `docs/operaciones/kubernetes-local.md`
 
-### 33. Cuando un Pod se cae
+### 38. Cuando un Pod se cae
 
 **Presenta:** Infraestructura 2
 
@@ -1499,7 +1705,7 @@ Presenta: Infraestructura 1.
 
 **Para pasar:** “Esto es lo que aprendimos de DevOps.”
 
-### 34. DevOps: lo que aprendimos
+### 39. DevOps: lo que aprendimos
 
 **Presenta:** Infraestructura 2
 
@@ -1531,13 +1737,13 @@ Presenta: Infraestructura 1.
 
 > Lo que más valor nos dio de DevOps fue que todo quedó escrito: la receta de cada imagen, el archivo de Compose, los manifiestos de Kubernetes y el pipeline. Nada depende de la memoria de una persona.
 
-**Para pasar:** “Ya está desplegado. ¿Cómo sabemos qué pasa adentro?”
+**Para pasar:** “Ya está desplegado. ¿Cómo sabemos qué pasa adentro? Le devuelvo la palabra a mi compañero.”
 
 ## 6 · Observabilidad · vista general
 
-Presenta: Infraestructura 2.
+Presenta: Infraestructura 1.
 
-### 35. Todos los logs, en un solo lugar
+### 40. Todos los logs, en un solo lugar
 
 **En pantalla · Flujo paso a paso:**
 
@@ -1559,7 +1765,7 @@ Presenta: Infraestructura 2.
 
 **Qué decir**
 
-> La observabilidad la vemos de forma general. Con varios servicios, cada uno tiene sus logs, y si algo falla no queremos entrar contenedor por contenedor. Cada servicio escribe sus logs en JSON, con un formato estándar. **▶ clic** Promtail los recoge de todos los contenedores, **▶ clic** Loki los guarda etiquetados por servicio **▶ clic** y Grafana nos deja buscarlos en un solo lugar.
+> Gracias. La observabilidad la vemos de forma general. Con varios servicios, cada uno tiene sus logs, y si algo falla no queremos entrar contenedor por contenedor. Cada servicio escribe sus logs en JSON, con un formato estándar. **▶ clic** Promtail los recoge de todos los contenedores, **▶ clic** Loki los guarda etiquetados por servicio **▶ clic** y Grafana nos deja buscarlos en un solo lugar.
 >
 > Como cada llamada lleva su traceId, con una sola búsqueda vemos el viaje completo de un evento: cuándo lo publicó el relevador y cuándo lo consumió notificaciones. Y cada servicio expone su salud, que la interfaz muestra en verde o en rojo; lo van a ver en la demostración.
 
@@ -1577,7 +1783,7 @@ Presenta: Infraestructura 2.
 
 **Para leer más:** `docs/operaciones/observabilidad.md`
 
-### 36. Observabilidad: lo que aprendimos
+### 41. Observabilidad: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1609,7 +1815,7 @@ Presenta: Infraestructura 2.
 
 Presenta: Desarrollo 2.
 
-### 37. La UI: lo que contamos, en vivo
+### 42. La UI: lo que contamos, en vivo
 
 **En pantalla · Capturas reales:**
 
@@ -1651,7 +1857,7 @@ Presenta: Desarrollo 2.
 
 **Para leer más:** `arka-lite-ui/README.md`
 
-### 38. En vivo: si notificaciones se cae
+### 43. En vivo: si notificaciones se cae
 
 **En pantalla · Qué pasa cuando falla:**
 
@@ -1700,7 +1906,7 @@ Presenta: Desarrollo 2.
 
 **Para pasar:** “Esto es lo que aprendimos de la demostración.”
 
-### 39. Demostración: lo que aprendimos
+### 44. Demostración: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1732,7 +1938,7 @@ Presenta: Desarrollo 2.
 
 Presenta: Desarrollo 1 · orquesta.
 
-### 40. El valor agregado
+### 45. El valor agregado
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -1764,7 +1970,7 @@ Presenta: Desarrollo 1 · orquesta.
 
 **Para pasar:** “Y lo más importante: qué pueden aplicar ustedes desde mañana.”
 
-### 41. Lo que pueden aplicar desde mañana
+### 46. Lo que pueden aplicar desde mañana
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -1804,7 +2010,7 @@ Presenta: Desarrollo 1 · orquesta.
 
 **Para pasar:** “Si nos llevamos solo tres ideas, que sean estas.”
 
-### 42. Lo que nos llevamos
+### 47. Lo que nos llevamos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1832,7 +2038,7 @@ Presenta: Desarrollo 1 · orquesta.
 
 **Para pasar:** “Gracias por su atención.”
 
-### 43. Gracias
+### 48. Gracias
 
 **En pantalla:**
 

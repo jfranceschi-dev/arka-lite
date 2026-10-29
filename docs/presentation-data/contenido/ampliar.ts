@@ -123,6 +123,26 @@ export const AMPLIAR: Record<string, string[]> = {
     "La imagen de la interfaz solo se publica cuando el cambio llega a main; la de los servicios hoy también se publica desde el Pull Request. Es un ajuste que ya tenemos identificado.",
     "Cada imagen lleva como etiqueta el código del commit. Si algo falla en un ambiente, sabemos exactamente qué versión está corriendo y podemos volver a la anterior.",
   ],
+  "s05-red": [
+    "Los puertos de afuera se pueden cambiar con variables, SOLICITUDES_PORT y NOTIFICACIONES_PORT, sin tocar el archivo de Compose.",
+    "En Kubernetes pasa algo parecido: cada componente tiene un Service con un nombre fijo, y desde afuera solo se abre la interfaz.",
+  ],
+  "s05-arranque": [
+    "La prueba de salud de las bases usa pg_isready, la misma herramienta de PostgreSQL que usaría un DBA para saber si la base responde.",
+    "Sin estas dependencias, el primer arranque fallaría a menudo y habría que levantar los servicios a mano, en orden.",
+  ],
+  "s05-trabajos": [
+    "La clave de cada base de pruebas se arma con el número de la ejecución: nunca hay una clave fija en el pipeline.",
+    "Para publicar en el registro de GitHub no se guarda ninguna contraseña: el pipeline usa un token temporal que GitHub le entrega a cada ejecución.",
+  ],
+  "s05-falla-ci": [
+    "Por eso cada regla del negocio tiene su prueba: la prueba es la que hace sonar la alarma.",
+    "Se puede ir más lejos con una regla del repositorio que impida fusionar un Pull Request mientras el pipeline esté en rojo. Es configuración de GitHub, sin tocar el código.",
+  ],
+  "s05-trazabilidad": [
+    "Etiquetar con el SHA, y no con latest, evita la duda clásica de si la imagen que corre es la nueva o la vieja.",
+    "En Kubernetes, el manifiesto dice qué imagen usar; cambiar de versión es cambiar esa línea y volver a aplicar.",
+  ],
   "s05-codespaces": [
     "La máquina publica cuatro puertos: la interfaz, Grafana y los dos Swagger. Un script escribe la dirección pública de cada puerto para que los enlaces de la interfaz también funcionen en la nube.",
     "Un Codespace sin uso se detiene solo a los treinta minutos, y se borra al terminar. Para el día de la presentación lo arrancamos quince minutos antes.",

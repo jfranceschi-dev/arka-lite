@@ -29,7 +29,7 @@ describe("fuente de contenido", () => {
     expect(resumen.filter((id) => !ejecutivo.includes(id))).toEqual([]);
     expect(ejecutivo.filter((id) => !tecnico.has(id))).toEqual([]);
     expect(resumen.length).toBeLessThanOrEqual(20);
-    expect(ejecutivo.length).toBeLessThanOrEqual(45);
+    expect(ejecutivo.length).toBeLessThanOrEqual(50);
   });
 
   it("cada parte numerada termina con sus aprendizajes", () => {

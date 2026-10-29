@@ -15,7 +15,7 @@ Todos los equipos del curso presentan las mismas secciones, pero cada uno profun
 | 2 Arquitectura | Vista general | El sistema por capas, cómo funciona en la práctica (el evento es un dato que viaja, no una pieza) y hexagonal en una frase: ordena el código por dentro, no cambia el despliegue |
 | 3 Base de datos | A fondo | Dos bases PostgreSQL, su estructura, del procedimiento almacenado al ORM, cómo traduce el ORM, el viaje de un dato, dónde está la cadena de conexión y las transacciones |
 | 4 Interconexión de servicios | A fondo | Quién habla con quién, síncrono y asíncrono, el patrón Outbox y la idempotencia |
-| 5 DevOps: Docker y Kubernetes | A fondo | Qué es DevOps, Docker y Kubernetes se complementan, de código a contenedor, todo con un comando, Codespaces, CI/CD desde el push, cómo trabaja Kubernetes, sus recursos y un Pod que se cae |
+| 5 DevOps: Docker y Kubernetes | A fondo | Qué es DevOps. Docker: se complementa con Kubernetes, de código a contenedor, todo con un comando, la red (nombres adentro, puertos afuera), el orden de arranque y Codespaces. CI/CD: del push a la imagen, tres trabajos en paralelo, cuando un cambio rompe algo y de la imagen al commit. Kubernetes: cómo trabaja, sus recursos y un Pod que se cae |
 | 6 Observabilidad | Vista general | Logs centralizados con traceId |
 | 7 Demostración con la UI | En vivo | La UI no es el entregable: ejemplifica en vivo lo que se contó, con una caída de notificaciones y un evento reentregado |
 | Valor y cierre | | El valor agregado por pilar y lo que nos llevamos |
@@ -33,8 +33,8 @@ Cada lámina tiene un papel (el de su sección o uno propio), y [`contenido/repa
 | Base de datos | Base de datos: las dos bases, su estructura, del procedimiento al ORM, la transacción y los aprendizajes |
 | Desarrollo 3 | Apoyo en base de datos: la misma regla en código, el ORM, el viaje de un dato y la cadena de conexión |
 | Desarrollo 4 | Interconexión de servicios |
-| Infraestructura 1 | DevOps, construir y entregar: qué es DevOps, Docker, Compose, Codespaces y CI/CD |
-| Infraestructura 2 | DevOps, operar y observar: cómo trabaja Kubernetes, sus recursos, un Pod que se cae y la observabilidad |
+| Infraestructura 1 | DevOps: qué es DevOps, Docker, Compose, la red, el orden de arranque y Codespaces; al final, la observabilidad |
+| Infraestructura 2 | DevOps: CI/CD (del push a la imagen, por dentro, cuando falla y trazabilidad) y Kubernetes |
 
 Las notas del expositor y el PDF dicen quién presenta cada lámina; los guiones traen el reparto con los minutos de cada persona, y `guiones/guion-ejecutivo-7-personas.md` le da a cada una solo lo suyo.
 
@@ -45,8 +45,8 @@ Hay tres variantes; cada una contiene a la anterior y comparten el mismo texto o
 | Variante | Láminas | Para qué |
 | --- | --- | --- |
 | Resumen | 19 | Charla corta: el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo, el valor y lo que pueden aplicar desde mañana. |
-| Ejecutivo | 43 | La presentación del equipo, unos 42 minutos con la demostración: todas las partes con sus aprendizajes, sin código. |
-| Técnico | 48 | El ejecutivo más el código, la configuración, el esquema SQL y los diagramas detallados. |
+| Ejecutivo | 48 | La presentación del equipo, unos 47 minutos con la demostración: todas las partes con sus aprendizajes, sin código. |
+| Técnico | 53 | El ejecutivo más el código, la configuración, el esquema SQL y los diagramas detallados. |
 
 ## Entregables
 

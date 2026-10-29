@@ -33,8 +33,8 @@ Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infr
 | Desarrollo 3 | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión | 9 | ~1 min |
 | Desarrollo 4 | Desarrollo | Interconexión de servicios | 10–11 | ~3 min |
 | Base de datos | Base de datos | Base de datos | 7–8 | ~2 min |
-| Infraestructura 1 | Infraestructura | DevOps: construir y entregar (Docker, Compose, Codespaces y CI/CD) | 12 | ~1 min |
-| Infraestructura 2 | Infraestructura | DevOps: operar y observar (Kubernetes y observabilidad) | 13–14 | ~2 min |
+| Infraestructura 1 | Infraestructura | DevOps: Docker, Compose y Codespaces, y la observabilidad | 12, 14 | ~2 min |
+| Infraestructura 2 | Infraestructura | DevOps: CI/CD y Kubernetes | 13 | ~1 min |
 
 Cada persona tiene su guion aparte en `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
@@ -680,7 +680,7 @@ Presenta: Infraestructura 1.
 
 ## 6 · Observabilidad · vista general
 
-Presenta: Infraestructura 2.
+Presenta: Infraestructura 1.
 
 ### 14. Todos los logs, en un solo lugar
 
@@ -704,7 +704,7 @@ Presenta: Infraestructura 2.
 
 **Qué decir**
 
-> La observabilidad la vemos de forma general. Con varios servicios, cada uno tiene sus logs, y si algo falla no queremos entrar contenedor por contenedor. Cada servicio escribe sus logs en JSON, con un formato estándar. **▶ clic** Promtail los recoge de todos los contenedores, **▶ clic** Loki los guarda etiquetados por servicio **▶ clic** y Grafana nos deja buscarlos en un solo lugar.
+> Gracias. La observabilidad la vemos de forma general. Con varios servicios, cada uno tiene sus logs, y si algo falla no queremos entrar contenedor por contenedor. Cada servicio escribe sus logs en JSON, con un formato estándar. **▶ clic** Promtail los recoge de todos los contenedores, **▶ clic** Loki los guarda etiquetados por servicio **▶ clic** y Grafana nos deja buscarlos en un solo lugar.
 >
 > Como cada llamada lleva su traceId, con una sola búsqueda vemos el viaje completo de un evento: cuándo lo publicó el relevador y cuándo lo consumió notificaciones. Y cada servicio expone su salud, que la interfaz muestra en verde o en rojo; lo van a ver en la demostración.
 

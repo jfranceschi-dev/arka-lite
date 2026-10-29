@@ -16,8 +16,8 @@ export const NOMBRE_ROL: Record<Rol, string> = {
   bd: "Base de datos",
   orm: "Apoyo en base de datos: la misma regla, el ORM y la conexión",
   interconexion: "Interconexión de servicios",
-  plataforma: "DevOps: construir y entregar (Docker, Compose, Codespaces y CI/CD)",
-  operacion: "DevOps: operar y observar (Kubernetes y observabilidad)",
+  plataforma: "DevOps: Docker, Compose y Codespaces, y la observabilidad",
+  operacion: "DevOps: CI/CD y Kubernetes",
   demostracion: "Demostración con la UI",
 };
 
