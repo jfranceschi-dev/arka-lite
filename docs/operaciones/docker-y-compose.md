@@ -137,7 +137,7 @@ Las reglas principales excluyen:
 | `build/`, `dist/` | Resultados generados por otras herramientas. |
 | `.DS_Store` | Metadata local de macOS; aparece en el archivo de la raíz. |
 
-Se deben confirmar el código, `pom.xml`, Maven Wrapper, Dockerfile, Compose y documentación. No se confirman `target/`, secretos, archivos `.env` con credenciales ni preferencias personales. El `.gitignore` actual no contiene una regla para `.env`; si se empieza a usar, se debe agregar la regla antes de guardar valores sensibles y comprobar `git status`.
+Se deben confirmar el código, `pom.xml`, Maven Wrapper, Dockerfile, Compose y documentación. No se confirman `target/`, secretos, archivos `.env` con credenciales ni preferencias personales. El `.gitignore` ignora `.env`. Compose lo lee solo desde la raíz: en un Codespace lo escribe `.devcontainer/levantar.sh` con las direcciones públicas de los puertos (ver [Codespaces](codespaces.md)). Antes de guardar ahí valores sensibles, comprobar con `git status` que no aparece.
 
 Comandos útiles:
 

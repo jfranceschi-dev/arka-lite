@@ -31,6 +31,9 @@ services:
       DB_URL: jdbc:postgresql://db-notificaciones:5432/db-notificaciones
       DB_USER: arka
       DB_PASSWORD: arka
+      # Detrás de un proxy https (Codespaces), Swagger arma sus direcciones con
+      # las cabeceras X-Forwarded-*. Sin proxy no cambia nada.
+      SERVER_FORWARD_HEADERS_STRATEGY: ${ARKA_FORWARD_HEADERS:-none}
     depends_on:
       db-notificaciones:
         condition: service_healthy
@@ -48,6 +51,7 @@ services:
       DB_URL: jdbc:postgresql://db-solicitudes:5432/db-solicitudes
       DB_USER: arka
       DB_PASSWORD: arka
+      SERVER_FORWARD_HEADERS_STRATEGY: ${ARKA_FORWARD_HEADERS:-none}
     depends_on:
       servicio-notificaciones:
         condition: service_healthy
@@ -66,10 +70,11 @@ services:
       # nginx reenvía /api a cada servicio por su nombre en la red de Compose.
       ARKA_SOLICITUDES_ORIGEN: http://servicio-solicitudes:8080
       ARKA_NOTIFICACIONES_ORIGEN: http://servicio-notificaciones:8080
-      # Enlaces que abre el navegador (puertos publicados en este archivo).
-      ARKA_ENLACE_SWAGGER_SOLICITUDES: http://localhost:${SOLICITUDES_PORT:-18080}/swagger-ui/index.html
-      ARKA_ENLACE_SWAGGER_NOTIFICACIONES: http://localhost:${NOTIFICACIONES_PORT:-18081}/swagger-ui/index.html
-      ARKA_ENLACE_GRAFANA: http://localhost:3000
+      # Enlaces que abre el navegador: los puertos publicados en este archivo,
+      # o las direcciones públicas que define .env (por ejemplo, en Codespaces).
+      ARKA_ENLACE_SWAGGER_SOLICITUDES: ${ARKA_URL_PUBLICA_SOLICITUDES:-http://localhost:${SOLICITUDES_PORT:-18080}}/swagger-ui/index.html
+      ARKA_ENLACE_SWAGGER_NOTIFICACIONES: ${ARKA_URL_PUBLICA_NOTIFICACIONES:-http://localhost:${NOTIFICACIONES_PORT:-18081}}/swagger-ui/index.html
+      ARKA_ENLACE_GRAFANA: ${ARKA_URL_PUBLICA_GRAFANA:-http://localhost:3000}
     depends_on:
       servicio-solicitudes:
         condition: service_started
@@ -105,6 +110,8 @@ services:
     environment:
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+      # La dirección con la que el navegador llega a Grafana.
+      GF_SERVER_ROOT_URL: ${ARKA_URL_PUBLICA_GRAFANA:-http://localhost:3000}
     depends_on: [loki]
 
 secrets:

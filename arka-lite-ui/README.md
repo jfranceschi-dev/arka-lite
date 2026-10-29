@@ -87,7 +87,11 @@ docker compose ps
 Compose publica las API en `http://localhost:18080` (solicitudes) y
 `http://localhost:18081` (notificaciones). Los enlaces de Swagger se ajustan
 automáticamente con `SOLICITUDES_PORT` y `NOTIFICACIONES_PORT`; el proxy sigue
-usando los nombres y puertos internos. Para usar `npm run dev` contra estas API,
+usando los nombres y puertos internos. Si el navegador llega por otra dirección,
+como en GitHub Codespaces, `ARKA_URL_PUBLICA_SOLICITUDES`,
+`ARKA_URL_PUBLICA_NOTIFICACIONES` y `ARKA_URL_PUBLICA_GRAFANA` (en `.env`)
+reemplazan a `http://localhost:…` en los enlaces; ver
+[`docs/operaciones/codespaces.md`](../docs/operaciones/codespaces.md). Para usar `npm run dev` contra estas API,
 definir `ARKA_SOLICITUDES_ORIGEN=http://localhost:18080` y
 `ARKA_NOTIFICACIONES_ORIGEN=http://localhost:18081` antes de iniciarlo.
 

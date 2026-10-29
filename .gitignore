@@ -37,3 +37,6 @@ build/
 
 ### Capturas de Windows sueltas en la raíz ###
 /Captura de pantalla*
+
+### Variables locales de Compose (las genera .devcontainer/levantar.sh en Codespaces) ###
+.env

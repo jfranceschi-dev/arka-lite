@@ -6,6 +6,7 @@ Material para construir, ejecutar y diagnosticar la solución.
 - [Kubernetes local con Docker Desktop](kubernetes-local.md)
 - [Limpieza de Kubernetes local](kubernetes-limpieza.md)
 - [Diagnóstico del esquema y arranque](correccion-arranque.md)
+- [Demostración en vivo con GitHub Codespaces](codespaces.md)
 
 ## Scripts de apoyo
 
@@ -14,7 +15,8 @@ Se ejecutan desde la raíz con Bash (por ejemplo, Git Bash o WSL con acceso a Do
 | Script | Uso |
 | --- | --- |
 | `bash construir.sh` | Construye ambas imágenes `:local` y las carga en minikube si ese es el contexto activo. |
-| `bash smoke.sh` | Levanta Compose y comprueba seis capas del sistema. |
+| `bash smoke.sh` | Levanta Compose, comprueba siete capas del sistema y lo apaga al terminar. |
+| `bash .devcontainer/levantar.sh` | Dentro de un Codespace: levanta el sistema completo para la demostración. |
 | `bash verificar_sistema.sh` | Ejecuta ocho comprobaciones del laboratorio; requiere Kubernetes de Docker Desktop. |
 
 Los scripts pueden construir imágenes y modificar el entorno local. Revisa el resultado de cada comprobación: `smoke.sh` puede terminar con código cero incluso si falla el arranque, por lo que no sustituye una validación de CI.
