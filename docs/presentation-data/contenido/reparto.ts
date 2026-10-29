@@ -6,6 +6,9 @@ import type { Rol } from "./tipos.ts";
 // divisiones porque el equipo puede ser de 8 (cinco de desarrollo) o de 7
 // (cuatro de desarrollo, si una persona no está).
 
+// El nombre del equipo: va en la portada y en el cierre.
+export const NOMBRE_EQUIPO = "Equipo arka-litos";
+
 export const NOMBRE_ROL: Record<Rol, string> = {
   orquestador: "Apertura, el negocio y el cierre",
   fundamentos: "Fundamentos",

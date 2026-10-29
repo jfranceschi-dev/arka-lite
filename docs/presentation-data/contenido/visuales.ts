@@ -38,7 +38,7 @@ export function lineasDeVisual(v: Visual): string[] {
     case "ruta":
       return secciones.filter((s) => s.numero !== null).map((s) => `${s.numero}. ${s.titulo}${s.enfoque ? ` (${NOMBRE_ENFOQUE[s.enfoque].toLowerCase()})` : ""}${s.subtitulo ? `: ${s.subtitulo}` : ""}`);
     case "equipo":
-      return v.areas.map((a) => `${linea(a)} (${a.cuantos}). Presenta: ${a.partes.join(", ")}.`);
+      return v.areas.map((a) => `${a.titulo}: ${a.cuantos} ${a.cuantos === "1" ? "persona" : "personas"}. ${a.texto ?? ""} Presenta: ${a.partes.join(", ")}.`);
     case "sistema": {
       const [s1, s2] = v.servicios;
       const [b1, b2] = v.bases;

@@ -2,7 +2,7 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-20 láminas, unos 19 minutos de exposición sin contar la demostración en vivo ni las preguntas. Charla corta: el equipo, el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo y el valor.
+19 láminas, unos 18 minutos de exposición sin contar la demostración en vivo ni las preguntas. Charla corta: el equipo, el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo y el valor.
 
 ## Cómo está pensada
 
@@ -10,13 +10,13 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 
 | Parte | Enfoque | Láminas | Qué se ve |
 | --- | --- | --- | --- |
-| 1. Fundamentos | Vista general | 4–5 | Primero el qué, después el cómo: el negocio claro y buenas prácticas que sirven en cualquier lenguaje. |
-| 2. Arquitectura | Vista general | 6–7 | El sistema por fuera: qué piezas hay y cómo trabajan juntas. |
-| 3. Base de datos | A fondo | 8–10 | Dos bases PostgreSQL, el ORM, la cadena de conexión y las transacciones. |
-| 4. Interconexión de servicios | A fondo | 11–12 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
-| 5. DevOps: Docker y Kubernetes | A fondo | 13–14 | Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio. |
-| 6. Observabilidad | Vista general | 15 | Logs en un solo lugar, trazas entre servicios y salud de cada componente. |
-| 7. Demostración con la UI | En vivo | 16 | La UI ejemplifica en vivo lo que contamos: estados, Outbox, idempotencia y salud. |
+| 1. Fundamentos | Vista general | 3–4 | Primero el qué, después el cómo: el negocio claro y buenas prácticas que sirven en cualquier lenguaje. |
+| 2. Arquitectura | Vista general | 5–6 | El sistema por fuera: qué piezas hay y cómo trabajan juntas. |
+| 3. Base de datos | A fondo | 7–9 | Dos bases PostgreSQL, el ORM, la cadena de conexión y las transacciones. |
+| 4. Interconexión de servicios | A fondo | 10–11 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
+| 5. DevOps: Docker y Kubernetes | A fondo | 12–13 | Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio. |
+| 6. Observabilidad | Vista general | 14 | Logs en un solo lugar, trazas entre servicios y salud de cada componente. |
+| 7. Demostración con la UI | En vivo | 15 | La UI ejemplifica en vivo lo que contamos: estados, Outbox, idempotencia y salud. |
 
 ## Reparto
 
@@ -28,14 +28,14 @@ Si estamos los cinco de desarrollo.
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
-| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–4, 17–20 | ~6 min |
-| Desarrollo 2 | Desarrollo | Fundamentos | 5 | ~1 min |
-| Desarrollo 3 | Desarrollo | Arquitectura | 6–7 | ~2 min |
-| Desarrollo 4 | Desarrollo | El ORM por dentro y Demostración con la UI | 16 | ~1 min |
-| Desarrollo 5 | Desarrollo | Interconexión de servicios | 11–12 | ~3 min |
-| Base de datos | Base de datos | Base de datos | 8–10 | ~3 min |
-| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 13 | ~1 min |
-| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 14–15 | ~2 min |
+| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–3, 16–19 | ~6 min |
+| Desarrollo 2 | Desarrollo | Fundamentos | 4 | ~1 min |
+| Desarrollo 3 | Desarrollo | Arquitectura | 5–6 | ~2 min |
+| Desarrollo 4 | Desarrollo | El ORM por dentro y Demostración con la UI | 15 | ~1 min |
+| Desarrollo 5 | Desarrollo | Interconexión de servicios | 10–11 | ~3 min |
+| Base de datos | Base de datos | Base de datos | 7–9 | ~3 min |
+| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 12 | ~1 min |
+| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 13–14 | ~2 min |
 
 ### Si somos 7 personas
 
@@ -43,13 +43,13 @@ Si somos cuatro de desarrollo: fundamentos y arquitectura, las dos partes en vis
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
-| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–4, 17–20 | ~6 min |
-| Desarrollo 2 | Desarrollo | Fundamentos y Arquitectura | 5–7 | ~3 min |
-| Desarrollo 3 | Desarrollo | El ORM por dentro y Demostración con la UI | 16 | ~1 min |
-| Desarrollo 4 | Desarrollo | Interconexión de servicios | 11–12 | ~3 min |
-| Base de datos | Base de datos | Base de datos | 8–10 | ~3 min |
-| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 13 | ~1 min |
-| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 14–15 | ~2 min |
+| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–3, 16–19 | ~6 min |
+| Desarrollo 2 | Desarrollo | Fundamentos y Arquitectura | 4–6 | ~3 min |
+| Desarrollo 3 | Desarrollo | El ORM por dentro y Demostración con la UI | 15 | ~1 min |
+| Desarrollo 4 | Desarrollo | Interconexión de servicios | 10–11 | ~3 min |
+| Base de datos | Base de datos | Base de datos | 7–9 | ~3 min |
+| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 12 | ~1 min |
+| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 13–14 | ~2 min |
 
 Cada persona tiene su guion aparte en `guion-ejecutivo-8-personas.md` y `guion-ejecutivo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
@@ -117,6 +117,8 @@ Presenta: Orquestador.
 
 > Buenos días a todos. Somos el equipo arka-litos, del curso Upskilling Backend Java, y hoy les presentamos ARKA-Lite, nuestro proyecto final.
 >
+> Somos un equipo de tres áreas, las mismas que tienen ustedes: desarrollo, base de datos e infraestructura, y cada parte la presenta quien la construyó. A mí, que vengo de desarrollo y conozco el negocio de punta a punta, me toca abrir, conectar las partes y cerrar.
+>
 > El título lo resume: empezamos escribiendo un endpoint, una sola operación en Java, y terminamos con un sistema completo corriendo en un clúster de Kubernetes, con sus bases de datos, su pipeline y su monitoreo.
 >
 > El equipo anterior ya les explicó los fundamentos y la arquitectura. Nosotros les vamos a contar el proyecto desde la práctica, con diagramas y una demostración en vivo, y nos vamos a enfocar en lo que les puede servir en su día a día: cómo se cuidan los datos, cómo se hablan los sistemas y cómo se despliega y se opera todo.
@@ -132,42 +134,12 @@ Presenta: Orquestador.
 > ARKA-Lite nació como el laboratorio del curso: cada tema que veíamos lo aplicábamos al mismo sistema. Por eso creció por capas: primero un endpoint, después la base de datos, la comunicación entre servicios, los contenedores, el pipeline y la observabilidad.
 >
 > Todo lo que van a ver está en un solo repositorio, con su documentación, y se levanta con un solo comando. Si a alguien le interesa revisarlo después, con gusto se lo compartimos.
-
-**Para pasar:** “Primero, quiénes somos.”
-
-### 2. Equipo arka-litos
-
-**En pantalla · El equipo por área:**
-
-- Orquestación: Conoce el negocio completo: abre, conecta las partes y cierra. (1, de desarrollo). Presenta: Apertura, El negocio, Cierre.
-- Desarrollo: Escribieron los servicios, la UI y las pruebas. (4 o 5 personas). Presenta: Fundamentos, Arquitectura, El ORM, Interconexión, Demostración.
-- Base de datos: Diseñó las tablas y cómo se conecta el código. (1 persona). Presenta: Base de datos.
-- Infraestructura: Empaquetan, despliegan y vigilan el sistema. (2 personas). Presenta: Docker y Kubernetes, CI/CD, Observabilidad.
-
-**Ideas clave:**
-
-- Desarrollo: 4 o 5 personas
-- Base de datos: 1 persona
-- Infraestructura: 2 personas
-- Una persona de desarrollo orquesta: abre, conecta y cierra
-
-**Lo que se lleva el staff:** Un mismo proyecto visto desde las tres áreas que ustedes también tienen.
-
-**Qué decir**
-
-> Somos un equipo de tres áreas, las mismas que tienen ustedes: desarrollo, base de datos e infraestructura. Cada parte la presenta quien la construyó.
 >
-> Desarrollo escribió los servicios, la interfaz y las pruebas, y va a contar los fundamentos, la arquitectura, el ORM, la comunicación entre servicios y la demostración. Base de datos cuenta cómo se guardan y se cuidan los datos. Infraestructura, cómo se empaqueta, se despliega y se vigila. Y yo, que vengo de desarrollo y conozco el negocio de punta a punta, voy a abrir, conectar las partes y cerrar.
-
-**Si hay tiempo, se puede agregar**
-
-> Trabajamos como trabajaría un equipo real: cada cambio en una rama, revisado por otra persona y probado por el pipeline antes de entrar.
->
-> Mezclar áreas nos obligó a ponernos de acuerdo en contratos claros: qué expone cada servicio, qué guarda cada base y cómo se despliega cada pieza.
+> Trabajamos como trabajaría un equipo real: cada cambio en una rama, revisado por otra persona y probado por el pipeline antes de entrar. Mezclar áreas nos obligó a ponernos de acuerdo en contratos claros: qué expone cada servicio, qué guarda cada base y cómo se despliega cada pieza.
 
 **Para pasar:** “Este es el recorrido.”
 
-### 3. Qué vamos a ver
+### 2. Qué vamos a ver
 
 **En pantalla · La ruta de las partes:**
 
@@ -209,7 +181,7 @@ Presenta: Orquestador.
 
 Presenta: Desarrollo 2.
 
-### 4. Primero el qué: el negocio en una lámina
+### 3. Primero el qué: el negocio en una lámina
 
 **Presenta:** Orquestador
 
@@ -255,7 +227,7 @@ Presenta: Desarrollo 2.
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
-### 5. Código mantenible: buenas prácticas
+### 4. Código mantenible: buenas prácticas
 
 **En pantalla · Tarjetas:**
 
@@ -303,7 +275,7 @@ Presenta: Desarrollo 2.
 
 Presenta: Desarrollo 3 (8 personas) · Desarrollo 2 (7 personas).
 
-### 6. El sistema de un vistazo
+### 5. El sistema de un vistazo
 
 **En pantalla · Capas del sistema:**
 
@@ -341,7 +313,7 @@ Presenta: Desarrollo 3 (8 personas) · Desarrollo 2 (7 personas).
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
-### 7. Cómo funciona en la práctica
+### 6. Cómo funciona en la práctica
 
 **En pantalla · El sistema en la práctica:**
 
@@ -388,7 +360,7 @@ Presenta: Desarrollo 3 (8 personas) · Desarrollo 2 (7 personas).
 
 Presenta: Base de datos.
 
-### 8. Dos bases, una por servicio
+### 7. Dos bases, una por servicio
 
 **En pantalla · Números grandes:**
 
@@ -434,7 +406,7 @@ Presenta: Base de datos.
 
 **Para leer más:** `docs/inicio/bases-de-datos-locales.md`
 
-### 9. Del procedimiento almacenado al ORM
+### 8. Del procedimiento almacenado al ORM
 
 **En pantalla · Dos caminos, lado a lado:**
 
@@ -476,7 +448,7 @@ Presenta: Base de datos.
 
 **Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
 
-### 10. ¿Dónde está la cadena de conexión?
+### 9. ¿Dónde está la cadena de conexión?
 
 **En pantalla · De dónde sale cada valor:**
 
@@ -534,7 +506,7 @@ Presenta: Base de datos.
 
 Presenta: Desarrollo 5 (8 personas) · Desarrollo 4 (7 personas).
 
-### 11. Síncrono o asíncrono
+### 10. Síncrono o asíncrono
 
 **En pantalla · Dos maneras, lado a lado:**
 
@@ -572,7 +544,7 @@ Presenta: Desarrollo 5 (8 personas) · Desarrollo 4 (7 personas).
 
 **Para pasar:** “¿Y cómo logramos que el evento espere sin perderse? Con el patrón Outbox.”
 
-### 12. Patrón Outbox: guardar primero, avisar después
+### 11. Patrón Outbox: guardar primero, avisar después
 
 **En pantalla · Flujo paso a paso:**
 
@@ -629,7 +601,7 @@ Presenta: Desarrollo 5 (8 personas) · Desarrollo 4 (7 personas).
 
 Presenta: Infraestructura 1.
 
-### 13. Docker y Kubernetes: no compiten, se complementan
+### 12. Docker y Kubernetes: no compiten, se complementan
 
 **En pantalla · Dos maneras, lado a lado:**
 
@@ -673,7 +645,7 @@ Presenta: Infraestructura 1.
 
 **Para leer más:** `docs/operaciones/docker-y-compose.md`
 
-### 14. Cuando un Pod se cae
+### 13. Cuando un Pod se cae
 
 **Presenta:** Infraestructura 2
 
@@ -723,7 +695,7 @@ Presenta: Infraestructura 1.
 
 Presenta: Infraestructura 2.
 
-### 15. Todos los logs, en un solo lugar
+### 14. Todos los logs, en un solo lugar
 
 **En pantalla · Flujo paso a paso:**
 
@@ -767,7 +739,7 @@ Presenta: Infraestructura 2.
 
 Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
 
-### 16. En vivo: si notificaciones se cae
+### 15. En vivo: si notificaciones se cae
 
 **En pantalla · Qué pasa cuando falla:**
 
@@ -820,7 +792,7 @@ Presenta: Desarrollo 4 (8 personas) · Desarrollo 3 (7 personas).
 
 Presenta: Orquestador.
 
-### 17. El valor agregado
+### 16. El valor agregado
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -852,7 +824,7 @@ Presenta: Orquestador.
 
 **Para pasar:** “Y lo más importante: qué pueden aplicar ustedes desde mañana.”
 
-### 18. Lo que pueden aplicar desde mañana
+### 17. Lo que pueden aplicar desde mañana
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -892,7 +864,7 @@ Presenta: Orquestador.
 
 **Para pasar:** “Si nos llevamos solo tres ideas, que sean estas.”
 
-### 19. Lo que nos llevamos
+### 18. Lo que nos llevamos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -920,7 +892,7 @@ Presenta: Orquestador.
 
 **Para pasar:** “Gracias por su atención.”
 
-### 20. Gracias
+### 19. Gracias
 
 **En pantalla:**
 

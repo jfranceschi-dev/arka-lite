@@ -2,21 +2,21 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-Si somos cuatro de desarrollo: fundamentos y arquitectura, las dos partes en vista general, quedan en una sola persona. Recorrido ejecutivo, 40 láminas. Cada persona tiene aquí solo lo suyo, con el número de lámina del PPTX.
+Si somos cuatro de desarrollo: fundamentos y arquitectura, las dos partes en vista general, quedan en una sola persona. Recorrido ejecutivo, 39 láminas. Cada persona tiene aquí solo lo suyo, con el número de lámina del PPTX.
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
-| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–4, 37–40 | ~6 min |
-| Desarrollo 2 | Desarrollo | Fundamentos y Arquitectura | 5–11 | ~5 min |
-| Desarrollo 3 | Desarrollo | El ORM por dentro y Demostración con la UI | 16–17, 34–36 | ~5 min |
-| Desarrollo 4 | Desarrollo | Interconexión de servicios | 21–25 | ~5 min |
-| Base de datos | Base de datos | Base de datos | 12–15, 18–20 | ~7 min |
-| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 26–28 | ~3 min |
-| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 29–33 | ~4 min |
+| Orquestador | Desarrollo | Apertura, el negocio y el cierre | 1–3, 36–39 | ~6 min |
+| Desarrollo 2 | Desarrollo | Fundamentos y Arquitectura | 4–10 | ~5 min |
+| Desarrollo 3 | Desarrollo | El ORM por dentro y Demostración con la UI | 15–16, 33–35 | ~5 min |
+| Desarrollo 4 | Desarrollo | Interconexión de servicios | 20–24 | ~5 min |
+| Base de datos | Base de datos | Base de datos | 11–14, 17–19 | ~7 min |
+| Infraestructura 1 | Infraestructura | Docker, CI/CD y Codespaces | 25–27 | ~3 min |
+| Infraestructura 2 | Infraestructura | Kubernetes, autocuración y observabilidad | 28–32 | ~4 min |
 
 ## Orquestador · Apertura, el negocio y el cierre
 
-Láminas 1–4, 37–40 · unos 6 minutos.
+Láminas 1–3, 36–39 · unos 6 minutos.
 
 > **Recibes la palabra** al empezar la presentación.
 
@@ -39,6 +39,8 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 
 > Buenos días a todos. Somos el equipo arka-litos, del curso Upskilling Backend Java, y hoy les presentamos ARKA-Lite, nuestro proyecto final.
 >
+> Somos un equipo de tres áreas, las mismas que tienen ustedes: desarrollo, base de datos e infraestructura, y cada parte la presenta quien la construyó. A mí, que vengo de desarrollo y conozco el negocio de punta a punta, me toca abrir, conectar las partes y cerrar.
+>
 > El título lo resume: empezamos escribiendo un endpoint, una sola operación en Java, y terminamos con un sistema completo corriendo en un clúster de Kubernetes, con sus bases de datos, su pipeline y su monitoreo.
 >
 > El equipo anterior ya les explicó los fundamentos y la arquitectura. Nosotros les vamos a contar el proyecto desde la práctica, con diagramas y una demostración en vivo, y nos vamos a enfocar en lo que les puede servir en su día a día: cómo se cuidan los datos, cómo se hablan los sistemas y cómo se despliega y se opera todo.
@@ -54,42 +56,12 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 > ARKA-Lite nació como el laboratorio del curso: cada tema que veíamos lo aplicábamos al mismo sistema. Por eso creció por capas: primero un endpoint, después la base de datos, la comunicación entre servicios, los contenedores, el pipeline y la observabilidad.
 >
 > Todo lo que van a ver está en un solo repositorio, con su documentación, y se levanta con un solo comando. Si a alguien le interesa revisarlo después, con gusto se lo compartimos.
-
-**Para pasar:** “Primero, quiénes somos.”
-
-### 2. Equipo arka-litos
-
-**En pantalla · El equipo por área:**
-
-- Orquestación: Conoce el negocio completo: abre, conecta las partes y cierra. (1, de desarrollo). Presenta: Apertura, El negocio, Cierre.
-- Desarrollo: Escribieron los servicios, la UI y las pruebas. (4 o 5 personas). Presenta: Fundamentos, Arquitectura, El ORM, Interconexión, Demostración.
-- Base de datos: Diseñó las tablas y cómo se conecta el código. (1 persona). Presenta: Base de datos.
-- Infraestructura: Empaquetan, despliegan y vigilan el sistema. (2 personas). Presenta: Docker y Kubernetes, CI/CD, Observabilidad.
-
-**Ideas clave:**
-
-- Desarrollo: 4 o 5 personas
-- Base de datos: 1 persona
-- Infraestructura: 2 personas
-- Una persona de desarrollo orquesta: abre, conecta y cierra
-
-**Lo que se lleva el staff:** Un mismo proyecto visto desde las tres áreas que ustedes también tienen.
-
-**Qué decir**
-
-> Somos un equipo de tres áreas, las mismas que tienen ustedes: desarrollo, base de datos e infraestructura. Cada parte la presenta quien la construyó.
 >
-> Desarrollo escribió los servicios, la interfaz y las pruebas, y va a contar los fundamentos, la arquitectura, el ORM, la comunicación entre servicios y la demostración. Base de datos cuenta cómo se guardan y se cuidan los datos. Infraestructura, cómo se empaqueta, se despliega y se vigila. Y yo, que vengo de desarrollo y conozco el negocio de punta a punta, voy a abrir, conectar las partes y cerrar.
-
-**Si hay tiempo, se puede agregar**
-
-> Trabajamos como trabajaría un equipo real: cada cambio en una rama, revisado por otra persona y probado por el pipeline antes de entrar.
->
-> Mezclar áreas nos obligó a ponernos de acuerdo en contratos claros: qué expone cada servicio, qué guarda cada base y cómo se despliega cada pieza.
+> Trabajamos como trabajaría un equipo real: cada cambio en una rama, revisado por otra persona y probado por el pipeline antes de entrar. Mezclar áreas nos obligó a ponernos de acuerdo en contratos claros: qué expone cada servicio, qué guarda cada base y cómo se despliega cada pieza.
 
 **Para pasar:** “Este es el recorrido.”
 
-### 3. Qué vamos a ver
+### 2. Qué vamos a ver
 
 **En pantalla · La ruta de las partes:**
 
@@ -127,7 +99,7 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 
 **Para pasar:** “Empecemos por los fundamentos, y por lo primero: el qué.”
 
-### 4. Primero el qué: el negocio en una lámina
+### 3. Primero el qué: el negocio en una lámina
 
 **En pantalla · Flujo paso a paso:**
 
@@ -171,11 +143,11 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
-> **Entregas la palabra** a Desarrollo 2 (lámina 5).
+> **Entregas la palabra** a Desarrollo 2 (lámina 4).
 
-> **Recibes la palabra** de Desarrollo 3, después de la lámina 36.
+> **Recibes la palabra** de Desarrollo 3, después de la lámina 35.
 
-### 37. El valor agregado
+### 36. El valor agregado
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -207,7 +179,7 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 
 **Para pasar:** “Y lo más importante: qué pueden aplicar ustedes desde mañana.”
 
-### 38. Lo que pueden aplicar desde mañana
+### 37. Lo que pueden aplicar desde mañana
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -247,7 +219,7 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 
 **Para pasar:** “Si nos llevamos solo tres ideas, que sean estas.”
 
-### 39. Lo que nos llevamos
+### 38. Lo que nos llevamos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -275,7 +247,7 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 
 **Para pasar:** “Gracias por su atención.”
 
-### 40. Gracias
+### 39. Gracias
 
 **En pantalla:**
 
@@ -296,11 +268,11 @@ Láminas 1–4, 37–40 · unos 6 minutos.
 
 ## Desarrollo 2 · Fundamentos y Arquitectura
 
-Láminas 5–11 · unos 5 minutos.
+Láminas 4–10 · unos 5 minutos.
 
-> **Recibes la palabra** de Orquestador, después de la lámina 4.
+> **Recibes la palabra** de Orquestador, después de la lámina 3.
 
-### 5. Código mantenible: buenas prácticas
+### 4. Código mantenible: buenas prácticas
 
 **En pantalla · Tarjetas:**
 
@@ -344,7 +316,7 @@ Láminas 5–11 · unos 5 minutos.
 
 **Para leer más:** `docs/desarrollo/flujo-de-trabajo.md`
 
-### 6. Trabajo en equipo: Git y documentación
+### 5. Trabajo en equipo: Git y documentación
 
 **En pantalla · Una rama de Git:**
 
@@ -379,7 +351,7 @@ Láminas 5–11 · unos 5 minutos.
 
 **Para leer más:** `docs/desarrollo/git.md`
 
-### 7. Fundamentos: lo que nos llevamos a cualquier proyecto
+### 6. Fundamentos: lo que nos llevamos a cualquier proyecto
 
 **En pantalla · Lo que aprendimos:**
 
@@ -411,7 +383,7 @@ Láminas 5–11 · unos 5 minutos.
 
 **Para pasar:** “Con esa base, veamos el sistema completo desde arriba.”
 
-### 8. El sistema de un vistazo
+### 7. El sistema de un vistazo
 
 **En pantalla · Capas del sistema:**
 
@@ -449,7 +421,7 @@ Láminas 5–11 · unos 5 minutos.
 
 **Para leer más:** `docs/inicio/proyecto.md`
 
-### 9. Cómo funciona en la práctica
+### 8. Cómo funciona en la práctica
 
 **En pantalla · El sistema en la práctica:**
 
@@ -492,7 +464,7 @@ Láminas 5–11 · unos 5 minutos.
 
 **Para pasar:** “¿Y cómo está ordenado cada servicio por dentro?”
 
-### 10. Por dentro de cada servicio: hexagonal
+### 9. Por dentro de cada servicio: hexagonal
 
 **En pantalla · Puertos y adaptadores:**
 
@@ -532,7 +504,7 @@ Láminas 5–11 · unos 5 minutos.
 
 **Para leer más:** `docs/arquitectura/componentes-java.md`
 
-### 11. Arquitectura: lo que aprendimos
+### 10. Arquitectura: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -564,15 +536,15 @@ Láminas 5–11 · unos 5 minutos.
 
 **Para pasar:** “Y aquí empieza la parte en la que vamos a fondo: la base de datos.”
 
-> **Entregas la palabra** a Base de datos (lámina 12).
+> **Entregas la palabra** a Base de datos (lámina 11).
 
 ## Desarrollo 3 · El ORM por dentro y Demostración con la UI
 
-Láminas 16–17, 34–36 · unos 5 minutos.
+Láminas 15–16, 33–35 · unos 5 minutos.
 
-> **Recibes la palabra** de Base de datos, después de la lámina 15.
+> **Recibes la palabra** de Base de datos, después de la lámina 14.
 
-### 16. El ORM por dentro: una clase es una tabla
+### 15. El ORM por dentro: una clase es una tabla
 
 **En pantalla · De la clase a la tabla:**
 
@@ -619,7 +591,7 @@ Láminas 16–17, 34–36 · unos 5 minutos.
 
 **Para pasar:** “Ahora sigamos un dato completo, desde la pantalla hasta la fila.”
 
-### 17. El viaje de un dato: de la pantalla a la fila
+### 16. El viaje de un dato: de la pantalla a la fila
 
 **En pantalla · Flujo paso a paso:**
 
@@ -657,11 +629,11 @@ Láminas 16–17, 34–36 · unos 5 minutos.
 
 **Para pasar:** “Para hablar con la base, la aplicación necesita su dirección, su usuario y su clave. Le devuelvo la palabra a mi compañero de base de datos.”
 
-> **Entregas la palabra** a Base de datos (lámina 18).
+> **Entregas la palabra** a Base de datos (lámina 17).
 
-> **Recibes la palabra** de Infraestructura 2, después de la lámina 33.
+> **Recibes la palabra** de Infraestructura 2, después de la lámina 32.
 
-### 34. La UI: lo que contamos, en vivo
+### 33. La UI: lo que contamos, en vivo
 
 **En pantalla · Capturas reales:**
 
@@ -703,7 +675,7 @@ Láminas 16–17, 34–36 · unos 5 minutos.
 
 **Para leer más:** `arka-lite-ui/README.md`
 
-### 35. En vivo: si notificaciones se cae
+### 34. En vivo: si notificaciones se cae
 
 **En pantalla · Qué pasa cuando falla:**
 
@@ -752,7 +724,7 @@ Láminas 16–17, 34–36 · unos 5 minutos.
 
 **Para pasar:** “Esto es lo que aprendimos de la demostración.”
 
-### 36. Demostración: lo que aprendimos
+### 35. Demostración: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -780,15 +752,15 @@ Láminas 16–17, 34–36 · unos 5 minutos.
 
 **Para pasar:** “Para cerrar, el valor que deja todo esto.”
 
-> **Entregas la palabra** a Orquestador (lámina 37).
+> **Entregas la palabra** a Orquestador (lámina 36).
 
 ## Desarrollo 4 · Interconexión de servicios
 
-Láminas 21–25 · unos 5 minutos.
+Láminas 20–24 · unos 5 minutos.
 
-> **Recibes la palabra** de Base de datos, después de la lámina 20.
+> **Recibes la palabra** de Base de datos, después de la lámina 19.
 
-### 21. Quién habla con quién, y cómo
+### 20. Quién habla con quién, y cómo
 
 **En pantalla · Tabla de tres columnas:**
 
@@ -834,7 +806,7 @@ Láminas 21–25 · unos 5 minutos.
 
 **Para pasar:** “Hay dos formas de hablarse, y usamos las dos.”
 
-### 22. Síncrono o asíncrono
+### 21. Síncrono o asíncrono
 
 **En pantalla · Dos maneras, lado a lado:**
 
@@ -872,7 +844,7 @@ Láminas 21–25 · unos 5 minutos.
 
 **Para pasar:** “¿Y cómo logramos que el evento espere sin perderse? Con el patrón Outbox.”
 
-### 23. Patrón Outbox: guardar primero, avisar después
+### 22. Patrón Outbox: guardar primero, avisar después
 
 **En pantalla · Flujo paso a paso:**
 
@@ -925,7 +897,7 @@ Láminas 21–25 · unos 5 minutos.
 
 **Para leer más:** `docs/arquitectura/flujo-y-referencias.md`
 
-### 24. Idempotencia: el mismo evento, un solo aviso
+### 23. Idempotencia: el mismo evento, un solo aviso
 
 **En pantalla · Flujo paso a paso:**
 
@@ -974,7 +946,7 @@ Láminas 21–25 · unos 5 minutos.
 
 **Para pasar:** “Esto es lo que aprendimos de la interconexión.”
 
-### 25. Interconexión: lo que aprendimos
+### 24. Interconexión: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1006,15 +978,15 @@ Láminas 21–25 · unos 5 minutos.
 
 **Para pasar:** “Hasta aquí, el código y los datos. Ahora, ¿cómo llevamos todo esto a cualquier ambiente? Le paso la palabra a infraestructura.”
 
-> **Entregas la palabra** a Infraestructura 1 (lámina 26).
+> **Entregas la palabra** a Infraestructura 1 (lámina 25).
 
 ## Base de datos · Base de datos
 
-Láminas 12–15, 18–20 · unos 7 minutos.
+Láminas 11–14, 17–19 · unos 7 minutos.
 
-> **Recibes la palabra** de Desarrollo 2, después de la lámina 11.
+> **Recibes la palabra** de Desarrollo 2, después de la lámina 10.
 
-### 12. Dos bases, una por servicio
+### 11. Dos bases, una por servicio
 
 **En pantalla · Números grandes:**
 
@@ -1060,7 +1032,7 @@ Láminas 12–15, 18–20 · unos 7 minutos.
 
 **Para leer más:** `docs/inicio/bases-de-datos-locales.md`
 
-### 13. La estructura de las bases
+### 12. La estructura de las bases
 
 **En pantalla · Bases de datos y sus tablas:**
 
@@ -1107,7 +1079,7 @@ Láminas 12–15, 18–20 · unos 7 minutos.
 
 **Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
 
-### 14. Del procedimiento almacenado al ORM
+### 13. Del procedimiento almacenado al ORM
 
 **En pantalla · Dos caminos, lado a lado:**
 
@@ -1149,7 +1121,7 @@ Láminas 12–15, 18–20 · unos 7 minutos.
 
 **Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
 
-### 15. La misma regla, escrita de las dos formas
+### 14. La misma regla, escrita de las dos formas
 
 **En pantalla · La misma idea, en dos códigos:**
 
@@ -1185,11 +1157,11 @@ Láminas 12–15, 18–20 · unos 7 minutos.
 
 **Para pasar:** “Mi compañero de desarrollo les va a mostrar cómo hace Hibernate esa traducción.”
 
-> **Entregas la palabra** a Desarrollo 3 (lámina 16).
+> **Entregas la palabra** a Desarrollo 3 (lámina 15).
 
-> **Recibes la palabra** de Desarrollo 3, después de la lámina 17.
+> **Recibes la palabra** de Desarrollo 3, después de la lámina 16.
 
-### 18. ¿Dónde está la cadena de conexión?
+### 17. ¿Dónde está la cadena de conexión?
 
 **En pantalla · De dónde sale cada valor:**
 
@@ -1243,7 +1215,7 @@ Láminas 12–15, 18–20 · unos 7 minutos.
 
 **Para leer más:** `docs/inicio/bases-de-datos-locales.md`
 
-### 19. Una transacción: todo o nada
+### 18. Una transacción: todo o nada
 
 **En pantalla · Flujo paso a paso:**
 
@@ -1288,7 +1260,7 @@ Láminas 12–15, 18–20 · unos 7 minutos.
 
 **Para pasar:** “Esto es lo que nos dejó la base de datos.”
 
-### 20. Base de datos: lo que aprendimos
+### 19. Base de datos: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1320,15 +1292,15 @@ Láminas 12–15, 18–20 · unos 7 minutos.
 
 **Para pasar:** “Esa transacción local es justo la base de la siguiente parte: cómo se avisan los servicios sin perder ni duplicar nada.”
 
-> **Entregas la palabra** a Desarrollo 4 (lámina 21).
+> **Entregas la palabra** a Desarrollo 4 (lámina 20).
 
 ## Infraestructura 1 · Docker, CI/CD y Codespaces
 
-Láminas 26–28 · unos 3 minutos.
+Láminas 25–27 · unos 3 minutos.
 
-> **Recibes la palabra** de Desarrollo 4, después de la lámina 25.
+> **Recibes la palabra** de Desarrollo 4, después de la lámina 24.
 
-### 26. Docker y Kubernetes: no compiten, se complementan
+### 25. Docker y Kubernetes: no compiten, se complementan
 
 **En pantalla · Dos maneras, lado a lado:**
 
@@ -1372,7 +1344,7 @@ Láminas 26–28 · unos 3 minutos.
 
 **Para leer más:** `docs/operaciones/docker-y-compose.md`
 
-### 27. CI/CD: del push a la imagen publicada
+### 26. CI/CD: del push a la imagen publicada
 
 **En pantalla · Dos caminos, lado a lado:**
 
@@ -1418,7 +1390,7 @@ Láminas 26–28 · unos 3 minutos.
 
 **Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
 
-### 28. Sin instalar nada: GitHub Codespaces
+### 27. Sin instalar nada: GitHub Codespaces
 
 **En pantalla · Flujo paso a paso:**
 
@@ -1461,15 +1433,15 @@ Láminas 26–28 · unos 3 minutos.
 
 **Para leer más:** `docs/operaciones/codespaces.md`
 
-> **Entregas la palabra** a Infraestructura 2 (lámina 29).
+> **Entregas la palabra** a Infraestructura 2 (lámina 28).
 
 ## Infraestructura 2 · Kubernetes, autocuración y observabilidad
 
-Láminas 29–33 · unos 4 minutos.
+Láminas 28–32 · unos 4 minutos.
 
-> **Recibes la palabra** de Infraestructura 1, después de la lámina 28.
+> **Recibes la palabra** de Infraestructura 1, después de la lámina 27.
 
-### 29. Los recursos de Kubernetes
+### 28. Los recursos de Kubernetes
 
 **En pantalla · Capas del sistema:**
 
@@ -1509,7 +1481,7 @@ Láminas 29–33 · unos 4 minutos.
 
 **Para leer más:** `docs/operaciones/kubernetes-local.md`
 
-### 30. Cuando un Pod se cae
+### 29. Cuando un Pod se cae
 
 **En pantalla · Qué pasa cuando falla:**
 
@@ -1553,7 +1525,7 @@ Láminas 29–33 · unos 4 minutos.
 
 **Para pasar:** “Esto es lo que aprendimos de DevOps.”
 
-### 31. DevOps: lo que aprendimos
+### 30. DevOps: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1585,7 +1557,7 @@ Láminas 29–33 · unos 4 minutos.
 
 **Para pasar:** “Ya está desplegado. ¿Cómo sabemos qué pasa adentro?”
 
-### 32. Todos los logs, en un solo lugar
+### 31. Todos los logs, en un solo lugar
 
 **En pantalla · Flujo paso a paso:**
 
@@ -1625,7 +1597,7 @@ Láminas 29–33 · unos 4 minutos.
 
 **Para leer más:** `docs/operaciones/observabilidad.md`
 
-### 33. Observabilidad: lo que aprendimos
+### 32. Observabilidad: lo que aprendimos
 
 **En pantalla · Lo que aprendimos:**
 
@@ -1653,4 +1625,4 @@ Láminas 29–33 · unos 4 minutos.
 
 **Para pasar:** “Y ahora sí, veamos todo esto funcionando.”
 
-> **Entregas la palabra** a Desarrollo 3 (lámina 34).
+> **Entregas la palabra** a Desarrollo 3 (lámina 33).

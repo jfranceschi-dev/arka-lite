@@ -43,8 +43,13 @@ describe("fuente de contenido", () => {
     expect(escenarios.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("el equipo arka-litos aparece en todas las variantes", () => {
-    for (const r of ["resumen", "ejecutivo", "tecnico"] as const) expect(laminas(r).map((l) => l.id)).toContain("s00-equipo");
+  it("no hay lámina de equipo: el nombre del equipo va en la portada", () => {
+    for (const r of ["resumen", "ejecutivo", "tecnico"] as const) {
+      const ids = laminas(r).map((l) => l.id);
+      expect(ids[0]).toBe("s00-portada");
+      expect(ids).not.toContain("s00-equipo");
+      expect(laminas(r).some((l) => l.diapositiva.visual?.tipo === "equipo")).toBe(false);
+    }
   });
 
   it("reparte cada lámina en las dos divisiones: 8 y 7 personas", () => {

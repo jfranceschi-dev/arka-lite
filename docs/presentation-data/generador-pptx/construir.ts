@@ -1,6 +1,7 @@
 import PptxGenJS from "pptxgenjs";
 import { laminas, etiquetaSeccion, NOMBRE_RECORRIDO, secciones, type Lamina } from "../contenido/index.ts";
 import { textoNotas } from "../contenido/notas.ts";
+import { NOMBRE_EQUIPO } from "../contenido/reparto.ts";
 import type { BloqueCodigo, Certeza, Diapositiva, Recorrido, Tabla } from "../contenido/tipos.ts";
 import { diagramaPorId } from "../diagramas/definiciones.ts";
 import type { NombreIcono } from "../diseno/iconos.ts";
@@ -168,7 +169,8 @@ function portadaGeneral(pptx: PptxGenJS, l: Lamina, recorrido: Recorrido) {
   fondoOscuro(s);
   orbita(s, 9.55, 3.72, 2.15, { icono: "ship-wheel", texto: "ARKA-Lite" });
   logo(s, 0.83, 0.58, true);
-  s.addText("PROYECTO FINAL · UPSKILLING BACKEND JAVA", { x: 0.83, y: 1.5, w: 6, h: 0.3, margin: 0, fontFace: FUENTE, fontSize: 12, bold: true, color: hex(ACC), charSpacing: 3 });
+  // El nombre del equipo, arriba del título.
+  s.addText(`${NOMBRE_EQUIPO.toUpperCase()} · UPSKILLING BACKEND JAVA`, { x: 0.83, y: 1.5, w: 6.2, h: 0.3, margin: 0, fontFace: FUENTE, fontSize: 12, bold: true, color: hex(ACC), charSpacing: 3, fit: "shrink" });
   // El título va partido en dos líneas para que nunca alcance al subtítulo.
   const titulo = l.diapositiva.titulo.replace(/^Del endpoint /, "Del endpoint\n");
   s.addText(titulo, { x: 0.83, y: 1.88, w: 6.0, h: 1.95, margin: 0, fontFace: TITULO, fontSize: 54, bold: true, color: "FFFFFF", valign: "top", lineSpacingMultiple: 0.95, fit: "shrink" });

@@ -34,6 +34,7 @@ describe("generador PPTX", () => {
     expect(portada).toContain("VERSIÓN EJECUTIVO");
     expect(portada).toContain("Base de datos");
     expect(portada).toContain("UPSKILLING BACKEND JAVA");
+    expect(portada).toContain("EQUIPO ARKA-LITOS");
   });
 
   it("separa qué decir de qué hacer en las notas", async () => {

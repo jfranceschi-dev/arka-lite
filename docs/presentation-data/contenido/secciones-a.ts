@@ -20,7 +20,7 @@ export const apertura: Seccion = {
       visible: ["Cómo construimos dos microservicios con sus datos, su plataforma y su operación."],
       valor: "En 40 minutos, prácticas que pueden aplicar en sus propios sistemas, no solo teoría.",
       recorridos: ["resumen", "ejecutivo", "tecnico"],
-      // Las cifras de la portada.
+      // Las cifras de la portada. El nombre del equipo va en el rótulo de arriba.
       visual: {
         tipo: "cifras",
         cifras: [
@@ -33,6 +33,7 @@ export const apertura: Seccion = {
       guion: {
         decir: [
           "Buenos días a todos. Somos el equipo arka-litos, del curso Upskilling Backend Java, y hoy les presentamos ARKA-Lite, nuestro proyecto final.",
+          "Somos un equipo de tres áreas, las mismas que tienen ustedes: desarrollo, base de datos e infraestructura, y cada parte la presenta quien la construyó. A mí, que vengo de desarrollo y conozco el negocio de punta a punta, me toca abrir, conectar las partes y cerrar.",
           "El título lo resume: empezamos escribiendo un endpoint, una sola operación en Java, y terminamos con un sistema completo corriendo en un clúster de Kubernetes, con sus bases de datos, su pipeline y su monitoreo.",
           "El equipo anterior ya les explicó los fundamentos y la arquitectura. Nosotros les vamos a contar el proyecto desde la práctica, con diagramas y una demostración en vivo, y nos vamos a enfocar en lo que les puede servir en su día a día: cómo se cuidan los datos, cómo se hablan los sistemas y cómo se despliega y se opera todo.",
         ],
@@ -40,30 +41,6 @@ export const apertura: Seccion = {
           "Antes de empezar, abrir la UI (http://localhost:8088, o el puerto 8088 del Codespace) y comprobar que los dos servicios aparecen en verde. Guía del Codespace: docs/operaciones/codespaces.md.",
           "Tener abiertas en otras pestañas Grafana (http://localhost:3000) y la carpeta k8s/ del repositorio, por si preguntan.",
           "Cada diagrama se arma con clics: en el texto, ▶ CLIC marca el momento de hacer clic.",
-        ],
-        transicion: "Primero, quiénes somos.",
-      },
-    },
-    {
-      id: "s00-equipo",
-      titulo: "Equipo arka-litos",
-      idea: "Tres áreas, las mismas que las suyas, y cada parte la presenta quien la construyó.",
-      visible: ["Desarrollo: 4 o 5 personas", "Base de datos: 1 persona", "Infraestructura: 2 personas", "Una persona de desarrollo orquesta: abre, conecta y cierra"],
-      valor: "Un mismo proyecto visto desde las tres áreas que ustedes también tienen.",
-      recorridos: ["resumen", "ejecutivo", "tecnico"],
-      visual: {
-        tipo: "equipo",
-        areas: [
-          { icono: "map", titulo: "Orquestación", cuantos: "1, de desarrollo", texto: "Conoce el negocio completo: abre, conecta las partes y cierra.", tono: "violeta", partes: ["Apertura", "El negocio", "Cierre"] },
-          { icono: "code", titulo: "Desarrollo", cuantos: "4 o 5 personas", texto: "Escribieron los servicios, la UI y las pruebas.", tono: "marino", partes: ["Fundamentos", "Arquitectura", "El ORM", "Interconexión", "Demostración"] },
-          { icono: "database", titulo: "Base de datos", cuantos: "1 persona", texto: "Diseñó las tablas y cómo se conecta el código.", tono: "cian", partes: ["Base de datos"] },
-          { icono: "ship-wheel", titulo: "Infraestructura", cuantos: "2 personas", texto: "Empaquetan, despliegan y vigilan el sistema.", tono: "correcto", partes: ["Docker y Kubernetes", "CI/CD", "Observabilidad"] },
-        ],
-      },
-      guion: {
-        decir: [
-          "Somos un equipo de tres áreas, las mismas que tienen ustedes: desarrollo, base de datos e infraestructura. Cada parte la presenta quien la construyó.",
-          "Desarrollo escribió los servicios, la interfaz y las pruebas, y va a contar los fundamentos, la arquitectura, el ORM, la comunicación entre servicios y la demostración. Base de datos cuenta cómo se guardan y se cuidan los datos. Infraestructura, cómo se empaqueta, se despliega y se vigila. Y yo, que vengo de desarrollo y conozco el negocio de punta a punta, voy a abrir, conectar las partes y cerrar.",
         ],
         transicion: "Este es el recorrido.",
       },

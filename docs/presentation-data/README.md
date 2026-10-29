@@ -10,7 +10,7 @@ Todos los equipos del curso presentan las mismas secciones, pero cada uno profun
 
 | Parte | Enfoque | Qué explica |
 | --- | --- | --- |
-| Apertura | | La portada, el equipo arka-litos (cuántas personas por área) y qué vamos a ver, con el enfoque de cada parte |
+| Apertura | | La portada, con el nombre del equipo arka-litos, y qué vamos a ver, con el enfoque de cada parte. No hay lámina de equipo. |
 | 1 Fundamentos | Vista general | Primero el qué, después el cómo: el negocio en una lámina (personas y pasos), seis buenas prácticas que sirven en cualquier lenguaje y Git y documentación |
 | 2 Arquitectura | Vista general | El sistema por capas, cómo funciona en la práctica (el evento es un dato que viaja, no una pieza) y hexagonal en una frase: ordena el código por dentro, no cambia el despliegue |
 | 3 Base de datos | A fondo | Dos bases PostgreSQL, su estructura, del procedimiento almacenado al ORM, cómo traduce el ORM, el viaje de un dato, dónde está la cadena de conexión y las transacciones |
@@ -39,9 +39,9 @@ Hay tres variantes; cada una contiene a la anterior y comparten el mismo texto o
 
 | Variante | Láminas | Para qué |
 | --- | --- | --- |
-| Resumen | 20 | Charla corta: el equipo, el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo, el valor y lo que pueden aplicar desde mañana. |
-| Ejecutivo | 40 | La presentación del equipo, unos 40 minutos con la demostración: todas las partes con sus aprendizajes, sin código. |
-| Técnico | 47 | El ejecutivo más el código, la configuración, el esquema SQL y los diagramas detallados. |
+| Resumen | 19 | Charla corta: el negocio, el sistema, la base de datos, la interconexión, DevOps, una caída en vivo, el valor y lo que pueden aplicar desde mañana. |
+| Ejecutivo | 39 | La presentación del equipo, unos 40 minutos con la demostración: todas las partes con sus aprendizajes, sin código. |
+| Técnico | 46 | El ejecutivo más el código, la configuración, el esquema SQL y los diagramas detallados. |
 
 ## Entregables
 
