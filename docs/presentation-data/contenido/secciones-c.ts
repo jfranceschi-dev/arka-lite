@@ -548,20 +548,20 @@ export const devops: Seccion = {
           { momento: "después", icono: "hourglass", titulo: "Espera", texto: "A que su base esté lista.", tono: "cian" },
           { momento: "listo", icono: "heart-pulse", titulo: "Vuelve", texto: "Pasa su revisión de salud.", tono: "correcto" },
         ],
-        resultado: { icono: "circle-check", titulo: "Nadie intervino", texto: "Y los avisos pendientes siguen guardados en la base.", tono: "correcto" },
+        resultado: { icono: "circle-check", titulo: "Nadie intervino", texto: "Y los eventos pendientes siguen guardados en la base.", tono: "correcto" },
       },
       guion: {
         decir: [
           "Supongamos que el servicio de solicitudes se cae por un error o por el reinicio del servidor. Kubernetes detecta que falta una copia y crea otra con la misma imagen.",
           "La nueva copia espera hasta que su base esté lista. Después pasa la revisión de salud y comienza a recibir trabajo otra vez, sin que una persona tenga que intervenir.",
           "Como en el laboratorio mantenemos una sola copia, tenemos unos segundos sin servicio. Con dos copias, la interrupción casi no se notaría.",
-          "Mientras tanto, los avisos pendientes permanecen guardados en la base y no se pierde información.",
+          "Mientras tanto, los eventos pendientes permanecen guardados en la base y no se pierde información.",
           "Aquí se conectan tres partes de la presentación. La base guarda, la bandeja de salida espera y Kubernetes repara.",
         ],
         conTusPalabras: [
           "Kubernetes reemplaza una copia que se cae.",
           "La nueva espera la base y pasa su revisión.",
-          "Los avisos pendientes permanecen guardados.",
+          "Los eventos pendientes permanecen guardados.",
         ],
         preguntas: [{ texto: "¿Y si se cae la base?", respuesta: "Su Pod también se recrea y los datos permanecen en el disco. Los servicios esperan hasta que la base regrese." }],
         transicion: "Con este ejemplo cerramos la explicación de Kubernetes y resumimos lo aprendido de DevOps.",
@@ -671,7 +671,7 @@ export const observabilidad: Seccion = {
           "Por eso reunimos todo en un solo lugar mediante tres herramientas con tareas concretas. Promtail recoge los registros de los contenedores y Loki los guarda.",
           "Grafana permite buscarlos desde una sola pantalla. Para este caso, buscamos el número de la solicitud y reunimos los registros asociados. Ese número identifica el trámite; el número de seguimiento que mencionamos antes identifica una llamada.",
           "Podemos identificar a qué hora se envió la solicitud, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento sigue en la bandeja de salida, ya sabemos dónde se detuvo.",
-          "También debemos recordar que un servicio encendido no necesariamente funciona bien. Por eso, además de su estado, revisamos resultados como la cantidad de avisos pendientes.",
+          "También debemos recordar que un servicio encendido no necesariamente funciona bien. Por eso, además de su estado, revisamos resultados como la cantidad de eventos pendientes.",
         ],
         conTusPalabras: [
           "Promtail recoge los registros.",

@@ -57,7 +57,7 @@ export const demostracion: Seccion = {
           "Luego levantamos de nuevo notificaciones. Esa parte del video está acelerada porque el servicio necesita unos segundos para arrancar.",
           "En el siguiente intento, el evento se entrega con el mismo número y aparece un solo aviso.",
           "Para terminar, entregamos intencionalmente el mismo evento otra vez. Notificaciones reconoce el número y evita crear un segundo aviso.",
-          "El resultado es que no perdemos avisos y tampoco generamos duplicados.",
+          "El resultado es que no perdemos eventos y tampoco generamos avisos duplicados.",
         ],
         conTusPalabras: [
           "Apagamos notificaciones y el trámite continúa.",
@@ -90,7 +90,7 @@ export const demostracion: Seccion = {
       guion: {
         decir: [
           "La demostración nos deja tres aprendizajes. Primero, debemos diseñar para las fallas y no únicamente para el recorrido exitoso.",
-          "También debemos hacer visible lo que ocurre de forma asíncrona. Sin la pestaña Enviadas, un aviso pendiente quedaría oculto.",
+          "También debemos hacer visible lo que ocurre de forma asíncrona. Sin la pestaña Enviadas, un evento pendiente quedaría oculto.",
           "Finalmente, ver el sistema funcionando facilita la explicación y convierte la misma pantalla en una herramienta para capacitar a quienes se incorporen.",
         ],
         conTusPalabras: [
@@ -138,7 +138,7 @@ export const cierre: Seccion = {
           "Por último, los cambios llegan con menos riesgo, porque detectamos los errores en minutos y antes de que afecten a los usuarios.",
         ],
         conTusPalabras: [
-          "No se pierden ni se duplican avisos.",
+          "No se pierden eventos ni se duplican avisos.",
           "El trámite continúa aunque notificaciones esté detenido.",
           "Las pruebas y la recuperación reducen el riesgo.",
         ],

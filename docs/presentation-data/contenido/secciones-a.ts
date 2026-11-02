@@ -202,7 +202,7 @@ export const arquitectura: Seccion = {
             { icono: "bell", titulo: "Notificaciones", texto: "Los avisos, sin duplicados", tono: "cian" },
           ] },
           { titulo: "Datos", tono: "neutro", elementos: [
-            { icono: "database", titulo: "db-solicitudes", texto: "PostgreSQL: solicitudes y avisos pendientes" },
+            { icono: "database", titulo: "db-solicitudes", texto: "PostgreSQL: solicitudes y eventos pendientes" },
             { icono: "database", titulo: "db-notificaciones", texto: "PostgreSQL: avisos ya recibidos" },
           ] },
           { titulo: "Plataforma", tono: "correcto", elementos: [

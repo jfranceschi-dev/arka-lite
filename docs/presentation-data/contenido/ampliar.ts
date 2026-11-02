@@ -88,7 +88,7 @@ export const AMPLIAR: Record<string, string[]> = {
     "Esto también ocurre en los sistemas actuales. Un procedimiento que llama a otro sistema y espera su respuesta falla cuando ese sistema no está disponible.",
   ],
   "s04-outbox": [
-    "El relevador intenta entregar cada aviso hasta tres veces por vuelta y espera un poco más entre intentos. Si todos fallan, la fila permanece pendiente y vuelve a probar cinco segundos después.",
+    "El relevador intenta entregar cada evento hasta tres veces por vuelta y espera un poco más entre intentos. Si todos fallan, la fila permanece pendiente y vuelve a probar cinco segundos después.",
     "El número del evento se genera una sola vez al guardar. Por eso cada reintento lleva el mismo número y el receptor puede reconocerlo.",
     "Con procedimientos, la receta incluye una tabla de pendientes, una columna procesado, un INSERT dentro de la transacción y un job que recorre las filas.",
   ],

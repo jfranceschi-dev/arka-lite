@@ -35,11 +35,11 @@ Los números de lámina son los de la versión con videos; en la versión sin de
 | 1 · Fundamentos | 3–5 | 1:03 | 4:00 | Luis Cardoze |
 | 2 · Arquitectura | 6–9 | 4:00 | 7:13 | Ricardo Fábrega |
 | 3 · Base de datos | 10–19 | 7:13 | 18:12 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 20–24 | 18:12 | 23:05 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 25–40 | 23:05 | 39:00 | Moises, Jossett Franceschi, Kevin |
-| 6 · Observabilidad | 41–43 | 39:00 | 41:42 | Moises |
-| 7 · Demostración | 44–46 | 41:42 | 43:59 | Ricardo Fábrega |
-| Valor y cierre | 47–50 | 43:59 | 46:43 | Abdiel Barria |
+| 4 · Interconexión de servicios | 20–24 | 18:12 | 23:10 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 25–40 | 23:10 | 39:05 | Moises, Jossett Franceschi, Kevin |
+| 6 · Observabilidad | 41–43 | 39:05 | 41:47 | Moises |
+| 7 · Demostración | 44–46 | 41:47 | 44:04 | Ricardo Fábrega |
+| Valor y cierre | 47–50 | 44:04 | 46:48 | Abdiel Barria |
 
 ## Línea de tiempo · sin demostración
 
@@ -49,10 +49,10 @@ Los números de lámina son los de la versión con videos; en la versión sin de
 | 1 · Fundamentos | 3–5 | 0:57 | 3:53 | Luis Cardoze |
 | 2 · Arquitectura | 6–9 | 3:53 | 7:06 | Ricardo Fábrega |
 | 3 · Base de datos | 10–19 | 7:06 | 18:06 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 20–24 | 18:06 | 22:59 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 25–39 | 22:59 | 37:52 | Moises, Jossett Franceschi, Kevin |
-| 6 · Observabilidad | 40–42 | 37:52 | 40:33 | Moises |
-| Valor y cierre | 43–46 | 40:33 | 43:17 | Abdiel Barria |
+| 4 · Interconexión de servicios | 20–24 | 18:06 | 23:03 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 25–39 | 23:03 | 37:56 | Moises, Jossett Franceschi, Kevin |
+| 6 · Observabilidad | 40–42 | 37:56 | 40:38 | Moises |
+| Valor y cierre | 43–46 | 40:38 | 43:22 | Abdiel Barria |
 
 ## Relevos
 

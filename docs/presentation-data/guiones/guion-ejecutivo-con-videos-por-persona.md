@@ -318,7 +318,7 @@ Se parece en que quien llama conoce el nombre y los parámetros, pero no los det
 >
 > Para terminar, entregamos intencionalmente el mismo evento otra vez. Notificaciones reconoce el número y evita crear un segundo aviso.
 >
-> El resultado es que no perdemos avisos y tampoco generamos duplicados.
+> El resultado es que no perdemos eventos y tampoco generamos avisos duplicados.
 >
 > La prueba reúne varias decisiones técnicas. Ahora resumamos qué aprendimos al verla funcionar.
 
@@ -350,7 +350,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 
 > La demostración nos deja tres aprendizajes. Primero, debemos diseñar para las fallas y no únicamente para el recorrido exitoso.
 >
-> También debemos hacer visible lo que ocurre de forma asíncrona. Sin la pestaña Enviadas, un aviso pendiente quedaría oculto.
+> También debemos hacer visible lo que ocurre de forma asíncrona. Sin la pestaña Enviadas, un evento pendiente quedaría oculto.
 >
 > Finalmente, ver el sistema funcionando facilita la explicación y convierte la misma pantalla en una herramienta para capacitar a quienes se incorporen.
 >
@@ -380,7 +380,7 @@ Láminas 10–12 y 18–19 · unos 5 minutos.
 
 > Gracias, Ricardo. El sistema tiene dos bases de datos, una para cada servicio, y ambas utilizan PostgreSQL, versión diecisiete.
 >
-> Usamos dos porque cada servicio es dueño de sus datos. Solicitudes guarda los trámites y los avisos pendientes, mientras notificaciones registra los avisos que ya recibió.
+> Usamos dos porque cada servicio es dueño de sus datos. Solicitudes guarda los trámites y los eventos pendientes, mientras notificaciones registra los eventos que ya recibió.
 >
 > Así, si una base cambia su estructura, la otra no se ve afectada. No hacemos consultas que combinen tablas de ambas bases ni definimos llaves foráneas entre ellas, es decir, referencias que obliguen a que un dato exista en la otra base.
 >
@@ -429,7 +429,7 @@ Son dos bases pequeñas y cada una tiene una responsabilidad. Se respaldan y vig
 **Si se te olvida, di esto**
 
 - Una tabla guarda la solicitud.
-- Otra mantiene los avisos pendientes.
+- Otra mantiene los eventos pendientes.
 - Notificaciones registra los eventos que ya recibió.
 
 **Si preguntan:** ¿Dónde se guarda el texto de cada aviso?
@@ -994,38 +994,38 @@ Porque quien crea o aprueba una solicitud necesita saber en ese momento si la op
 
 > Si al enviar una solicitud llamáramos directamente a notificaciones y el servicio estuviera caído, la solicitud podría quedar enviada sin que nadie recibiera el aviso.
 >
-> Para resolverlo usamos el patrón Outbox, que significa bandeja de salida. Dentro de una sola transacción guardamos la solicitud y su aviso pendiente.
+> Para resolverlo usamos el patrón Outbox, que significa bandeja de salida. Dentro de una sola transacción guardamos la solicitud y un evento pendiente, que es el registro de lo que falta comunicar.
 >
-> La persona recibe la respuesta de inmediato, mientras el aviso queda esperando como una carta que todavía no ha salido.
+> La persona recibe la respuesta de inmediato, mientras el evento queda esperando como una carta que todavía no ha salido.
 >
-> Después, un proceso llamado relevador revisa la bandeja cada cinco segundos y entrega los avisos pendientes. Podemos verlo como el mensajero del sistema.
+> Después, un proceso llamado relevador revisa la bandeja cada cinco segundos y entrega los eventos pendientes. Podemos verlo como el mensajero del sistema.
 >
-> Si la entrega funciona, marca el aviso como entregado. Si falla, lo deja pendiente y vuelve a intentarlo en la siguiente revisión.
+> Si la entrega funciona, marca el evento como entregado. Si falla, lo deja pendiente y vuelve a intentarlo en la siguiente revisión.
 >
-> Así, aunque notificaciones se detenga, ningún aviso se pierde y todos se entregan cuando regresa.
+> Así, aunque notificaciones se detenga, ningún evento se pierde y todos se entregan cuando regresa.
 >
 > La misma idea puede aplicarse con procedimientos almacenados: guardamos el evento en una tabla de pendientes y una tarea programada se encarga de entregarlo.
 >
-> Como el sistema reintenta las entregas, ahora debemos evitar que el mismo aviso produzca dos resultados.
+> Como el sistema reintenta las entregas, ahora debemos evitar que el mismo evento produzca dos avisos.
 
 **Si se te olvida, di esto**
 
 - Primero guardamos y después avisamos.
 - El relevador revisa la bandeja cada cinco segundos.
-- Si la entrega falla, el aviso permanece guardado.
+- Si la entrega falla, el evento permanece guardado.
 - La misma idea funciona con una tabla de pendientes y una tarea programada.
 
 **Si preguntan:** ¿Que el envío responda bien significa que el aviso ya existe?
 
 No. Significa que la solicitud y el evento quedaron guardados. El aviso se crea después.
 
-**Si preguntan:** ¿Qué pasa si se cae solicitudes con avisos pendientes?
+**Si preguntan:** ¿Qué pasa si se cae solicitudes con eventos pendientes?
 
-Los avisos permanecen en la base. Cuando el servicio regresa, el relevador los encuentra y los entrega.
+Los eventos permanecen en la base. Cuando el servicio regresa, el relevador los encuentra y los entrega.
 
 **Si hay tiempo**
 
-> El relevador intenta entregar cada aviso hasta tres veces por vuelta y espera un poco más entre intentos. Si todos fallan, la fila permanece pendiente y vuelve a probar cinco segundos después.
+> El relevador intenta entregar cada evento hasta tres veces por vuelta y espera un poco más entre intentos. Si todos fallan, la fila permanece pendiente y vuelve a probar cinco segundos después.
 >
 > El número del evento se genera una sola vez al guardar. Por eso cada reintento lleva el mismo número y el receptor puede reconocerlo.
 >
@@ -1043,7 +1043,7 @@ Los avisos permanecen en la base. Cuando el servicio regresa, el relevador los e
 >
 > Es como un portero con una lista de invitados, porque quien ya entró no puede entrar una segunda vez.
 >
-> Las dos soluciones se complementan. La bandeja de salida evita perder avisos y la idempotencia impide duplicarlos.
+> Las dos soluciones se complementan. La bandeja de salida evita perder eventos y la idempotencia impide duplicar avisos.
 >
 > Este principio sirve para cualquier proceso que tenga reintentos, como un pago, un correo o una importación de archivos.
 >
@@ -1117,7 +1117,7 @@ La llave primaria permite registrar el número una sola vez. La otra entrega fal
 
 **Si se te olvida, di esto**
 
-- No se pierden ni se duplican avisos.
+- No se pierden eventos ni se duplican avisos.
 - El trámite continúa aunque notificaciones esté detenido.
 - Las pruebas y la recuperación reducen el riesgo.
 
@@ -1425,7 +1425,7 @@ Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabil
 >
 > Podemos identificar a qué hora se envió la solicitud, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento sigue en la bandeja de salida, ya sabemos dónde se detuvo.
 >
-> También debemos recordar que un servicio encendido no necesariamente funciona bien. Por eso, además de su estado, revisamos resultados como la cantidad de avisos pendientes.
+> También debemos recordar que un servicio encendido no necesariamente funciona bien. Por eso, además de su estado, revisamos resultados como la cantidad de eventos pendientes.
 >
 > Con este caso resuelto, resumamos lo que aprendimos sobre observabilidad.
 
@@ -1641,7 +1641,7 @@ Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memor
 >
 > Como en el laboratorio mantenemos una sola copia, tenemos unos segundos sin servicio. Con dos copias, la interrupción casi no se notaría.
 >
-> Mientras tanto, los avisos pendientes permanecen guardados en la base y no se pierde información.
+> Mientras tanto, los eventos pendientes permanecen guardados en la base y no se pierde información.
 >
 > Aquí se conectan tres partes de la presentación. La base guarda, la bandeja de salida espera y Kubernetes repara.
 >
@@ -1651,7 +1651,7 @@ Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memor
 
 - Kubernetes reemplaza una copia que se cae.
 - La nueva espera la base y pasa su revisión.
-- Los avisos pendientes permanecen guardados.
+- Los eventos pendientes permanecen guardados.
 
 **Si preguntan:** ¿Y si se cae la base?
 

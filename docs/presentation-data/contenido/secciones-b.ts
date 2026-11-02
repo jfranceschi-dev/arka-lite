@@ -35,7 +35,7 @@ export const datos: Seccion = {
       guion: {
         decir: [
           "Gracias, Ricardo. El sistema tiene dos bases de datos, una para cada servicio, y ambas utilizan PostgreSQL, versión diecisiete.",
-          "Usamos dos porque cada servicio es dueño de sus datos. Solicitudes guarda los trámites y los avisos pendientes, mientras notificaciones registra los avisos que ya recibió.",
+          "Usamos dos porque cada servicio es dueño de sus datos. Solicitudes guarda los trámites y los eventos pendientes, mientras notificaciones registra los eventos que ya recibió.",
           "Así, si una base cambia su estructura, la otra no se ve afectada. No hacemos consultas que combinen tablas de ambas bases ni definimos llaves foráneas entre ellas, es decir, referencias que obliguen a que un dato exista en la otra base.",
           "Cuando un servicio necesita un dato del otro, lo pide por la red. Además, cada base funciona por separado y tiene su propio disco.",
           "Por eso los datos permanecen cuando un servicio se reinicia y, si una base presenta una falla, la otra puede continuar trabajando.",
@@ -91,7 +91,7 @@ export const datos: Seccion = {
         ],
         conTusPalabras: [
           "Una tabla guarda la solicitud.",
-          "Otra mantiene los avisos pendientes.",
+          "Otra mantiene los eventos pendientes.",
           "Notificaciones registra los eventos que ya recibió.",
         ],
         preguntas: [
@@ -498,42 +498,42 @@ export const interconexion: Seccion = {
     {
       id: "s04-outbox",
       titulo: "Patrón Outbox: guardar primero, avisar después",
-      idea: "La solicitud y su aviso se guardan en la misma transacción; un proceso entrega el aviso después.",
-      visible: ["Solicitud enviada y aviso pendiente, juntos", "Si una falla, no se guarda ninguna", "Un proceso entrega cada 5 segundos", "Si falla, sigue pendiente y se reintenta"],
+      idea: "La solicitud y su evento se guardan en la misma transacción; un proceso lo entrega después.",
+      visible: ["Solicitud enviada y evento pendiente, juntos", "Si algo falla, no se guarda nada", "Un proceso entrega cada 5 segundos", "Si falla, sigue pendiente y se reintenta"],
       comparacion: "Como dejar una carta en la bandeja de salida: aunque el mensajero no pase hoy, la carta no se pierde.",
       iconoComparacion: "mail",
-      valor: "Ningún aviso se pierde, aunque el otro sistema esté caído. Y se puede aplicar también con procedimientos y un job.",
+      valor: "Ningún evento se pierde, aunque el otro sistema esté caído. Y se puede aplicar también con procedimientos y una tarea programada.",
       visual: {
         tipo: "flujo",
         pasos: [
-          { icono: "send", titulo: "Enviar", texto: "Solicitud y aviso, en una transacción.", tono: "marino" },
-          { icono: "inbox", titulo: "Bandeja de salida", texto: "El aviso espera en la tabla evento.", tono: "marino" },
+          { icono: "send", titulo: "Enviar", texto: "Solicitud y evento, en una transacción.", tono: "marino" },
+          { icono: "inbox", titulo: "Bandeja de salida", texto: "El evento espera en su tabla.", tono: "marino" },
           { icono: "timer", titulo: "Relevador", texto: "Cada 5 segundos entrega los pendientes.", tono: "cian" },
-          { icono: "bell", titulo: "Notificaciones", texto: "Lo recibe y queda entregado.", tono: "correcto" },
+          { icono: "bell", titulo: "Notificaciones", texto: "Lo recibe y crea el aviso.", tono: "correcto" },
         ],
         desvio: { desde: 2, etiqueta: "si falla", elemento: { icono: "refresh-cw", titulo: "Sigue pendiente", texto: "Con el mismo número; se reintenta en la siguiente vuelta.", tono: "advertencia" } },
       },
       guion: {
         decir: [
           "Si al enviar una solicitud llamáramos directamente a notificaciones y el servicio estuviera caído, la solicitud podría quedar enviada sin que nadie recibiera el aviso.",
-          "Para resolverlo usamos el patrón Outbox, que significa bandeja de salida. Dentro de una sola transacción guardamos la solicitud y su aviso pendiente.",
-          "La persona recibe la respuesta de inmediato, mientras el aviso queda esperando como una carta que todavía no ha salido.",
-          "Después, un proceso llamado relevador revisa la bandeja cada cinco segundos y entrega los avisos pendientes. Podemos verlo como el mensajero del sistema.",
-          "Si la entrega funciona, marca el aviso como entregado. Si falla, lo deja pendiente y vuelve a intentarlo en la siguiente revisión.",
-          "Así, aunque notificaciones se detenga, ningún aviso se pierde y todos se entregan cuando regresa.",
+          "Para resolverlo usamos el patrón Outbox, que significa bandeja de salida. Dentro de una sola transacción guardamos la solicitud y un evento pendiente, que es el registro de lo que falta comunicar.",
+          "La persona recibe la respuesta de inmediato, mientras el evento queda esperando como una carta que todavía no ha salido.",
+          "Después, un proceso llamado relevador revisa la bandeja cada cinco segundos y entrega los eventos pendientes. Podemos verlo como el mensajero del sistema.",
+          "Si la entrega funciona, marca el evento como entregado. Si falla, lo deja pendiente y vuelve a intentarlo en la siguiente revisión.",
+          "Así, aunque notificaciones se detenga, ningún evento se pierde y todos se entregan cuando regresa.",
           "La misma idea puede aplicarse con procedimientos almacenados: guardamos el evento en una tabla de pendientes y una tarea programada se encarga de entregarlo.",
         ],
         conTusPalabras: [
           "Primero guardamos y después avisamos.",
           "El relevador revisa la bandeja cada cinco segundos.",
-          "Si la entrega falla, el aviso permanece guardado.",
+          "Si la entrega falla, el evento permanece guardado.",
           "La misma idea funciona con una tabla de pendientes y una tarea programada.",
         ],
         preguntas: [
           { texto: "¿Que el envío responda bien significa que el aviso ya existe?", respuesta: "No. Significa que la solicitud y el evento quedaron guardados. El aviso se crea después." },
-          { texto: "¿Qué pasa si se cae solicitudes con avisos pendientes?", respuesta: "Los avisos permanecen en la base. Cuando el servicio regresa, el relevador los encuentra y los entrega." },
+          { texto: "¿Qué pasa si se cae solicitudes con eventos pendientes?", respuesta: "Los eventos permanecen en la base. Cuando el servicio regresa, el relevador los encuentra y los entrega." },
         ],
-        transicion: "Como el sistema reintenta las entregas, ahora debemos evitar que el mismo aviso produzca dos resultados.",
+        transicion: "Como el sistema reintenta las entregas, ahora debemos evitar que el mismo evento produzca dos avisos.",
         respaldo: "docs/arquitectura/flujo-y-referencias.md",
       },
     },
@@ -561,7 +561,7 @@ export const interconexion: Seccion = {
           "Para manejarlo usamos la idempotencia, una palabra técnica para una idea sencilla. Significa que repetir la misma operación no cambia el resultado.",
           "Cuando llega un evento, notificaciones busca su número en la lista. Si es nuevo, crea el aviso y registra el número. Si ya estaba registrado, lo ignora.",
           "Es como un portero con una lista de invitados, porque quien ya entró no puede entrar una segunda vez.",
-          "Las dos soluciones se complementan. La bandeja de salida evita perder avisos y la idempotencia impide duplicarlos.",
+          "Las dos soluciones se complementan. La bandeja de salida evita perder eventos y la idempotencia impide duplicar avisos.",
           "Este principio sirve para cualquier proceso que tenga reintentos, como un pago, un correo o una importación de archivos.",
         ],
         conTusPalabras: [
