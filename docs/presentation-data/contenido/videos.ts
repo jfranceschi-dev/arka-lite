@@ -3,9 +3,9 @@ import { join } from "node:path";
 import { DIR_VIDEOS } from "../entregables.ts";
 import type { Visual } from "./tipos.ts";
 
-// Videos de la demostración con la UI, para la variante que no puede hacerla
-// en vivo. capturas/grabar-videos.ts los graba con el sistema arriba y usa
-// estos mismos pasos como rótulos numerados del video; la lámina los lista al
+// Videos de la versión con videos: dos con el sistema real, sobre cómo
+// interactúan los componentes, y uno simulado del camino de un cambio hasta el
+// despliegue. capturas/grabar-videos.ts los graba y usa estos mismos pasos como rótulos numerados del video; la lámina los lista al
 // lado, así lo que se lee y lo que se ve coinciden.
 export interface Video {
   // En capturas/videos/.
@@ -25,15 +25,13 @@ export const VIDEOS = {
   recorrido: {
     archivo: "demo-recorrido.mp4",
     portada: "demo-recorrido.png",
-    titulo: "La UI de ARKA-Lite",
-    subtitulo: "Crear, enviar y seguir una solicitud hasta su aviso, con los dos servicios arriba.",
-    url: "localhost:8088",
+    titulo: "De la solicitud al aviso",
+    subtitulo: "Cómo interactúan los componentes cuando todos están arriba.",
+    url: "ARKA-Lite · componentes",
     pasos: [
-      "Creamos una solicitud: queda en BORRADOR",
-      "La enviamos: pasa a ENVIADA y su evento queda en la bandeja de salida",
-      "En Enviadas, el evento llega solo a notificaciones y crea un aviso",
-      "Salud: los dos servicios y sus bases, en verde",
-      "Ayuda: cada concepto con un diagrama paso a paso",
+      "La pantalla le pide a solicitudes crearla: queda en BORRADOR",
+      "Al enviarla, solicitudes deja el evento en la bandeja de salida",
+      "El relevador lo entrega a notificaciones, que crea un solo aviso",
     ],
   },
   caida: {
@@ -41,7 +39,7 @@ export const VIDEOS = {
     portada: "demo-caida.png",
     titulo: "Si notificaciones se cae",
     subtitulo: "Tumbamos un servicio a propósito: el aviso no se pierde ni se duplica.",
-    url: "localhost:8088",
+    url: "ARKA-Lite · componentes",
     pasos: [
       "Detenemos notificaciones a propósito",
       "Enviamos una solicitud: responde bien, sin errores",
@@ -49,6 +47,20 @@ export const VIDEOS = {
       "Levantamos notificaciones otra vez",
       "Llega un solo aviso, con el mismo evento",
       "Reentregamos el mismo evento a propósito: no se duplica",
+    ],
+  },
+  cicd: {
+    archivo: "ejemplo-cicd.mp4",
+    portada: "ejemplo-cicd.png",
+    titulo: "Del merge al despliegue",
+    subtitulo: "Ejemplo ilustrativo de cómo sería el proceso completo.",
+    url: "Ejemplo ilustrativo",
+    pasos: [
+      "Un Pull Request aprobado entra a main con un merge",
+      "El pipeline arranca solo: compila y corre las pruebas",
+      "Publica la imagen, marcada con el código del cambio",
+      "Se aprueba el despliegue y Kubernetes crea un Pod nuevo",
+      "Cuando está listo, atiende a los usuarios y se retira el anterior",
     ],
   },
 } satisfies Record<string, Video>;

@@ -1,80 +1,79 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import JSZip from "jszip";
-import { construirPresentacion, generarPptx, nombreArchivo } from "../generador-pptx/construir.ts";
-import { clicsEnXml } from "../generador-pptx/posproceso.ts";
+import { generarPptx, nombreArchivo } from "../generador-pptx/construir.ts";
 import { laminas } from "../contenido/index.ts";
-import { clicsDeLamina } from "../contenido/validacion.ts";
+import { DIVISION, personaCon, rolDe } from "../contenido/reparto.ts";
+
+const generar = async (v: Parameters<typeof generarPptx>[0]) => JSZip.loadAsync(await generarPptx(v));
 
 describe("generador PPTX", () => {
-  it("nombra un archivo por variante", () => {
-    expect(nombreArchivo("resumen")).toBe("ARKA-Lite-resumen.pptx");
-    expect(nombreArchivo("tecnico")).toBe("ARKA-Lite-tecnico.pptx");
+  it("nombra un archivo por versión", () => {
     expect(nombreArchivo("ejecutivo-con-videos")).toBe("ARKA-Lite-ejecutivo-con-videos.pptx");
+    expect(nombreArchivo("ejecutivo-sin-demo")).toBe("ARKA-Lite-ejecutivo-sin-demo.pptx");
   });
 
-  it("el ejecutivo no repite diagramas paso a paso: una lámina por contenido", async () => {
-    const datos = (await construirPresentacion("ejecutivo").write({ outputType: "nodebuffer" })) as Buffer;
-    const zip = await JSZip.loadAsync(datos);
-    const diapositivas = Object.keys(zip.files).filter((f) => /^ppt\/slides\/slide\d+\.xml$/.test(f));
-    expect(diapositivas.length).toBe(laminas("ejecutivo").length);
-  });
-
-  it("produce un PPTX 16:9 con una nota por diapositiva", async () => {
-    const pptx = construirPresentacion("ejecutivo");
-    const datos = (await pptx.write({ outputType: "nodebuffer" })) as Buffer;
-    const zip = await JSZip.loadAsync(datos);
+  it("produce un PPTX 16:9 con una lámina por contenido, el reparto al final y una nota por diapositiva", async () => {
+    const zip = await generar("ejecutivo-sin-demo");
     const presentacion = await zip.file("ppt/presentation.xml")!.async("string");
     expect(presentacion).toContain('<p:sldSz cx="12192000" cy="6858000"');
     const diapositivas = Object.keys(zip.files).filter((f) => /^ppt\/slides\/slide\d+\.xml$/.test(f));
     const notas = Object.keys(zip.files).filter((f) => /^ppt\/notesSlides\/notesSlide\d+\.xml$/.test(f));
-    expect(diapositivas.length).toBeGreaterThanOrEqual(laminas("ejecutivo").length);
+    expect(diapositivas.length).toBe(laminas("ejecutivo-sin-demo").length + 1);
     expect(notas.length).toBe(diapositivas.length);
     const portada = await zip.file("ppt/slides/slide1.xml")!.async("string");
     expect(portada).toContain("ARKA-Lite");
-    expect(portada).toContain("VERSIÓN EJECUTIVO");
     expect(portada).toContain("Base de datos");
     expect(portada).toContain("UPSKILLING BACKEND JAVA");
     expect(portada).toContain("EQUIPO ARKA-LITOS");
+    expect(portada).not.toContain("SIN DEMOSTRACIÓN");
   });
 
-  it("separa qué decir de qué hacer en las notas", async () => {
-    const datos = (await construirPresentacion("tecnico").write({ outputType: "nodebuffer" })) as Buffer;
-    const zip = await JSZip.loadAsync(datos);
+  it("la última lámina es el reparto, con el equipo y sus números de lámina", async () => {
+    for (const v of ["ejecutivo-sin-demo", "ejecutivo-con-videos"] as const) {
+      const zip = await generar(v);
+      const lista = laminas(v);
+      const xml = await zip.file(`ppt/slides/slide${lista.length + 1}.xml`)!.async("string");
+      expect(xml).toContain("Reparto de la presentación");
+      for (const p of DIVISION.personas) if (lista.some((l) => personaCon(rolDe(l)) === p)) expect(xml, p.nombre).toContain(p.nombre);
+      expect(xml).not.toContain("Rodolfo");
+    }
+  });
+
+  it("separa qué decir, con tus palabras y qué hacer en las notas", async () => {
+    const zip = await generar("ejecutivo-con-videos");
     const textos = await Promise.all(Object.keys(zip.files).filter((f) => f.startsWith("ppt/notesSlides/notesSlide")).map((f) => zip.file(f)!.async("string")));
     const todo = textos.join("\n");
-    expect(todo).toContain("QUÉ DECIR");
+    expect(todo).toContain("SI SE TE OLVIDA");
     expect(todo).toContain("PRESENTA:");
     expect(todo).toContain("QUÉ HACER (no se dice)");
     expect(todo).toContain("SI PREGUNTAN");
   });
 
-  it("cada lámina entra con transición y arma su diagrama con los mismos clics que marca el guion", async () => {
-    for (const v of ["ejecutivo", "ejecutivo-sin-demo"] as const) {
-      const zip = await JSZip.loadAsync(await generarPptx(v));
+  it("cada lámina entra completa, con un fundido, y un clic siempre avanza", async () => {
+    for (const v of ["ejecutivo-sin-demo", "ejecutivo-con-videos"] as const) {
+      const zip = await generar(v);
       const lista = laminas(v);
       for (let i = 0; i < lista.length; i++) {
         const xml = await zip.file(`ppt/slides/slide${i + 1}.xml`)!.async("string");
         expect(xml, `${v} · ${lista[i].id}`).toContain("<p:transition");
-        expect(clicsEnXml(xml), `${v} · ${lista[i].id}`).toBe(clicsDeLamina(lista[i].diapositiva));
+        expect(xml, `${v} · ${lista[i].id}`).not.toContain("interactiveSeq");
+        expect(xml, `${v} · ${lista[i].id}`).not.toContain('presetClass="entr"');
       }
     }
   });
 
-  it("con videos, cada video va dentro del PPTX y se reproduce en el primer clic", async () => {
-    const zip = await JSZip.loadAsync(await generarPptx("ejecutivo-con-videos"));
+  it("cada video va dentro del PPTX y arranca solo al llegar a la lámina", async () => {
+    const zip = await generar("ejecutivo-con-videos");
     const lista = laminas("ejecutivo-con-videos");
     expect(Object.keys(zip.files).filter((f) => /^ppt\/media\/.*\.mp4$/.test(f)).length).toBeGreaterThanOrEqual(2);
-    for (const id of ["s07-ui", "s07-caida"]) {
+    for (const id of ["s05-flujo", "s07-ui", "s07-caida"]) {
       const i = lista.findIndex((l) => l.id === id);
       const xml = await zip.file(`ppt/slides/slide${i + 1}.xml`)!.async("string");
       expect(xml, id).toContain("<a:videoFile");
       expect(xml, id).toContain('cmd="playFrom(0.0)"');
-      expect(xml, id).toContain('cmd="togglePause"');
+      expect(xml, id).toContain('nodeType="afterEffect"');
       expect(xml, id).toContain("<p:cMediaNode");
-      expect(clicsEnXml(xml), id).toBe(1);
     }
-    const portada = await zip.file("ppt/slides/slide1.xml")!.async("string");
-    expect(portada).toContain("VERSIÓN EJECUTIVO CON VIDEOS");
   });
 });

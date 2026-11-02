@@ -3,30 +3,16 @@ import type { NombreIcono } from "../diseno/iconos.ts";
 // Modelo de la fuente de contenido de la presentación. El PPTX, el PDF, las
 // notas del expositor y los guiones leen estos mismos objetos.
 
-// Variantes para el staff de tecnología: resumen (charla corta, ~19 láminas),
-// ejecutivo (todas las secciones, sin código) y técnico (agrega código y
-// diagramas detallados). Cada una contiene a la anterior.
-export type Recorrido = "resumen" | "ejecutivo" | "tecnico";
-export const RECORRIDOS: Recorrido[] = ["resumen", "ejecutivo", "tecnico"];
-export const NOMBRE_RECORRIDO: Record<Recorrido, string> = { resumen: "Resumen", ejecutivo: "Ejecutivo", tecnico: "Técnico" };
-
-// Cómo se muestra la UI en la demostración: en vivo, con videos grabados
-// (cuando no se puede en vivo) o sin demostración.
-export type ModoDemo = "vivo" | "video" | "sin";
-
-// Lo que se genera: cada recorrido con la demostración en vivo y, además, el
-// ejecutivo con videos y sin demostración. Las dos variantes extra salen del
-// ejecutivo con los cambios de contenido/variantes.ts.
-export type Variante = Recorrido | "ejecutivo-con-videos" | "ejecutivo-sin-demo";
-export const VARIANTES: Variante[] = [...RECORRIDOS, "ejecutivo-con-videos", "ejecutivo-sin-demo"];
-const DEFINICION: Record<Variante, { recorrido: Recorrido; demo: ModoDemo; nombre: string }> = {
-  resumen: { recorrido: "resumen", demo: "vivo", nombre: "Resumen" },
-  ejecutivo: { recorrido: "ejecutivo", demo: "vivo", nombre: "Ejecutivo" },
-  tecnico: { recorrido: "tecnico", demo: "vivo", nombre: "Técnico" },
-  "ejecutivo-con-videos": { recorrido: "ejecutivo", demo: "video", nombre: "Ejecutivo con videos" },
-  "ejecutivo-sin-demo": { recorrido: "ejecutivo", demo: "sin", nombre: "Ejecutivo sin demostración" },
+// Las dos versiones que se presentan, según cómo se muestra la UI: con dos
+// videos grabados o sin demostración. Las dos salen del mismo contenido; lo
+// que cambia está en contenido/variantes.ts.
+export type ModoDemo = "video" | "sin";
+export type Variante = "ejecutivo-con-videos" | "ejecutivo-sin-demo";
+export const VARIANTES: Variante[] = ["ejecutivo-con-videos", "ejecutivo-sin-demo"];
+const DEFINICION: Record<Variante, { demo: ModoDemo; nombre: string }> = {
+  "ejecutivo-con-videos": { demo: "video", nombre: "Con videos" },
+  "ejecutivo-sin-demo": { demo: "sin", nombre: "Sin demostración" },
 };
-export const recorridoDe = (v: Variante): Recorrido => DEFINICION[v].recorrido;
 export const modoDe = (v: Variante): ModoDemo => DEFINICION[v].demo;
 export const nombreVariante = (v: Variante): string => DEFINICION[v].nombre;
 
@@ -162,24 +148,17 @@ export type Visual =
   // Capturas reales en un marco de navegador.
   | { tipo: "captura"; capturas: Captura[] }
   // Un video grabado con la UI (capturas/videos/) en un marco de navegador,
-  // con sus pasos al lado: los mismos rótulos numerados del video. Un clic lo
-  // reproduce.
+  // con sus pasos al lado: los mismos rótulos numerados del video. Arranca solo
+  // al llegar a la lámina.
   | { tipo: "video"; archivo: string; portada: string; url: string; pasos: string[] }
   // Una rama de trabajo que vuelve a main por Pull Request.
-  | { tipo: "ramas"; principal: string; rama: string; commits: string[]; fusion: string };
-
-// Implementado: se reconoce en el código o la configuración revisados.
-// Ejemplo: ayuda a explicar; no es una medición observada.
-// Propuesta: requiere implementación y validación posteriores.
-export type Certeza = "implementado" | "ejemplo" | "propuesta";
-
-export interface Marca {
-  texto: string;
-  certeza: Certeza;
-}
+  | { tipo: "ramas"; principal: string; rama: string; commits: string[]; fusion: string }
+  // De la imagen al Pod: el molde, lo que pedimos, el nombre fijo y los Pods de
+  // un servidor, cada uno con su contenedor adentro.
+  | { tipo: "pods"; imagen: ElementoVisual; deployment: ElementoVisual; service: ElementoVisual; nodo: string; pods: { titulo: string; contenedor: string; recursos: string }[] };
 
 export interface BloqueCodigo {
-  lenguaje: "java" | "yaml" | "json" | "bash" | "sql" | "properties" | "http" | "nginx";
+  lenguaje: "java" | "yaml" | "json" | "bash" | "sql" | "properties" | "http";
   archivo: string;
   texto: string;
 }
@@ -194,14 +173,12 @@ export interface Pregunta {
   respuesta: string;
 }
 
-export interface Demostracion {
-  accion: string;
-  evidencia: string;
-}
-
 export interface Guion {
   // Texto oral, listo para ensayar. Cada elemento es un párrafo.
   decir: string[];
+  // Las ideas de la lámina en frases cortas: si quien presenta no se aprende
+  // el texto, le basta con decir esto a su manera.
+  conTusPalabras: string[];
   // Instrucciones para quien expone; no se dicen en voz alta.
   instrucciones?: string[];
   transicion?: string;
@@ -211,12 +188,7 @@ export interface Guion {
   // Más para decir si hay tiempo o si preguntan: ejemplos y datos reales.
   // No cuenta en los minutos. Sale de contenido/ampliar.ts.
   ampliar?: string[];
-  demo?: Demostracion;
 }
-
-// En el texto oral, [clic] marca el momento de hacer clic: la siguiente pieza
-// del diagrama aparece ahí. Hay tantas marcas como clics tiene el visual.
-export const CLIC = "[clic]";
 
 export interface Diapositiva {
   id: string;
@@ -237,15 +209,8 @@ export interface Diapositiva {
   // Lo que el staff se lleva de la lámina: el valor, en una frase. Va en el
   // guion y en las notas, no en la pantalla.
   valor?: string;
-  recorridos: Recorrido[];
   // Quién la presenta, si no es el rol de su sección.
   rol?: Rol;
-  // Diagrama detallado: se dibuja completo, con sus pasos numerados debajo.
-  diagrama?: string;
-  tabla?: Tabla;
-  // Solo se muestra en el recorrido técnico.
-  codigo?: BloqueCodigo;
-  marcas?: Marca[];
   guion: Guion;
 }
 
@@ -269,11 +234,9 @@ export interface Seccion {
   diapositivas: Diapositiva[];
 }
 
-// "vivo" es la demostración: ni vista general ni a fondo, sino todo junto.
-// "video" es la misma demostración, grabada.
-export type Enfoque = "general" | "fondo" | "vivo" | "video";
-export const NOMBRE_ENFOQUE: Record<Enfoque, string> = { general: "Vista general", fondo: "A fondo", vivo: "En vivo", video: "En video" };
+// "video" es la demostración grabada: ni vista general ni en detalle.
+export type Enfoque = "general" | "fondo" | "video";
+export const NOMBRE_ENFOQUE: Record<Enfoque, string> = { general: "Vista general", fondo: "En detalle", video: "En video" };
 
-// Papeles de la presentación. Cada división del equipo asigna los papeles a
-// personas; así el contenido no cambia si el equipo es de 7 u 8.
-export type Rol = "orquestador" | "fundamentos" | "arquitectura" | "bd" | "orm" | "interconexion" | "plataforma" | "operacion" | "demostracion";
+// Papeles de la presentación; reparto.ts los asigna a las personas del equipo.
+export type Rol = "apertura" | "fundamentos" | "arquitectura" | "bd" | "orm" | "interconexion" | "plataforma" | "cicd" | "operacion" | "demostracion" | "cierre";

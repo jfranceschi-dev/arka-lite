@@ -39,6 +39,14 @@
     .portada h1 { margin: 0; font-size: 58px; line-height: 1.1; font-weight: 800; }
     .portada p { margin: 0; font-size: 26px; color: #CFE0F2; max-width: 980px; line-height: 1.35; }
     .portada hr { width: 90px; height: 6px; border: 0; border-radius: 3px; background: ${CIAN}; margin: 6px 0 0; }
+    .franja { position: absolute; left: 0; right: 0; top: 0; height: 70px; display: none; align-items: center; justify-content: center; gap: 10px; background: ${MARINO}; box-shadow: 0 4px 14px rgba(11,31,58,.35); }
+    .franja.visible { display: flex; }
+    .nodo { padding: 9px 18px; border-radius: 10px; border: 2px solid #3A5A8C; color: #BFD2E8; font-size: 18px; font-weight: 700; transition: background .3s, color .3s, border-color .3s; }
+    .nodo.activo { background: ${CIAN}; border-color: ${CIAN}; color: ${MARINO}; }
+    .nodo.listo { background: #2FB67C; border-color: #2FB67C; color: #06281A; }
+    .nodo.espera { background: #F5B942; border-color: #F5B942; color: #3A2500; }
+    .nodo.caido { background: #E5484D; border-color: #E5484D; color: #fff; }
+    .enlace { color: #6F8DB3; font-size: 22px; font-weight: 800; }
   `;
 
   const flecha = `<svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 2 L4 20 L9 15.5 L12.5 22.5 L15.5 21 L12 14 L19 14 Z" fill="#fff" stroke="#0B1F3A" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
@@ -48,6 +56,7 @@
     anfitrion.id = "grabadora-arka";
     const raiz = anfitrion.attachShadow({ mode: "open" });
     raiz.innerHTML = `<style>${estilos}</style><div class="capa">
+      <div class="franja"></div>
       <div class="portada"><small></small><h1></h1><hr><p></p></div>
       <div class="terminal"><div class="barra"><i></i><i></i><i></i>&nbsp;Terminal</div><div class="lineas"></div></div>
       <div class="acelerado"></div>
@@ -78,6 +87,27 @@
     const esperar = (ms) => new Promise((listo) => setTimeout(listo, ms));
 
     window.__grabadora = {
+      // La franja de componentes tapa el menú de la UI: el video trata de cómo
+      // interactúan, no de la pantalla. Al video le sube el contraste, porque
+      // la UI es casi blanca y en una sala se ve lavada.
+      franja(nombres) {
+        document.documentElement.style.filter = "brightness(.95) contrast(1.15) saturate(1.3)";
+        document.body.style.paddingBottom = "200px";
+        // Las alertas de la UI salen arriba a la derecha: van debajo de la franja.
+        const estilo = document.createElement("style");
+        estilo.textContent = ".swal2-container.swal2-top-end { top: 78px !important; }";
+        document.head.appendChild(estilo);
+        $(".franja").innerHTML = nombres.map((n) => `<div class="nodo" data-nodo="${n}">${n}</div>`).join('<div class="enlace">→</div>');
+        $(".franja").classList.add("visible");
+      },
+      sinCursor() {
+        cursor.style.display = "none";
+      },
+      // estados: { nombre: "activo" | "listo" | "espera" | "caido" }; los demás
+      // quedan apagados.
+      componentes(estados) {
+        for (const nodo of raiz.querySelectorAll(".nodo")) nodo.className = `nodo ${estados[nodo.dataset.nodo] ?? ""}`;
+      },
       portada(etiqueta, titulo, subtitulo) {
         $(".portada small").textContent = etiqueta;
         $(".portada h1").textContent = titulo;

@@ -1,14 +1,11 @@
 import PptxGenJS from "pptxgenjs";
-import { laminas, etiquetaSeccion, nombreVariante, partesDe, recorridoDe, type Lamina, type Seccion, type Variante } from "../contenido/index.ts";
+import { laminas, etiquetaSeccion, nombreVariante, partesDe, type Lamina, type Seccion, type Variante } from "../contenido/index.ts";
 import { textoNotas } from "../contenido/notas.ts";
-import { NOMBRE_EQUIPO } from "../contenido/reparto.ts";
-import type { BloqueCodigo, Certeza, Diapositiva, Tabla } from "../contenido/tipos.ts";
-import { diagramaPorId } from "../diagramas/definiciones.ts";
+import { DIVISION, NOMBRE_EQUIPO, NOMBRE_ROL, rangos, rolesDe, turnos } from "../contenido/reparto.ts";
+import type { Diapositiva, Tabla } from "../contenido/tipos.ts";
 import type { NombreIcono } from "../diseno/iconos.ts";
 import { color } from "../diseno/tokens.ts";
-import { colorCodigo, resaltar } from "../diseno/resaltado.ts";
-import { ACC, ACC_S, ACC_T, CW, FUENTE, H, M, MONO, PRI, PROF, halo, sombra, TITULO, W, encabezado, hex, icono, insignia, logo, marcarPasos, mezclar, pie, type Slide } from "./base.ts";
-import { diagrama } from "./diagrama.ts";
+import { ACC, ACC_S, ACC_T, CW, FUENTE, H, M, PRI, PROF, halo, sombra, TITULO, W, encabezado, hex, icono, insignia, logo, mezclar, pie, type Slide } from "./base.ts";
 import { generarBuffer } from "./posproceso.ts";
 import { tamQueCabe } from "./medidas.ts";
 import { dibujarVisual, type Caja } from "./visuales.ts";
@@ -17,8 +14,7 @@ import { dibujarVisual, type Caja } from "./visuales.ts";
 // tablas, diagramas e íconos son formas nativas; solo las capturas de pantalla
 // son imágenes. Las plantillas siguen el lienzo de diseño: portada oscura,
 // portadas de sección con su ícono, láminas de una idea con tarjetas e íconos,
-// láminas de impacto (cifras, flujos, capturas, escenarios de falla) y, en el
-// recorrido técnico, diagramas detallados con sus pasos en la misma lámina.
+// y láminas de impacto (cifras, flujos, capturas, escenarios de falla).
 
 export function nombreArchivo(variante: Variante): string {
   return `ARKA-Lite-${variante}.pptx`;
@@ -26,62 +22,12 @@ export function nombreArchivo(variante: Variante): string {
 
 // ── Piezas comunes ────────────────────────────────────────────────────────
 
-// Fila de chips con las frases visibles de una lámina de diagrama o tabla.
-function chips(s: Slide, lineas: string[], y: number) {
-  if (!lineas.length) return;
-  const gap = 0.14;
-  const ancho = (CW - gap * (lineas.length - 1)) / lineas.length;
-  lineas.forEach((t, i) => {
-    s.addText(t, { x: M + i * (ancho + gap), y, w: ancho, h: 0.42, shape: "roundRect", rectRadius: 0.08, margin: [2, 8, 2, 8], fill: { color: hex(color.fondo) }, line: { color: hex(color.linea), width: 0.75 }, fontFace: FUENTE, fontSize: tamQueCabe(t, ancho - 0.25, 0.38, 11, 7.5), color: hex(color.texto), valign: "middle", fit: "shrink" });
-  });
-}
-
-const estiloCerteza: Record<Certeza, { fondo: string; texto: string; nombre: string }> = {
-  implementado: { fondo: color.correctoSuave, texto: color.correcto, nombre: "Ya existe" },
-  ejemplo: { fondo: ACC_S, texto: ACC_T, nombre: "Ejemplo" },
-  propuesta: { fondo: color.advertenciaSuave, texto: color.advertenciaTexto, nombre: "Propuesta" },
-};
-
-function marcas(s: Slide, lista: { texto: string; certeza: Certeza }[], y: number) {
-  let x = M;
-  for (const m of lista) {
-    const e = estiloCerteza[m.certeza];
-    const texto = `${e.nombre} · ${m.texto}`;
-    const ancho = Math.min(CW, 0.3 + texto.length * 0.066);
-    if (x + ancho > W - M) { x = M; y += 0.36; }
-    s.addText(texto, { x, y, w: ancho, h: 0.3, shape: "roundRect", rectRadius: 0.15, fill: { color: hex(e.fondo) }, line: { color: hex(e.fondo), width: 0 }, color: hex(e.texto), fontFace: FUENTE, fontSize: 9.5, bold: true, align: "center", valign: "middle", margin: 2 });
-    x += ancho + 0.12;
-  }
-}
-
-function tamanoCodigo(b: BloqueCodigo, ancho: number, alto: number): number {
-  const lineas = b.texto.split("\n");
-  const largo = Math.max(...lineas.map((l) => l.length), 10);
-  const porAncho = ((ancho - 0.3) * 72) / (0.6 * largo);
-  const porAlto = ((alto - 0.45) * 72) / (1.3 * lineas.length);
-  return Math.max(7.5, Math.min(20, Math.floor(Math.min(porAncho, porAlto) * 2) / 2));
-}
-
-function codigo(s: Slide, b: BloqueCodigo, caja: Caja) {
-  icono(s, "file-code", caja.x, caja.y + 0.01, 0.22, ACC_T);
-  s.addText(b.archivo, { x: caja.x + 0.3, y: caja.y, w: caja.w - 0.3, h: 0.25, margin: 0, fontFace: MONO, fontSize: 9, color: hex(ACC_T) });
-  const tam = tamanoCodigo(b, caja.w, caja.h - 0.3);
-  const tramos: PptxGenJS.TextProps[] = [];
-  const lineas = b.texto.split("\n");
-  lineas.forEach((linea, i) => {
-    const partes = resaltar(linea, b.lenguaje);
-    if (partes.length === 0) partes.push({ texto: " ", clase: "texto" });
-    partes.forEach((p, j) => tramos.push({ text: p.texto, options: { color: hex(colorCodigo[p.clase]), italic: p.clase === "comentario", breakLine: j === partes.length - 1 && i < lineas.length - 1 } }));
-  });
-  s.addText(tramos, { x: caja.x, y: caja.y + 0.3, w: caja.w, h: caja.h - 0.3, shape: "roundRect", rectRadius: 0.1, fill: { color: hex(color.codigoFondo) }, line: { color: hex(color.codigoFondo), width: 0 }, fontFace: MONO, fontSize: tam, valign: "top", margin: 12, lineSpacingMultiple: 1.1, shadow: sombra() });
-}
-
-function tabla(s: Slide, t: Tabla, caja: Caja) {
+function tabla(s: Slide, t: Tabla, caja: Caja, anchosFijos?: number[]) {
   const largos = t.encabezados.map((h, c) => Math.max(h.length, ...t.filas.map((f) => (f[c] ?? "").length)));
   const sumaLargos = largos.reduce((a, b) => a + b, 0);
   const colW = largos.map((l) => Math.max(1.4, (caja.w * l) / sumaLargos));
   const factor = caja.w / colW.reduce((a, b) => a + b, 0);
-  const anchos = colW.map((w) => w * factor);
+  const anchos = anchosFijos ?? colW.map((w) => w * factor);
   let tam = 14;
   const altoCon = (pt: number) =>
     [t.encabezados, ...t.filas].reduce((suma, fila) => {
@@ -190,8 +136,8 @@ function portadaGeneral(pptx: PptxGenJS, l: Lamina, variante: Variante) {
     s.addText(k.titulo, { x: x + 0.16, y: 5.44, w: kw - 0.22, h: 0.42, margin: 0, fontFace: FUENTE, fontSize: tamQueCabe(k.titulo, kw - 0.26, 0.4, 10, 7.5), color: hex(color.sobreOscuroSecundario), valign: "top" });
   });
 
-  const version = `VERSIÓN ${nombreVariante(variante).toUpperCase()} · STAFF DE TECNOLOGÍA`;
-  s.addText(version, { x: 0.83, y: 6.28, w: 0.5 + version.length * 0.1, h: 0.36, shape: "roundRect", rectRadius: 0.18, margin: 0, fill: { color: hex(mezclar(PROF, ACC, 0.2)) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, fontSize: 10, bold: true, color: hex(ACC), align: "center", valign: "middle", charSpacing: 1 });
+  const publico = "STAFF DE TECNOLOGÍA";
+  s.addText(publico, { x: 0.83, y: 6.28, w: 0.5 + publico.length * 0.1, h: 0.36, shape: "roundRect", rectRadius: 0.18, margin: 0, fill: { color: hex(mezclar(PROF, ACC, 0.2)) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, fontSize: 10, bold: true, color: hex(ACC), align: "center", valign: "middle", charSpacing: 1 });
   s.addNotes(textoNotas(l));
 }
 
@@ -208,7 +154,7 @@ function cierreFinal(pptx: PptxGenJS, l: Lamina, variante: Variante) {
 
 // Lámina de concepto: la idea grande a la izquierda, tarjetas con ícono a la
 // derecha, la comparación cotidiana y la franja "¿Por qué importa?".
-function concepto(s: Slide, d: Diapositiva, abajo: number, conCodigo: boolean) {
+function concepto(s: Slide, d: Diapositiva, abajo: number) {
   const izqW = 5.75;
   const derX = M + izqW + 0.45;
   const derW = W - M - derX;
@@ -216,10 +162,6 @@ function concepto(s: Slide, d: Diapositiva, abajo: number, conCodigo: boolean) {
   s.addShape("rect", { x: M, y: 1.62, w: 0.08, h: 1.0, fill: { color: hex(ACC) }, line: { color: hex(ACC), width: 0 } });
   s.addText(idea, { x: M + 0.28, y: 1.55, w: izqW - 0.28, h: 1.9, margin: 0, fontFace: TITULO, fontSize: tamQueCabe(idea, izqW - 0.32, 1.9, 32, 16, true), bold: true, color: hex(PRI), valign: "top", fit: "shrink" });
   if (d.comparacion) comparacion(s, d, { x: M, y: Math.max(3.65, abajo - 1.45), w: izqW, h: 1.3 });
-  if (conCodigo && d.codigo) {
-    codigo(s, d.codigo, { x: derX, y: 1.5, w: derW, h: abajo - 1.6 });
-    return;
-  }
   const n = d.visible.length;
   const gap = 0.16;
   const alto = Math.min(1.15, (abajo - 1.55 - gap * (n - 1)) / n);
@@ -256,7 +198,8 @@ function laminaVisual(s: Slide, d: Diapositiva, abajo: number, iconoSeccion?: No
   const v = d.visual!;
   const capturaSola = v.tipo === "captura" && v.capturas.length === 1;
   let arriba = 1.5;
-  if (d.idea && !capturaSola) {
+  // En una lámina de video, el espacio es para el video.
+  if (d.idea && !capturaSola && v.tipo !== "video") {
     s.addText(d.idea, { x: M, y: 1.28, w: CW, h: 0.42, margin: 0, fontFace: FUENTE, fontSize: tamQueCabe(d.idea, CW, 0.42, 17, 11), color: hex(color.secundario), valign: "middle", fit: "shrink" });
     arriba = 1.88;
   }
@@ -280,68 +223,35 @@ function avance(s: Slide, l: Lamina, total: number) {
   }
 }
 
-// Diagrama detallado completo, con todos sus pasos numerados debajo: el
-// número de cada paso coincide con el de la flecha.
-function laminaDiagrama(s: Slide, d: Diapositiva, abajo: number) {
-  const fig = diagramaPorId(d.diagrama!);
-  const n = fig.pasos.length;
-  const cols = Math.min(4, n);
-  const filas = Math.ceil(n / cols);
-  const altoPaso = 0.62;
-  const hLeyenda = filas * altoPaso + (filas - 1) * 0.1;
-  const yLeyenda = abajo - hLeyenda;
-  diagrama(s, fig, { x: M, y: 1.4, w: CW, h: yLeyenda - 1.55 }, { paso: null });
-  const gap = 0.14;
-  const ancho = (CW - gap * (cols - 1)) / cols;
-  fig.pasos.forEach((p, i) => {
-    const x = M + (i % cols) * (ancho + gap);
-    const y = yLeyenda + Math.floor(i / cols) * (altoPaso + 0.1);
-    s.addShape("roundRect", { x, y, w: ancho, h: altoPaso, rectRadius: 0.08, fill: { color: hex(ACC_S) }, line: { color: hex(mezclar(ACC, "#FFFFFF", 0.4)), width: 0.75 } });
-    s.addText(String(i + 1), { x: x + 0.1, y: y + (altoPaso - 0.34) / 2, w: 0.34, h: 0.34, shape: "ellipse", margin: 0, fill: { color: hex(PRI) }, line: { color: hex(PRI), width: 0 }, fontFace: TITULO, fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-    s.addText(p.texto, { x: x + 0.52, y: y + 0.03, w: ancho - 0.6, h: altoPaso - 0.06, margin: 0, fontFace: FUENTE, fontSize: tamQueCabe(p.texto, ancho - 0.65, altoPaso - 0.08, 11, 7.5), color: hex(color.texto), valign: "middle", fit: "shrink" });
-  });
-}
-
 function contenido(pptx: PptxGenJS, l: Lamina, variante: Variante) {
   const partes = partesDe(variante).length;
   const d = l.diapositiva;
   const s = pptx.addSlide();
-  // Las formas que el visual dibuja por pasos aparecen clic a clic.
-  marcarPasos(s);
   s.background = { color: "FFFFFF" };
   encabezado(s, etiquetaSeccion(l.seccion), d.titulo);
   avance(s, l, partes);
-  const conCodigo = recorridoDe(variante) === "tecnico" && !!d.codigo;
-  const conPorque = !!d.porque && (!d.diagrama || !!d.visual) && (!d.tabla || !!d.visual);
-  const baseAbajo = conPorque ? H - 1.12 : H - 0.55;
-  const abajo = d.marcas?.length ? baseAbajo - 0.45 : baseAbajo;
-
-  if (d.visual) {
-    laminaVisual(s, d, abajo, l.seccion.icono);
-  } else if (d.diagrama) {
-    laminaDiagrama(s, d, abajo);
-  } else if (d.tabla) {
-    chips(s, d.visible, 1.42);
-    tabla(s, d.tabla, { x: M, y: 2.02, w: CW, h: abajo - 2.1 });
-  } else {
-    concepto(s, d, abajo, conCodigo);
-  }
-  if (d.marcas?.length) marcas(s, d.marcas, abajo + 0.08);
-  if (conPorque) franjaPorque(s, d.porque!);
+  const abajo = d.porque ? H - 1.12 : H - 0.55;
+  if (d.visual) laminaVisual(s, d, abajo, l.seccion.icono);
+  else concepto(s, d, abajo);
+  if (d.porque) franjaPorque(s, d.porque);
   pie(s, `ARKA-Lite · ${etiquetaSeccion(l.seccion)}`);
   s.addNotes(textoNotas(l));
+}
 
-  // El código no cabe junto a un diagrama, una tabla o un visual: va en su
-  // propia lámina, solo en el recorrido técnico.
-  if (conCodigo && d.codigo && (d.diagrama || d.tabla || d.visual)) {
-    const sc = pptx.addSlide();
-    sc.background = { color: "FFFFFF" };
-    encabezado(sc, etiquetaSeccion(l.seccion), `${d.titulo} · el código`);
-    avance(sc, l, partes);
-    codigo(sc, d.codigo, { x: M, y: 1.5, w: CW, h: H - 2.15 });
-    pie(sc, `ARKA-Lite · ${etiquetaSeccion(l.seccion)}`);
-    sc.addNotes(`QUÉ HACER (no se dice)\nMostrar el archivo ${d.codigo.archivo} y leer solo las líneas que se mencionan en el texto de la lámina anterior.`);
-  }
+// Lámina de apoyo para el equipo, al final: quién presenta qué, con los
+// números de lámina de esta versión. Se quita antes de presentar.
+function laminaReparto(pptx: PptxGenJS, variante: Variante) {
+  const aviso = "Lámina de apoyo para el equipo: se quita antes de presentar";
+  const s = pptx.addSlide();
+  s.background = { color: "FFFFFF" };
+  encabezado(s, "Valor y cierre", "Reparto de la presentación");
+  s.addText(aviso, { x: M, y: 1.34, w: CW, h: 0.42, shape: "roundRect", rectRadius: 0.08, margin: [2, 8, 2, 8], fill: { color: hex(color.fondo) }, line: { color: hex(color.linea), width: 0.75 }, fontFace: FUENTE, fontSize: 12, color: hex(color.texto), valign: "middle" });
+  tabla(s, {
+    encabezados: ["Persona", "Área", "Láminas", "Qué presenta"],
+    filas: turnos(DIVISION, variante).map((t) => [t.persona.nombre, t.persona.area, rangos(t.laminas.map((x) => x.numero)), rolesDe(t).map((r) => NOMBRE_ROL[r]).join(" · ")]),
+  }, { x: M, y: 1.96, w: CW, h: H - 2.6 }, [2.6, 2.0, 1.9, CW - 6.5]);
+  pie(s, "ARKA-Lite · Valor y cierre");
+  s.addNotes(`${aviso}.`);
 }
 
 export function construirPresentacion(variante: Variante): PptxGenJS {
@@ -357,6 +267,7 @@ export function construirPresentacion(variante: Variante): PptxGenJS {
     else if (l.id.endsWith("-gracias")) cierreFinal(pptx, l, variante);
     else contenido(pptx, l, variante);
   }
+  laminaReparto(pptx, variante);
   return pptx;
 }
 

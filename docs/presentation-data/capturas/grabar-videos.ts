@@ -1,8 +1,10 @@
-// Graba los videos de la demostración con la UI que usa la variante
-// «ejecutivo con videos», para presentar cuando no se puede hacer en vivo.
-// Requiere el sistema arriba (docker compose up --build -d) y Edge o Chrome.
-//   npm run videos                 → los dos videos
-//   npm run videos -- caida        → solo uno: recorrido o caida
+// Graba los videos de la versión «ejecutivo con videos»: dos con el sistema
+// real, que muestran cómo interactúan los componentes, y uno simulado del
+// camino de un cambio hasta el despliegue (grabadora/cicd.html).
+// Requiere el sistema arriba (docker compose up --build -d) y Edge o Chrome;
+// el simulado solo necesita el navegador.
+//   npm run videos                 → los tres videos
+//   npm run videos -- caida        → solo uno: recorrido, caida o cicd
 // Detiene y vuelve a iniciar servicio-notificaciones a propósito: es la caída
 // que muestra el video. Al terminar, regenerar con npm run todo.
 //
@@ -22,15 +24,16 @@ import { grabados, MANIFIESTO, VIDEOS, type Grabado, type NombreVideo, type Vide
 const UI = process.env.ARKA_UI ?? "http://localhost:8088";
 const RAIZ = join(ENTREGABLES, "..", "..");
 const GRABADORA = join(ENTREGABLES, "capturas", "grabadora");
-// 1440×810 puntos a escala 4/3: cuadros de 1920×1080.
-const VISTA = { width: 1440, height: 810 };
-const ESCALA = 4 / 3;
+// 1200×675 puntos a escala 1.6: cuadros de 1920×1080. Todo sale más grande, para
+// que se lea dentro de una lámina.
+const VISTA = { width: 1200, height: 675 };
+const ESCALA = 1.6;
 const ANCHO = 1920;
 const ALTO = 1080;
 const FPS = 30;
 // Cuantizador constante: las pantallas quietas casi no pesan y el texto se lee
 // nítido. El bitrate es el respaldo si el codificador no admite cuantizador.
-const CALIDAD = { quantizer: 27, bitrate: 2_500_000 };
+const CALIDAD = { quantizer: 21, bitrate: 6_000_000 };
 
 const dormir = (ms: number) => new Promise((listo) => setTimeout(listo, ms));
 // Sin bloquear: mientras corre el comando siguen llegando cuadros.
@@ -81,8 +84,14 @@ class Grabacion {
     return this.p.evaluate(([m, a]) => (globalThis as any).__grabadora[m as string](...(a as unknown[])), [metodo, args] as const);
   }
 
+  async preparar(conFranja: boolean) {
+    if (conFranja) await this.franja();
+    else await this.llamar("sinCursor");
+    await this.llamar("portada", "ARKA-LITE", this.video.titulo, this.video.subtitulo);
+    await dormir(700);
+  }
+
   async portada() {
-    await this.llamar("portada", "ARKA-LITE · EQUIPO ARKA-LITOS", this.video.titulo, this.video.subtitulo);
     await dormir(3200);
     await this.llamar("quitarPortada");
     await dormir(700);
@@ -151,8 +160,26 @@ class Grabacion {
     await dormir(350);
   }
 
-  pestana(vista: string) {
-    return this.p.locator(`nav[aria-label="Principal"] a[href="#/${vista}"]`);
+  // La franja tapa el menú: se cambia de vista sin pasar por él.
+  async irA(vista: string) {
+    await this.p.evaluate((v) => { (globalThis as any).location.hash = `#/${v}`; }, vista);
+    await dormir(900);
+    // Sube la página para que el rótulo no tape la tabla.
+    await this.p.evaluate(() => (globalThis as any).scrollTo(0, 110));
+  }
+
+  franja() {
+    return this.llamar("franja", COMPONENTES);
+  }
+
+  componentes(estados: Record<string, string>) {
+    return this.llamar("componentes", estados);
+  }
+
+  // Deja en la tabla solo la solicitud del video.
+  async soloLaFila(id: string) {
+    await this.p.getByPlaceholder("id, tipo o estado").fill(id);
+    await dormir(500);
   }
 
   boton(nombre: string) {
@@ -184,43 +211,40 @@ async function idLibre(): Promise<string> {
 
 const fila = (g: Grabacion, id: string) => g.p.locator("tr", { has: g.p.locator(".celda-id", { hasText: new RegExp(`^${id}$`) }) });
 
-// Los dos servicios arriba: crear, enviar, ver el aviso en Enviadas, la salud
-// en verde y un diagrama de Ayuda.
+const COMPONENTES = ["Pantalla", "Solicitudes", "Bandeja de salida", "Notificaciones", "Aviso"];
+
+// Los dos servicios arriba: la solicitud pasa por cada componente hasta su aviso.
 async function recorrido(g: Grabacion) {
   const id = await idLibre();
   await g.portada();
 
   await g.rotulo(1);
+  await g.componentes({ Pantalla: "activo", Solicitudes: "activo" });
   await g.clic(g.p.locator("#nuevo-id"), 200);
   await g.escribir(id);
   await g.clic(g.p.locator(".ts-control"), 300);
   await g.escribir("Cam");
   await g.p.keyboard.press("Enter");
   await dormir(500);
-  await g.clic(g.boton("Crear solicitud"), 2600);
+  await g.clic(g.boton("Crear solicitud"), 2000);
+  await g.soloLaFila(id);
 
   await g.rotulo(2);
+  await g.componentes({ Solicitudes: "activo", "Bandeja de salida": "espera" });
   await g.clic(fila(g, id).locator('button[data-accion="enviar"]'));
   await g.confirmar();
 
   // Sin pausa: el relevador entrega en menos de 5 segundos y se alcanza a
   // ver el evento en camino.
   await g.rotulo(3);
-  await g.clic(g.pestana("enviadas"), 300);
+  await g.irA("enviadas");
+  await g.soloLaFila(id);
   await g.mover(fila(g, id).locator(".recorrido"));
   await fila(g, id).locator('button[data-accion="reentregar"]').waitFor({ timeout: 60_000 });
+  await g.componentes({ "Bandeja de salida": "listo", Notificaciones: "listo", Aviso: "listo" });
   await g.mover(fila(g, id).locator(".recorrido"));
   await g.marcarPortada();
-  await dormir(3500);
-
-  await g.rotulo(4);
-  await g.clic(g.pestana("salud"), 600);
-  await g.clic(g.boton("Validar servicios"), 3200);
-
-  await g.rotulo(5);
-  await g.clic(g.pestana("ayuda"), 600);
-  await g.clic(g.p.locator('a[href="#/ayuda/enviar"]'), 900);
-  await g.clic(g.boton("Reproducir"), 7500);
+  await dormir(5000);
 }
 
 // Notificaciones se cae: enviar igual responde, el evento espera, y al volver
@@ -231,44 +255,47 @@ async function caida(g: Grabacion) {
   try {
     await g.rotulo(1);
     await g.comando(["compose", "stop", "servicio-notificaciones"], "✔ Container arka-lite-servicio-notificaciones-1  Stopped");
+    await g.componentes({ Notificaciones: "caido" });
+    await dormir(2000);
     await g.quitarTerminal();
-    await g.clic(g.boton("Validar servicios"), 400);
-    await g.p.getByLabel("Notificaciones", { exact: true }).getByText(/DOWN|Sin respuesta/).waitFor({ timeout: 30_000 });
-    await dormir(2600);
 
     await g.rotulo(2);
-    await g.clic(g.pestana("solicitudes"), 600);
+    await g.componentes({ Pantalla: "activo", Solicitudes: "activo", Notificaciones: "caido" });
     await g.clic(g.p.locator("#nuevo-id"), 200);
     await g.escribir(id);
-    await g.clic(g.boton("Crear solicitud"), 2200);
+    await g.clic(g.boton("Crear solicitud"), 1800);
+    await g.soloLaFila(id);
     await g.clic(fila(g, id).locator('button[data-accion="enviar"]'));
     await g.confirmar();
     await dormir(2400);
 
     await g.rotulo(3);
-    await g.clic(g.pestana("enviadas"), 900);
+    await g.componentes({ Solicitudes: "listo", "Bandeja de salida": "espera", Notificaciones: "caido" });
+    await g.irA("enviadas");
+    await g.soloLaFila(id);
     await g.p.getByText("Notificaciones no responde.").waitFor({ timeout: 30_000 });
-    await g.mover(g.p.getByText("Notificaciones no responde."));
-    await g.marcarPortada();
-    await dormir(4500);
     await g.mover(fila(g, id).locator(".recorrido"));
-    await dormir(3000);
+    await g.marcarPortada();
+    await dormir(6000);
 
     await g.rotulo(4);
     await g.comando(["compose", "start", "servicio-notificaciones"], "✔ Container arka-lite-servicio-notificaciones-1  Started");
-    g.acelerar(4, "×4 · esperando que notificaciones arranque y el relevador entregue");
+    await g.componentes({ "Bandeja de salida": "espera", Notificaciones: "activo" });
+    g.acelerar(4, "×4 · esperando que notificaciones arranque y la bandeja entregue");
     await fila(g, id).locator('button[data-accion="reentregar"]').waitFor({ timeout: 240_000 });
     g.acelerar(1);
     await g.quitarTerminal();
     await dormir(800);
 
     await g.rotulo(5);
+    await g.componentes({ "Bandeja de salida": "listo", Notificaciones: "listo", Aviso: "listo" });
     await g.mover(fila(g, id).locator("td").nth(3));
     await dormir(2500);
     await g.mover(g.p.getByText("Avisos duplicados"));
     await dormir(2500);
 
     await g.rotulo(6);
+    await g.componentes({ "Bandeja de salida": "activo", Notificaciones: "activo", Aviso: "listo" });
     await g.clic(fila(g, id).locator('button[data-accion="reentregar"]'));
     await g.confirmar();
     await g.p.getByText("El aviso no se duplicó").waitFor({ timeout: 30_000 });
@@ -279,9 +306,22 @@ async function caida(g: Grabacion) {
   }
 }
 
-const GUIONES: Record<NombreVideo, { inicio: string; guion: (g: Grabacion) => Promise<void> }> = {
+// El camino de un cambio, simulado: cada rótulo avanza un paso de la página.
+async function cicd(g: Grabacion) {
+  await g.portada();
+  const pausas = [3200, 2600, 3200, 5200, 4200];
+  for (const [i, pausa] of pausas.entries()) {
+    await g.rotulo(i + 1);
+    await g.p.evaluate((n) => (globalThis as any).cicd.paso(n), i + 1);
+    await dormir(pausa);
+  }
+  await g.marcarPortada();
+}
+
+const GUIONES: Record<NombreVideo, { inicio?: string; pagina?: string; guion: (g: Grabacion) => Promise<void> }> = {
   recorrido: { inicio: "solicitudes", guion: recorrido },
-  caida: { inicio: "salud", guion: caida },
+  caida: { inicio: "solicitudes", guion: caida },
+  cicd: { pagina: "cicd.html", guion: cicd },
 };
 
 async function abrirNavegador(): Promise<Browser> {
@@ -297,10 +337,18 @@ async function abrirNavegador(): Promise<Browser> {
 
 async function grabar(contexto: BrowserContext, nombre: NombreVideo): Promise<Grabacion> {
   const p = await contexto.newPage();
-  await p.goto(`${UI}/#/${GUIONES[nombre].inicio}`);
-  await p.getByText("2 de 2 servicios UP").waitFor({ timeout: 60_000 });
+  const { inicio, pagina } = GUIONES[nombre];
+  if (pagina) {
+    await p.route("https://simulacion.arka/**", (r) => r.fulfill({ body: readFileSync(join(GRABADORA, pagina)), contentType: "text/html; charset=utf-8" }));
+    await p.goto("https://simulacion.arka/");
+  } else {
+    await p.goto(`${UI}/#/${inicio}`);
+    await p.getByText("2 de 2 servicios UP").waitFor({ timeout: 60_000 });
+  }
   await dormir(1500);
   const g = new Grabacion(p, VIDEOS[nombre]);
+  // Desde el primer cuadro: la portada tapa la página y la franja, el menú.
+  await g.preparar(!pagina);
   await g.empezar();
   await GUIONES[nombre].guion(g);
   await g.terminar();

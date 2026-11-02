@@ -1,5 +1,5 @@
 // Comprueba que cada PPTX generado es un paquete válido: tamaño 16:9, una
-// nota por diapositiva y texto editable. Las únicas imágenes son capturas de
+// nota por diapositiva, texto editable y ninguna lámina armada por clics. Las únicas imágenes son capturas de
 // pantalla dentro de una lámina con texto: ninguna lámina es una sola imagen.
 //   node generador-pptx/verificar.ts
 import { readFileSync, readdirSync } from "node:fs";
@@ -10,7 +10,7 @@ import { DIR_PPTX } from "../entregables.ts";
 const salida = DIR_PPTX;
 let fallos = 0;
 
-for (const archivo of readdirSync(salida).filter((f) => f.endsWith(".pptx"))) {
+for (const archivo of readdirSync(salida).filter((f) => f.endsWith(".pptx") && !f.startsWith("~$"))) {
   const zip = await JSZip.loadAsync(readFileSync(join(salida, archivo)));
   const presentacion = await zip.file("ppt/presentation.xml")?.async("string");
   const tam = presentacion?.match(/<p:sldSz cx="(\d+)" cy="(\d+)"/);
@@ -43,6 +43,8 @@ for (const archivo of readdirSync(salida).filter((f) => f.endsWith(".pptx"))) {
     }
   }
   const problemas: string[] = [];
+  const conClics = (await Promise.all(diapositivas.map((d) => zip.file(d)!.async("string")))).filter((x) => x.includes('presetClass="entr"')).length;
+  if (conClics) problemas.push(`${conClics} diapositivas todavía se arman por clics`);
   if (fuera.length) problemas.push(`formas fuera de la diapositiva en ${Array.from(new Set(fuera)).join(", ")}`);
   if (!tam || Number(tam[1]) / Number(tam[2]) < 1.77 || Number(tam[1]) / Number(tam[2]) > 1.78) problemas.push(`tamaño no es 16:9 (${tam?.[1]}×${tam?.[2]})`);
   if (notas.length < diapositivas.length) problemas.push(`faltan notas: ${notas.length} de ${diapositivas.length}`);

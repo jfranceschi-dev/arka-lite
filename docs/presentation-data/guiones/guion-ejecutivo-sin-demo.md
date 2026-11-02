@@ -1,53 +1,49 @@
-# Guion de ARKA-Lite · ejecutivo sin demostración
+# Guion de ARKA-Lite · sin demostración
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-45 láminas, unos 41 minutos; las preguntas van aparte. El recorrido ejecutivo sin la parte 7: la observabilidad pasa directo al cierre.
+46 láminas, unos 43 minutos; las preguntas van aparte. Fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps en detalle; la observabilidad pasa directo al cierre.
 
 ## Cómo está pensada
 
-Todos los equipos presentan las mismas secciones, pero cada uno profundiza en algunas para no repetir contenido. El equipo anterior se enfoca en fundamentos y arquitectura hexagonal; nosotros los vemos en vista general y vamos a fondo en la base de datos, la interconexión de los servicios y DevOps. La presentación narra el proyecto de punta a punta: cada parte retoma lo que dejó la anterior.
+Todos los equipos presentan las mismas secciones, pero cada uno profundiza en algunas para no repetir contenido. El equipo anterior se enfoca en fundamentos y arquitectura hexagonal; nosotros los vemos en vista general y nos detenemos en la base de datos, la interconexión de los servicios y DevOps. La presentación narra el proyecto de punta a punta: cada parte retoma lo que dejó la anterior.
 
 | Parte | Enfoque | Láminas | Qué se ve |
 | --- | --- | --- | --- |
-| 1. Fundamentos | Vista general | 3–6 | Primero el qué, después el cómo: el negocio claro y buenas prácticas que sirven en cualquier lenguaje. |
-| 2. Arquitectura | Vista general | 7–10 | El sistema por fuera: qué piezas hay y cómo trabajan juntas. |
-| 3. Base de datos | A fondo | 11–19 | Dos bases PostgreSQL, el ORM, la cadena de conexión y las transacciones. |
-| 4. Interconexión de servicios | A fondo | 20–24 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
-| 5. DevOps: Docker y Kubernetes | A fondo | 25–39 | Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio. |
-| 6. Observabilidad | Vista general | 40–41 | Logs en un solo lugar, trazas entre servicios y salud de cada componente. |
+| 1. Fundamentos | Vista general | 3–5 | Lo que nos quedó: analizar antes de programar y buenas prácticas para cualquier lenguaje. |
+| 2. Arquitectura | Vista general | 6–9 | Lo que nos quedó: cada servicio con sus datos, y mensajes entre ellos. |
+| 3. Base de datos | En detalle | 10–19 | Dos bases PostgreSQL, el ORM, los datos de conexión y las transacciones. |
+| 4. Interconexión de servicios | En detalle | 20–24 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
+| 5. DevOps: Docker y Kubernetes | En detalle | 25–39 | Docker empaqueta, el pipeline prueba cada cambio y Kubernetes administra. |
+| 6. Observabilidad | Vista general | 40–42 | Cómo sabemos qué pasa adentro: salud, registros y un número de seguimiento. |
 
 ## Reparto
 
-Quien orquesta abre, presenta el negocio, conecta las partes y cierra; también recibe las preguntas y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto, más la demostración en vivo o lo que duren los videos.
+Luis abre, Abdiel cierra y recibe las preguntas, y se las pasa a quien presentó esa parte. Los minutos salen del texto de **Qué decir**, a unas 130 palabras por minuto, o de lo que duren los videos.
 
-### 7 personas
-
-Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infraestructura. En base de datos, una persona de desarrollo apoya con la parte de código.
+Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apoya en base de datos y presenta CI/CD, para bajar la carga de infraestructura.
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
-| Desarrollo 1 · orquesta | Desarrollo | Apertura, el negocio y el cierre y Fundamentos | 1–6, 42–45 | ~8 min |
-| Desarrollo 2 | Desarrollo | Arquitectura | 7–10 | ~3 min |
-| Desarrollo 3 | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión | 14–17 | ~5 min |
-| Desarrollo 4 | Desarrollo | Interconexión de servicios | 20–24 | ~5 min |
-| Base de datos | Base de datos | Base de datos | 11–13, 18–19 | ~5 min |
-| Infraestructura 1 | Infraestructura | DevOps: Docker, Compose y Codespaces, y la observabilidad | 25–31, 40–41 | ~8 min |
-| Infraestructura 2 | Infraestructura | DevOps: CI/CD y Kubernetes | 32–39 | ~8 min |
+| Luis Cardoze | Desarrollo | Apertura y Fundamentos | 1–5 | ~4 min |
+| Ricardo Fábrega | Desarrollo | Arquitectura | 6–9 | ~3 min |
+| Marlene Bonilla | Base de datos | Base de datos | 10–12 y 18–19 | ~5 min |
+| Jossett Franceschi | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD | 13–17 y 30–33 | ~10 min |
+| Abdiel Barria | Desarrollo | Interconexión de servicios y Resultados, valor y cierre | 20–24 y 43–46 | ~8 min |
+| Moises | Infraestructura | DevOps: Docker y Compose, y la observabilidad | 25–29 y 40–42 | ~7 min |
+| Kevin | Infraestructura | DevOps: Kubernetes | 34–39 | ~6 min |
 
-Cada persona tiene su guion aparte en `guion-ejecutivo-sin-demo-7-personas.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
+Cada persona tiene su guion aparte en `guion-ejecutivo-sin-demo-por-persona.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
 ## Cómo leer este guion
 
 | Bloque | Qué es |
 | --- | --- |
-| **En pantalla** | Lo que ve el público. |
-| **Lo que se lleva el staff** | El valor de la lámina en una frase: lo que el público tiene que recordar. |
-| **Qué decir** | El texto para decir en voz alta. No hace falta leerlo palabra por palabra. **▶ clic** marca el momento de hacer clic: ahí aparece la siguiente pieza del diagrama. |
-| **Qué hacer** | Indicaciones para quien expone, como las demostraciones. No se dicen. |
-| **Si hay tiempo, se puede agregar** | Ejemplos y datos reales del proyecto para nutrir la explicación. No cuentan en los minutos. |
-| **Si preguntan** | Preguntas probables del staff y su respuesta corta. |
-| **Para pasar** | La frase que conecta con la lámina siguiente; si cambia quien presenta, es el relevo. |
+| **Qué decir** | El texto para leer de corrido, con la frase que conecta con la lámina siguiente al final. No hace falta aprendérselo. |
+| **Si se te olvida, di esto** | Las ideas de la lámina en frases cortas, para decirlas a tu manera. |
+| **Qué hacer** | Indicaciones para quien expone. No se dicen. |
+| **Si preguntan** | Preguntas probables y su respuesta corta. |
+| **Si hay tiempo** | Material adicional. No cuenta en los minutos. |
 
 ## Palabras clave, en una frase
 
@@ -56,1860 +52,1569 @@ Para que todo el equipo explique igual y sin jerga. Si alguien del público no c
 | Palabra | En una frase |
 | --- | --- |
 | Microservicio | Una aplicación pequeña, con una sola tarea y su propia base de datos. |
-| API REST y endpoint | La puerta para pedirle algo a una aplicación por HTTP; cada endpoint es una operación, como crear o enviar. |
+| Endpoint | Una puerta para pedirle algo a una aplicación por la red; cada una es una operación, como crear o enviar. |
 | JSON | El formato de texto en el que viajan los datos entre la pantalla y los servicios. |
-| ORM (JPA e Hibernate) | La pieza que traduce entre las clases del código y las tablas, y escribe el SQL de todos los días. |
+| ORM (Hibernate) | Un traductor entre los objetos de la aplicación y las tablas de la base; escribe el SQL de todos los días. |
 | Transacción | Un grupo de cambios que se guardan todos juntos o no se guarda ninguno: BEGIN, COMMIT o ROLLBACK. |
-| Pool de conexiones | Unas pocas conexiones a la base que se mantienen abiertas y se prestan a cada petición. |
-| Cadena de conexión | La dirección, el usuario y la clave para llegar a la base; aquí la pone el ambiente, no el código. |
+| Cadena de conexión | La dirección, el usuario y la clave para llegar a la base; hoy, en un web.config; aquí, en variables que entrega el ambiente. |
 | Evento | Un mensaje pequeño que dice que algo pasó, por ejemplo: se envió esta solicitud. |
-| Patrón Outbox | Guardar el aviso en una tabla de pendientes, en la misma transacción, y entregarlo después. |
-| Relevador | El proceso que cada cinco segundos revisa los pendientes y los entrega. |
+| Patrón Outbox | La bandeja de salida: guardar el aviso en una tabla de pendientes, en la misma transacción, y entregarlo después. |
+| Relevador | El proceso que cada cinco segundos revisa los pendientes y los entrega: el mensajero. |
 | Idempotencia | Repetir la misma operación no multiplica su efecto: el mismo aviso nunca se crea dos veces. |
 | Síncrono y asíncrono | Síncrono es una llamada: espero la respuesta. Asíncrono es un correo: lo envío y sigo. |
-| Docker, imagen y contenedor | Docker empaqueta la aplicación en una imagen que no cambia; cuando la imagen corre, es un contenedor. |
+| DevOps | Una forma de trabajar en la que cada cambio sigue el mismo camino, casi todo automático, del código a la operación. |
+| Docker | La herramienta que empaqueta la aplicación con todo lo que necesita. |
+| Imagen | El molde: un paquete que no cambia, con la aplicación y lo que necesita para correr. |
+| Contenedor | Lo que sale del molde: la imagen corriendo. |
 | Docker Compose | Un archivo que levanta varios contenedores juntos con un solo comando. |
-| Kubernetes | El administrador de contenedores: decide dónde corren, los vigila y levanta otro si uno se cae. |
-| Pod, Deployment, Service y Secret | Donde corre un contenedor, cuántas copias queremos, un nombre fijo para encontrarlo y un lugar aparte para las claves. |
+| Git, rama y main | Git guarda el historial del código; main es la versión principal, y una rama es una copia aparte para trabajar. |
+| Pull Request | La solicitud para que un cambio entre a la versión principal, con revisión de otra persona. |
+| Pipeline | Una lista de tareas que corre sola con cada cambio, como un control de calidad. |
 | CI | Integración continua: cada cambio se compila y se prueba solo, antes de entrar. |
-| CD | Entrega continua: el cambio aprobado queda empaquetado y listo para desplegar. |
-| Pull Request | La solicitud para que un cambio entre a la rama principal, con revisión de otra persona. |
-| Codespaces | Una máquina en la nube, creada desde el repositorio, donde corre todo el sistema sin instalar nada. |
-| Log y traceId | El registro de lo que pasó; el traceId es un número que acompaña una operación de un servicio a otro. |
-| Observabilidad | Poder ver qué pasa adentro del sistema: logs, trazas y salud en un solo lugar. |
+| CD | Entrega continua: el cambio aprobado queda empaquetado y listo para instalar. |
+| Kubernetes | El administrador de contenedores: decide dónde corren, los vigila y levanta otro si uno se cae. |
+| Clúster y nodo | Un clúster es un grupo de servidores que trabajan juntos; cada servidor es un nodo. |
+| Pod | La caja que envuelve al contenedor en Kubernetes y le da dirección, memoria y CPU. |
+| Deployment | El pedido que le hacemos a Kubernetes: qué imagen y cuántas copias queremos. |
+| Service | Un nombre fijo para encontrar a los Pods, aunque cambien, y que reparte el trabajo entre ellos. |
+| Secret | Un lugar aparte y protegido para guardar claves en Kubernetes. |
+| Reserva y tope | Lo mínimo garantizado de memoria y CPU, y lo máximo que un Pod puede usar. |
+| Registros (logs) | La bitácora de lo que hizo cada servicio. |
+| Número de seguimiento (traceId) | Un número que acompaña cada pedido de un servicio a otro, como la guía de un courier. |
+| Observabilidad | Poder saber qué pasa adentro del sistema, sin adivinar: salud, registros y seguimiento. |
 
 ## Apertura
 
-Presenta: Desarrollo 1 · orquesta.
+Presenta: Luis Cardoze.
 
 ### 1. Del endpoint al clúster
 
-**En pantalla · Números grandes:**
-
-- 2 microservicios
-- 2 bases PostgreSQL
-- 1 comando levanta todo
-- 0 avisos perdidos o duplicados
-
-**Ideas clave:**
-
-- Cómo construimos dos microservicios con sus datos, su plataforma y su operación.
-
-**Lo que se lleva el staff:** En 40 minutos, prácticas que pueden aplicar en sus propios sistemas, no solo teoría.
-
 **Qué decir**
 
-> Buenos días a todos. Somos el equipo arka-litos, del curso Upskilling Backend Java, y hoy les presentamos ARKA-Lite, nuestro proyecto final.
+> Buenos días. Ya vimos los fundamentos y una primera mirada a los temas que ahora vamos a desarrollar: cómo se guardan y se protegen los datos, cómo se comunican los servicios y cómo llevamos una aplicación del código a la operación.
 >
-> Somos un equipo de tres áreas, las mismas que tienen ustedes: desarrollo, base de datos e infraestructura, y cada parte la presenta quien la construyó. A mí, que vengo de desarrollo y conozco el negocio de punta a punta, me toca abrir, conectar las partes y cerrar.
+> Todo lo vamos a ver con ARKA-Lite, nuestro proyecto final del curso.
 >
-> El título lo resume: empezamos escribiendo un endpoint, una sola operación en Java, y terminamos con un sistema completo corriendo en un clúster de Kubernetes, con sus bases de datos, su pipeline y su monitoreo.
->
-> El equipo anterior ya les explicó los fundamentos y la arquitectura. Nosotros les vamos a contar el proyecto desde la práctica, con diagramas y ejemplos reales del sistema, y nos vamos a enfocar en lo que les puede servir en su día a día: cómo se cuidan los datos, cómo se hablan los sistemas y cómo se despliega y se opera todo.
+> Veamos cómo organizamos el recorrido.
+
+**Si se te olvida, di esto**
+
+- Retomamos lo que ya vieron para profundizar en los datos, la comunicación entre servicios y la operación de la aplicación.
+- Lo vemos con ARKA-Lite, nuestro proyecto final.
 
 **Qué hacer** (no se dice)
 
-- Cada diagrama se arma con clics: en el texto, ▶ CLIC marca el momento de hacer clic.
+- El moderador ya presentó al equipo: saludar y entrar directo al tema, sin volver a presentarse.
+- Antes de empezar, abrir este PPTX en la computadora de la sala y quitar la última lámina, que es solo para el equipo.
 
-**Si hay tiempo, se puede agregar**
+**Si hay tiempo**
 
-> ARKA-Lite nació como el laboratorio del curso: cada tema que veíamos lo aplicábamos al mismo sistema. Por eso creció por capas: primero un endpoint, después la base de datos, la comunicación entre servicios, los contenedores, el pipeline y la observabilidad.
+> ARKA-Lite nació como laboratorio del curso, así que aplicamos cada tema al mismo sistema. Primero hicimos una operación y después agregamos la base, la comunicación, los contenedores, el pipeline y los registros.
 >
-> Todo lo que van a ver está en un solo repositorio, con su documentación, y se levanta con un solo comando. Si a alguien le interesa revisarlo después, con gusto se lo compartimos.
->
-> Trabajamos como trabajaría un equipo real: cada cambio en una rama, revisado por otra persona y probado por el pipeline antes de entrar. Mezclar áreas nos obligó a ponernos de acuerdo en contratos claros: qué expone cada servicio, qué guarda cada base y cómo se despliega cada pieza.
-
-**Para pasar:** “Este es el recorrido.”
+> Trabajamos como un equipo real. Cada cambio se hizo por separado, otra persona lo revisó y las pruebas automáticas lo validaron antes de incorporarlo.
 
 ### 2. Qué vamos a ver
 
-**En pantalla · La ruta de las partes:**
-
-- 1. Fundamentos (vista general): Primero el qué, después el cómo: el negocio claro y buenas prácticas que sirven en cualquier lenguaje.
-- 2. Arquitectura (vista general): El sistema por fuera: qué piezas hay y cómo trabajan juntas.
-- 3. Base de datos (a fondo): Dos bases PostgreSQL, el ORM, la cadena de conexión y las transacciones.
-- 4. Interconexión de servicios (a fondo): Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia.
-- 5. DevOps: Docker y Kubernetes (a fondo): Docker empaqueta, Kubernetes administra y el pipeline prueba cada cambio.
-- 6. Observabilidad (vista general): Logs en un solo lugar, trazas entre servicios y salud de cada componente.
-
-**Ideas clave:**
-
-- Fundamentos y arquitectura: vista general
-- Base de datos: a fondo
-- Interconexión de servicios: a fondo
-- DevOps con Docker y Kubernetes: a fondo
-- Observabilidad: vista general
-
-**Lo que se lleva el staff:** Saber desde el inicio dónde vamos a profundizar y qué se van a llevar.
-
 **Qué decir**
 
-> Todos los equipos presentamos las mismas secciones, pero cada uno profundiza en algunas para no repetirnos. El equipo anterior se enfocó en los fundamentos y en la arquitectura hexagonal, así que esas dos partes las vamos a ver rápido, en vista general.
+> Primero les contamos lo que nos quedó de los fundamentos y la arquitectura, porque esos temas ya los vieron en la presentación anterior. Dedicaremos más tiempo a otros tres temas: la base de datos, cómo se comunican los servicios sin perder información y DevOps, que abarca cómo construimos, publicamos y operamos el sistema.
 >
-> **▶ clic** Donde vamos a fondo es en tres temas que tocan directo el trabajo de ustedes: la base de datos, cómo se comunican los servicios sin perder información, y DevOps, con Docker, Kubernetes y el pipeline. **▶ clic** Y después, una mirada general a la observabilidad, antes de cerrar con lo que pueden aplicar desde mañana.
+> Después vemos la observabilidad, que es cómo sabemos lo que pasa adentro, y cerramos con los resultados.
 >
-> Al final de cada parte les dejamos lo que aprendimos y cómo se puede aplicar en cualquier proyecto, también en los que usan procedimientos almacenados.
+> Empecemos con lo que nos quedó de los fundamentos.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Las partes generales son cortas a propósito: el equipo anterior ya las explicó. El tiempo lo dedicamos a lo que más valor les deja: los datos, la comunicación entre sistemas y la operación.
->
-> Al final juntamos lo que pueden aplicar desde mañana, aunque sus sistemas usen procedimientos almacenados.
+- Primero compartimos lo que nos quedó de los fundamentos y la arquitectura.
+- Nos detenemos en la base de datos, la comunicación entre servicios y DevOps.
 
-**Para pasar:** “Empecemos por los fundamentos, y por lo primero: el qué.”
+**Si hay tiempo**
+
+> Las partes generales son breves porque dedicaremos más tiempo a los datos, la comunicación entre sistemas y la operación, que son los temas con mayor valor práctico.
 
 ## 1 · Fundamentos · vista general
 
-Presenta: Desarrollo 1 · orquesta.
+Presenta: Luis Cardoze.
 
-### 3. Primero el qué: el negocio en una lámina
-
-**Presenta:** Desarrollo 1 · orquesta
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Quien solicita: Registra qué necesita y de qué tipo.
-- 2. La envía: Cuando está lista.
-- 3. El sistema avisa: A quien debe atenderla.
-- 4. Alguien decide: La aprueba o la rechaza.
-- Si si se salta un paso en el paso 2: No se permite: Enviar dos veces o decidir sobre un borrador: el sistema explica por qué.
-
-**Ideas clave:**
-
-- Quien solicita registra la solicitud
-- La envía cuando está lista
-- El sistema le avisa a quien debe atenderla
-- Alguien la aprueba o la rechaza
-- Saltarse un paso no se permite
-
-**Lo que se lleva el staff:** Pensar primero en el qué y después en el cómo: las reglas claras hacen el código simple.
+### 3. Lo primero: analizar antes de programar
 
 **Qué decir**
 
-> Antes de entrar a la tecnología, el aprendizaje más importante de los fundamentos: primero pensamos en el qué y después en el cómo. ¿Qué tiene que pasar, quién lo hace y qué no se puede permitir? Este es el negocio, en una lámina. Alguien registra una solicitud, por ejemplo una incidencia o un pedido de cambio: qué necesita y de qué tipo.
+> De los fundamentos, lo primero que nos quedó es analizar antes de programar. Antes de escribir código nos hicimos tres preguntas sobre el negocio.
 >
-> **▶ clic** Cuando está lista, la envía. **▶ clic** En ese momento, el sistema le avisa a quien debe atenderla. **▶ clic** Y esa persona la aprueba o la rechaza: es la decisión final.
+> Primero, qué tiene que pasar. Una persona registra una solicitud, como una incidencia o un pedido de cambio, la envía, y otra persona la aprueba o la rechaza. De ahí salieron cuatro estados: borrador, enviada, aprobada y rechazada.
 >
-> **▶ clic** Igual de importante es lo que no se permite: enviar dos veces la misma solicitud, o aprobar una que todavía nadie ha enviado. El sistema no lo hace y explica por qué. Esas son las reglas del negocio, y con ellas claras, el código salió simple: un servicio para las solicitudes y otro para los avisos.
+> Segundo, quién hace cada paso. Quien solicita envía, el sistema avisa y otra persona decide. Gestionar la solicitud y producir el aviso son trabajos distintos, y por eso los separamos en dos servicios.
+>
+> Tercero, qué no se puede permitir, como enviar dos veces la misma solicitud o aprobar una que nadie ha enviado. Cada una de esas reglas quedó con su prueba automática.
+>
+> Con el qué ya definido, pasamos al cómo: escribir código que se pueda cambiar con confianza.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Antes de escribir una línea de código nos hicimos tres preguntas: qué tiene que pasar, quién hace cada paso y qué no se puede permitir. Las respuestas se volvieron las reglas del sistema.
->
-> Por dentro, esos pasos son cuatro estados: borrador, enviada, aprobada y rechazada. La base de datos también los cuida: la columna estado solo acepta esos cuatro valores.
->
-> Al arrancar, el sistema siempre registra dos solicitudes de ejemplo: INC-001, una incidencia en borrador, y CAM-002, un cambio que se envía. El pipeline usa CAM-002 para comprobar que el servicio arrancó de verdad.
+- Antes de programar, aclaramos el proceso y sus responsables.
+- Las respuestas produjeron cuatro estados y dos servicios.
+- Cada regla importante quedó cubierta por una prueba.
 
 **Si preguntan:** ¿Por qué los avisos van en otro servicio?
 
-**Respuesta corta:** Porque cambian por motivos distintos, y así el trámite sigue funcionando aunque el servicio de avisos esté caído.
+Porque cambian por motivos distintos. Así, el trámite puede seguir funcionando aunque el servicio de avisos esté caído.
 
-**Para pasar:** “Con el qué claro, el cómo: código que se pueda cambiar sin miedo.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/inicio/proyecto.md`
+> La pregunta sobre lo que no podíamos permitir nos permitió definir las reglas antes de escribir código. De otra manera, habríamos descubierto esos casos más tarde y corregirlos habría costado más.
+>
+> La base de datos también protege los cuatro estados, porque la columna correspondiente solo acepta esos valores.
+>
+> Cuando arranca, el sistema registra dos solicitudes de ejemplo. El pipeline utiliza una para confirmar que el servicio realmente inició.
 
 ### 4. Código mantenible: buenas prácticas
 
-**En pantalla · Tarjetas:**
-
-- Una tarea por pieza: Quien recibe la petición no decide; quien decide no guarda.
-- Piezas que se conectan: Cada pieza recibe lo que necesita: se cambia o se prueba sola.
-- Reglas en un solo lugar: El negocio vive junto, lejos de la pantalla y de la base.
-- Errores con respuesta clara: Siempre el mismo formato: 400, 404 o 409 con su motivo.
-- Nombres del negocio: Solicitud, enviar, aprobar: el código se lee como el proceso.
-- Cada regla con su prueba: Una prueba automática avisa si un cambio rompió algo.
-
-**Ideas clave:**
-
-- Una tarea por pieza
-- Las piezas se conectan, no se fabrican adentro
-- Las reglas viven en un solo lugar
-- Errores con respuesta clara
-- Nombres del negocio
-- Cada regla con su prueba
-
-**Lo que se lleva el staff:** Cuando cambia una regla, se toca un solo lugar y una prueba confirma que nada se rompió.
-
 **Qué decir**
 
-> Con el qué claro, viene el cómo. El equipo anterior ya cubrió los fundamentos, así que nos quedamos con seis prácticas que nos sirvieron y que se pueden usar en cualquier lenguaje, sea Java, C#, Python o PL/SQL. Primera: cada pieza hace una sola tarea; la que recibe la petición no decide, y la que decide no guarda.
+> También nos quedó cómo escribir código fácil de mantener. Son seis prácticas que sirven en cualquier lenguaje, ya sea Java, C# o PL/SQL.
 >
-> **▶ clic** Segunda: las piezas se conectan desde afuera, así se pueden cambiar o probar por separado. **▶ clic** Tercera: las reglas del negocio viven en un solo lugar, no repetidas en la pantalla y en la base. **▶ clic** Cuarta: los errores responden siempre igual: un 400 si faltan datos, un 404 si algo no existe, un 409 si la regla no lo permite.
+> La primera es que cada pieza hace una sola tarea: la que recibe el pedido no decide, y la que decide no guarda. La segunda es conectar las piezas desde afuera, para poder cambiarlas o probarlas por separado. La tercera es dejar las reglas del negocio en un solo lugar, sin repetirlas en la pantalla y en la base.
 >
-> **▶ clic** Quinta: los nombres son los del negocio, así el código se lee como el proceso. **▶ clic** Y sexta: cada regla tiene una prueba automática que avisa si un cambio rompió algo. El resultado: cuando cambia una regla, se toca un solo lugar.
+> La cuarta es que todos los errores sigan el mismo formato y expliquen qué pasó. La quinta es usar los nombres del negocio, para que el código se lea como el proceso. Y la sexta es que cada regla tenga su prueba automática.
+>
+> Es como una cocina ordenada, donde cada persona tiene su puesto y cada cosa su lugar. Así, cuando cambia una regla, tocamos un solo lugar y sabemos enseguida si algo dejó de funcionar.
+>
+> Esto es lo que nos llevamos a cualquier proyecto.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Un ejemplo concreto: el controlador de solicitudes no decide nada; solo convierte el JSON y llama al servicio. Si mañana cambia la regla de envío, se toca la clase Solicitud y su prueba, nada más.
->
-> Lo de las piezas que se conectan desde afuera tiene un nombre: inyección de dependencias. En ARKA-Lite todo llega por el constructor, y por eso en las pruebas cambiamos la base real por una en memoria sin tocar el negocio.
+- Estas prácticas sirven en cualquier lenguaje.
+- Cada pieza hace una tarea y cada regla vive en un lugar.
+- Las pruebas nos avisan cuando un cambio rompe algo.
 
 **Si preguntan:** ¿Esto no hace el código más largo?
 
-**Respuesta corta:** Un poco más de piezas, pero cada una es corta y se entiende sola. El costo se recupera en el primer cambio.
+Puede producir más piezas, pero cada una es corta y se entiende por separado. Esa inversión se recupera desde el primer cambio.
 
-**Para pasar:** “Y como somos varios trabajando sobre el mismo código, también necesitamos orden.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/desarrollo/flujo-de-trabajo.md`
+> Por ejemplo, la pieza que recibe los pedidos no toma decisiones, sino que los pasa a las reglas. Si cambia la regla de envío, modificamos un lugar y ejecutamos su prueba.
+>
+> Las mismas ideas sirven con procedimientos almacenados. Podemos tener un procedimiento por tarea, con nombres del negocio y mensajes de error claros.
 
-### 5. Trabajo en equipo: Git y documentación
-
-**En pantalla · Una rama de Git:**
-
-- Rama feat/crear-solicitud-por-post sale de main
-- Commit: feat: crear solicitud
-- Commit: test: 409 si ya existe
-- Commit: docs: el nuevo POST
-- Vuelve a main: Pull Request: revisión, pruebas en verde y documentación
-
-**Ideas clave:**
-
-- Una rama corta por tarea
-- Cada commit dice qué cambió
-- Entra a main solo por Pull Request
-- La documentación viaja en el mismo cambio
-
-**Lo que se lleva el staff:** Nada llega a la rama principal sin revisión, pruebas y documentación.
+### 5. Fundamentos: lo que nos quedó
 
 **Qué decir**
 
-> Muy rápido, cómo trabajamos en equipo. Cada tarea se hace en una rama corta, y cada commit dice qué cambió: una funcionalidad, una prueba, la documentación.
+> Nos quedamos con tres ideas. Primero se analiza y después se programa, porque tener claras las reglas desde el inicio evita rehacer trabajo.
 >
-> **▶ clic** El cambio entra a la rama principal solo por un Pull Request: otra persona lo revisa, las pruebas tienen que pasar y la documentación se actualiza en ese mismo cambio. La documentación de la API, además, la genera Swagger desde el código, así que nunca queda vieja.
-
-**Si hay tiempo, se puede agregar**
-
-> Usamos un formato común para los mensajes de commit: el tipo, dos puntos y qué hace el cambio, por ejemplo: fix: impedir el envío de una solicitud aprobada. Con eso, el historial se lee como una bitácora.
+> Segundo, separar responsabilidades, para que un cambio de regla toque un solo lugar y una prueba nos avise si algo se rompió. Tercero, que las reglas del negocio no dependan de la herramienta, de modo que sigan siendo las mismas si mañana cambia la base de datos o la tecnología con la que construimos la aplicación.
 >
-> Nadie sube directo a main, ni siquiera quien orquesta. Eso nos protegió más de una vez de romper algo que otro compañero estaba usando.
-
-**Para pasar:** “Esto es lo que nos llevamos de los fundamentos.”
-
-**Para leer más:** `docs/desarrollo/git.md`
-
-### 6. Fundamentos: lo que nos llevamos a cualquier proyecto
-
-**En pantalla · Lo que aprendimos:**
-
-- Métrica: 6 prácticas que sirven en cualquier lenguaje
-- Métrica: 4 respuestas claras: 201, 400, 404 y 409
-- Primero el qué, después el cómo: Qué tiene que pasar, quién lo hace y qué no se permite. Valor: Reglas claras antes de elegir la tecnología.
-- Separar responsabilidades paga pronto: Pantalla, reglas y datos en piezas distintas. Valor: Un cambio de regla toca un solo lugar.
-- Las reglas no dependen de la herramienta: El negocio no sabe si detrás hay una base, una web o un framework. Valor: Se prueba rápido y sobrevive a un cambio de tecnología.
-- Todo cambio entra revisado: Ramas cortas, revisión, pruebas y documentación juntas. Valor: Menos sorpresas en producción.
-
-**Ideas clave:**
-
-- Primero el qué, después el cómo
-- Separar responsabilidades paga en el primer cambio
-- Las reglas no dependen de la herramienta
-- Todo cambio entra revisado
-
-**Lo que se lleva el staff:** Cuatro hábitos que bajan el costo de mantener cualquier sistema.
-
-**Qué decir**
-
-> Lo que nos llevamos a cualquier proyecto. **▶ clic** Primero el qué, después el cómo: con las reglas del negocio claras, la tecnología se elige mejor y el código sale más simple. **▶ clic** Separar responsabilidades se paga desde el primer cambio.
+> Estas tres prácticas se pueden aplicar en los sistemas actuales, sin importar el lenguaje ni cómo esté organizada la aplicación.
 >
-> **▶ clic** Las reglas no deben depender de la herramienta: si mañana cambia la base o el framework, las reglas siguen iguales. **▶ clic** Y ningún cambio entra sin revisión, pruebas y documentación.
+> Ahora le paso la palabra a Ricardo, que nos muestra la arquitectura del sistema.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Si tuviéramos que elegir una sola práctica para empezar en un sistema existente, sería poner las reglas del negocio en un solo lugar con su prueba. Es la que más rápido devuelve la inversión.
+- Primero analizamos y después programamos.
+- Separar responsabilidades facilita los cambios.
+- Las reglas deben sobrevivir a un cambio de herramienta.
 
-**Para pasar:** “Con esa base, veamos el sistema completo desde arriba.”
+**Si hay tiempo**
+
+> Si tuviéramos que comenzar con una práctica en un sistema existente, pondríamos las reglas del negocio en un solo lugar y agregaríamos sus pruebas. Es una inversión que devuelve valor con rapidez.
 
 ## 2 · Arquitectura · vista general
 
-Presenta: Desarrollo 2.
+Presenta: Ricardo Fábrega.
 
-### 7. El sistema de un vistazo
-
-**En pantalla · Capas del sistema:**
-
-- Experiencia: Persona: Usa el navegador; arka-lite-ui: La pantalla · reenvía /api
-- Servicios: servicio-solicitudes: El trámite y sus estados; servicio-notificaciones: Los avisos, sin duplicados
-- Datos: db-solicitudes: PostgreSQL 17 · solicitud y evento; db-notificaciones: PostgreSQL 17 · evento_procesado
-- Plataforma: Compose o Kubernetes: Dónde corre; GitHub Actions: Prueba y publica; Loki y Grafana: Logs en un solo lugar
-
-**Ideas clave:**
-
-- La UI es la puerta de entrada
-- Dos servicios, cada uno dueño de su base
-- Entre servicios solo viajan datos
-- La plataforma corre, entrega y observa
-
-**Lo que se lleva el staff:** Cada capa se puede cambiar sin romper las otras.
+### 6. El sistema de un vistazo
 
 **Qué decir**
 
-> Gracias. ARKA-Lite no es una aplicación grande: son piezas pequeñas, cada una con una responsabilidad. Arriba está la experiencia: la persona usa la interfaz, y la interfaz no guarda nada, solo les pasa las peticiones a los servicios.
+> Gracias, Luis. ARKA-Lite no es una aplicación grande, sino varias piezas pequeñas, cada una con su responsabilidad. Las vemos por capas, de arriba hacia abajo.
 >
-> **▶ clic** En el medio, los dos microservicios: solicitudes lleva el trámite y sus estados; notificaciones crea los avisos. **▶ clic** Debajo, cada uno con su propia base PostgreSQL; ninguno lee la base del otro. **▶ clic** Y abajo, la plataforma: dónde corre, cómo se prueba cada cambio y dónde se ven los logs.
-
-**Si hay tiempo, se puede agregar**
-
-> La interfaz es delgada a propósito: no guarda nada ni toma decisiones. Si mañana se cambia por otra, los servicios no se enteran.
+> Arriba está la pantalla que usa la persona. No guarda información, solo les pasa los pedidos a los servicios.
 >
-> La plataforma es la misma para los dos servicios: el mismo Compose, el mismo pipeline y el mismo lugar para los logs. Eso baja mucho el costo de tener dos servicios en lugar de uno.
+> En el centro están los dos microservicios, es decir, dos aplicaciones pequeñas con una función cada una. Uno maneja las solicitudes y sus estados, y el otro produce los avisos.
+>
+> Debajo, cada servicio tiene su propia base de datos, y ninguno entra en la base del otro. Al final está la plataforma, donde todo corre, se prueba y se revisa.
+>
+> Es como un edificio donde cada piso tiene su función, y por eso se puede cambiar uno sin reconstruir los demás.
+>
+> Con el mapa claro, veamos cómo colaboran esas piezas en la práctica.
+
+**Si se te olvida, di esto**
+
+- El sistema tiene cuatro capas.
+- Cada servicio tiene una tarea y una base propia.
+- Las capas se pueden cambiar de forma independiente.
 
 **Si preguntan:** ¿Por qué no comparten una sola base de datos?
 
-**Respuesta corta:** Para que cada servicio sea dueño de sus datos y pueda cambiar sin romper al otro.
+Porque cada servicio debe controlar sus propios datos. Así puede cambiar sin romper al otro.
 
-**Para pasar:** “Ahora veamos cómo trabajan juntas esas piezas en la práctica.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/inicio/proyecto.md`
+> La pantalla es delgada a propósito, porque no guarda datos ni toma decisiones. Si la reemplazamos en el futuro, los servicios no tienen que cambiar.
+>
+> Los dos servicios comparten la misma plataforma, el mismo pipeline y el mismo lugar para revisar los registros. Eso reduce el costo operativo de mantenerlos separados.
 
-### 8. Cómo funciona en la práctica
-
-**En pantalla · El sistema en la práctica:**
-
-- 1. Persona → La UI: usa
-- 2. La UI → Solicitudes: crea, envía y decide
-- 3. Solicitudes → db-solicitudes: guarda
-- 4. Solicitudes ⇢ Notificaciones: avisa después (SolicitudEnviada: eventoId, id y tipo)
-- 5. Notificaciones → db-notificaciones: anota lo recibido
-- 6. La UI → Notificaciones: consulta los avisos
-- Ninguna flecha une las dos bases: cada servicio es dueño de sus datos.
-
-**Ideas clave:**
-
-- La persona usa la UI
-- La UI le pide el trabajo a cada servicio
-- Cada servicio guarda en su propia base
-- Solicitudes avisa con un evento: un dato, no una pieza
-
-**Lo que se lleva el staff:** Los sistemas se comunican con mensajes claros, no compartiendo tablas.
+### 7. Cómo funciona en la práctica
 
 **Qué decir**
 
-> Ahora, cómo trabajan juntas en la práctica. Sigamos los números. **▶ clic** Uno: la persona usa la interfaz. **▶ clic** Dos: cuando crea, envía o decide una solicitud, la interfaz se lo pide al servicio de solicitudes. **▶ clic** Tres: solicitudes lo guarda en su propia base.
+> Sigamos los números. La persona usa la pantalla, y la pantalla le pide al servicio de solicitudes que cree o envíe una solicitud. El servicio la guarda en su propia base.
 >
-> **▶ clic** Cuatro, el paso más importante: cuando una solicitud se envía, solicitudes le avisa a notificaciones. Fíjense en que esa flecha no es una pieza del sistema: es un dato que viaja, un mensaje pequeño con el número del evento, la solicitud y su tipo.
+> Cuando la solicitud se envía, el servicio produce un mensaje pequeño para avisarle a notificaciones. A ese mensaje lo llamamos evento. Notificaciones crea el aviso y anota que ya recibió ese evento, y la pantalla consulta los avisos para mostrarlos.
 >
-> **▶ clic** Cinco: notificaciones crea el aviso y anota que ya recibió ese evento. **▶ clic** Seis: la interfaz le consulta a notificaciones para mostrar los avisos.
+> Ninguna flecha une las dos bases. Es como dos departamentos que se intercambian notas, mientras cada uno mantiene el control de sus propios archivos.
 >
-> **▶ clic** Y lo que no hay también dice mucho: ninguna flecha une las dos bases. Si un servicio necesita algo del otro, se lo pide; nunca entra a su base.
+> Ya vimos cómo se conectan por fuera. Ahora veamos cómo está organizado cada servicio por dentro.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> El mensaje que viaja entre servicios lleva solo tres datos: el número del evento, el identificador de la solicitud y su tipo. Mientras más pequeño el mensaje, más fácil es que los dos lados se pongan de acuerdo.
->
-> Ese contrato está copiado en los dos servicios. Si un día cambia, se cambia en los dos al mismo tiempo: es lo único que comparten.
+- La pantalla pide el trabajo y el servicio guarda los datos.
+- Entre los servicios viaja un mensaje pequeño llamado evento.
+- Los servicios se comunican sin compartir sus bases.
 
 **Si preguntan:** ¿Qué pasa si notificaciones está caído en el paso cuatro?
 
-**Respuesta corta:** Solicitudes sigue funcionando y el aviso espera guardado. Lo vemos en la parte de interconexión.
+Solicitudes sigue funcionando y el evento queda guardado hasta que pueda entregarse. Lo vemos en la parte de interconexión.
 
-**Para pasar:** “¿Y cómo está ordenado cada servicio por dentro?”
+**Si hay tiempo**
 
-### 9. Por dentro de cada servicio: hexagonal
+> El mensaje entre los servicios lleva tres datos, que son el número del evento, el número de la solicitud y su tipo. Al mantenerlo pequeño, resulta más sencillo coordinar ambos lados.
+>
+> El formato del mensaje existe en los dos servicios. Si cambia, debemos actualizar ambos al mismo tiempo, porque es lo único que comparten.
 
-**En pantalla · Puertos y adaptadores:**
-
-- Centro: Reglas del negocio: La solicitud y sus estados
-- Puertos: Guardar solicitudes, Anotar el evento, Avisar a otros
-- Entrada: API REST: La web entra aquí; Errores claros: 400 · 404 · 409
-- Salida: PostgreSQL: Con el ORM; Bandeja de salida: Tabla evento; HTTP: Hacia notificaciones; En memoria: Para las pruebas
-
-**Ideas clave:**
-
-- Las reglas del negocio al centro
-- La web entra por un lado
-- La base y los otros servicios salen por el otro
-- Por fuera sigue siendo un servicio en su contenedor
-
-**Comparación:** Como un enchufe: el aparato funciona con cualquier toma que cumpla la norma, sin saber de qué planta viene la electricidad.
-
-**Lo que se lleva el staff:** Cambiar la base o la forma de avisar sin tocar las reglas del negocio.
+### 8. Por dentro de cada servicio: hexagonal
 
 **Qué decir**
 
-> Como explicó el equipo anterior, la arquitectura hexagonal es una forma de ordenar el código por dentro. No cambia cómo se despliega: por fuera, cada servicio sigue siendo una aplicación en su contenedor. Al centro van las reglas del negocio y los contratos que necesitan, como guardar una solicitud o avisar que se envió.
+> Cada servicio usa arquitectura hexagonal. El equipo anterior ya la explicó, así que les contamos solo lo que nos quedó.
 >
-> **▶ clic** Por un lado entra la web. **▶ clic** Por el otro salen la base de datos y las llamadas a otros servicios, conectadas como enchufes. Fíjense en la última: una versión en memoria que reemplaza a la base en las pruebas. Gracias a eso probamos todas las reglas sin levantar PostgreSQL.
-
-**Si hay tiempo, se puede agregar**
-
-> En solicitudes hay tres contratos hacia afuera: guardar solicitudes, anotar eventos y publicarlos. Cada uno puede tener más de una implementación, y Spring usa la que está marcada como principal.
+> Las reglas del negocio van en el centro, y todo lo demás se conecta alrededor, como un enchufe. Por un lado entran los pedidos de la pantalla, y por el otro se conectan la base de datos y el servicio de notificaciones. Así, las reglas no dependen de los detalles de esas conexiones.
 >
-> Dejamos a propósito implementaciones alternativas, por ejemplo un publicador simple sin reintentos, para mostrar que se puede cambiar una por otra sin tocar las reglas.
+> Donde más nos sirvió fue en las pruebas. Cambiamos la conexión con la base por una versión en memoria, y con eso probamos todas las reglas en segundos, sin levantar una base.
+>
+> Y esto solo ordena el código por dentro. Desde afuera, el servicio se instala y se usa como cualquier otro.
+>
+> Esto es lo que nos quedó de la arquitectura.
+
+**Si se te olvida, di esto**
+
+- Las reglas quedan en el centro.
+- Las conexiones externas se pueden reemplazar.
+- Así probamos las reglas rápidamente y sin una base.
 
 **Si preguntan:** ¿Esto se parece a llamar un procedimiento almacenado?
 
-**Respuesta corta:** En que quien llama solo conoce el nombre y los parámetros, no cómo está hecho por dentro. La diferencia es que aquí el negocio define el contrato y la base se adapta a él.
+Se parece en que quien llama conoce el nombre y los parámetros, pero no los detalles internos. Aquí el negocio define el contrato y la base se adapta a él.
 
-**Para pasar:** “Esto es lo que nos dejó la arquitectura.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/arquitectura/componentes-java.md`
+> Dejamos versiones alternativas de algunos conectores, como una forma de avisar sin reintentos. Eso demuestra que podemos reemplazarlos sin modificar las reglas.
+>
+> La idea se parece a varias aplicaciones que llaman un procedimiento por su nombre sin conocer cómo está implementado.
 
-### 10. Arquitectura: lo que aprendimos
-
-**En pantalla · Lo que aprendimos:**
-
-- Métrica: 2 servicios, cada uno con su base
-- Métrica: 0 tablas compartidas entre servicios
-- Cada servicio, dueño de sus datos: Nadie lee ni escribe en la base del otro. Valor: Cada uno cambia sin romper al otro.
-- Entre servicios viajan datos: Un evento pequeño con su número: SolicitudEnviada. Valor: Un acuerdo claro y fácil de revisar.
-- Hexagonal ordena por dentro: No cambia el despliegue: un contenedor por servicio. Valor: Cambiar la base o la web sin tocar las reglas.
-- Separar tiene un costo: Más red, dos bases y fallas parciales. Valor: Separar solo cuando el negocio lo pide.
-
-**Ideas clave:**
-
-- Cada servicio es dueño de sus datos
-- Entre servicios viajan datos, no tablas
-- Hexagonal ordena por dentro, no cambia el despliegue
-- Separar tiene un costo
-
-**Lo que se lleva el staff:** Sistemas que cambian por separado, unidos por acuerdos claros.
+### 9. Arquitectura: lo que nos quedó
 
 **Qué decir**
 
-> Cuatro aprendizajes de arquitectura. **▶ clic** Cada servicio es dueño de sus datos. **▶ clic** Entre servicios no se comparten tablas, se comparten mensajes.
+> Nos quedamos con cuatro ideas. Cada servicio es dueño de sus datos, y entre servicios viajan mensajes, no tablas.
 >
-> **▶ clic** Hexagonal ordena el código por dentro, pero no cambia el despliegue. **▶ clic** Y separar en microservicios tiene un costo real, así que se hace cuando el negocio lo justifica, no por moda.
+> La arquitectura hexagonal ordena el código por dentro y no cambia cómo se instala.
+>
+> Y separar tiene un costo: más comunicación por red, más bases y más partes que pueden fallar. Por eso conviene usar microservicios cuando el negocio lo justifica. Para un sistema pequeño, una sola aplicación bien organizada puede ser la mejor decisión.
+>
+> Ahora entraremos en la base de datos. Le paso la palabra a Marlene.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Lo más difícil de los microservicios no fue el código, fueron las fronteras: decidir qué dato es de quién. Una vez claro eso, lo demás se ordenó solo.
+- Cada servicio controla sus propios datos.
+- Entre los servicios viajan mensajes, no tablas.
+- Separar servicios tiene un costo y debe justificarse.
 
-**Para pasar:** “Y aquí empieza la parte en la que vamos a fondo: la base de datos.”
+**Si hay tiempo**
 
-## 3 · Base de datos · a fondo
+> La parte más difícil de los microservicios fue definir las fronteras y decidir a quién pertenecía cada dato. Una vez resuelto eso, el resto del diseño se ordenó con mayor facilidad.
 
-Presenta: Base de datos.
+## 3 · Base de datos · en detalle
 
-### 11. Dos bases, una por servicio
+Presenta: Marlene Bonilla.
 
-**En pantalla · Números grandes:**
-
-- 2 bases de datos: db-solicitudes y db-notificaciones: una por servicio.
-- 17 PostgreSQL: El mismo motor y la misma versión en las dos.
-- 0 JOIN entre bases: Ni consultas ni llaves foráneas que crucen de una a otra.
-- 1 disco por base: En Kubernetes, los datos sobreviven aunque el contenedor se reinicie.
-
-**Ideas clave:**
-
-- Dos bases de datos, una por servicio
-- El mismo motor: PostgreSQL 17
-- Ninguna consulta cruza de una base a otra
-- En Kubernetes, cada base tiene su disco
-
-**Lo que se lleva el staff:** Cada base cambia a su ritmo, sin coordinar despliegues con otros equipos.
+### 10. Dos bases, una por servicio
 
 **Qué decir**
 
-> Gracias. Como les contó mi compañero de arquitectura, el sistema tiene dos bases de datos, una para cada microservicio: db-solicitudes y db-notificaciones. **▶ clic** Las dos están montadas en PostgreSQL, versión diecisiete.
+> Gracias, Ricardo. El sistema tiene dos bases de datos, una para cada servicio, y ambas utilizan PostgreSQL, versión diecisiete.
 >
-> ¿Por qué dos y no una? Porque cada servicio es dueño de sus datos. Solicitudes guarda las solicitudes y los avisos que tiene pendientes; notificaciones guarda qué avisos ya recibió. Si mañana una cambia su estructura, la otra ni se entera.
+> Usamos dos porque cada servicio es dueño de sus datos. Solicitudes guarda los trámites y los avisos pendientes, mientras notificaciones registra los avisos que ya recibió.
 >
-> **▶ clic** Eso tiene una consecuencia que para quienes trabajamos con bases de datos pesa mucho: no hay ningún JOIN entre las dos bases, ni llaves foráneas que crucen. Si un servicio necesita algo del otro, se lo pregunta por HTTP.
+> Así, si una base cambia su estructura, la otra no se ve afectada. No hacemos consultas que combinen tablas de ambas bases ni definimos llaves foráneas entre ellas, es decir, referencias que obliguen a que un dato exista en la otra base.
 >
-> **▶ clic** Y cada base corre en su propio contenedor. En Kubernetes, además, tiene su disco persistente: los datos sobreviven aunque el contenedor se reinicie.
+> Cuando un servicio necesita un dato del otro, lo pide por la red. Además, cada base funciona por separado y tiene su propio disco.
+>
+> Por eso los datos permanecen cuando un servicio se reinicia y, si una base presenta una falla, la otra puede continuar trabajando.
+>
+> Ahora veamos qué información guarda cada una.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> En nuestra computadora, la base de notificaciones se publica en el puerto 5433 para consultarla con cualquier herramienta; la de solicitudes solo se ve dentro de la red de Docker. Lo que no se publica, no se alcanza desde afuera.
->
-> En Kubernetes, cada base tiene su disco persistente: si el contenedor se reinicia, los datos siguen ahí. Solo se perderían si se borra el disco.
+- Tenemos dos bases PostgreSQL, una por servicio.
+- No hacemos consultas que crucen las bases.
+- Cada base conserva sus datos en su propio disco.
 
 **Si preguntan:** ¿Y si necesito un reporte que junte datos de las dos?
 
-**Respuesta corta:** Se arma fuera de los servicios, por ejemplo con una réplica o un proceso de reportes que lea de ambas. Lo que no se hace es que un servicio lea la base del otro.
+Se prepara fuera de los servicios, por ejemplo con una réplica o un proceso de reportes que lea ambas fuentes. Un servicio no debe entrar en la base del otro.
 
 **Si preguntan:** ¿No es más difícil administrar dos bases?
 
-**Respuesta corta:** Son dos bases pequeñas con una sola responsabilidad cada una. Se respaldan y se monitorean como cualquier PostgreSQL, y la caída de una no tumba a la otra.
+Son dos bases pequeñas y cada una tiene una responsabilidad. Se respaldan y vigilan como cualquier PostgreSQL, y la caída de una no detiene la otra.
 
-**Para pasar:** “Veamos qué hay dentro de cada una.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/inicio/bases-de-datos-locales.md`
+> Tener una base por servicio no duplica necesariamente el trabajo de diseño. Cada base es pequeña, tiene pocas tablas y atiende una responsabilidad concreta.
+>
+> En Kubernetes, cada base utiliza un disco persistente. Si el contenedor se reinicia, los datos permanecen y solo se perderían si se eliminara ese disco.
 
-### 12. La estructura de las bases
-
-**En pantalla · Bases de datos y sus tablas:**
-
-- db-solicitudes (PostgreSQL 17 · schema.sql): solicitud [id · PK · VARCHAR(20), tipo · VARCHAR(20), estado · CHECK: 4 estados]; evento [id · PK · BIGSERIAL, solicitud_id · FK a solicitud, tipo · SolicitudEnviada, evento_id · UUID, procesado · false = pendiente]
-- db-notificaciones (PostgreSQL 17 · Hibernate): evento_procesado [evento_id · PK, uno por evento recibido]
-- Entre bases: evento_id por HTTP
-
-**Ideas clave:**
-
-- solicitud: el trámite y su estado
-- evento: los avisos pendientes de entregar
-- evento_procesado: los avisos ya recibidos
-- Lo único que cruza es el evento_id, por HTTP
-
-**Por qué importa:** Cada servicio cambia su esquema sin coordinarse con el otro; solo el número del evento es compartido.
-
-**Lo que se lleva el staff:** Un modelo pequeño, con reglas que también cuida la base: CHECK, llaves e índices.
+### 11. La estructura de las bases
 
 **Qué decir**
 
-> Veamos qué hay adentro. En la base de solicitudes, la tabla solicitud guarda el trámite: su identificador como llave primaria, el tipo y el estado. Y el estado tiene un CHECK que solo admite los cuatro valores válidos. Aunque alguien escriba directo en la tabla, la base no acepta un estado inventado.
+> Veamos qué hay dentro. En la base de solicitudes, la tabla solicitud guarda el número, el tipo y el estado del trámite.
 >
-> **▶ clic** Al lado está la tabla evento, que funciona como bandeja de salida: cada fila es un aviso que hay que entregar. Tiene una llave foránea a la solicitud, un número único de evento, que es un UUID, y una columna procesado: mientras está en falso, el aviso sigue pendiente.
+> La propia base solo acepta los cuatro estados válidos, incluso si alguien intenta escribir directamente en la tabla. Al lado está la tabla evento, que funciona como una bandeja de salida.
 >
-> **▶ clic** En la base de notificaciones hay una sola tabla importante: evento_procesado, la lista de eventos que ya se recibieron. Su llave primaria es justamente ese número de evento.
+> Cada fila registra un evento, con un número único y una marca que indica si está pendiente o ya fue entregado.
 >
-> **▶ clic** Y fíjense en la flecha: lo único que pasa de una base a la otra es el evento_id, y no viaja por la base, viaja por HTTP. Esa es la frontera entre los dos servicios.
+> La base de notificaciones tiene una tabla principal con los eventos que ya recibió. Funciona como el libro de registro que se mantiene en la entrada de una oficina.
+>
+> No existe una conexión directa entre las bases. Lo que las relaciona es el número del evento, que viaja en el mensaje entre los servicios.
+>
+> Ahora veremos un cambio importante frente a muchas aplicaciones actuales, que es dónde vive la regla del negocio.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> La tabla evento tiene un índice parcial: solo indexa las filas pendientes. Como el relevador busca pendientes cada cinco segundos, el índice se mantiene pequeño aunque la tabla acumule años de eventos ya entregados.
->
-> Las tablas se crean con un archivo schema.sql que corre en cada arranque y se puede ejecutar mil veces sin romper nada. También actualiza bases viejas, agregando lo que les falte.
+- Una tabla guarda la solicitud.
+- Otra mantiene los avisos pendientes.
+- Notificaciones registra los eventos que ya recibió.
 
 **Si preguntan:** ¿Dónde se guarda el texto de cada aviso?
 
-**Respuesta corta:** En este proyecto, en la memoria del servicio de notificaciones; en la base solo queda qué eventos se procesaron. En producción sería una tabla más.
+En este proyecto queda en la memoria del servicio de notificaciones y la base solo registra los eventos procesados. En producción usaríamos una tabla adicional.
 
-**Si preguntan:** ¿Por qué un UUID y no un número secuencial?
+**Si preguntan:** ¿Por qué usan un identificador largo, llamado UUID, y no un número consecutivo?
 
-**Respuesta corta:** Porque lo genera la aplicación sin consultar a la base y no se repite entre servicios. Así el mismo número sirve para reintentar sin duplicar.
+Porque la aplicación puede generarlo sin consultar la base, con una probabilidad de coincidencia extremadamente baja. Conservamos ese mismo identificador en cada reintento para reconocer el evento.
 
-**Para pasar:** “Ahora, la gran diferencia con muchas aplicaciones que manejamos hoy: dónde vive la regla del negocio.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
+> La tabla evento tiene un índice que incluye únicamente las filas pendientes. Como las consultamos cada cinco segundos, el índice sigue siendo pequeño aunque crezca el historial.
+>
+> Las tablas se crean mediante un archivo que puede ejecutarse en cada arranque sin causar daños. Ese archivo también actualiza bases anteriores con los elementos que les falten.
 
-### 13. Del procedimiento almacenado al ORM
-
-**En pantalla · Dos caminos, lado a lado:**
-
-- Hoy: procedimientos almacenados: Pantalla: La persona pulsa Enviar. → [clic] Aplicación: Solo pasa los parámetros. → [EXEC sp_enviar @id] Base de datos: El procedimiento decide y guarda. (aquí vive la regla)
-- ARKA-Lite: un ORM: Pantalla: La persona pulsa Enviar. → [POST /enviar] Servicio Java: Decide, con su prueba. (aquí vive la regla) → [save(…)] Hibernate: Escribe el SQL. → [UPDATE + INSERT] PostgreSQL: Guarda y cuida llaves e índices.
-
-**Ideas clave:**
-
-- Con SP, la regla vive en la base
-- Con ORM, la regla vive en el código
-- Hibernate escribe el SQL de todos los días
-- La base sigue cuidando datos, llaves e índices
-
-**Por qué importa:** No es todo o nada: las reglas van al código y los reportes o consultas pesadas pueden seguir en SQL.
-
-**Lo que se lleva el staff:** Reglas que se prueban en segundos y una base que sigue cuidando los datos.
+### 12. Del procedimiento almacenado al ORM
 
 **Qué decir**
 
-> Esta es la gran diferencia con muchas de las aplicaciones que gestionamos hoy, y no es la base de datos: es dónde vive la regla del negocio. Arriba, el enfoque que conocemos: la persona pulsa enviar, la aplicación solo pasa parámetros con un EXEC, y el procedimiento almacenado decide y guarda. La regla vive en la base.
+> Aquí está uno de los cambios principales frente a muchas aplicaciones conocidas. La diferencia no es la base de datos, sino el lugar donde vive la regla del negocio.
 >
-> **▶ clic** Abajo, ARKA-Lite: la regla vive en el servicio Java, junto con su prueba. Cuando decide que sí, Hibernate, que es el ORM, escribe el UPDATE y el INSERT. La base sigue guardando y cuidando llaves, restricciones e índices. Lo único que se movió es la decisión.
-
-**Si hay tiempo, se puede agregar**
-
-> No estamos diciendo que los procedimientos estén mal: son la herramienta correcta para procesos masivos y reportes. Lo que cambia es dónde ponemos las reglas que más cambian y que más necesitamos probar.
+> En el esquema habitual, la persona pulsa Enviar, la aplicación llama a un procedimiento almacenado y ese procedimiento decide y guarda. Por lo tanto, la regla vive en la base.
 >
-> Una ventaja que no se ve a primera vista: con la regla en el código, cada cambio pasa por revisión, pruebas automáticas y pipeline, igual que cualquier otra línea del sistema.
+> En ARKA-Lite, la regla vive en el servicio junto con su prueba. Cuando la regla permite la operación, una herramienta llamada ORM prepara las instrucciones para guardar los datos. Esas instrucciones se escriben en SQL, el lenguaje con el que consultamos y modificamos la información de la base.
+>
+> Jossett mostrará primero la misma regla escrita de las dos formas y después explicará qué es un ORM. Mientras tanto, la base continúa protegiendo lo que le corresponde, como las llaves, las restricciones y los índices.
+>
+> Esto no significa que los procedimientos estén mal ni que la base pierda importancia. Solo movimos la decisión a otro lugar.
+>
+> Jossett, por favor.
 
-**Si preguntan:** ¿Y el rendimiento? ¿El SQL que genera Hibernate es bueno?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** Para guardar y buscar por llave, sí. Para consultas complejas se puede escribir SQL propio; además, los índices y las restricciones siguen siendo trabajo de la base.
+- La diferencia está en dónde vive la regla.
+- En ARKA-Lite vive en el servicio y tiene su prueba.
+- La base sigue protegiendo llaves, restricciones e índices.
+
+**Si preguntan:** ¿Y el rendimiento? ¿El SQL que genera es bueno?
+
+Sí, para guardar y buscar por llave. En consultas complejas podemos escribir SQL propio, mientras la base sigue manejando índices y restricciones.
 
 **Si preguntan:** ¿Hay que migrar todos los procedimientos?
 
-**Respuesta corta:** No. Se puede empezar por las reglas que más cambian; los reportes y los procesos masivos pueden seguir en la base.
+No. Podemos comenzar con las reglas que cambian con frecuencia, mientras los reportes y procesos masivos permanecen en la base.
 
-**Para pasar:** “Mi compañero de desarrollo se los muestra con una regla real, escrita de las dos formas.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/arquitectura/datos-y-consistencia.md`
+> Los procedimientos siguen siendo adecuados para reportes y procesos masivos. Lo que cambia es dónde colocamos las reglas que modificamos y probamos con mayor frecuencia.
+>
+> Cuando la regla está en el código, cada cambio pasa por revisión, pruebas automáticas y el pipeline, como cualquier otra parte del sistema.
 
-### 14. La misma regla, escrita de las dos formas
+### 13. La misma regla, escrita de las dos formas
 
-**Presenta:** Desarrollo 3
-
-**En pantalla · La misma idea, en dos códigos:**
-
-- Hoy: en un procedimiento: CREATE PROCEDURE sp_enviar @id VARCHAR(20) AS BEGIN   IF (SELECT estado FROM solicitud       WHERE id = @id) <> 'BORRADOR'     THROW 50001, 'Solo se envía en BORRADOR', 1;   UPDATE solicitud SET estado = 'ENVIADA'    WHERE id = @id; END · La regla y el dato viven juntos en la base; Probarla exige una base con datos; Cambiarla es desplegar en la base
-- ARKA-Lite: en el código: public Solicitud enviar() {     if (estado != Estado.BORRADOR)         throw new TransicionNoPermitida(             "solo se puede enviar en BORRADOR");     return new Solicitud(id, tipo, Estado.ENVIADA); } // Hibernate escribe el SQL: // UPDATE solicitud SET estado = ? WHERE id = ? · La regla vive en el código, con su prueba; Se prueba en milisegundos, sin base; La base sigue cuidando llaves, CHECK e índices
-
-**Ideas clave:**
-
-- Hoy: la regla dentro de un procedimiento almacenado
-- ARKA-Lite: la misma regla en un método Java
-- El SQL rutinario lo escribe Hibernate
-- La base sigue cuidando llaves, CHECK e índices
-
-**Lo que se lleva el staff:** La misma regla, más fácil de probar y de cambiar, sin que la base pierda su papel.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Gracias. Tomemos una regla real del negocio: solo se puede enviar una solicitud que está en borrador. A la izquierda, cómo la escribiríamos hoy: un procedimiento que consulta el estado, lanza un error si no está en borrador y hace el UPDATE. La regla y el dato viven juntos en la base, y para probarla hace falta una base con datos.
+> Gracias, Marlene. Veamos esa diferencia con una regla concreta: una solicitud solo puede enviarse cuando está en borrador.
 >
-> **▶ clic** A la derecha, la misma regla en ARKA-Lite: el método enviar de la clase Solicitud. Si el estado no es borrador, lanza un error; si lo es, devuelve la solicitud enviada. No hay SQL: el UPDATE lo escribe Hibernate cuando el servicio guarda, siempre con parámetros.
+> La comparación nos permite ver quién aplica la regla y quién guarda el cambio en cada caso.
 >
-> ¿Qué ganamos? Esa regla se prueba en milisegundos, sin base de datos, y si cambia, se cambia en un solo lugar junto con su prueba. ¿Qué no perdemos? La base sigue cuidando lo suyo: la llave primaria, el CHECK de los estados y los índices.
+> A la izquierda, el procedimiento consulta el estado, valida la condición y actualiza el dato. No necesitamos leer cada línea para notar que la regla y el dato están juntos en la base.
+>
+> A la derecha aparece la misma regla en el código de la aplicación. Si el estado no es borrador, se produce un error. Si lo es, la solicitud pasa a enviada.
+>
+> En este caso no escribimos SQL para guardar el cambio, porque el ORM lo genera. La regla no cambia, pero sí cambian el lugar donde se ejecuta y la pieza que la aplica.
+>
+> Al tenerla en el código, podemos probarla en milésimas de segundo y sin una base, mientras la base conserva sus responsabilidades.
+>
+> Veamos ahora qué es exactamente un ORM.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> La prueba de esa regla es así de simple: se crea una solicitud ya enviada, se intenta enviarla otra vez y se verifica que el sistema lo rechaza. Corre en milisegundos y no necesita ninguna base.
->
-> Para probar lo mismo en el procedimiento habría que preparar datos en una base, ejecutarlo y revisar el resultado. Funciona, pero es más lento y más difícil de repetir en cada cambio.
+- Estamos comparando responsabilidades, no tecnologías.
+- La misma regla puede vivir en la base o en la aplicación.
+- En el código podemos probarla rápidamente y sin una base.
 
 **Si preguntan:** ¿Y si la regla necesita consultar muchos datos?
 
-**Respuesta corta:** Para decidir, el servicio pide solo lo que necesita por llave. Si es un cálculo sobre millones de filas, ese trabajo puede seguir en la base, como una consulta o un procedimiento bien delimitado.
+El servicio pide por llave únicamente los datos necesarios para decidir. Si el cálculo abarca millones de filas, puede seguir en una consulta o un procedimiento bien delimitado.
 
-**Para pasar:** “Ahora veamos cómo hace Hibernate esa traducción.”
+**Si hay tiempo**
+
+> Para probar esta regla creamos una solicitud ya enviada, intentamos enviarla otra vez y verificamos el rechazo. La prueba tarda milésimas de segundo y no necesita una base.
+>
+> Con un procedimiento habría que preparar los datos, ejecutarlo y revisar el resultado en una base. También funciona, pero resulta más lento de repetir con cada cambio.
+>
+> El objetivo del proyecto es conocer otro enfoque y evaluar cuándo conviene usarlo en desarrollos futuros, sin reemplazar lo que ya funciona.
+
+### 14. ¿Qué es un ORM?
+
+**Presenta:** Jossett Franceschi
+
+**Qué decir**
+
+> ORM significa mapeo objeto-relacional. En palabras sencillas, es una herramienta que hace de intérprete entre la aplicación y la base de datos.
+>
+> La aplicación trabaja con objetos, como una solicitud que tiene número, tipo y estado. La base, en cambio, trabaja con tablas, filas y columnas.
+>
+> El ORM traduce de un lado a otro. Cuando la aplicación le pide guardar una solicitud, identifica la tabla y la columna de cada dato, genera el SQL y lo envía.
+>
+> Cuando la base responde, hace el recorrido contrario y convierte la fila en un objeto. Es como un intérprete en una reunión, donde cada parte puede hablar su propio idioma.
+>
+> En nuestro proyecto usamos Hibernate, aunque la idea existe en otras tecnologías. Por ejemplo, .NET tiene Entity Framework.
+>
+> El ORM no diseña la base por nosotros. Seguimos definiendo las llaves, las relaciones y los índices, porque un diseño deficiente continúa siendo deficiente.
+>
+> Tampoco impide escribir SQL. Si una consulta es compleja, podemos escribirla a mano, mientras el ORM se encarga del trabajo cotidiano.
+>
+> Veamos ahora cómo una clase de la aplicación se relaciona con una tabla.
+
+**Si se te olvida, di esto**
+
+- El ORM traduce entre objetos y tablas.
+- Hibernate genera el SQL de las operaciones comunes.
+- Nosotros seguimos diseñando la base.
+- Las consultas complejas pueden escribirse a mano.
+
+**Si preguntan:** ¿El ORM reemplaza a quien administra la base de datos?
+
+No. Esa persona sigue diseñando el modelo, cuidando los índices y revisando el SQL generado, aunque la herramienta resuelva muchas consultas rutinarias.
+
+**Si hay tiempo**
+
+> En Java, JPA define el estándar y Hibernate es una herramienta que lo implementa. Podemos verlo como una norma y un producto que cumple esa norma.
+>
+> Cuando la herramienta escribe el SQL rutinario, reducimos el código repetitivo y usamos los parámetros de forma consistente.
+>
+> Un ORM también puede generar consultas ineficientes si nadie las revisa. Por eso seguimos necesitando personas que entiendan el funcionamiento de las bases de datos.
 
 ### 15. El ORM por dentro: una clase es una tabla
 
-**Presenta:** Desarrollo 3
-
-**En pantalla · De la clase a la tabla:**
-
-- SolicitudEntity (Clase Java · @Entity · @Table("solicitud")) ↔ solicitud (Tabla en PostgreSQL)
-- @Id String id ↔ id (VARCHAR(20) · PK)
-- String tipo ↔ tipo (VARCHAR(20))
-- String estado ↔ estado (VARCHAR(20) · CHECK)
-- jpa.save(nueva) → INSERT INTO solicitud (id, tipo, estado) VALUES (?, ?, ?)
-- jpa.findById("CAM-002") → SELECT id, tipo, estado FROM solicitud WHERE id = ?
-- jpa.save(enviada) → UPDATE solicitud SET tipo = ?, estado = ? WHERE id = ?
-
-**Ideas clave:**
-
-- @Entity dice que la clase es una tabla
-- Cada campo es una columna
-- @Id marca la llave primaria
-- save y findById se vuelven SQL con parámetros
-
-**Lo que se lleva el staff:** El SQL de todos los días sale solo y siempre con parámetros: menos código y menos riesgo de inyección.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Esta es la traducción, lado a lado. A la izquierda, una clase Java: SolicitudEntity. Con la anotación arroba Entity le decimos a Hibernate que esta clase representa una tabla, y con arroba Table, cuál: la tabla solicitud. **▶ clic** Cada campo de la clase corresponde a una columna, y arroba Id marca la llave primaria.
+> Aquí vemos la traducción lado a lado. A la izquierda está una clase de Java y, a la derecha, la tabla solicitud.
 >
-> Con eso, Hibernate ya sabe todo. Abajo ven qué pasa cuando el código llama a un método. **▶ clic** Guardar una solicitud nueva se convierte en un INSERT. **▶ clic** Buscar por identificador, en un SELECT con su WHERE. **▶ clic** Y guardar una que ya existe, por ejemplo cuando se envía, en un UPDATE.
+> Una marca le indica al ORM que esa clase representa la tabla. Después, cada campo corresponde a una columna y la marca Id identifica la llave primaria.
 >
-> Fíjense en los signos de interrogación: los valores viajan siempre como parámetros, nunca pegados al texto del SQL. Es lo mismo que hacemos con los parámetros de un procedimiento, y es lo que nos protege de la inyección SQL.
+> Con ese mapeo, el ORM genera las operaciones básicas. Para guardar una solicitud nueva, el ORM genera un INSERT, que agrega una fila. Para buscarla por número, genera un SELECT, que consulta los datos.
 >
-> Nosotros no escribimos ninguna de esas consultas. Lo que sí cuidamos fue el diseño de las tablas, porque el ORM confía en que la base esté bien hecha.
+> Cuando enviamos una solicitud existente, genera un UPDATE, que actualiza su estado. Los valores viajan como parámetros, representados por los signos de interrogación, y nunca se pegan al texto del SQL.
+>
+> Es el mismo principio utilizado con los parámetros de un procedimiento: los valores se tratan como datos y no como instrucciones. Así evitamos que un texto ingresado por una persona altere la consulta, lo que se conoce como inyección de SQL.
+>
+> Nosotros no escribimos estas consultas rutinarias, pero sí cuidamos el diseño de las tablas, porque el ORM depende de una base correctamente diseñada.
+>
+> Con ese mapeo claro, sigamos un dato desde la pantalla hasta la fila.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> El repositorio de Spring Data no tiene ni una consulta escrita: hereda de JpaRepository, y con eso ya trae guardar, buscar por llave, listar y borrar.
->
-> Cuando el código guarda una solicitud que ya existe, Hibernate primero la busca por su llave y después decide si hace un INSERT o un UPDATE. Por eso las llaves bien definidas importan: el ORM las usa todo el tiempo.
+- La clase y la tabla se relacionan campo por columna.
+- El ORM genera las instrucciones para agregar, consultar y actualizar los datos.
+- Los valores viajan como parámetros seguros.
 
 **Si preguntan:** ¿Se puede ver el SQL que genera?
 
-**Respuesta corta:** Sí: con spring.jpa.show-sql=true se imprime en el log. Es lo primero que conviene activar para revisar el rendimiento.
+Sí. Una línea de configuración permite mostrarlo en los registros, lo que ayuda a revisar su funcionamiento y rendimiento.
 
 **Si preguntan:** ¿Y las consultas complejas?
 
-**Respuesta corta:** Se pueden escribir a mano, en JPQL o en SQL nativo, con la anotación @Query. El ORM no lo impide.
+Podemos escribirlas a mano, porque el ORM no lo impide.
 
-**Para pasar:** “Ahora sigamos un dato completo, desde la pantalla hasta la fila.”
+**Si hay tiempo**
+
+> El repositorio del proyecto no contiene consultas escritas para las operaciones básicas. Al heredar de una interfaz, obtiene las funciones de guardar, buscar, listar y borrar.
+>
+> Al guardar, el ORM utiliza la llave para determinar si corresponde un INSERT o un UPDATE. Por eso es importante definir correctamente las llaves.
 
 ### 16. El viaje de un dato: de la pantalla a la fila
 
-**Presenta:** Desarrollo 3
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Pantalla: Manda JSON: SOL-100, tipo Consulta.
-- 2. Controlador: Convierte el JSON en un objeto.
-- 3. Reglas: Revisa que el id no exista. Sin SQL.
-- 4. Hibernate: Objeto → INSERT con parámetros.
-- 5. PostgreSQL: Guarda la fila y hace COMMIT.
-
-**Ideas clave:**
-
-- La pantalla manda JSON
-- El controlador lo convierte en un objeto
-- Las reglas validan, sin SQL
-- Hibernate arma el INSERT
-- PostgreSQL guarda la fila y confirma
-
-**Comparación:** Como un traductor: el código habla Java, la base habla SQL, y el ORM traduce en los dos sentidos.
-
-**Lo que se lleva el staff:** Cada pieza hace una sola traducción; si algo falla, se sabe en qué punto.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Ahora sigamos un dato de punta a punta. La persona llena el formulario y la pantalla manda un JSON: identificador SOL-100, tipo Consulta. **▶ clic** El controlador recibe ese JSON y lo convierte en un objeto de Java.
+> Sigamos una solicitud desde que la persona la registra hasta que queda guardada. Primero completa el formulario y la pantalla envía el número SOL-100 y el tipo Consulta.
 >
-> **▶ clic** Ese objeto pasa por las reglas del negocio, que revisan, por ejemplo, que el identificador no exista. Hasta aquí no hay ni una línea de SQL. **▶ clic** Cuando las reglas dicen que sí, Hibernate lo traduce a un INSERT con sus parámetros. **▶ clic** El driver toma una conexión del pool, y PostgreSQL guarda la fila y confirma con un COMMIT.
+> El pedido llega al servicio de solicitudes, donde se aplican las reglas del negocio.
 >
-> Y de regreso, el mismo camino al revés: la fila se vuelve objeto, el objeto se vuelve JSON y la pantalla muestra la solicitud creada, con un 201.
-
-**Si hay tiempo, se puede agregar**
-
-> Entre el controlador y la base hay dos objetos distintos a propósito: la Solicitud del negocio, que no sabe nada de tablas, y la SolicitudEntity, que es el reflejo de la tabla. Un adaptador traduce entre los dos.
+> Para comprobar si el número ya existe, el servicio consulta la base mediante el ORM. Si la solicitud cumple las reglas, el ORM prepara la instrucción para guardarla y PostgreSQL registra la fila.
 >
-> Si el identificador ya existe, el viaje se corta en las reglas: no se toca la base y la persona recibe un 409 con el motivo.
+> Después, la base confirma la operación y la respuesta recorre el camino de vuelta. Finalmente, la pantalla informa que la solicitud quedó registrada.
+>
+> Cada pieza tiene una responsabilidad. La pantalla atiende a la persona, las reglas deciden, el ORM traduce y la base guarda y protege.
+>
+> Por esa separación, cuando algo falla podemos identificar con mayor facilidad dónde ocurrió.
+>
+> Para llegar a la base necesitamos su dirección, usuario y clave. Veamos dónde guardamos esos datos.
 
-**Para pasar:** “Para hablar con la base, la aplicación necesita su dirección, su usuario y su clave. ¿Dónde están?”
+**Si se te olvida, di esto**
 
-### 17. ¿Dónde está la cadena de conexión?
+- El dato pasa por la pantalla, las reglas, el ORM y la base.
+- Las reglas deciden antes de guardar.
+- Cada pieza cumple una responsabilidad.
 
-**Presenta:** Desarrollo 3
+**Si hay tiempo**
 
-**En pantalla · De dónde sale cada valor:**
+> Si el número ya existe, las reglas detienen el recorrido antes de tocar la base. La persona recibe entonces un mensaje que explica el motivo.
+>
+> Entre las reglas y la base utilizamos dos objetos distintos. Uno representa la solicitud del negocio y el otro refleja la tabla, mientras una pieza traduce entre ambos.
 
-- Centro: El servicio al arrancar: application.properties solo tiene marcadores. (url=${DB_URL}; username=${DB_USER}; password=${DB_PASSWORD})
-- Viene de Docker Compose: compose.yaml, en cada servicio: DB_URL → db-solicitudes:5432
-- Viene de Kubernetes · Deployment: La dirección y el usuario: DB_URL · DB_USER
-- Viene de Kubernetes · Secret: La clave, guardada aparte: DB_PASSWORD ← Secret arka-postgres
-- Llega a db-solicitudes: PostgreSQL 17 por pool de conexiones
-- Nunca: La imagen Docker: no lleva ni dirección ni clave. La misma imagen sirve en cualquier ambiente.
+### 17. ¿Dónde guardamos los datos de conexión?
 
-**Ideas clave:**
-
-- El código solo tiene marcadores: ${DB_URL}
-- Compose los llena con variables de entorno
-- Kubernetes: la dirección en el Deployment y la clave en un Secret
-- La imagen no lleva ni dirección ni clave
-
-**Por qué importa:** Cambiar de servidor o rotar una clave no obliga a recompilar ni a tocar el código.
-
-**Lo que se lleva el staff:** Las claves fuera del código: rotarlas o cambiar de servidor no requiere recompilar.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Esta es la pregunta que siempre nos hacen: ¿dónde está la cadena de conexión? Empecemos por el centro: el servicio, al arrancar, lee su archivo de configuración, y ese archivo no tiene la dirección ni la clave. Solo tiene marcadores: DB_URL, DB_USER y DB_PASSWORD.
+> Toda aplicación necesita conocer la ubicación de la base y el usuario y la clave para entrar. A este conjunto de datos lo llamamos cadena de conexión.
 >
-> ¿Quién llena esos marcadores? El ambiente donde corre. **▶ clic** En Docker Compose, las variables se definen para cada servicio en el archivo compose.yaml. **▶ clic** En Kubernetes, la dirección y el usuario van en el Deployment, **▶ clic** y la clave se guarda aparte, en un Secret: un objeto del clúster hecho para datos sensibles, que el contenedor recibe como variable al arrancar.
+> En nuestros sistemas actuales la guardamos en un archivo web.config dentro del servidor. Esa ya es una buena práctica, porque la información no está escrita en el código.
 >
-> **▶ clic** Con esos valores, el servicio abre su pool de conexiones contra la base.
+> ARKA-Lite aplica la misma idea con otra herramienta. En lugar de usar un archivo junto a la aplicación, recibe variables de entorno cuando arranca.
 >
-> **▶ clic** ¿Y la imagen Docker? No lleva ni dirección ni clave. Es la misma imagen en desarrollo, en pruebas y en producción. Cambiar de servidor de base de datos o rotar una clave no obliga a recompilar ni a tocar el código.
-
-**Si hay tiempo, se puede agregar**
-
-> Un detalle honesto: el archivo de configuración trae un valor por defecto para trabajar en la computadora de cada uno. En un ambiente real nunca se usa, porque ahí siempre llegan las variables.
+> Así, el ambiente donde se ejecuta le entrega la dirección, el usuario y la clave. La misma aplicación puede funcionar en desarrollo, pruebas y producción sin cambiar su código.
 >
-> En el pipeline, la clave de la base de pruebas cambia en cada ejecución: se arma con el número de la corrida. Ni siquiera la base temporal tiene una clave fija.
+> Cada ambiente proporciona sus propios valores. Por eso, si cambia el servidor o renovamos una clave, solo actualizamos la configuración del ambiente.
+>
+> Ya vimos cómo distribuimos estas responsabilidades. Ahora Marlene explicará cómo una transacción garantiza que los datos queden completos.
+>
+> Marlene, adelante.
 
-**Si preguntan:** ¿El Secret no está en el repositorio?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** En este laboratorio sí, con una clave de ejemplo, para que cualquiera lo levante. En un ambiente real el Secret se crea aparte, o lo alimenta un gestor de secretos, y nunca se versiona.
+- La conexión se configura fuera del código.
+- Aquí usamos variables que entrega el ambiente.
+- La misma aplicación sirve en distintos ambientes.
 
-**Si preguntan:** ¿Y si no usamos Kubernetes?
+**Si preguntan:** ¿Dónde queda la clave en Kubernetes?
 
-**Respuesta corta:** La misma idea funciona con variables de entorno del servidor o con un gestor de secretos. Lo importante es que la clave no viva en el código ni en el paquete que se despliega.
+Se guarda en un objeto para datos sensibles llamado Secret, que el contenedor recibe al arrancar. Los permisos controlan quién puede leerlo.
 
-**Si preguntan:** ¿Quién puede ver la clave en Kubernetes?
+**Si preguntan:** ¿Hay que dejar de usar web.config?
 
-**Respuesta corta:** Quien tenga permiso de leer Secrets en ese espacio del clúster; ese acceso se controla con roles.
+No. Sigue siendo válido para las aplicaciones que funcionan de esa manera. Lo importante es mantener la clave fuera del código y del repositorio.
 
-**Para pasar:** “Con la conexión resuelta, mi compañero de base de datos les cuenta qué pasa cuando se guarda: la transacción.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/inicio/bases-de-datos-locales.md`
+> En Kubernetes, el Secret guarda la clave y las demás variables contienen el resto de la configuración.
+>
+> El proyecto tiene valores predeterminados para trabajar en una computadora. En un ambiente real no los usamos, porque la configuración siempre llega desde el entorno.
+>
+> En producción también podemos guardar las claves en una bóveda especializada. La idea se mantiene igual, porque permanecen fuera del código.
 
 ### 18. Una transacción: todo o nada
 
-**En pantalla · Flujo paso a paso:**
-
-- 1. Pool: HikariCP presta una de sus conexiones.
-- 2. BEGIN: Empieza la transacción.
-- 3. UPDATE: La solicitud pasa a ENVIADA.
-- 4. INSERT: El aviso queda pendiente en evento.
-- 5. COMMIT: Las dos cosas quedan guardadas.
-- Si si algo falla en el paso 4: ROLLBACK: No queda nada a medias: ni la solicitud ni el aviso.
-
-**Ideas clave:**
-
-- El pool presta una conexión
-- BEGIN: empieza la transacción
-- Se actualiza la solicitud y se anota el aviso
-- COMMIT: todo queda guardado
-- Si algo falla: ROLLBACK de todo
-
-**Lo que se lleva el staff:** Lo que cambia junto se guarda junto: nunca quedan datos a medias.
-
 **Qué decir**
 
-> Gracias. Para quienes administran bases de datos, esto es terreno conocido, solo que configurado desde la aplicación. Cuando llega una petición, el pool de conexiones, HikariCP, le presta una de sus conexiones abiertas; por defecto mantiene hasta diez y las reutiliza.
+> Gracias, Jossett. Este concepto es conocido para quienes trabajan con bases de datos, aunque aquí lo controlamos desde la aplicación.
 >
-> **▶ clic** Cuando un método lleva la anotación Transactional, empieza una transacción: es el BEGIN de siempre. **▶ clic** Al enviar una solicitud, primero se actualiza su estado a enviada, **▶ clic** y en la misma transacción se anota el aviso pendiente en la tabla evento. **▶ clic** Al final, el COMMIT guarda las dos cosas juntas.
+> Cuando enviamos una solicitud, abrimos una transacción: un grupo de cambios que se guardan juntos o se deshacen completos. Ese inicio corresponde al BEGIN. Primero cambiamos el estado a enviada y, dentro de la misma transacción, registramos el evento pendiente.
 >
-> **▶ clic** Y si algo falla en el medio, se hace ROLLBACK de todo: no queda una solicitud enviada sin su aviso, ni un aviso sin su solicitud. Esa garantía es la base de lo que les va a explicar mi compañero de interconexión.
-
-**Si hay tiempo, se puede agregar**
-
-> Abrir una conexión nueva a PostgreSQL toma su tiempo; con muchas peticiones, eso se nota. Por eso el pool las mantiene abiertas y las presta: es la diferencia entre responder rápido y saturar la base.
+> Al final, el COMMIT guarda ambos cambios juntos. Si algo falla en el proceso, hacemos ROLLBACK y deshacemos todo.
 >
-> La transacción envuelve todo el método enviar: si el INSERT del evento fallara, por ejemplo por una restricción, el UPDATE de la solicitud también se deshace.
+> Funciona como una transferencia bancaria. El dinero debe salir de una cuenta y entrar en la otra, o no debe ocurrir ningún cambio.
+>
+> En nuestro caso, el cambio a enviada y el evento pendiente quedan guardados juntos. La transacción evita que se conserve uno sin el otro. Esa garantía sostiene la interconexión que veremos a continuación.
+>
+> Antes de pasar a esa interconexión, resumamos lo que aprendimos sobre la base de datos.
 
-**Si preguntan:** ¿Cuántas conexiones abre cada servicio?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** Las que define el pool; por defecto HikariCP mantiene hasta 10 y las reutiliza entre peticiones.
+- El cambio de estado y el evento pendiente se guardan juntos.
+- Si algo falla, se deshacen ambos cambios.
+- La operación nunca queda a medias.
 
 **Si preguntan:** ¿Esto reemplaza las transacciones dentro de un procedimiento?
 
-**Respuesta corta:** Es el mismo concepto: BEGIN, COMMIT y ROLLBACK. Solo que la transacción la abre la aplicación, alrededor del método que hace el trabajo.
+Es el mismo concepto de BEGIN, COMMIT y ROLLBACK. La diferencia es que la aplicación abre la transacción alrededor de toda la operación.
 
-**Para pasar:** “Esto es lo que nos dejó la base de datos.”
+**Si hay tiempo**
+
+> La transacción cubre toda la operación de envío. Si falla el INSERT del aviso, por ejemplo debido a una restricción, también se deshace el UPDATE de la solicitud.
+>
+> Preferimos una transacción local dentro de una base, porque resulta más confiable que intentar coordinar dos sistemas al mismo tiempo.
 
 ### 19. Base de datos: lo que aprendimos
 
-**En pantalla · Lo que aprendimos:**
-
-- Métrica: 3 tablas en dos bases
-- Métrica: 0 consultas que crucen de una base a otra
-- El ORM no elimina el trabajo de base de datos: Escribe el SQL rutinario; índices, CHECK y transacciones siguen siendo diseño. Valor: Reglas probadas en código y una base que se cuida sola.
-- La cadena de conexión no vive en el código: Variables en Compose y un Secret en Kubernetes. Valor: Cambiar de servidor o de clave sin recompilar.
-- La transacción local es la más confiable: Lo que cambia junto se guarda en el mismo COMMIT. Valor: Nunca quedan datos a medias.
-- El esquema también es código: schema.sql versionado, idempotente y validado al arrancar. Valor: Despliegues repetibles y errores visibles al inicio.
-
-**Ideas clave:**
-
-- El ORM no elimina el trabajo de base de datos
-- La cadena de conexión no vive en el código
-- La transacción local es la más confiable
-- El esquema también es código
-
-**Lo que se lleva el staff:** El conocimiento de base de datos del staff sigue siendo clave, ahora junto al código.
-
 **Qué decir**
 
-> Cuatro aprendizajes de datos, sobre todo para quienes venimos de los procedimientos almacenados. **▶ clic** Primero: el ORM no elimina el trabajo de base de datos. Escribe el SQL rutinario, pero las llaves, las restricciones, los índices y las transacciones siguen siendo diseño de base.
+> De la base de datos nos llevamos cuatro ideas. El ORM genera el SQL rutinario, pero no elimina el trabajo de diseñar llaves, restricciones e índices.
 >
-> **▶ clic** Segundo: la cadena de conexión no vive en el código; vive en el ambiente. **▶ clic** Tercero: la transacción local sigue siendo la herramienta más confiable que tenemos. **▶ clic** Y cuarto: el esquema también es código: versionado, repetible y validado al arrancar.
+> También mantenemos los datos de conexión fuera del código y los entregamos desde el ambiente. La transacción continúa siendo una de las herramientas más confiables para proteger una operación.
+>
+> Además, guardamos y controlamos la estructura de la base junto con el código. Para quienes trabajamos con bases de datos, el mensaje es claro, porque ese conocimiento sigue siendo fundamental.
+>
+> Ahora veremos cómo los servicios se comunican sin perder ni duplicar información. Le paso la palabra a Abdiel.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Para quien trabaja en base de datos, el rol no desaparece: pasa de escribir cada consulta a diseñar el modelo, cuidar índices y restricciones, y revisar el SQL que genera el ORM.
+- El ORM ayuda, pero no reemplaza el diseño de la base.
+- La conexión queda fuera del código.
+- Las transacciones siguen protegiendo los datos.
 
-**Para pasar:** “Esa transacción local es justo la base de la siguiente parte: cómo se avisan los servicios sin perder ni duplicar nada.”
+**Si hay tiempo**
 
-## 4 · Interconexión de servicios · a fondo
+> El rol de base de datos no desaparece. Se concentra más en diseñar el modelo, cuidar los índices y restricciones, y revisar el SQL generado por el ORM.
 
-Presenta: Desarrollo 4.
+## 4 · Interconexión de servicios · en detalle
+
+Presenta: Abdiel Barria.
 
 ### 20. Quién habla con quién, y cómo
 
-**En pantalla · Tabla de tres columnas:**
-
-- Conexión: Navegador → UI · Cómo se habla: HTTP a localhost:8088; nginx sirve la página · Por qué así: El navegador nunca conoce las direcciones internas
-- Conexión: UI → servicios · Cómo se habla: nginx reenvía /api/solicitudes y /api/notificaciones · Por qué así: Cambiar una dirección no obliga a tocar la UI
-- Conexión: solicitudes → notificaciones · Cómo se habla: POST del evento SolicitudEnviada en JSON, desde el relevador · Por qué así: Si notificaciones cae, solicitudes sigue funcionando
-- Conexión: Cómo se encuentran · Cómo se habla: Por nombre: la red de Compose o un Service de Kubernetes · Por qué así: Sin IPs fijas: funciona igual en cualquier ambiente
-- Conexión: Seguimiento · Cómo se habla: El traceId viaja en la cabecera de cada llamada HTTP · Por qué así: Una sola búsqueda en Grafana sigue todo el recorrido
-
-**Ideas clave:**
-
-- El navegador solo conoce la UI
-- nginx reenvía /api al servicio
-- El evento viaja después, desde el relevador
-- Se encuentran por nombre, no por IP
-- El traceId acompaña cada llamada
-
-**Lo que se lleva el staff:** Cada conexión tiene un porqué: cambiar una dirección o seguir un error no obliga a tocar todo.
-
 **Qué decir**
 
-> Gracias. Ya vimos que los servicios no comparten base. Entonces, ¿cómo se hablan? Esta tabla lo resume, fila por fila. Primero, el navegador solo conoce la interfaz, nunca las direcciones internas.
+> Gracias, Marlene. Como los servicios no comparten una base, necesitamos definir cómo se comunican. Esta tabla resume las conexiones.
 >
-> **▶ clic** La interfaz tampoco llama directo a los servicios: nginx, su servidor web, recibe todo lo que empieza con /api y lo reenvía al servicio que corresponde. Si un servicio cambia de dirección, la pantalla ni se entera.
+> El navegador solo conoce la pantalla. A su vez, la pantalla pasa los pedidos por un intermediario que los envía al servicio correspondiente.
 >
-> **▶ clic** Entre servicios, solicitudes le manda el evento a notificaciones con un POST en JSON. Pero no en el momento en que la persona envía, sino después, desde un proceso que llamamos el relevador. En un momento vemos por qué.
+> Así, si un servicio cambia de dirección, las demás piezas no tienen que enterarse. Es como la recepción de una empresa, donde pedimos un departamento y nos conectan con él.
 >
-> **▶ clic** Nadie usa direcciones IP: cada pieza encuentra a la otra por su nombre. **▶ clic** Y en cada llamada viaja un traceId, un número que nos deja seguir el recorrido completo en los logs.
-
-**Si hay tiempo, se puede agregar**
-
-> nginx espera menos que la interfaz, nueve segundos contra diez, para que el proxy responda con un error claro antes de que el navegador corte la petición.
+> Entre los servicios, solicitudes envía un evento a notificaciones. Sin embargo, no lo hace mientras la persona espera, sino después mediante un proceso separado.
 >
-> La llamada entre servicios usa un cliente HTTP preparado para pasar el traceId. Con un cliente cualquiera, el seguimiento entre servicios se rompería; por eso es una regla del equipo.
+> Además, las piezas se encuentran por nombre y no por una dirección fija. Cada llamada lleva un número de seguimiento que permite reconstruir su recorrido en los registros.
+>
+> Para entender por qué el aviso se envía después, comparemos las dos formas de comunicación.
 
-**Si preguntan:** ¿Por qué no se llaman directamente por localhost?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** Porque dentro de un contenedor localhost es el mismo contenedor; por eso cada servicio se busca por su nombre.
+- Un intermediario dirige cada pedido.
+- Los servicios se encuentran por nombre.
+- Cada llamada lleva un número de seguimiento.
 
-**Si preguntan:** ¿Por qué HTTP y no una cola de mensajes como RabbitMQ o Kafka?
+**Si preguntan:** ¿Por qué no una cola de mensajes como RabbitMQ o Kafka?
 
-**Respuesta corta:** Para el laboratorio, HTTP con Outbox da la garantía que necesitamos sin otra pieza que operar. Si el volumen crece, el mismo diseño se puede pasar a una cola sin tocar las reglas.
+Para este proyecto, basta con guardar el evento pendiente y entregarlo después mediante una llamada web al otro servicio. No necesitamos agregar una herramienta de mensajería. Si aumenta el volumen, podemos llevar el mismo diseño a una cola sin cambiar las reglas.
 
-**Para pasar:** “Hay dos formas de hablarse, y usamos las dos.”
+**Si hay tiempo**
+
+> La llamada entre servicios utiliza un cliente preparado para conservar el número de seguimiento. Con un cliente común se perdería esa continuidad, por eso lo definimos como una regla del equipo.
+>
+> Los servicios se comunican por HTTP y envían mensajes en JSON, un formato de texto que pueden leer tanto las personas como los sistemas.
 
 ### 21. Síncrono o asíncrono
 
-**En pantalla · Dos maneras, lado a lado:**
-
-- Síncrono: La UI llama y espera que se complete el proceso.; Respuesta inmediata; Si el servicio se cae, la persona ve error
-- Asíncrono: Servicio solicitudes envía evento a servicio notificaciones y continúa con su proceso; Respuesta puede demorar; Si notificaciones se cae, el evento espera
-
-**Ideas clave:**
-
-- Síncrono: la UI llama y espera
-- Asíncrono: solicitudes envía el evento y sigue
-- Síncrono responde ya; asíncrono puede demorar
-- Si notificaciones se cae, el evento espera
-
-**Comparación:** Síncrono es una llamada: me quedo en la línea hasta que me responden. Asíncrono es un correo: lo envío y sigo con lo mío.
-
-**Lo que se lleva el staff:** La caída de un sistema secundario no detiene a quien está atendiendo al usuario.
-
 **Qué decir**
 
-> Hay dos formas de comunicarse. La síncrona es como una llamada telefónica: la interfaz llama y espera a que el proceso se complete. La respuesta es inmediata, y por eso la usamos para crear, aprobar o rechazar: la persona necesita saber el resultado en ese momento. El costo es que, si el servicio se cae, la persona ve el error.
+> Tenemos dos formas de comunicación. La síncrona se parece a una llamada telefónica, porque hacemos el pedido y esperamos la respuesta.
 >
-> **▶ clic** La asíncrona es como un correo: el servicio de solicitudes envía el evento a notificaciones y continúa con su proceso, sin esperar. La respuesta puede demorar unos segundos, pero si notificaciones se cae, el evento no se pierde: espera hasta que el servicio vuelva.
+> La usamos para crear, aprobar o rechazar una solicitud, ya que la persona necesita conocer el resultado de inmediato. Si el otro lado está caído, verá el error.
 >
-> La regla que aprendimos: lo que la persona necesita ver, síncrono; lo que puede esperar, asíncrono. Y esto pasa también en sus sistemas de hoy: un procedimiento que llama a otro sistema y espera su respuesta falla si el otro está caído.
+> La comunicación asíncrona se parece a un correo. Enviamos el mensaje y seguimos trabajando sin esperar, aunque la respuesta pueda tardar unos segundos.
+>
+> En nuestro sistema, si el otro servicio está caído, el mensaje queda guardado hasta que podamos entregarlo. En un pago con tarjeta, por ejemplo, la aprobación es síncrona porque necesitamos saber si fue aceptado.
+>
+> En cambio, el comprobante por correo es asíncrono porque puede llegar después. La regla es sencilla. Usamos comunicación síncrona cuando necesitamos conocer el resultado para continuar, y asíncrona cuando el trabajo puede completarse después.
+>
+> Ahora veamos cómo hacemos que ese mensaje espere sin perderse mediante el patrón Outbox.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Un ejemplo de la vida diaria: cuando pagamos con tarjeta, la aprobación es síncrona, porque necesitamos saber si pasó; el correo con el comprobante es asíncrono, porque puede llegar un minuto después.
->
-> La pregunta que nos hacemos en cada caso es: si el otro sistema está caído, ¿la persona tiene que enterarse? Si la respuesta es no, va asíncrono.
+- Síncrono significa pedir y esperar.
+- Asíncrono significa enviar y continuar.
+- Elegimos según cuándo se necesita la respuesta.
 
 **Si preguntan:** ¿Por qué no hacerlo todo asíncrono?
 
-**Respuesta corta:** Porque quien crea o aprueba una solicitud necesita saber en ese momento si se pudo. Lo asíncrono es para lo que puede esperar.
+Porque quien crea o aprueba una solicitud necesita saber en ese momento si la operación funcionó. Reservamos lo asíncrono para lo que puede esperar.
 
-**Para pasar:** “¿Y cómo logramos que el evento espere sin perderse? Con el patrón Outbox.”
+**Si hay tiempo**
+
+> En cada caso preguntamos si la persona debe enterarse cuando el otro sistema está caído. Si la respuesta es no, podemos manejarlo de forma asíncrona.
+>
+> Esto también ocurre en los sistemas actuales. Un procedimiento que llama a otro sistema y espera su respuesta falla cuando ese sistema no está disponible.
 
 ### 22. Patrón Outbox: guardar primero, avisar después
 
-**En pantalla · Flujo paso a paso:**
-
-- 1. Enviar: Solicitud ENVIADA + evento pendiente, en una transacción.
-- 2. Bandeja de salida: El evento espera en la tabla evento.
-- 3. Relevador: Cada 5 s entrega los pendientes, hasta 3 intentos.
-- 4. Notificaciones: Lo recibe y el evento queda procesado.
-- Si si falla en el paso 3: Sigue pendiente: Mismo eventoId; se reintenta en el siguiente ciclo.
-
-**Ideas clave:**
-
-- Solicitud ENVIADA y evento pendiente, juntos
-- Si una falla, no se guarda ninguna
-- El relevador entrega cada 5 s, con 3 intentos
-- Si falla, sigue pendiente con el mismo eventoId
-
-**Comparación:** Como dejar una carta en la bandeja de salida: aunque el mensajero no pase hoy, la carta no se pierde.
-
-**Por qué importa:** Si notificaciones está caído, ningún aviso se pierde: queda pendiente hasta que vuelve.
-
-**Lo que se lleva el staff:** Ningún aviso se pierde, aunque el otro sistema esté caído. Y se puede aplicar también con procedimientos y un job.
-
 **Qué decir**
 
-> Pensemos en el problema. Si al enviar una solicitud llamáramos directamente a notificaciones y justo estuviera caído, la solicitud quedaría enviada y nadie se enteraría. Por eso usamos el patrón Outbox, o bandeja de salida, que se apoya en la transacción que vimos en la parte de datos.
+> Si al enviar una solicitud llamáramos directamente a notificaciones y el servicio estuviera caído, la solicitud podría quedar enviada sin que nadie recibiera el aviso.
 >
-> Al enviar, en una sola transacción se guardan la solicitud como enviada y su aviso pendiente. O se guardan las dos cosas, o ninguna, y la persona recibe su respuesta enseguida. **▶ clic** El aviso queda esperando en la tabla evento, como una carta en la bandeja de salida.
+> Para resolverlo usamos el patrón Outbox, que significa bandeja de salida. Dentro de una sola transacción guardamos la solicitud y su aviso pendiente.
 >
-> **▶ clic** Después, un proceso que llamamos el relevador revisa la bandeja cada cinco segundos y entrega los pendientes, con hasta tres intentos. **▶ clic** Si notificaciones lo recibe, la fila se marca como procesada. **▶ clic** Si falla, la fila sigue pendiente, con el mismo número de evento, y se reintenta en el siguiente ciclo.
+> La persona recibe la respuesta de inmediato, mientras el aviso queda esperando como una carta que todavía no ha salido.
 >
-> Esto se puede aplicar hoy mismo en un sistema con procedimientos almacenados: en lugar de llamar a otro sistema dentro del procedimiento, se anota el aviso en una tabla de pendientes y un job lo entrega.
+> Después, un proceso llamado relevador revisa la bandeja cada cinco segundos y entrega los avisos pendientes. Podemos verlo como el mensajero del sistema.
+>
+> Si la entrega funciona, marca el aviso como entregado. Si falla, lo deja pendiente y vuelve a intentarlo en la siguiente revisión.
+>
+> Así, aunque notificaciones se detenga, ningún aviso se pierde y todos se entregan cuando regresa.
+>
+> La misma idea puede aplicarse con procedimientos almacenados: guardamos el evento en una tabla de pendientes y una tarea programada se encarga de entregarlo.
+>
+> Como el sistema reintenta las entregas, ahora debemos evitar que el mismo aviso produzca dos resultados.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> El relevador hace hasta tres intentos por ciclo, esperando un poco más entre cada uno. Si los tres fallan, no pasa nada grave: la fila sigue pendiente y el siguiente ciclo, cinco segundos después, vuelve a intentar.
->
-> El número del evento se genera una sola vez, al guardar. Por eso cada reintento manda exactamente el mismo número, y del otro lado se puede reconocer como repetido.
->
-> En un sistema con procedimientos se traduce así: una tabla de pendientes con una columna procesado, un INSERT dentro de la misma transacción del procedimiento y un job que recorre los pendientes.
+- Primero guardamos y después avisamos.
+- El relevador revisa la bandeja cada cinco segundos.
+- Si la entrega falla, el aviso permanece guardado.
+- La misma idea funciona con una tabla de pendientes y una tarea programada.
 
 **Si preguntan:** ¿Que el envío responda bien significa que el aviso ya existe?
 
-**Respuesta corta:** No. Significa que la solicitud y el evento quedaron guardados; el aviso llega después.
+No. Significa que la solicitud y el evento quedaron guardados. El aviso se crea después.
 
 **Si preguntan:** ¿Qué pasa si se cae solicitudes con avisos pendientes?
 
-**Respuesta corta:** Nada se pierde: están en la base. Cuando el servicio vuelve, el relevador los encuentra y los entrega.
+Los avisos permanecen en la base. Cuando el servicio regresa, el relevador los encuentra y los entrega.
 
-**Para pasar:** “Pero si se reintenta, ¿no puede llegar el aviso dos veces?”
+**Si hay tiempo**
 
-**Para leer más:** `docs/arquitectura/flujo-y-referencias.md`
+> El relevador intenta entregar cada aviso hasta tres veces por vuelta y espera un poco más entre intentos. Si todos fallan, la fila permanece pendiente y vuelve a probar cinco segundos después.
+>
+> El número del evento se genera una sola vez al guardar. Por eso cada reintento lleva el mismo número y el receptor puede reconocerlo.
+>
+> Con procedimientos, la receta incluye una tabla de pendientes, una columna procesado, un INSERT dentro de la transacción y un job que recorre las filas.
 
 ### 23. Idempotencia: el mismo evento, un solo aviso
 
-**En pantalla · Flujo paso a paso:**
-
-- 1. Llega el evento: Trae su eventoId.
-- 2. ¿Ya lo recibimos?: Se busca en evento_procesado.
-- 3. Crear el aviso: Solo si el número es nuevo.
-- 4. Anotar el número: En la misma transacción.
-- Si ya estaba en el paso 2: Ignorarlo: No se crea otro aviso. Duplicados: cero.
-
-**Ideas clave:**
-
-- Cada evento trae un número que no cambia
-- Notificaciones anota los números recibidos
-- Si llega uno repetido, lo ignora
-- Se comprueba con el botón Reentregar
-
-**Comparación:** Como un portero con lista de invitados: si alguien ya entró, no lo vuelve a anotar.
-
-**Lo que se lleva el staff:** Se puede reintentar sin miedo: un pago, un correo o un aviso nunca se duplica.
-
 **Qué decir**
 
-> Sí, puede llegar dos veces. Imaginen que notificaciones recibió el evento y creó el aviso, pero la respuesta se perdió en la red. El relevador cree que falló y lo vuelve a mandar. Para eso está la idempotencia: repetir la misma operación no multiplica su efecto.
+> Un evento puede llegar dos veces. Por ejemplo, notificaciones lo recibe correctamente, pero la confirmación se pierde en la red. Como solicitudes no sabe que llegó, vuelve a enviarlo.
 >
-> Así funciona: llega el evento con su número. **▶ clic** Notificaciones busca ese número en la tabla evento_procesado. **▶ clic** Si es nuevo, crea el aviso **▶ clic** y anota el número, en la misma transacción. **▶ clic** Si ya estaba, lo ignora: no se crea otro aviso. Como un portero con lista de invitados.
+> Para manejarlo usamos la idempotencia, una palabra técnica para una idea sencilla. Significa que repetir la misma operación no cambia el resultado.
 >
-> Los dos patrones se complementan: el Outbox evita perder y la idempotencia evita duplicar. Y sirve en cualquier sistema: todo proceso que se reintenta, un pago, un correo, un registro, debería tener una tabla de procesados con una llave única.
+> Cuando llega un evento, notificaciones busca su número en la lista. Si es nuevo, crea el aviso y registra el número. Si ya estaba registrado, lo ignora.
+>
+> Es como un portero con una lista de invitados, porque quien ya entró no puede entrar una segunda vez.
+>
+> Las dos soluciones se complementan. La bandeja de salida evita perder avisos y la idempotencia impide duplicarlos.
+>
+> Este principio sirve para cualquier proceso que tenga reintentos, como un pago, un correo o una importación de archivos.
+>
+> Con ambas garantías completas, resumamos lo aprendido sobre la interconexión.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Lo probamos a propósito: la interfaz tiene un botón para reentregar un evento ya consumido, y el contador de avisos duplicados se mantiene en cero.
->
-> La idempotencia no es solo para mensajes: un pago, un registro de asistencia o una importación de archivos deberían poder reintentarse sin duplicar. La receta es la misma: un número único por operación y una tabla que lo recuerde.
+- Idempotencia significa repetir sin cambiar el resultado.
+- El número del evento permite reconocer duplicados.
+- La bandeja de salida conserva el evento y la idempotencia evita que una entrega repetida cree otro aviso.
 
 **Si preguntan:** ¿Qué resuelve el Outbox y qué resuelve la idempotencia?
 
-**Respuesta corta:** El Outbox evita perder el evento; la idempotencia evita duplicar su efecto.
+Outbox evita perder el evento. La idempotencia evita que ese evento produzca el mismo efecto dos veces.
 
 **Si preguntan:** ¿Y si llegan dos entregas al mismo tiempo?
 
-**Respuesta corta:** La llave primaria de evento_procesado lo impide: solo una de las dos transacciones puede anotar el número; la otra falla y su reintento lo encuentra ya procesado.
+La llave primaria permite registrar el número una sola vez. La otra entrega falla y, al reintentarse, encuentra el evento ya procesado.
 
-**Para pasar:** “Esto es lo que aprendimos de la interconexión.”
+**Si hay tiempo**
+
+> Lo probamos desde la pantalla al volver a entregar un evento ya recibido. Aunque repetimos la entrega, el contador de avisos duplicados permanece en cero.
+>
+> La receta sirve en cualquier sistema. Necesitamos un número único por operación y una tabla que recuerde cuáles ya fueron procesadas.
 
 ### 24. Interconexión: lo que aprendimos
 
-**En pantalla · Lo que aprendimos:**
-
-- Métrica: 0 avisos perdidos
-- Métrica: 0 avisos duplicados
-- Síncrono para ver, asíncrono para avisar: La UI espera la respuesta; el evento se entrega después. Valor: Una caída parcial no detiene a quien usa el sistema.
-- Guardar primero, avisar después: Solicitud y evento en la misma transacción; el relevador entrega. Valor: Un servicio caído no hace perder información.
-- Todo reintento necesita idempotencia: Un número de evento fijo y la lista de los ya recibidos. Valor: Reintentar sin miedo a duplicar.
-- El contrato es lo único compartido: SolicitudEnviada: eventoId, id y tipo, igual en los dos lados. Valor: Equipos independientes con un acuerdo claro.
-
-**Ideas clave:**
-
-- Síncrono para ver, asíncrono para avisar
-- Guardar primero, avisar después
-- Todo reintento necesita idempotencia
-- El contrato es lo único compartido
-
-**Lo que se lleva el staff:** Cero avisos perdidos y cero duplicados, con patrones que sirven en cualquier tecnología.
-
 **Qué decir**
 
-> Cuatro aprendizajes. **▶ clic** Síncrono para lo que la persona necesita ver, asíncrono para lo que puede esperar. **▶ clic** Guardar primero y avisar después: una transacción local y una bandeja de salida son más confiables que coordinar dos sistemas al mismo tiempo.
+> De la interconexión nos llevamos cuatro ideas. Esperamos la respuesta cuando la necesitamos para continuar y dejamos para después el trabajo que puede esperar.
 >
-> **▶ clic** Todo reintento necesita idempotencia del otro lado. **▶ clic** Y entre dos servicios, lo único compartido es el contrato del mensaje; si cambia, cambia en los dos lados.
+> También aprendimos que guardar primero y avisar después es más confiable que coordinar dos sistemas al mismo tiempo.
+>
+> Cuando una operación se reintenta, el receptor debe reconocer lo repetido. Además, los servicios solo comparten el formato del mensaje, así que cualquier cambio debe coordinarse en ambos lados.
+>
+> Estas decisiones no dependen de Java y pueden aplicarse a los sistemas que ya tenemos.
+>
+> Ahora veremos cómo llevamos el código y los datos hasta un servidor. Le paso la palabra a Moises, de infraestructura.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Juntos, Outbox e idempotencia logran lo que en la industria se llama entrega al menos una vez con efecto exactamente una vez. Es la base de muchos sistemas de pagos y de notificaciones.
+- Elegimos entre esperar o avisar después.
+- Guardamos primero para no perder información.
+- Reconocemos repetidos para evitar duplicados.
 
-**Para pasar:** “Hasta aquí, el código y los datos. Ahora, ¿cómo llevamos todo esto a cualquier ambiente? Le paso la palabra a infraestructura.”
+**Si hay tiempo**
 
-## 5 · DevOps: Docker y Kubernetes · a fondo
+> Juntas, la bandeja de salida y la idempotencia permiten que un mensaje llegue varias veces, pero produzca su efecto una sola vez. Esta es una base común en sistemas de pagos y notificaciones.
 
-Presenta: Infraestructura 1.
+## 5 · DevOps: Docker y Kubernetes · en detalle
+
+Presenta: Moises.
 
 ### 25. ¿Qué es DevOps? Del código a la operación
 
-**En pantalla · Las etapas del pipeline:**
-
-- 1. Código: Ramas y Pull Request.
-- 2. Construir: Maven compila.
-- 3. Probar: En cada cambio.
-- 4. Imagen: Docker la empaqueta.
-- 5. Publicar: En GHCR.
-- 6. Operar: Kubernetes la despliega.
-- 7. Observar: Loki y Grafana.
-
-**Ideas clave:**
-
-- El código entra por ramas y Pull Request
-- Se construye y se prueba solo, en cada cambio
-- Se empaqueta en una imagen y se publica
-- Se despliega y se opera en Kubernetes
-- Se observa, y lo aprendido vuelve al código
-
-**Lo que se lleva el staff:** Un camino único y automático del código a producción: menos pasos manuales y menos errores.
-
 **Qué decir**
 
-> Gracias. DevOps no es una herramienta ni un puesto: es una forma de trabajar en la que desarrollo y operación dejan de ser dos mundos separados. Todo cambio recorre el mismo camino, de forma automática y repetible. Empieza en el código, en una rama con su Pull Request.
+> Gracias, Abdiel. DevOps no es una herramienta ni un puesto específico. Es una forma de trabajar en la que desarrollo y operación colaboran y cada cambio sigue un camino repetible.
 >
-> **▶ clic** Se construye, **▶ clic** y se prueba solo, en cada cambio. **▶ clic** Se empaqueta en una imagen Docker **▶ clic** que se publica en un registro. **▶ clic** Esa imagen se despliega y se opera en Kubernetes, **▶ clic** y lo que pasa adentro se observa con los logs en un solo lugar. Lo que aprendemos al observar vuelve al código, y el ciclo empieza otra vez.
+> Podemos imaginarlo como una línea de producción. Cada producto pasa por las mismas estaciones, en el mismo orden, y ninguna revisión se omite.
 >
-> En las próximas láminas recorremos ese camino con ARKA-Lite, pieza por pieza: primero Docker, después el pipeline y al final Kubernetes.
+> Primero escribimos y revisamos el cambio. Después lo probamos, lo empaquetamos, lo publicamos, lo instalamos y lo operamos en el servidor.
+>
+> También vigilamos el sistema mediante sus registros. Lo que aprendemos durante la operación vuelve al código y el ciclo comienza otra vez.
+>
+> En esta parte, yo explicaré Docker, Jossett mostrará el camino automático de los cambios y Kevin explicará Kubernetes.
+>
+> Comencemos por entender cómo se complementan Docker y Kubernetes.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> En ARKA-Lite, cada paso del camino tiene su herramienta: Git y GitHub para el código, Maven para construir, las pruebas automáticas, Docker para empaquetar, GHCR para publicar, Kubernetes para operar y Loki con Grafana para observar.
->
-> Lo que más se nota en el día a día es que nadie hace pasos a mano: no se copian archivos a un servidor ni se corren pruebas de memoria. Si un paso falla, el camino se detiene y se sabe dónde.
+- DevOps es una forma de trabajar.
+- Cada cambio sigue un camino repetible.
+- El ciclo une desarrollo, entrega y operación.
 
 **Si preguntan:** ¿DevOps es un equipo aparte?
 
-**Respuesta corta:** Es una práctica. Puede haber personas que la impulsen, pero funciona cuando desarrollo e infraestructura comparten el mismo camino y las mismas herramientas.
+Es una práctica. Puede haber personas que la impulsen, pero funciona cuando desarrollo e infraestructura comparten el proceso y las herramientas.
 
-**Para pasar:** “Empecemos por las dos herramientas que más se nombran: Docker y Kubernetes.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/operaciones/infraestructura-y-entrega.md`
+> En ARKA-Lite utilizamos Git y GitHub para el código, pruebas automáticas para validarlo, Docker para empaquetarlo, Kubernetes para operarlo y Grafana para observarlo.
+>
+> La mayoría de los pasos ya no depende de la memoria de una persona. Si uno falla, el proceso se detiene y muestra con claridad dónde ocurrió el problema.
 
 ### 26. Docker y Kubernetes: no compiten, se complementan
 
-**En pantalla · Dos maneras, lado a lado:**
-
-- Docker: empaqueta: Mete la app con Java y todo lo que usa; Crea una imagen que no cambia; Corre igual en una laptop o en un servidor; Compose levanta varias cajas juntas
-- Kubernetes: administra: Decide dónde corre cada caja; Si una se cae, levanta otra; Le da a cada servicio un nombre fijo; Puede correr más copias si hay carga
-
-**Ideas clave:**
-
-- Docker empaqueta la app con todo lo que necesita
-- Kubernetes decide dónde corre y la vigila
-- La misma imagen sirve en los dos
-- Uno sin el otro queda a medias
-
-**Comparación:** Como el transporte de carga: Docker es el contenedor estándar y Kubernetes, el puerto que los acomoda, los vigila y reemplaza el que se daña.
-
-**Lo que se lleva el staff:** El mismo paquete del laptop al servidor, y un sistema que se cuida solo.
-
 **Qué decir**
 
-> Docker y Kubernetes muchas veces se presentan como si uno reemplazara al otro, y no es así: no compiten, se complementan. Docker resuelve el clásico “en mi máquina funciona”: empaqueta la aplicación con Java y todo lo que necesita en una imagen, un paquete que no cambia y que corre igual en una laptop o en un servidor.
+> Docker y Kubernetes son dos nombres que se escuchan con frecuencia. A veces se presentan como alternativas, pero en realidad cumplen funciones diferentes y se complementan.
 >
-> **▶ clic** Kubernetes empieza donde termina Docker. No empaqueta nada: toma esas imágenes y las administra. Decide dónde corre cada contenedor, lo vigila y, si uno se cae, levanta otro.
+> Docker empaqueta la aplicación y todo lo necesario para ejecutarla dentro de una imagen. Ese paquete funciona igual en una computadora o en un servidor.
 >
-> Piénsenlo como el transporte de carga: Docker es el contenedor estándar y Kubernetes es el puerto que los acomoda y reemplaza el que se daña. En nuestra computadora, Docker Compose levanta los ocho contenedores del sistema con un solo comando; en el clúster, esas mismas imágenes las administra Kubernetes, sin recompilar nada.
-
-**Si hay tiempo, se puede agregar**
-
-> La imagen de cada servicio se construye en dos etapas: una con Maven para compilar y otra solo con Java para correr. Así la imagen final es más liviana y no lleva herramientas de compilación.
+> Así reducimos el problema de que algo funcione en una máquina, pero falle en otra. Kubernetes comienza donde termina Docker.
 >
-> Además, el contenedor corre con un usuario sin privilegios: si alguien comprometiera la aplicación, no sería administrador del contenedor.
+> Kubernetes organiza las aplicaciones que se ejecutan a partir de esas imágenes: decide dónde corren, las vigila y reemplaza las instancias que fallan. Podemos compararlo con el transporte de carga que conocemos en Panamá.
+>
+> Docker representa el contenedor estándar que se mueve igual sin importar su contenido. Kubernetes representa el puerto que organiza esos contenedores, los vigila y reemplaza el que presenta una falla.
+>
+> Ahora veamos cómo una receta termina convertida en un contenedor.
 
-**Si preguntan:** ¿Docker es una máquina virtual?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** No. Es más liviano: comparte el sistema operativo y solo aísla la aplicación y lo que necesita.
+- Docker empaqueta y Kubernetes administra.
+- La imagen funciona igual en distintos ambientes.
+- Docker es el contenedor y Kubernetes es el puerto.
+
+**Si preguntan:** ¿Un contenedor de Docker es una máquina virtual?
+
+No. Es más liviano porque comparte el núcleo del sistema operativo y aísla la aplicación y sus dependencias.
 
 **Si preguntan:** ¿Necesitamos Kubernetes para todo?
 
-**Respuesta corta:** No. Para un sistema pequeño basta Docker Compose en un servidor. Kubernetes vale la pena cuando hay varios servicios, varias copias o hay que recuperarse solo.
+No. Para un sistema pequeño puede bastar Docker Compose, una herramienta que permite levantar varios contenedores juntos. La veremos en unas láminas. Kubernetes cobra valor cuando hay varios servicios, múltiples copias o recuperación automática.
 
-**Para pasar:** “Veamos cómo nace un contenedor.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/operaciones/docker-y-compose.md`
+> La comparación funciona porque el contenedor de carga también estandarizó la forma de mover distintos productos. La misma caja puede viajar en barco, tren o camión sin importar su contenido.
+>
+> Podemos usar Docker sin Kubernetes en un servidor pequeño. También Kubernetes puede ejecutar imágenes creadas con otras herramientas, aunque juntos cubren todo el recorrido.
 
 ### 27. De código a contenedor
 
-**En pantalla · Flujo paso a paso:**
+**Qué decir**
 
-- 1. Dockerfile: La receta: qué instalar y qué copiar.
-- 2. Etapa build: Compila el JAR con Maven.
-- 3. Imagen: Solo Java y el JAR: más liviana.
-- 4. Contenedor: Corre con un usuario sin privilegios.
+> Un contenedor nace a partir de tres conceptos. Todo comienza con una receta llamada Dockerfile, donde indicamos qué se instala y qué archivos se copian.
+>
+> Con esa receta construimos una imagen, que funciona como un molde. Contiene la aplicación y únicamente lo necesario para ejecutarla.
+>
+> La imagen no cambia, así que instalamos exactamente la misma que probamos. Cuando ponemos esa imagen a funcionar, obtenemos un contenedor.
+>
+> Del mismo molde pueden salir varios contenedores iguales. Además, el nuestro funciona sin permisos de administrador para reducir riesgos.
+>
+> Por eso podemos reemplazar un contenedor y crear otro a partir de la misma imagen, sin reconstruir la aplicación.
+>
+> Con esa diferencia clara, veamos qué ventajas nos ofrece Docker.
 
-**Ideas clave:**
+**Si se te olvida, di esto**
 
-- Dockerfile: la receta
-- Etapa build: compila con Maven
-- Imagen: solo Java y el JAR
-- Contenedor: corre sin privilegios
+- El Dockerfile es la receta.
+- La imagen es el molde.
+- El contenedor es la aplicación en ejecución.
 
-**Lo que se lleva el staff:** La receta queda escrita: cualquiera construye la misma imagen, en cualquier computadora.
+**Si preguntan:** ¿Dónde se guardan las imágenes?
+
+Se guardan en un registro, que funciona como una biblioteca de imágenes. Nosotros usamos el registro de GitHub.
+
+**Si hay tiempo**
+
+> Nuestra receta tiene dos etapas. Una compila con las herramientas de desarrollo y la otra conserva únicamente lo necesario para ejecutar, sin incluir el código fuente ni las herramientas de compilación.
+>
+> Las imágenes se organizan por capas. Cuando solo cambia el código, reutilizamos las capas anteriores y reducimos el tiempo de construcción y descarga.
+
+### 28. Las bondades de Docker
 
 **Qué decir**
 
-> Así nace un contenedor. Todo empieza en el Dockerfile, que es la receta: qué se instala y qué se copia. **▶ clic** En una primera etapa, Maven compila el código y produce el archivo JAR, que es la aplicación lista para correr.
+> Docker nos ofrece varias ventajas. Primero, la misma imagen funciona en la computadora, en pruebas y en producción.
 >
-> **▶ clic** En la segunda etapa se arma la imagen final, solo con Java y ese JAR: más liviana y sin herramientas de compilación. Una imagen es un paquete que no cambia: la misma que probamos es la que se despliega.
+> También es liviano, porque un contenedor arranca en segundos y no necesita cargar un sistema operativo completo como una máquina virtual.
 >
-> **▶ clic** Cuando la imagen corre, se llama contenedor. El nuestro corre con un usuario sin privilegios: si alguien comprometiera la aplicación, no sería administrador del contenedor.
-
-**Si hay tiempo, se puede agregar**
-
-> La primera etapa descarga las dependencias de Maven en una capa aparte. Mientras el pom.xml no cambie, esa capa se reutiliza y las siguientes construcciones tardan mucho menos.
+> Además, cada aplicación mantiene aisladas sus dependencias. Una puede usar Java 26 y otra Node en el mismo servidor sin interferir entre sí.
 >
-> Separar la compilación de la imagen final también es seguridad: la imagen que corre no lleva Maven ni el código fuente, solo lo necesario para ejecutar.
+> Podemos limitar la memoria y la capacidad de procesamiento, o CPU, que utiliza cada contenedor. Así, una aplicación que se descontrola no consume todos los recursos ni afecta a las demás.
+>
+> Las imágenes también tienen versiones, de modo que podemos volver atrás utilizando una anterior. Finalmente, levantamos el sistema con un comando en lugar de seguir una lista manual.
+>
+> Ese comando no levanta una sola pieza, sino el sistema completo.
 
-**Para pasar:** “Un contenedor solo no es el sistema. Necesitamos levantarlos todos juntos.”
+**Si se te olvida, di esto**
 
-**Para leer más:** `docs/operaciones/docker-y-compose.md`
+- La misma imagen funciona en todos los ambientes.
+- Cada aplicación mantiene aisladas sus dependencias.
+- Podemos limitar recursos y volver a una versión anterior.
 
-### 28. Todo el sistema con un comando
+**Si preguntan:** ¿En ARKA-Lite tienen tope de memoria y CPU en Docker?
 
-**En pantalla · Tarjetas:**
+No lo configuramos en Compose porque se usa para trabajar en una computadora. En Kubernetes sí lo aplicamos a la pantalla.
 
-- Comando: docker compose up --build -d
-- arka-lite-ui: :8088 · la interfaz y su proxy
-- servicio-solicitudes: :8080 · el trámite
-- servicio-notificaciones: :8081 · los avisos
-- db-solicitudes: PostgreSQL 17 · solo red interna
-- db-notificaciones: PostgreSQL 17 · :5433
-- promtail: recoge los logs
-- loki: :3100 · guarda los logs
-- grafana: :3000 · busca en los logs
+**Si hay tiempo**
 
-**Ideas clave:**
+> Una máquina virtual carga un sistema operativo completo, mientras un contenedor comparte el del servidor y lleva solo sus elementos. Por eso caben más contenedores en el mismo servidor.
+>
+> Los límites se definen al arrancar e indican cuánta memoria y CPU puede utilizar la aplicación. Sin ellos, un contenedor podría consumir todos los recursos disponibles.
+>
+> El aislamiento no reemplaza las demás medidas de seguridad. Por eso nuestro contenedor también funciona con un usuario sin privilegios.
 
-- Servicios, bases, UI y logs en un archivo
-- Cada servicio se llama por su nombre
-- La configuración entra por variables
-- La misma imagen sirve en Compose y en Kubernetes
-
-**Lo que se lleva el staff:** Una persona nueva levanta el sistema completo en minutos, no en un día.
+### 29. Todo el sistema con un comando
 
 **Qué decir**
 
-> Con Docker, cada servicio viaja con su receta, y con Docker Compose levantamos el sistema completo con un solo comando: los dos servicios, sus dos bases, la interfaz y las herramientas de logs. Ocho contenedores en total.
+> Un solo contenedor no representa todo el sistema. Con Docker Compose levantamos mediante un comando los dos servicios, las dos bases, la pantalla y las herramientas de registros.
 >
-> La configuración, como la cadena de conexión que vimos en la parte de datos, entra por variables de entorno. Así la misma imagen sirve en nuestra computadora y en el clúster, sin recompilar.
+> En total se ejecutan ocho contenedores. Compose los conecta dentro de una red privada, donde cada uno encuentra a los demás por su nombre.
 >
-> Para alguien que llega nuevo al equipo, esto es la diferencia entre un día configurando su máquina y cinco minutos.
+> También los inicia en orden. Primero levanta las bases y después cada servicio espera hasta que su base esté disponible.
+>
+> Además, entrega la configuración desde afuera, incluidos los datos de conexión que explicó Jossett.
+>
+> El beneficio es directo. Una persona nueva puede levantar el sistema con un comando, sin configurar cada componente por separado.
+>
+> Con el sistema reproducible, veamos cómo un cambio llega hasta una imagen publicada. Le paso la palabra a Jossett.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Compose arranca las piezas en orden: primero las bases, y cada servicio espera a que su base esté sana antes de arrancar.
->
-> La base de solicitudes no se publica hacia afuera; solo la ven los contenedores de la misma red. La de notificaciones sí, en el puerto 5433, para poder consultarla con cualquier herramienta.
+- Un comando levanta ocho contenedores.
+- Compose los conecta y los inicia en orden.
+- También les entrega la configuración.
 
 **Si preguntan:** Dentro de un contenedor, ¿a dónde lleva localhost?
 
-**Respuesta corta:** Al mismo contenedor, no a otro servicio. Por eso usamos el nombre del servicio.
+Lleva al mismo contenedor, no a otro servicio. Por eso utilizamos el nombre del servicio.
 
-**Para pasar:** “¿Y cómo se encuentran entre ellos?”
+**Si preguntan:** ¿Compose sirve para producción?
 
-### 29. La red de Compose: nombres adentro, puertos afuera
+Puede servir para algo pequeño en un solo servidor. Cuando necesitamos varios servidores o recuperación automática, conviene Kubernetes.
 
-**En pantalla · Tabla de tres columnas:**
+**Si hay tiempo**
 
-- Contenedor: La UI · Su nombre dentro de la red: arka-lite-ui:8080 · Desde nuestra computadora: localhost:8088
-- Contenedor: Solicitudes · Su nombre dentro de la red: servicio-solicitudes:8080 · Desde nuestra computadora: localhost:18080
-- Contenedor: Notificaciones · Su nombre dentro de la red: servicio-notificaciones:8080 · Desde nuestra computadora: localhost:18081
-- Contenedor: Base de solicitudes · Su nombre dentro de la red: db-solicitudes:5432 · Desde nuestra computadora: No se publica
-- Contenedor: Base de notificaciones · Su nombre dentro de la red: db-notificaciones:5432 · Desde nuestra computadora: localhost:5433
+> Si una base no arranca, el servicio correspondiente queda esperando y Compose muestra la causa. Así el error aparece en el lugar correcto.
+>
+> Desde la computadora solo abrimos lo necesario. La base de solicitudes no tiene una entrada externa y únicamente los servicios internos pueden alcanzarla.
+>
+> Antes de continuar, las bases informan cuándo están listas para aceptar conexiones mediante una herramienta de PostgreSQL.
 
-**Ideas clave:**
+### 30. CI/CD: primero, cómo entra un cambio
 
-- Adentro, los contenedores se llaman por su nombre
-- Cada uno escucha en su puerto, sin chocar
-- Afuera solo se publican los puertos necesarios
-- La base de solicitudes no se publica
-
-**Lo que se lleva el staff:** Saber qué se expone y qué no: menos superficie de ataque y menos confusiones al configurar.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Una duda muy común: si todo está en contenedores, ¿cómo se encuentran? Docker Compose crea una red privada y, adentro, cada contenedor se llama por su nombre. La interfaz, por ejemplo, es arka-lite-ui y escucha en el 8080; desde nuestra computadora la abrimos en el 8088.
+> Gracias, Moises. Antes de explicar CI/CD, veamos cómo incorporamos un cambio al sistema, porque de este proceso nace toda la automatización.
 >
-> **▶ clic** Solicitudes, adentro, es servicio-solicitudes en el 8080; afuera la vemos en el 18080. **▶ clic** Notificaciones, lo mismo, en el 18081. Fíjense que adentro los dos usan el 8080 y no chocan: cada contenedor tiene su propia dirección.
+> Usamos Git para mantener el historial del código. La línea principal, llamada main, contiene la versión oficial y nadie trabaja directamente sobre ella.
 >
-> **▶ clic** La base de solicitudes no se publica: solo la alcanzan los contenedores de la red. **▶ clic** La de notificaciones sí, en el 5433, para consultarla con cualquier herramienta. Y una trampa clásica: dentro de un contenedor, localhost es el mismo contenedor; por eso los servicios se buscan por nombre.
-
-**Si hay tiempo, se puede agregar**
-
-> Los puertos de afuera se pueden cambiar con variables, SOLICITUDES_PORT y NOTIFICACIONES_PORT, sin tocar el archivo de Compose.
+> Cada tarea se desarrolla por separado en una rama, como cuando corregimos una copia de un documento. Allí incluimos el cambio, su prueba y su documentación.
 >
-> En Kubernetes pasa algo parecido: cada componente tiene un Service con un nombre fijo, y desde afuera solo se abre la interfaz.
+> Cuando está listo, creamos lo que GitHub llama un Pull Request. Es una solicitud para que otra persona revise el cambio antes de incorporarlo.
+>
+> Las pruebas automáticas también deben pasar. Solo después de cumplir ambas condiciones, el cambio entra en la versión principal.
+>
+> Este proceso evitó varias veces que rompiéramos algo que otra persona estaba utilizando. La automatización empieza precisamente en ese punto.
+>
+> Las pruebas no dependen de que alguien recuerde ejecutarlas. Las ejecuta el pipeline, una secuencia automática de tareas que veremos a continuación.
 
-**Si preguntan:** ¿Por qué 18080 y no 8080 afuera?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** Para no chocar con otros programas que ya usan el 8080 en la computadora. Se puede cambiar con una variable, sin tocar el archivo.
+- Main contiene la versión principal.
+- Cada tarea se desarrolla en una rama.
+- El Pull Request exige revisión y pruebas.
 
-**Para pasar:** “¿Y en qué orden arrancan?”
+**Si preguntan:** ¿Qué pasa si dos personas cambian lo mismo?
 
-**Para leer más:** `docs/operaciones/docker-y-compose.md`
+Git detecta el conflicto y avisa. Las personas deciden cómo combinar los cambios antes de incorporarlos a la versión principal.
 
-### 30. El orden de arranque: nadie empieza antes de tiempo
+**Si hay tiempo**
 
-**En pantalla · Flujo paso a paso:**
+> Describimos cada cambio con un formato común, por ejemplo, fix seguido de impedir el envío de una solicitud aprobada. Así el historial funciona como una bitácora.
+>
+> La documentación de los servicios se genera desde el código mediante Swagger, lo que reduce el riesgo de que quede desactualizada.
+>
+> Nadie incorpora cambios directamente en la versión principal, incluida la persona que lidera el equipo.
 
-- 1. Las bases: pg_isready: ya aceptan conexiones.
-- 2. Notificaciones: Arranca cuando su base está sana.
-- 3. Solicitudes: Espera a su base y a notificaciones.
-- 4. La UI: Arranca al final y vigila su salud.
+### 31. CI/CD: el control de calidad automático
 
-**Ideas clave:**
-
-- Las bases avisan cuando aceptan conexiones
-- Notificaciones espera a su base
-- Solicitudes espera a su base y a notificaciones
-- La UI arranca al final, con su propia prueba de salud
-
-**Lo que se lleva el staff:** Arranques sin errores ni pasos manuales: el orden queda escrito en el archivo.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Levantar ocho contenedores juntos tiene un riesgo: que un servicio arranque antes que su base y falle. Compose lo resuelve con pruebas de salud y dependencias. Primero arrancan las bases, y cada una avisa cuando ya acepta conexiones.
+> CI/CD reúne dos prácticas que organizan ese camino automático: la integración continua y la entrega continua. Funciona como el control de calidad de una fábrica, donde cada producto pasa por las mismas revisiones.
 >
-> **▶ clic** Notificaciones arranca solo cuando su base está sana. **▶ clic** Solicitudes espera a su base y también a notificaciones, porque le va a mandar eventos. **▶ clic** Y la interfaz arranca al final, con su propia prueba de salud.
+> CI significa integración continua. Cuando alguien propone un cambio, un servidor de GitHub compila la aplicación y ejecuta todas las pruebas con una base temporal.
 >
-> Es la misma idea que vamos a ver en Kubernetes con otro nombre: nadie recibe trabajo antes de estar listo.
-
-**Si hay tiempo, se puede agregar**
-
-> La prueba de salud de las bases usa pg_isready, la misma herramienta de PostgreSQL que usaría un DBA para saber si la base responde.
+> Nadie tiene que recordar esos pasos. El resultado queda visible en verde cuando todo pasa y en rojo cuando algo falla.
 >
-> Sin estas dependencias, el primer arranque fallaría a menudo y habría que levantar los servicios a mano, en orden.
-
-**Si preguntan:** ¿Qué pasa si una base no arranca?
-
-**Respuesta corta:** Su servicio no arranca tampoco, y docker compose ps muestra cuál quedó esperando. El error aparece en el lugar correcto, no como una falla rara más adelante.
-
-**Para pasar:** “Y ese mismo comando también corre en la nube: Codespaces.”
-
-**Para leer más:** `docs/operaciones/docker-y-compose.md`
-
-### 31. Sin instalar nada: GitHub Codespaces
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Una rama: Code › Codespaces › Crear.
-- 2. Máquina en la nube: 4 núcleos y Docker adentro.
-- 3. levantar.sh: Construye y levanta los 8 contenedores.
-- 4. Puertos https: UI, Grafana y Swagger, privados.
-- 5. Usarlo: Desde el navegador.
-
-**Ideas clave:**
-
-- Se crea desde una rama del repositorio
-- Una máquina en la nube con Docker adentro
-- Un script construye y levanta los 8 contenedores
-- La UI, Grafana y Swagger se abren por https
-
-**Por qué importa:** Probar o mostrar el sistema no depende de la computadora de nadie ni de la red de la oficina.
-
-**Lo que se lleva el staff:** Cualquiera del equipo prueba o muestra el sistema desde un navegador, sin instalar nada.
-
-**Qué decir**
-
-> Una pieza que resuelve cómo probar o mostrar el sistema sin instalar nada: GitHub Codespaces. Desde una rama del repositorio se crea una máquina en la nube lista para trabajar. **▶ clic** La configuración vive en el mismo repositorio, en la carpeta .devcontainer: pide cuatro núcleos y Docker adentro.
+> CD significa entrega continua. Después de aprobar las pruebas, el pipeline empaqueta la aplicación y publica una imagen identificada con el código del cambio.
 >
-> **▶ clic** Al crearla, un script construye las imágenes y levanta los ocho contenedores, igual que en nuestra computadora. **▶ clic** Cada puerto queda publicado por https y privado para la cuenta que lo abrió: la interfaz, Grafana y los dos Swagger. **▶ clic** Y todo se usa desde el navegador.
+> Esa imagen queda lista para instalar. En nuestro proyecto, la instalación en Kubernetes todavía se hace mediante un comando.
 >
-> El valor: cualquiera del equipo puede probar o mostrar el sistema sin instalar nada y sin depender de la red de la oficina. Lo verificamos con la prueba de humo completa: siete de siete.
-
-**Si hay tiempo, se puede agregar**
-
-> La máquina publica cuatro puertos: la interfaz, Grafana y los dos Swagger. Un script escribe la dirección pública de cada puerto para que los enlaces de la interfaz también funcionen en la nube.
+> El siguiente paso natural sería automatizar también esa instalación, incluyendo una aprobación antes de ejecutarla.
 >
-> Un Codespace sin uso se detiene solo a los treinta minutos, y se borra al terminar. Para el día de la presentación lo arrancamos quince minutos antes.
+> Veamos ahora qué ocurre cuando una de esas revisiones detecta un problema.
 
-**Si preguntan:** ¿Cuánto cuesta?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** GitHub lo cobra por horas de núcleo: esta máquina de 4 núcleos consume 4 por cada hora encendida. Se detiene al terminar y deja de consumir.
+- El pipeline es un control de calidad automático.
+- CI compila y prueba cada cambio.
+- CD publica la imagen lista para instalar.
+- La instalación final todavía usa un comando.
 
-**Para pasar:** “¿Y quién construye y publica las imágenes en cada cambio? El pipeline. Le paso la palabra a mi compañero.”
+**Si preguntan:** ¿Por qué no se instala solo?
 
-**Para leer más:** `docs/operaciones/codespaces.md`
-
-### 32. CI/CD: del push a la imagen publicada
-
-**Presenta:** Infraestructura 2
-
-**En pantalla · Dos caminos, lado a lado:**
-
-- Pull Request hacia main: Abres el PR: Desde tu rama feat/… → Compila y prueba: mvn verify con PostgreSQL temporal → Arranca: El servicio responde de verdad → Construye la imagen: docker build → Verde o rojo: El resultado queda en el PR (CI · integración continua: pasos 2 a 4)
-- Fusión a main: Fusionas a main: Después de la revisión → El mismo CI: Compila, prueba y arranca → Publica en GHCR: La imagen, con el SHA del commit → Despliegue: kubectl apply -f k8s/ · manual (CI: pasos 2 a 2; CD · entrega continua: pasos 3 a 3; Hoy, a mano: pasos 4 a 4)
-
-**Ideas clave:**
-
-- Un push a una rama de trabajo, solo, no dispara nada
-- Pull Request: el CI compila, prueba, arranca y construye
-- Fusión a main: el mismo CI y luego el CD publica la imagen
-- Desplegar en Kubernetes hoy es un paso manual
-
-**Por qué importa:** Un cambio roto se detecta en el Pull Request, en minutos, antes de llegar a main.
-
-**Lo que se lleva el staff:** Un error se detecta antes de llegar a main, y cada imagen se rastrea hasta su commit.
-
-**Qué decir**
-
-> Gracias. Así funciona el pipeline, desde el momento del push. Primero, algo que sorprende: un push a una rama de trabajo, por sí solo, no dispara nada. El pipeline arranca cuando se abre o se actualiza un Pull Request hacia main. Ahí corre la integración continua, el CI: un servidor de GitHub compila cada servicio, corre todas sus pruebas contra un PostgreSQL temporal, arranca el servicio de verdad hasta ver sus datos iniciales y construye la imagen Docker. El resultado queda en el mismo Pull Request: verde o rojo.
->
-> **▶ clic** Cuando el Pull Request se aprueba y se fusiona a main, corre otra vez el mismo CI, y después viene el CD, la entrega continua: la imagen se publica en el registro de GitHub, etiquetada con el código del commit, lista para desplegar.
->
-> Y una distinción que vale la pena: CD puede ser entrega continua, que es dejar la imagen lista, o despliegue continuo, que es instalarla sola en el ambiente. Nosotros llegamos a la entrega; el despliegue en Kubernetes es un paso aparte, con kubectl apply. Automatizarlo es el siguiente paso natural, con una aprobación de por medio.
-
-**Si hay tiempo, se puede agregar**
-
-> El pipeline prueba los dos servicios en paralelo, cada uno con su propia base temporal, y tiene un trabajo aparte para la interfaz: valida, prueba, construye y comprueba que el archivo de Compose es válido.
->
-> La imagen de la interfaz solo se publica cuando el cambio llega a main; la de los servicios hoy también se publica desde el Pull Request. Es un ajuste que ya tenemos identificado.
->
-> Cada imagen lleva como etiqueta el código del commit. Si algo falla en un ambiente, sabemos exactamente qué versión está corriendo y podemos volver a la anterior.
-
-**Si preguntan:** ¿Por qué no se despliega solo?
-
-**Respuesta corta:** Porque es un laboratorio con un clúster local. En un ambiente real se agrega un paso de despliegue con aprobación, o una herramienta que aplica en el clúster lo que está en main.
+Porque Kubernetes funciona en nuestro ambiente local de laboratorio. En un ambiente real agregaríamos al pipeline un paso de instalación con aprobación.
 
 **Si preguntan:** ¿Las pruebas usan la base real?
 
-**Respuesta corta:** No: GitHub crea un PostgreSQL temporal para cada ejecución, con una clave distinta cada vez, y lo descarta al terminar.
+No. GitHub crea un PostgreSQL temporal para cada ejecución y lo elimina al terminar.
 
-**Para pasar:** “Veamos qué hace el pipeline por dentro.”
+**Si hay tiempo**
 
-**Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
+> El pipeline ejecuta al mismo tiempo un trabajo para solicitudes, otro para notificaciones y otro para la pantalla. Así termina antes y muestra con precisión qué pieza falló.
+>
+> Además de pasar las pruebas, el servicio de solicitudes arranca realmente y debe mostrar una solicitud de ejemplo. Compilar no garantiza que una aplicación pueda iniciar.
+>
+> Entrega continua significa dejar la imagen lista, mientras despliegue continuo significa instalarla automáticamente. Nuestro proyecto llega hasta la entrega.
+>
+> Actualmente las imágenes de los servicios se publican durante la revisión y la de la pantalla al llegar a main. Ya identificamos esa diferencia como un ajuste pendiente.
 
-### 33. Por dentro del pipeline: tres trabajos en paralelo
+### 32. Cuando un cambio rompe algo
 
-**Presenta:** Infraestructura 2
-
-**En pantalla · Capas del sistema:**
-
-- Solicitudes: Compila y prueba: mvn verify con su PostgreSQL; Arranca: Espera ver CAM-002; Imagen: docker build; Publica: En GHCR, con el SHA
-- Notificaciones: Compila y prueba: mvn verify con su PostgreSQL; Imagen: docker build; Publica: En GHCR, con el SHA
-- La UI: Valida y prueba: Contenido, tipos y pruebas; Construye: La aplicación y su imagen; Valida Compose: docker compose config; Publica: Solo al llegar a main
-
-**Ideas clave:**
-
-- Cada servicio con su propia base temporal
-- Solicitudes además prueba que arranca
-- La UI se valida, se prueba y se construye
-- Todo corre a la vez: el resultado llega antes
-
-**Lo que se lleva el staff:** Diagnóstico inmediato: el pipeline dice qué pieza falló y en qué paso.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Veamos qué hace el pipeline por dentro. Son tres trabajos que corren al mismo tiempo, cada uno en su propia máquina de GitHub. El de solicitudes levanta su propio PostgreSQL, compila y corre todas las pruebas, arranca el servicio de verdad y espera ver la solicitud de ejemplo CAM-002. Si todo pasa, construye la imagen y la publica.
+> El pipeline demuestra su mayor valor cuando un cambio rompe una regla. Supongamos que alguien permite por error enviar dos veces la misma solicitud.
 >
-> **▶ clic** El de notificaciones hace lo mismo con su propia base: compila, prueba, construye y publica. **▶ clic** Y el de la interfaz valida su contenido, corre sus pruebas, construye la aplicación y su imagen, y además comprueba que el archivo de Compose sea válido. Su imagen solo se publica cuando el cambio llega a main.
+> Si todo se revisara a mano, podríamos descubrirlo semanas después, cuando una persona usuaria ya estuviera afectada.
 >
-> Que corran en paralelo tiene dos ventajas: el resultado llega antes, y si algo falla, el pipeline dice exactamente en cuál de las tres piezas y en qué paso.
-
-**Si hay tiempo, se puede agregar**
-
-> La clave de cada base de pruebas se arma con el número de la ejecución: nunca hay una clave fija en el pipeline.
+> Aquí el pipeline comienza automáticamente y, en pocos minutos, falla la prueba que protege esa regla. GitHub muestra qué falló, dónde ocurrió y cuál fue la causa.
 >
-> Para publicar en el registro de GitHub no se guarda ninguna contraseña: el pipeline usa un token temporal que GitHub le entrega a cada ejecución.
-
-**Si preguntan:** ¿Dónde se ven los resultados?
-
-**Respuesta corta:** En la pestaña Actions de GitHub y en el mismo Pull Request: cada trabajo con sus pasos y su registro.
-
-**Para pasar:** “¿Y qué pasa cuando un cambio rompe algo?”
-
-**Para leer más:** `docs/automatizacion/ci-yaml-paso-a-paso.md`
-
-### 34. Cuando un cambio rompe algo
-
-**Presenta:** Infraestructura 2
-
-**En pantalla · Qué pasa cuando falla:**
-
-- Falla: Un cambio rompe una regla: Por ejemplo, ahora deja enviar dos veces la misma solicitud.
-- 1. [push] Se actualiza el PR: El pipeline arranca solo.
-- 2. [minutos] Falla una prueba: La de esa regla: queda en rojo.
-- 3. [en el PR] Se ve: Qué trabajo, qué paso y por qué.
-- 4. [corrección] Se corrige: Nuevo push: vuelve a correr.
-- Resultado: El error nunca llegó a main: Y no se publicó ninguna imagen: publicar va después de las pruebas.
-
-**Ideas clave:**
-
-- El cambio llega por Pull Request
-- Una prueba falla y el PR queda en rojo
-- Se ve qué trabajo y qué paso fallaron
-- Se corrige y el pipeline vuelve a correr
-
-**Lo que se lleva el staff:** Los errores se detienen en el Pull Request, antes de llegar a main o a una imagen.
-
-**Qué decir**
-
-> Veamos el caso que más valor tiene: un cambio que rompe algo. Imaginen que alguien, sin querer, cambia la regla y ahora se puede enviar dos veces la misma solicitud.
+> La persona corrige el problema y el pipeline vuelve a ejecutarse. Así, el error nunca entra en la versión principal.
 >
-> **▶ clic** Al actualizar el Pull Request, el pipeline arranca solo. **▶ clic** En pocos minutos, la prueba de esa regla falla y el Pull Request queda en rojo. **▶ clic** GitHub muestra qué trabajo falló, en qué paso y el mensaje de la prueba. **▶ clic** La persona corrige, sube el cambio y el pipeline vuelve a correr.
+> La integración continua funciona como la red de seguridad de un trapecista, porque permite hacer cambios con mayor confianza.
 >
-> **▶ clic** El resultado: el error nunca llegó a main, y no se publicó ninguna imagen con él, porque el paso de publicar va después de las pruebas. Esa es la red de seguridad de la integración continua.
-
-**Si hay tiempo, se puede agregar**
-
-> Por eso cada regla del negocio tiene su prueba: la prueba es la que hace sonar la alarma.
+> Por eso cada regla necesita una prueba. Esa prueba es la alarma que se activa cuando alguien modifica el comportamiento esperado.
 >
-> Se puede ir más lejos con una regla del repositorio que impida fusionar un Pull Request mientras el pipeline esté en rojo. Es configuración de GitHub, sin tocar el código.
+> Cuando todas las revisiones pasan, la imagen queda publicada y claramente identificada.
+
+**Si se te olvida, di esto**
+
+- Una prueba detecta la regla rota en minutos.
+- GitHub muestra dónde ocurrió el problema.
+- El error no llega a la versión principal.
 
 **Si preguntan:** ¿Y si alguien se salta el pipeline?
 
-**Respuesta corta:** Nadie sube directo a main: todo entra por Pull Request. Además, GitHub permite exigir que el pipeline esté en verde antes de fusionar.
+Todo cambio entra mediante Pull Request. Además, GitHub puede impedir que se acepte mientras el pipeline esté en rojo.
 
-**Para pasar:** “Y cuando todo pasa, cada imagen queda marcada con su commit.”
+**Si hay tiempo**
 
-### 35. De la imagen al commit: qué código está corriendo
+> Podemos configurar GitHub para bloquear un Pull Request cuando alguna prueba falla. Es una regla de la plataforma y no requiere modificar el código.
+>
+> El pipeline publica imágenes mediante un permiso temporal que GitHub entrega a cada ejecución, sin almacenar una contraseña.
 
-**Presenta:** Infraestructura 2
+### 33. Cada imagen, con su etiqueta
 
-**En pantalla · Flujo paso a paso:**
-
-- 1. La imagen: servicio-solicitudes:<SHA>
-- 2. El commit: El SHA es el código exacto.
-- 3. El Pull Request: Quién lo pidió y quién lo revisó.
-- 4. Volver atrás: Desplegar la imagen anterior.
-
-**Ideas clave:**
-
-- Cada imagen se etiqueta con el SHA del commit
-- El SHA lleva al cambio exacto
-- Del commit, al Pull Request y su revisión
-- Volver atrás es desplegar la imagen anterior
-
-**Lo que se lleva el staff:** Saber siempre qué código está corriendo y poder volver atrás con certeza.
+**Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Cuando todo pasa, queda algo muy valioso: trazabilidad. Cada imagen publicada lleva como etiqueta el SHA del commit, ese código largo que identifica un cambio en Git. **▶ clic** Con ese código llegamos al cambio exacto: qué líneas cambiaron.
+> Cuando todo pasa obtenemos trazabilidad, que significa poder relacionar cada imagen publicada con el cambio que la generó.
 >
-> **▶ clic** Del commit llegamos al Pull Request: quién lo pidió, quién lo revisó y qué pruebas pasó. **▶ clic** Y si una versión da problemas, volver atrás es desplegar la imagen del commit anterior, que sigue publicada en el registro.
+> La imagen lleva el código de ese cambio, como el número de lote de un medicamento. Si aparece un problema, sabemos exactamente de dónde vino.
 >
-> Para operación, esto cambia la conversación: ya no es “¿qué versión tenemos?”, sino “esta imagen es este commit, revisado por estas personas”.
+> Con ese código podemos revisar qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.
+>
+> Si una versión presenta problemas, podemos volver a la imagen anterior, que continúa almacenada.
+>
+> Cuando operación pregunta qué versión está instalada, podemos responder con una imagen concreta y consultar todo el historial que la respalda.
+>
+> La imagen publicada permite seguir ese historial. En nuestro laboratorio de Kubernetes todavía usamos imágenes construidas en la computadora; para conservar la relación directa con el pipeline, usaríamos la imagen que este publicó.
+>
+> La imagen ya está publicada y rastreada. Ahora, dónde corre. Le paso la palabra a Kevin, que nos explica Kubernetes.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Etiquetar con el SHA, y no con latest, evita la duda clásica de si la imagen que corre es la nueva o la vieja.
->
-> En Kubernetes, el manifiesto dice qué imagen usar; cambiar de versión es cambiar esa línea y volver a aplicar.
+- Cada imagen se conecta con un cambio específico.
+- Podemos saber quién lo revisó y qué pruebas pasó.
+- Si falla, volvemos a la imagen anterior.
 
 **Si preguntan:** ¿Por qué no usar la etiqueta latest?
 
-**Respuesta corta:** Porque latest cambia con cada publicación y no dice qué código es. Con el SHA, la etiqueta nunca miente.
+Porque latest cambia con cada publicación y no identifica el código. La etiqueta basada en el cambio siempre señala una versión concreta.
 
-**Para pasar:** “La imagen ya está publicada y rastreada. Ahora, dónde corre: Kubernetes.”
+**Si hay tiempo**
 
-### 36. Cómo trabaja Kubernetes: del archivo al Pod
+> Ese código se llama SHA y Git genera uno para cada cambio. Usarlo evita la duda sobre si la imagen que se ejecuta es la nueva o la anterior.
+>
+> El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.
 
-**Presenta:** Infraestructura 2
+### 34. Cómo trabaja Kubernetes
 
-**En pantalla · Flujo paso a paso:**
-
-- 1. Manifiesto YAML: Qué imagen, cuántas copias y qué variables.
-- 2. kubectl apply: Se lo entrega al clúster.
-- 3. Deployment: Crea los Pods con la imagen.
-- 4. Service: Un nombre fijo para encontrarlos.
-- 5. Ciclo de control: Compara lo que hay con lo pedido y corrige.
-
-**Ideas clave:**
-
-- Escribimos el estado deseado en YAML
-- kubectl apply se lo entrega al clúster
-- El Deployment crea los Pods
-- El Service les da un nombre fijo
-- Kubernetes compara y corrige sin parar
-
-**Comparación:** Como un termostato: no le decimos cuándo prender el aire, le decimos la temperatura que queremos y él se encarga.
-
-**Lo que se lleva el staff:** El clúster se mantiene solo como lo describimos, sin intervención manual.
+**Presenta:** Kevin
 
 **Qué decir**
 
-> Para entender Kubernetes hay que cambiar el chip: no le damos órdenes paso a paso, le decimos cómo queremos que esté el sistema. Eso se escribe en un archivo YAML, un manifiesto: qué imagen usar, cuántas copias de cada servicio y qué variables recibe.
+> Gracias, Jossett. Kubernetes requiere una forma distinta de pensar. No le damos instrucciones paso a paso, sino que describimos el estado que queremos mantener.
 >
-> **▶ clic** Con kubectl apply, ese archivo se le entrega al clúster. **▶ clic** El Deployment lee el manifiesto y crea los Pods, que son donde corren los contenedores. **▶ clic** El Service les da un nombre fijo, para que los demás los encuentren aunque un Pod se reemplace.
+> Funciona como un termostato. No le indicamos cuándo debe encender y apagar el aire, sino la temperatura que queremos, y el equipo hace los ajustes.
 >
-> **▶ clic** Y lo más importante: Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Si falta algo, lo crea; si sobra, lo quita. A eso se le llama ciclo de control, y es lo que hace que el sistema se repare solo.
-
-**Si hay tiempo, se puede agregar**
-
-> Todos los manifiestos de ARKA-Lite están en la carpeta k8s del repositorio: cinco archivos, uno por componente, con su Deployment, su Service y, en las bases, su disco persistente.
+> En Kubernetes escribimos en un archivo qué imagen debe usar, cuántas copias necesitamos y qué configuración corresponde.
 >
-> Como el estado deseado está en archivos versionados, reconstruir el sistema completo en otro clúster es volver a aplicar esos archivos.
+> Luego entregamos ese archivo mediante un comando y Kubernetes crea los elementos solicitados.
+>
+> A partir de ahí, compara continuamente lo que existe con lo que pedimos. Si falta algo, lo crea y, si sobra, lo elimina.
+>
+> Por eso el sistema puede repararse solo. Como el archivo se guarda con el código, la configuración tampoco depende de la memoria de una persona.
+>
+> Con esa forma de trabajo clara, veamos qué es un Pod y cómo se relaciona con un contenedor.
 
-**Si preguntan:** ¿Qué pasa si alguien cambia algo a mano en el clúster?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** El ciclo de control lo devuelve a lo que dice el manifiesto. Por eso los cambios se hacen en el archivo, versionado en el repositorio, y no a mano.
+- Describimos el estado que queremos.
+- Kubernetes funciona como un termostato.
+- Compara el estado y corrige las diferencias.
 
-**Para pasar:** “Veamos las piezas que usamos en ARKA-Lite.”
+**Si preguntan:** ¿Qué pasa si alguien cambia algo a mano?
 
-**Para leer más:** `docs/operaciones/kubernetes-local.md`
+Depende de qué cambie. Si alguien elimina un Pod, Kubernetes crea otro para mantener la cantidad de copias. Si modifica la configuración, debemos reflejar ese cambio en el archivo, para que lo guardado coincida con lo que está funcionando.
 
-### 37. Los recursos de Kubernetes
+**Si hay tiempo**
 
-**Presenta:** Infraestructura 2
+> Los archivos de ARKA-Lite están en la carpeta k8s del repositorio, separados por componente. Para reconstruir el sistema en otro clúster, volvemos a aplicar esos archivos.
+>
+> Estos archivos se llaman manifiestos y utilizan un formato de texto llamado YAML. Un clúster es un grupo de servidores que trabajan juntos.
 
-**En pantalla · Capas del sistema:**
+### 35. Contenedores y Pods: cómo se complementan
 
-- Acceso: Service: Un nombre fijo por componente; port-forward: La UI en localhost:8088
-- Cómputo: 5 Deployments: UI, 2 servicios y 2 bases; initContainers: Esperan a la base y al otro servicio; readinessProbe: Sin tráfico hasta estar listo
-- Configuración: Secret arka-postgres: La clave de las bases; Variables de entorno: DB_URL, NOTIFICACIONES_URL
-- Datos: PersistentVolumeClaim: Un disco por base: sobrevive al Pod
-
-**Ideas clave:**
-
-- Deployment y Pod por componente
-- Service: un nombre fijo
-- Secret para la clave de la base
-- Un disco persistente para cada base
-
-**Lo que se lleva el staff:** El estado del sistema queda escrito y versionado, no en la memoria de alguien.
+**Presenta:** Kevin
 
 **Qué decir**
 
-> Estas son las piezas que usamos en ARKA-Lite. Arriba, el acceso: un Service le da a cada componente un nombre fijo, para que los demás lo encuentren aunque el contenedor cambie.
+> Sigamos el diagrama de izquierda a derecha. Primero está la imagen, que es el molde creado con Docker.
 >
-> **▶ clic** Luego, el cómputo: un Deployment por componente, cinco en total, que dice cuántas copias queremos. Antes de arrancar, cada servicio espera a que su base responda, y una prueba de salud evita mandarle tráfico antes de tiempo.
+> Después aparece el Deployment, un recurso que declara cuántas copias de esa imagen queremos mantener. En este ejemplo pedimos dos.
 >
-> **▶ clic** La configuración: la clave de la base en un Secret, como vimos en la parte de datos, y el resto en variables de entorno. **▶ clic** Y los datos: cada base tiene su disco persistente, que sobrevive aunque el Pod se recree. Todo se aplica con un solo comando: kubectl apply sobre la carpeta k8s.
-
-**Si hay tiempo, se puede agregar**
-
-> Antes de arrancar cada servicio, un contenedor previo espera a que su base responda. Sin eso, el servicio arrancaría, no encontraría la base y se reiniciaría una y otra vez.
+> A la derecha vemos uno de los servidores donde Kubernetes ejecuta las aplicaciones. Al conjunto de servidores lo llamamos clúster. Las cajas oscuras son los contenedores, es decir, la aplicación en ejecución.
 >
-> La prueba de salud le dice a Kubernetes cuándo el servicio está listo para recibir tráfico. Arrancar no es lo mismo que estar listo, y esa diferencia evita errores en los primeros segundos.
+> Kubernetes no maneja esos contenedores de forma aislada. Cada uno vive dentro de un Pod, que le proporciona una dirección de red y recursos como memoria y CPU.
+>
+> Siguiendo la comparación del puerto, el contenedor es la carga y el Pod es el espacio asignado dentro del patio.
+>
+> Encima está el Service. Como los Pods pueden reemplazarse y cambiar de dirección, el Service mantiene un nombre fijo y distribuye el trabajo entre las copias.
+>
+> Los demás componentes utilizan ese nombre sin saber qué Pod responderá. Así, Docker prepara el contenedor y Kubernetes lo ejecuta, lo multiplica y lo reemplaza.
+>
+> En ARKA-Lite utilizamos una copia de cada pieza. Para pedir dos copias de uno de los servicios, cambiaríamos la cantidad indicada en su archivo.
+>
+> Ya conocemos las piezas principales. Ahora veamos qué capacidades nos ofrece Kubernetes con ellas.
 
-**Si preguntan:** ¿Por qué la base corre como un Deployment y no como un servicio administrado?
+**Si se te olvida, di esto**
 
-**Respuesta corta:** Porque es un ambiente de laboratorio. En producción conviene una base administrada o un StatefulSet con respaldos.
+- La imagen es el molde y el contenedor la ejecución.
+- El Pod aporta red, memoria y CPU.
+- El Deployment mantiene la cantidad de copias.
+- El Service ofrece un nombre fijo.
 
-**Para pasar:** “¿Y qué pasa cuando algo se cae?”
+**Si preguntan:** ¿Un Pod puede tener más de un contenedor?
 
-**Para leer más:** `docs/operaciones/kubernetes-local.md`
+Sí, cuando dos procesos deben vivir juntos, aunque lo normal es uno. Los nuestros tienen uno principal y otro temporal que espera la base.
+
+**Si preguntan:** ¿Dónde corren los Pods?
+
+Corren en los servidores del clúster, llamados nodos. Kubernetes elige el nodo según los recursos disponibles.
+
+**Si hay tiempo**
+
+> El Pod permite que Kubernetes trabaje con distintas tecnologías de contenedores y también agrupe procesos que necesitan compartir la misma dirección.
+>
+> En ARKA-Lite, un contenedor temporal espera a que la base responda antes de iniciar el principal. Así evitamos que el servicio falle y se reinicie repetidamente.
+>
+> Los Pods se reemplazan en lugar de repararse. Por eso los datos importantes permanecen en la base y en su disco, no dentro del Pod.
+
+### 36. Las bondades de Kubernetes
+
+**Presenta:** Kevin
+
+**Qué decir**
+
+> Kubernetes agrega capacidades que no tenemos con Docker por sí solo. Primero, se repara automáticamente, porque reemplaza un Pod cuando este se cae.
+>
+> También permite crecer. Si aumenta la carga, solicitamos más copias cambiando un número.
+>
+> El Service distribuye los pedidos entre esas copias. Además, Kubernetes puede actualizar la aplicación gradualmente sin apagar todas las versiones al mismo tiempo.
+>
+> Si la nueva versión falla, podemos volver a la anterior. Con una sola copia, como en nuestro laboratorio, puede haber unos segundos sin servicio.
+>
+> Con dos o más copias, las personas casi no notan el cambio. Kubernetes también controla la memoria y la CPU mediante una reserva y un tope para cada Pod.
+>
+> Por último, permite guardar las claves en un objeto separado, llamado Secret, y controlar mediante permisos quién puede leerlas. También mantiene los datos en un disco que sobrevive al reinicio del Pod.
+>
+> Todo queda descrito en archivos, así que no dependemos de pasos manuales recordados por una persona.
+>
+> Detengámonos en la reserva y el límite de recursos, porque son importantes para la operación.
+
+**Si se te olvida, di esto**
+
+- Kubernetes reemplaza los Pods que fallan.
+- Puede aumentar copias y repartir el trabajo.
+- También controla recursos y protege la configuración.
+
+**Si preguntan:** ¿Por qué la base no corre en un servicio administrado?
+
+Porque este es un laboratorio. En producción evaluaríamos una base administrada o una configuración de Kubernetes preparada para conservar la identidad y el almacenamiento de la base, junto con sus respaldos.
+
+**Si hay tiempo**
+
+> Las revisiones de salud indican cuándo un servicio está listo para trabajar. Un proceso puede haber arrancado sin estar todavía preparado para recibir pedidos.
+>
+> Podemos aumentar las copias porque los servicios no guardan el estado importante en memoria, sino en la base.
+>
+> En el laboratorio abrimos un túnel mediante un comando para llegar a la pantalla. En un ambiente real se expondría de forma permanente.
+
+### 37. Memoria y CPU: reservar y limitar
+
+**Presenta:** Kevin
+
+**Qué decir**
+
+> Docker permite colocar un tope de memoria y CPU a cada contenedor. Si supera el límite de memoria, se detiene para no afectar a las demás aplicaciones.
+>
+> Kubernetes agrega una reserva: la cantidad de recursos que toma en cuenta para decidir dónde puede ejecutar cada Pod. El tope establece cuánto puede utilizar como máximo.
+>
+> Podemos compararlo con un presupuesto: la reserva es lo que apartamos al planificar y el tope es lo máximo que permitimos utilizar.
+>
+> Así, el tope protege a las demás aplicaciones.
+>
+> Si un contenedor supera el límite de memoria, Kubernetes lo reinicia. En ARKA-Lite, la pantalla reserva treinta y dos megas y tiene un tope de ciento veintiocho.
+>
+> Todavía no definimos esos valores para los servicios Java. En un ambiente real, mediríamos y configuraríamos los recursos de todos.
+>
+> Con los recursos definidos, veamos qué ocurre cuando una de las copias se cae.
+
+**Si se te olvida, di esto**
+
+- Docker permite limitar memoria y CPU.
+- Kubernetes usa la reserva para decidir dónde cabe cada Pod.
+- La reserva ubica el Pod y el tope protege al servidor.
+- En ARKA-Lite lo aplicamos a la pantalla.
+
+**Si preguntan:** ¿Qué número se pone?
+
+Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memoria muy bajo puede causar reinicios. Uno demasiado alto puede permitir que un contenedor consuma más recursos de lo conveniente. Por eso medimos y ajustamos.
+
+**Si hay tiempo**
+
+> La CPU se mide en milésimas de un núcleo. Doscientas cincuenta equivalen a un cuarto, y llegar al tope reduce la velocidad, mientras superar la memoria provoca un reinicio.
+>
+> La pantalla reserva veinticinco milésimas de CPU y treinta y dos megas de memoria. Sus topes son doscientas cincuenta milésimas y ciento veintiocho megas.
+>
+> Definir estos recursos también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.
 
 ### 38. Cuando un Pod se cae
 
-**Presenta:** Infraestructura 2
-
-**En pantalla · Qué pasa cuando falla:**
-
-- Falla: Se cae el Pod de solicitudes: Un error, un nodo reiniciado o un kubectl delete.
-- 1. [0 s] Detecta: Falta 1 de 1 copias.
-- 2. [+1 s] Recrea: Un Pod nuevo con la misma imagen.
-- 3. [+segundos] Espera: initContainers: base y notificaciones.
-- 4. [Ready] Listo: La readinessProbe responde.
-- Resultado: Sin intervención manual: Los eventos pendientes siguen en la base y se entregan.
-
-**Ideas clave:**
-
-- El Deployment detecta que falta una copia
-- Crea un Pod nuevo
-- Espera a la base y a su salud
-- Vuelve a recibir tráfico, sin intervención
-
-**Lo que se lleva el staff:** Un sistema que se recupera solo, sin que nadie se despierte a las tres de la mañana.
+**Presenta:** Kevin
 
 **Qué decir**
 
-> Ya vimos que Kubernetes compara todo el tiempo lo que hay con lo que pedimos. Veamos qué pasa cuando se cae el Pod de solicitudes, por un error, porque se reinició el servidor o porque alguien lo borró.
+> Supongamos que el servicio de solicitudes se cae por un error o por el reinicio del servidor. Kubernetes detecta que falta una copia y crea otra con la misma imagen.
 >
-> **▶ clic** En el mismo instante, el Deployment detecta que falta una copia. **▶ clic** En un segundo, crea un Pod nuevo con la misma imagen. **▶ clic** El Pod nuevo espera a que su base y notificaciones respondan, **▶ clic** y solo cuando su prueba de salud contesta, vuelve a recibir tráfico.
+> La nueva copia espera hasta que su base esté lista. Después pasa la revisión de salud y comienza a recibir trabajo otra vez, sin que una persona tenga que intervenir.
 >
-> **▶ clic** Nadie intervino. Y como los avisos pendientes están en la base, no en memoria, nada se pierde mientras tanto. Aquí se juntan las tres partes que vimos a fondo: la base guarda, el Outbox espera y Kubernetes repara.
+> Como en el laboratorio mantenemos una sola copia, tenemos unos segundos sin servicio. Con dos copias, la interrupción casi no se notaría.
+>
+> Mientras tanto, los avisos pendientes permanecen guardados en la base y no se pierde información.
+>
+> Aquí se conectan tres partes de la presentación. La base guarda, la bandeja de salida espera y Kubernetes repara.
+>
+> Con este ejemplo cerramos la explicación de Kubernetes y resumimos lo aprendido de DevOps.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Se demuestra en un minuto: se borra el Pod con kubectl delete y, mirando la lista de Pods, aparece uno nuevo que en unos segundos vuelve a estar listo.
->
-> Si lo que se cae es la base, pasa lo mismo: su Pod se recrea y los datos siguen en el disco persistente.
+- Kubernetes reemplaza una copia que se cae.
+- La nueva espera la base y pasa su revisión.
+- Los avisos pendientes permanecen guardados.
 
 **Si preguntan:** ¿Y si se cae la base?
 
-**Respuesta corta:** Su Pod también se recrea y los datos siguen en el disco persistente; los servicios esperan a que vuelva.
+Su Pod también se recrea y los datos permanecen en el disco. Los servicios esperan hasta que la base regrese.
 
-**Para pasar:** “Esto es lo que aprendimos de DevOps.”
+**Si hay tiempo**
+
+> Podemos demostrarlo eliminando el Pod mediante un comando. En la lista aparece uno nuevo y, después de unos segundos, vuelve a estar listo.
+>
+> Si se cae la base, ocurre algo similar. Kubernetes recrea el Pod y los datos continúan en su disco.
 
 ### 39. DevOps: lo que aprendimos
 
-**Presenta:** Infraestructura 2
-
-**En pantalla · Lo que aprendimos:**
-
-- Métrica: 1 comando para levantar todo
-- Métrica: 1 imagen por commit, rastreable
-- Docker y Kubernetes se complementan: Uno empaqueta; el otro ejecuta y cuida. Valor: Un mismo paquete, de la laptop al clúster.
-- La imagen es el entregable: Lo que prueba el pipeline es lo que se despliega. Valor: Sin sorpresas entre ambientes.
-- Configurar por variables: La cadena de conexión y las direcciones vienen del ambiente. Valor: Un solo artefacto para todos los ambientes.
-- Declarar el estado deseado: Deployments, pruebas de salud y un pipeline que arranca el servicio. Valor: El clúster se repara solo y los errores aparecen antes.
-
-**Ideas clave:**
-
-- Docker y Kubernetes se complementan
-- La imagen es el entregable
-- Configurar por variables, no por código
-- Declarar el estado y probar que arranca
-
-**Lo que se lleva el staff:** Despliegues repetibles y un sistema que se repara solo.
+**Presenta:** Kevin
 
 **Qué decir**
 
-> Cuatro aprendizajes de DevOps. **▶ clic** Docker y Kubernetes no compiten: uno empaqueta y el otro ejecuta y cuida. **▶ clic** La imagen es el entregable: lo que prueba el pipeline es exactamente lo que se despliega.
+> De DevOps nos llevamos varias ideas que se complementan. Docker y Kubernetes se complementan, porque uno empaqueta la aplicación y el otro la ejecuta y la cuida.
 >
-> **▶ clic** Configurar por variables y no por código, empezando por la cadena de conexión. **▶ clic** Y declarar el estado que queremos, y probar que el servicio arranca, no solo que compila.
+> La imagen es el entregable que construimos una vez y reutilizamos entre ambientes. Además, la configuración pertenece al ambiente y no al código.
+>
+> También aprendimos a describir el estado que queremos y a comprobar que los servicios realmente arrancan, en lugar de verificar solamente que compilan.
+>
+> El mayor valor es que todo quedó escrito. Tenemos la receta de cada imagen, el pipeline y los archivos de Kubernetes, sin depender de la memoria de una persona.
+>
+> El sistema ya está instalado. Ahora debemos saber qué ocurre dentro. Le devuelvo la palabra a Moises.
 
-**Si hay tiempo, se puede agregar**
+**Si se te olvida, di esto**
 
-> Lo que más valor nos dio de DevOps fue que todo quedó escrito: la receta de cada imagen, el archivo de Compose, los manifiestos de Kubernetes y el pipeline. Nada depende de la memoria de una persona.
+- Docker empaqueta y Kubernetes opera.
+- La misma imagen sirve en varios ambientes.
+- La instalación queda escrita y puede repetirse.
 
-**Para pasar:** “Ya está desplegado. ¿Cómo sabemos qué pasa adentro? Le devuelvo la palabra a mi compañero.”
+**Si hay tiempo**
+
+> Docker y Kubernetes requieren aprendizaje y no todos los sistemas los necesitan. Sin embargo, siempre conviene documentar la instalación de una forma escrita y repetible.
 
 ## 6 · Observabilidad · vista general
 
-Presenta: Infraestructura 1.
+Presenta: Moises.
 
-### 40. Todos los logs, en un solo lugar
-
-**En pantalla · Flujo paso a paso:**
-
-- 1. Servicios: Logs JSON con traceId y eventoId.
-- 2. Promtail: Los recoge de cada contenedor.
-- 3. Loki: Los guarda, etiquetados por servicio.
-- 4. Grafana: Una búsqueda para todo el sistema.
-
-**Ideas clave:**
-
-- Cada servicio escribe sus logs en JSON
-- Promtail los recoge de todos los contenedores
-- Loki los guarda por servicio
-- Grafana los busca por traceId o eventoId
-
-**Comparación:** Como la caja negra de un avión: registra lo que pasó, para revisarlo después.
-
-**Lo que se lleva el staff:** Diagnosticar un error entre sistemas en minutos, con una sola búsqueda.
+### 40. Observabilidad: tres preguntas
 
 **Qué decir**
 
-> Gracias. La observabilidad la vemos de forma general. Con varios servicios, cada uno tiene sus logs, y si algo falla no queremos entrar contenedor por contenedor. Cada servicio escribe sus logs en JSON, con un formato estándar. **▶ clic** Promtail los recoge de todos los contenedores, **▶ clic** Loki los guarda etiquetados por servicio **▶ clic** y Grafana nos deja buscarlos en un solo lugar.
+> Gracias, Kevin. Observabilidad es el nombre que damos a la capacidad de entender qué ocurre dentro del sistema sin tener que adivinar.
 >
-> Como cada llamada lleva su traceId, con una sola búsqueda vemos el viaje completo de un evento: cuándo lo publicó el relevador y cuándo lo consumió notificaciones. Y cada servicio expone su salud, que la interfaz muestra en verde o en rojo.
-
-**Si hay tiempo, se puede agregar**
-
-> Para buscar en Grafana basta una consulta como: los logs del servicio de notificaciones que contengan la palabra evento. En segundos aparecen las líneas con el número del evento.
+> La resumimos mediante tres preguntas. La primera es si el sistema está vivo. Cada servicio informa si funciona y si puede comunicarse con su base.
 >
-> Los logs salen en un formato estándar, ECS, sin tocar el código del negocio: es una línea de configuración de Spring Boot.
+> La segunda pregunta es qué pasó. Para responderla utilizamos los registros, también llamados logs, que funcionan como la bitácora de cada servicio.
+>
+> La tercera es por dónde pasó un pedido. Cada operación lleva un número de seguimiento, como el número de guía de un paquete.
+>
+> Ese número permite saber por dónde pasó, a qué hora y en qué punto se detuvo. Sin él tendríamos que revisar cada servidor por separado.
+>
+> Con observabilidad, buscamos un solo número y reconstruimos todo el recorrido.
+>
+> Veamos cómo aplicamos estas ideas a un caso concreto, cuando un aviso no llega.
 
-**Para pasar:** “Esto es lo que aprendimos de observar el sistema.”
+**Si se te olvida, di esto**
 
-**Para leer más:** `docs/operaciones/observabilidad.md`
+- Observabilidad es entender el sistema sin adivinar.
+- Revisamos salud, registros y recorrido.
+- Un número de seguimiento conecta toda la operación.
 
-### 41. Observabilidad: lo que aprendimos
+**Si preguntan:** ¿Esto es lo mismo que monitoreo?
 
-**En pantalla · Lo que aprendimos:**
+Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabilidad ayuda a entender la causa.
 
-- Métrica: 1 lugar para buscar todos los logs
-- Métrica: 8 contenedores observados
-- Logs estructurados desde el día uno: JSON con formato estándar, sin cambiar el código de negocio. Valor: Buscar por campo en lugar de leer texto.
-- Un identificador que cruce servicios: El traceId viaja en cada llamada y el eventoId en cada log. Valor: Diagnosticar un fallo entre servicios en minutos.
-- Salud no es lo mismo que correcto: UP dice que responde; los pendientes dicen si entrega. Valor: Medir el resultado del negocio, no solo el proceso.
+**Si hay tiempo**
 
-**Ideas clave:**
+> Los registros del proyecto utilizan un formato estándar configurado fuera del código del negocio. Para activarlo solo necesitamos una línea de configuración.
+>
+> Cada servicio tiene una dirección especial que informa su salud. Kubernetes y la pantalla la consultan para mostrar si está disponible.
 
-- Logs estructurados desde el día uno
-- Un identificador que cruce servicios
-- Salud no es lo mismo que correcto
-
-**Lo que se lleva el staff:** Saber qué pasa adentro sin adivinar.
+### 41. Un aviso no llegó: ¿cómo lo encontramos?
 
 **Qué decir**
 
-> Tres aprendizajes. **▶ clic** Los logs estructurados se configuran desde el día uno; después es mucho más caro. **▶ clic** En un sistema distribuido hace falta un identificador que cruce los servicios. **▶ clic** Y salud no es lo mismo que correcto: un servicio puede estar arriba y tener avisos pendientes; hay que medir el resultado, no solo el proceso.
-
-**Si hay tiempo, se puede agregar**
-
-> Si tuvieran que empezar por una sola cosa, sería un identificador por operación que viaje entre sistemas y aparezca en cada log. Con eso, diagnosticar deja de ser adivinar.
-
-**Para pasar:** “Para cerrar, le devuelvo la palabra a quien abrió, con el valor que deja todo esto.”
-
-## Valor y cierre
-
-Presenta: Desarrollo 1 · orquesta.
-
-### 42. El valor agregado
-
-**En pantalla · Tabla de tres columnas:**
-
-- Pilar: Datos consistentes · Qué construimos: Transacción local, Outbox e idempotencia · Valor para el equipo: 0 avisos perdidos o duplicados ante caídas
-- Pilar: Conexión segura · Qué construimos: Cadena de conexión y claves fuera del código · Valor para el equipo: Cambiar de servidor o de clave sin recompilar
-- Pilar: Reproducibilidad · Qué construimos: Docker, Compose y Kubernetes · Valor para el equipo: 1 comando y la misma imagen en todo ambiente
-- Pilar: Calidad · Qué construimos: Pruebas automáticas y pipeline en cada cambio · Valor para el equipo: Errores detectados en minutos, antes de integrar
-- Pilar: Trazabilidad · Qué construimos: Logs centralizados, traceId e imagen por commit · Valor para el equipo: Diagnóstico en minutos y versiones rastreables
-
-**Ideas clave:**
-
-- Datos consistentes ante fallas
-- Conexiones fuera del código
-- Entornos reproducibles
-- Calidad en cada cambio
-- Trazabilidad de punta a punta
-
-**Lo que se lleva el staff:** Cinco pilares que cualquier equipo puede adoptar.
-
-**Qué decir**
-
-> Gracias. Si tuviéramos que resumir el valor en una lámina, sería esta. Datos consistentes: ante una caída, no se pierde ni se duplica un aviso. **▶ clic** Conexión segura: la cadena de conexión y las claves viven fuera del código.
+> Supongamos que alguien informa que envió su solicitud, pero no recibió el aviso. Como tenemos varios servicios, no queremos revisar sus registros uno por uno.
 >
-> **▶ clic** Reproducibilidad: un comando y la misma imagen en cualquier ambiente. **▶ clic** Calidad: pruebas automáticas en cada cambio, antes de integrarlo. **▶ clic** Y trazabilidad: logs en un solo lugar e imágenes rastreables hasta su commit.
-
-**Si hay tiempo, se puede agregar**
-
-> Si alguien pregunta por números: cero avisos perdidos o duplicados en las pruebas de caída, un comando para levantar los ocho contenedores y una imagen rastreable por cada commit.
-
-**Para pasar:** “Y lo más importante: qué pueden aplicar ustedes desde mañana.”
-
-### 43. Lo que pueden aplicar desde mañana
-
-**En pantalla · Tabla de tres columnas:**
-
-- Práctica: Cadena de conexión fuera del código · Cómo se ve en sus sistemas de hoy: Variables de entorno o un gestor de secretos en el servidor · Qué evita: Claves en el repositorio y recompilar por cambiar de servidor
-- Práctica: Guardar y avisar en la misma transacción · Cómo se ve en sus sistemas de hoy: Una tabla de pendientes que llena el procedimiento y un job que la entrega · Qué evita: Avisos perdidos cuando el otro sistema está caído
-- Práctica: Idempotencia en lo que se reintenta · Cómo se ve en sus sistemas de hoy: Una tabla de procesados con llave única por número de operación · Qué evita: Pagos, correos o registros duplicados
-- Práctica: Un identificador que cruce sistemas · Cómo se ve en sus sistemas de hoy: El mismo número en el log de la aplicación, del procedimiento y del otro sistema · Qué evita: Horas buscando un error entre sistemas
-- Práctica: El mismo paquete en todos los ambientes · Cómo se ve en sus sistemas de hoy: Contenedores para aplicaciones y bases de prueba · Qué evita: El clásico “en mi máquina funciona”
-
-**Ideas clave:**
-
-- Sacar la cadena de conexión del código
-- Guardar y avisar en la misma transacción
-- Hacer idempotente lo que se reintenta
-- Un identificador que cruce sistemas
-- El mismo paquete en todos los ambientes
-
-**Lo que se lleva el staff:** Cinco prácticas concretas que se pueden empezar a aplicar sin cambiar de tecnología.
-
-**Qué decir**
-
-> Esta es la lámina que más nos importa que se lleven. Nada de esto exige reescribir sus sistemas; todo funciona también con procedimientos almacenados. Primero: saquen la cadena de conexión del código; usen variables de entorno o un gestor de secretos.
+> Por eso reunimos todo en un solo lugar mediante tres herramientas con tareas concretas. Promtail recoge los registros de los contenedores y Loki los guarda.
 >
-> **▶ clic** Segundo: si un procedimiento tiene que avisarle a otro sistema, no lo llamen ahí mismo. Anoten el aviso en una tabla de pendientes, en la misma transacción, y que un job lo entregue. Ese es el Outbox. **▶ clic** Tercero: todo lo que se reintenta, un pago, un correo, un registro, debe ser idempotente: una tabla de procesados con llave única.
+> Grafana permite buscarlos desde una sola pantalla. Para este caso, buscamos el número de la solicitud y reunimos los registros asociados. Ese número identifica el trámite; el número de seguimiento que mencionamos antes identifica una llamada.
 >
-> **▶ clic** Cuarto: un mismo identificador en todos los logs, para seguir una operación de un sistema a otro. **▶ clic** Y quinto: el mismo paquete en todos los ambientes, para que lo que se prueba sea lo que se despliega.
-
-**Si hay tiempo, se puede agregar**
-
-> El orden que recomendamos: primero la cadena de conexión, porque es un cambio pequeño que baja un riesgo real; después la tabla de pendientes en el proceso que más falla hoy; y luego la idempotencia en lo que se reintenta.
+> Podemos identificar a qué hora se envió la solicitud, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento sigue en la bandeja de salida, ya sabemos dónde se detuvo.
 >
-> Ninguna de estas prácticas exige Java, microservicios ni Kubernetes. Son decisiones de diseño que se pueden tomar en el sistema que ya tienen.
-
-**Si preguntan:** ¿Por dónde empezamos?
-
-**Respuesta corta:** Por la cadena de conexión: es el cambio más pequeño y baja un riesgo real de seguridad. Después, la tabla de pendientes en el proceso que más falle hoy.
-
-**Para pasar:** “Si nos llevamos solo tres ideas, que sean estas.”
-
-### 44. Lo que nos llevamos
-
-**En pantalla · Lo que aprendimos:**
-
-- Métrica: 0 avisos perdidos o duplicados
-- Métrica: 1 comando para levantar todo
-- Diseñar para la falla: Guardar primero, reintentar e ignorar duplicados. Valor: Sistemas que se recuperan solos.
-- Automatizar la confianza: Pruebas, pipeline, imágenes y estado declarado. Valor: Cambiar rápido sin miedo a romper.
-- Hacer visible el sistema: Logs, trazas, salud, Swagger y la UI. Valor: Diagnosticar y explicar en minutos.
-
-**Ideas clave:**
-
-- Diseñar para la falla
-- Automatizar la confianza
-- Hacer visible el sistema
-
-**Lo que se lleva el staff:** Tres ideas para recordar al salir de la sala.
-
-**Qué decir**
-
-> Tres ideas para cerrar. **▶ clic** Diseñar para la falla: en un sistema distribuido algo siempre va a fallar, y la diferencia está en cómo reacciona. **▶ clic** Automatizar la confianza: pruebas, pipeline e infraestructura declarada para cambiar rápido sin miedo. **▶ clic** Y hacer visible el sistema: lo que no se ve no se puede diagnosticar ni explicar.
-
-**Si hay tiempo, se puede agregar**
-
-> Si se llevan una sola frase: diseñen pensando en qué pasa cuando algo falla, no solo cuando todo sale bien. Y antes de pensar en el cómo, tengan claro el qué.
-
-**Para pasar:** “Gracias por su atención.”
-
-### 45. Gracias
-
-**En pantalla:**
-
-- Equipo arka-litos
-- Proyecto final · Upskilling Backend Java
-
-**Qué decir**
-
-> Empezamos con un endpoint y terminamos con dos microservicios con sus bases de datos, empaquetados, desplegados, observados y documentados, que saben comportarse cuando algo falla.
+> También debemos recordar que un servicio encendido no necesariamente funciona bien. Por eso, además de su estado, revisamos resultados como la cantidad de avisos pendientes.
 >
-> Muchas gracias por acompañarnos, de parte de todo el equipo arka-litos. Con gusto respondemos sus preguntas.
+> Con este caso resuelto, resumamos lo que aprendimos sobre observabilidad.
+
+**Si se te olvida, di esto**
+
+- Promtail recoge los registros.
+- Loki los guarda y Grafana permite buscarlos.
+- Buscamos el número de la solicitud para reunir los registros relacionados.
 
 **Qué hacer** (no se dice)
 
-- Quien orquesta recibe las preguntas y se las pasa a quien presentó esa parte.
+- No hace falta explicar cómo se escribe la consulta en Grafana: basta la idea de buscar un número.
 
-**Para leer más:** `docs/inicio/proyecto.md`
+**Si hay tiempo**
+
+> El número de seguimiento se llama traceId y viaja en cada llamada entre los servicios. Además, cada evento tiene su propio identificador.
+>
+> Si todo aparece encendido y falta un aviso, revisamos la bandeja de salida y los registros del relevador y de notificaciones.
+>
+> Podemos buscar los registros de notificaciones que contengan la palabra evento. En segundos obtenemos las líneas relacionadas con sus números.
+
+### 42. Observabilidad: lo que aprendimos
+
+**Qué decir**
+
+> De observabilidad nos llevamos tres ideas. Los registros deben organizarse desde el primer día, porque hacerlo más adelante cuesta mucho más.
+>
+> En un sistema con varios servicios necesitamos un número que acompañe cada pedido de principio a fin. También debemos distinguir entre estar encendido y funcionar correctamente.
+>
+> Por eso no revisamos únicamente la salud del proceso, sino también sus resultados. Si tuviéramos que comenzar por una sola práctica, usaríamos un número por operación en todos los registros.
+>
+> Para cerrar, le paso la palabra a Abdiel, con los resultados.
+
+**Si se te olvida, di esto**
+
+- Organizamos los registros desde el inicio.
+- Cada operación lleva un número de seguimiento.
+- Encendido no siempre significa funcionando.
+
+**Si hay tiempo**
+
+> Esta práctica también funciona con procedimientos. Podemos guardar el mismo número en los registros de la aplicación, del procedimiento y de cualquier otro sistema involucrado.
+
+## Valor y cierre
+
+Presenta: Abdiel Barria.
+
+### 43. Resultados para el negocio
+
+**Qué decir**
+
+> Gracias, Moises. Lo que les contamos se traduce en estos resultados para el negocio.
+>
+> Primero, los eventos pendientes permanecen guardados si se interrumpe la entrega, y reenviar el mismo evento no crea otro aviso.
+>
+> Segundo, el trámite no se detiene. Aunque el servicio de avisos esté caído, la persona puede enviar su solicitud y el aviso llega cuando el servicio regresa.
+>
+> Tercero, las reglas del negocio se cumplen y cada una tiene una prueba que la vigila.
+>
+> Cuarto, Kubernetes puede reemplazar una copia que falla, mientras los eventos pendientes permanecen guardados en la base.
+>
+> Por último, los cambios llegan con menos riesgo, porque detectamos los errores en minutos y antes de que afecten a los usuarios.
+>
+> Estos resultados no dependen de la suerte, sino de varias decisiones que trabajan juntas.
+
+**Si se te olvida, di esto**
+
+- No se pierden ni se duplican avisos.
+- El trámite continúa aunque notificaciones esté detenido.
+- Las pruebas y la recuperación reducen el riesgo.
+
+**Si hay tiempo**
+
+> Comprobamos estos resultados en nuestro laboratorio y no en producción. Lo importante es que cada resultado se puede repetir y verificar.
+
+### 44. Lo que sostiene los resultados
+
+**Qué decir**
+
+> Detrás de cada resultado hay una práctica que aprendimos y aplicamos. La transacción, la bandeja de salida y el control de duplicados mantienen consistentes los datos.
+>
+> La configuración está separada del código, así que podemos cambiar las claves sin modificar la aplicación.
+>
+> También ejecutamos el mismo sistema en distintos ambientes mediante un solo comando. Las pruebas automáticas revisan cada cambio antes de incorporarlo.
+>
+> Además, reunimos los registros en un solo lugar y relacionamos cada versión con el cambio que la produjo.
+>
+> Así protegemos los datos, mantenemos las claves fuera del código, repetimos la instalación, revisamos los cambios y podemos identificar de dónde salió cada versión.
+>
+> La mayoría puede comenzar a aplicarse sin reemplazar la tecnología que ya utilizamos.
+>
+> Si tuviéramos que resumir todo el recorrido en tres ideas, serían las siguientes.
+
+**Si se te olvida, di esto**
+
+- Cada resultado se apoya en una práctica concreta.
+- Datos, configuración, pruebas y registros trabajan juntos.
+- Podemos aplicar estas ideas sin cambiar de tecnología.
+
+**Si hay tiempo**
+
+> Un orden razonable sería comenzar con una tabla de pendientes en el proceso que más falla, agregar idempotencia donde existen reintentos y después incorporar un número de seguimiento.
+>
+> Ninguna de estas prácticas exige Java, microservicios ni Kubernetes. Son decisiones de diseño aplicables a los sistemas actuales.
+
+### 45. Lo que nos llevamos
+
+**Qué decir**
+
+> De toda la capacitación nos llevamos tres ideas. La primera es diseñar pensando en la falla, porque algún componente fallará y debemos definir cómo responderá el sistema.
+>
+> La segunda es automatizar las revisiones y dejar la infraestructura descrita en archivos. Así podemos hacer cambios con mayor confianza y menor riesgo.
+>
+> La tercera es hacer visible el sistema. Lo que no podemos ver tampoco podemos diagnosticarlo ni explicarlo con claridad.
+>
+> Ese es el aprendizaje que conecta todo el recorrido: prepararnos para las fallas, revisar los cambios y poder entender qué ocurre en el sistema.
+
+**Si se te olvida, di esto**
+
+- Diseñamos pensando en las fallas.
+- La automatización nos permite cambiar con confianza.
+- Lo visible se puede diagnosticar y explicar.
+
+**Si hay tiempo**
+
+> Si conservamos una sola idea, debe ser esta. Diseñemos qué hará el sistema cuando algo falle y no solamente cómo funcionará cuando todo salga bien.
+
+### 46. Gracias
+
+**Qué decir**
+
+> Comenzamos con una sola operación en Java y terminamos con un sistema completo de dos servicios, cada uno con su propia base de datos.
+>
+> El sistema quedó empaquetado, instalado, vigilado y documentado. Además, puede conservar la información y recuperarse cuando una de sus partes falla.
+>
+> Muchas gracias. Con gusto respondemos sus preguntas.
+
+**Si se te olvida, di esto**
+
+- Pasamos de una operación a un sistema completo.
+- El sistema sabe conservar los datos y recuperarse.
+- Muchas gracias. Escuchamos sus preguntas.
+
+**Qué hacer** (no se dice)
+
+- Abdiel recibe las preguntas y se las pasa a quien presentó esa parte.

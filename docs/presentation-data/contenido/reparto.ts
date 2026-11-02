@@ -1,26 +1,26 @@
-import type { Lamina } from "./index.ts";
-import { MINUTOS_DEMO_EN_VIVO } from "./recomendaciones.ts";
-import { CLIC, type Rol } from "./tipos.ts";
+import { laminas, type Lamina } from "./index.ts";
+import type { Rol, Variante } from "./tipos.ts";
 import { segundosDeVideo } from "./videos.ts";
 
 // Quién presenta qué. Cada lámina tiene un papel (el de su sección o uno
-// propio), y la división del equipo asigna los papeles a personas: 7 personas,
-// 4 de desarrollo (una de ellas orquesta), 1 de base de datos y 2 de
-// infraestructura.
+// propio), y el reparto asigna los papeles a las 7 personas del equipo: 4 de
+// desarrollo, 1 de base de datos y 2 de infraestructura.
 
 // El nombre del equipo: va en la portada y en el cierre.
 export const NOMBRE_EQUIPO = "Equipo arka-litos";
 
 export const NOMBRE_ROL: Record<Rol, string> = {
-  orquestador: "Apertura, el negocio y el cierre",
+  apertura: "Apertura",
   fundamentos: "Fundamentos",
   arquitectura: "Arquitectura",
   bd: "Base de datos",
   orm: "Apoyo en base de datos: la misma regla, el ORM y la conexión",
   interconexion: "Interconexión de servicios",
-  plataforma: "DevOps: Docker, Compose y Codespaces, y la observabilidad",
-  operacion: "DevOps: CI/CD y Kubernetes",
-  demostracion: "Demostración con la UI",
+  plataforma: "DevOps: Docker y Compose, y la observabilidad",
+  cicd: "DevOps: CI/CD",
+  operacion: "DevOps: Kubernetes",
+  demostracion: "Demostración en video",
+  cierre: "Resultados, valor y cierre",
 };
 
 export interface Persona {
@@ -36,38 +36,34 @@ export interface Division {
   personas: Persona[];
 }
 
-export const DIVISIONES: Division[] = [
-  {
-    id: "7-personas",
-    titulo: "7 personas",
-    cuando: "Cuatro de desarrollo (una de ellas orquesta), una de base de datos y dos de infraestructura. En base de datos, una persona de desarrollo apoya con la parte de código.",
-    personas: [
-      { nombre: "Desarrollo 1 · orquesta", area: "Desarrollo", roles: ["orquestador", "fundamentos"] },
-      { nombre: "Desarrollo 2", area: "Desarrollo", roles: ["arquitectura", "demostracion"] },
-      { nombre: "Desarrollo 3", area: "Desarrollo", roles: ["orm"] },
-      { nombre: "Desarrollo 4", area: "Desarrollo", roles: ["interconexion"] },
-      { nombre: "Base de datos", area: "Base de datos", roles: ["bd"] },
-      { nombre: "Infraestructura 1", area: "Infraestructura", roles: ["plataforma"] },
-      { nombre: "Infraestructura 2", area: "Infraestructura", roles: ["operacion"] },
-    ],
-  },
-];
+export const DIVISION: Division = {
+  id: "por-persona",
+  titulo: "7 personas",
+  cuando: "Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apoya en base de datos y presenta CI/CD, para bajar la carga de infraestructura.",
+  personas: [
+    { nombre: "Luis Cardoze", area: "Desarrollo", roles: ["apertura", "fundamentos"] },
+    { nombre: "Ricardo Fábrega", area: "Desarrollo", roles: ["arquitectura", "demostracion"] },
+    { nombre: "Marlene Bonilla", area: "Base de datos", roles: ["bd"] },
+    { nombre: "Jossett Franceschi", area: "Desarrollo", roles: ["orm", "cicd"] },
+    { nombre: "Abdiel Barria", area: "Desarrollo", roles: ["interconexion", "cierre"] },
+    { nombre: "Moises", area: "Infraestructura", roles: ["plataforma"] },
+    { nombre: "Kevin", area: "Infraestructura", roles: ["operacion"] },
+  ],
+};
 
 export function rolDe(l: Lamina): Rol {
   return l.diapositiva.rol ?? l.seccion.rol;
 }
 
-export function personaCon(division: Division, rol: Rol): Persona {
-  const p = division.personas.find((x) => x.roles.includes(rol));
-  if (!p) throw new Error(`La división ${division.id} no asigna el papel ${rol}`);
+export function personaCon(rol: Rol): Persona {
+  const p = DIVISION.personas.find((x) => x.roles.includes(rol));
+  if (!p) throw new Error(`Nadie presenta el papel ${rol}`);
   return p;
 }
 
-// El nombre de quien presenta; si hubiera varias divisiones, uno por división.
+// El nombre de quien presenta.
 export function quienPresenta(rol: Rol): string {
-  const nombres = DIVISIONES.map((d) => personaCon(d, rol).nombre);
-  if (nombres.every((n) => n === nombres[0])) return nombres[0];
-  return DIVISIONES.map((d, i) => `${nombres[i]} (${d.titulo})`).join(" · ");
+  return personaCon(rol).nombre;
 }
 
 // Palabras de la parte oral: a unas 130 por minuto, da los minutos de cada
@@ -80,16 +76,43 @@ export function palabras(l: Lamina): number {
 
 export const PALABRAS_POR_MINUTO = 130;
 
-// Cuánto dura una lámina: el texto oral, más la demostración en vivo si la
-// hay. Con un video, lo que se dice después del clic va encima del video:
-// cuenta lo que dure más, la narración o el video.
+// Cuánto dura una lámina: el texto oral. Con un video, lo que se dice va encima
+// del video: cuenta lo que dure más, la narración o el video.
 export function minutosDeLamina(l: Lamina): number {
   const d = l.diapositiva;
   const hablado = palabras(l) / PALABRAS_POR_MINUTO;
-  if (l.seccion.enfoque === "vivo" && d.guion.demo) return hablado + MINUTOS_DEMO_EN_VIVO;
   if (d.visual?.tipo !== "video") return hablado;
-  const texto = d.guion.decir.join(" ");
-  const corte = Math.max(0, texto.indexOf(CLIC));
-  const encima = contar(texto.slice(corte)) / PALABRAS_POR_MINUTO;
-  return contar(texto.slice(0, corte)) / PALABRAS_POR_MINUTO + Math.max(encima, (segundosDeVideo(d.visual.archivo) ?? 0) / 60);
+  return Math.max(hablado, (segundosDeVideo(d.visual.archivo) ?? 0) / 60);
 }
+
+// "1–4 y 36–38": los números de lámina en rangos.
+export function rangos(numeros: number[]): string {
+  const salida: string[] = [];
+  for (let i = 0; i < numeros.length; i++) {
+    let j = i;
+    while (j + 1 < numeros.length && numeros[j + 1] === numeros[j] + 1) j++;
+    salida.push(i === j ? `${numeros[i]}` : `${numeros[i]}–${numeros[j]}`);
+    i = j;
+  }
+  return salida.join(" y ");
+}
+
+export interface Turno {
+  persona: Persona;
+  laminas: { l: Lamina; numero: number }[];
+  minutos: number;
+}
+
+export function turnos(division: Division, variante: Variante): Turno[] {
+  const lista = laminas(variante);
+  return division.personas
+    .map((persona) => {
+      const suyas = lista.map((l, i) => ({ l, numero: i + 1 })).filter(({ l }) => personaCon(rolDe(l)) === persona);
+      return { persona, laminas: suyas, minutos: suyas.reduce((a, { l }) => a + minutosDeLamina(l), 0) };
+    })
+    .filter((t) => t.laminas.length > 0);
+}
+
+// Los papeles que la persona presenta de verdad en la versión: sin
+// demostración, quien la tenía a su cargo presenta uno menos.
+export const rolesDe = (t: Turno): Rol[] => t.persona.roles.filter((r) => t.laminas.some(({ l }) => rolDe(l) === r));

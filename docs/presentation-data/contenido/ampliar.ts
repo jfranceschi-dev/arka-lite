@@ -4,186 +4,202 @@
 // del código o la configuración del repositorio.
 export const AMPLIAR: Record<string, string[]> = {
   "s00-portada": [
-    "ARKA-Lite nació como el laboratorio del curso: cada tema que veíamos lo aplicábamos al mismo sistema. Por eso creció por capas: primero un endpoint, después la base de datos, la comunicación entre servicios, los contenedores, el pipeline y la observabilidad.",
-    "Todo lo que van a ver está en un solo repositorio, con su documentación, y se levanta con un solo comando. Si a alguien le interesa revisarlo después, con gusto se lo compartimos.",
-    "Trabajamos como trabajaría un equipo real: cada cambio en una rama, revisado por otra persona y probado por el pipeline antes de entrar. Mezclar áreas nos obligó a ponernos de acuerdo en contratos claros: qué expone cada servicio, qué guarda cada base y cómo se despliega cada pieza.",
+    "ARKA-Lite nació como laboratorio del curso, así que aplicamos cada tema al mismo sistema. Primero hicimos una operación y después agregamos la base, la comunicación, los contenedores, el pipeline y los registros.",
+    "Trabajamos como un equipo real. Cada cambio se hizo por separado, otra persona lo revisó y las pruebas automáticas lo validaron antes de incorporarlo.",
   ],
   "s00-agenda": [
-    "Las partes generales son cortas a propósito: el equipo anterior ya las explicó. El tiempo lo dedicamos a lo que más valor les deja: los datos, la comunicación entre sistemas y la operación.",
-    "Al final juntamos lo que pueden aplicar desde mañana, aunque sus sistemas usen procedimientos almacenados.",
+    "Las partes generales son breves porque dedicaremos más tiempo a los datos, la comunicación entre sistemas y la operación, que son los temas con mayor valor práctico.",
   ],
-  "s01-negocio": [
-    "Antes de escribir una línea de código nos hicimos tres preguntas: qué tiene que pasar, quién hace cada paso y qué no se puede permitir. Las respuestas se volvieron las reglas del sistema.",
-    "Por dentro, esos pasos son cuatro estados: borrador, enviada, aprobada y rechazada. La base de datos también los cuida: la columna estado solo acepta esos cuatro valores.",
-    "Al arrancar, el sistema siempre registra dos solicitudes de ejemplo: INC-001, una incidencia en borrador, y CAM-002, un cambio que se envía. El pipeline usa CAM-002 para comprobar que el servicio arrancó de verdad.",
+  "s01-analisis": [
+    "La pregunta sobre lo que no podíamos permitir nos permitió definir las reglas antes de escribir código. De otra manera, habríamos descubierto esos casos más tarde y corregirlos habría costado más.",
+    "La base de datos también protege los cuatro estados, porque la columna correspondiente solo acepta esos valores.",
+    "Cuando arranca, el sistema registra dos solicitudes de ejemplo. El pipeline utiliza una para confirmar que el servicio realmente inició.",
   ],
   "s01-practicas": [
-    "Un ejemplo concreto: el controlador de solicitudes no decide nada; solo convierte el JSON y llama al servicio. Si mañana cambia la regla de envío, se toca la clase Solicitud y su prueba, nada más.",
-    "Lo de las piezas que se conectan desde afuera tiene un nombre: inyección de dependencias. En ARKA-Lite todo llega por el constructor, y por eso en las pruebas cambiamos la base real por una en memoria sin tocar el negocio.",
-  ],
-  "s01-trabajo": [
-    "Usamos un formato común para los mensajes de commit: el tipo, dos puntos y qué hace el cambio, por ejemplo: fix: impedir el envío de una solicitud aprobada. Con eso, el historial se lee como una bitácora.",
-    "Nadie sube directo a main, ni siquiera quien orquesta. Eso nos protegió más de una vez de romper algo que otro compañero estaba usando.",
+    "Por ejemplo, la pieza que recibe los pedidos no toma decisiones, sino que los pasa a las reglas. Si cambia la regla de envío, modificamos un lugar y ejecutamos su prueba.",
+    "Las mismas ideas sirven con procedimientos almacenados. Podemos tener un procedimiento por tarea, con nombres del negocio y mensajes de error claros.",
   ],
   "s01-aprendizajes": [
-    "Si tuviéramos que elegir una sola práctica para empezar en un sistema existente, sería poner las reglas del negocio en un solo lugar con su prueba. Es la que más rápido devuelve la inversión.",
+    "Si tuviéramos que comenzar con una práctica en un sistema existente, pondríamos las reglas del negocio en un solo lugar y agregaríamos sus pruebas. Es una inversión que devuelve valor con rapidez.",
   ],
   "s02-mapa": [
-    "La interfaz es delgada a propósito: no guarda nada ni toma decisiones. Si mañana se cambia por otra, los servicios no se enteran.",
-    "La plataforma es la misma para los dos servicios: el mismo Compose, el mismo pipeline y el mismo lugar para los logs. Eso baja mucho el costo de tener dos servicios en lugar de uno.",
+    "La pantalla es delgada a propósito, porque no guarda datos ni toma decisiones. Si la reemplazamos en el futuro, los servicios no tienen que cambiar.",
+    "Los dos servicios comparten la misma plataforma, el mismo pipeline y el mismo lugar para revisar los registros. Eso reduce el costo operativo de mantenerlos separados.",
   ],
   "s02-practica": [
-    "El mensaje que viaja entre servicios lleva solo tres datos: el número del evento, el identificador de la solicitud y su tipo. Mientras más pequeño el mensaje, más fácil es que los dos lados se pongan de acuerdo.",
-    "Ese contrato está copiado en los dos servicios. Si un día cambia, se cambia en los dos al mismo tiempo: es lo único que comparten.",
+    "El mensaje entre los servicios lleva tres datos, que son el número del evento, el número de la solicitud y su tipo. Al mantenerlo pequeño, resulta más sencillo coordinar ambos lados.",
+    "El formato del mensaje existe en los dos servicios. Si cambia, debemos actualizar ambos al mismo tiempo, porque es lo único que comparten.",
   ],
   "s02-hexagonal": [
-    "En solicitudes hay tres contratos hacia afuera: guardar solicitudes, anotar eventos y publicarlos. Cada uno puede tener más de una implementación, y Spring usa la que está marcada como principal.",
-    "Dejamos a propósito implementaciones alternativas, por ejemplo un publicador simple sin reintentos, para mostrar que se puede cambiar una por otra sin tocar las reglas.",
+    "Dejamos versiones alternativas de algunos conectores, como una forma de avisar sin reintentos. Eso demuestra que podemos reemplazarlos sin modificar las reglas.",
+    "La idea se parece a varias aplicaciones que llaman un procedimiento por su nombre sin conocer cómo está implementado.",
   ],
   "s02-aprendizajes": [
-    "Lo más difícil de los microservicios no fue el código, fueron las fronteras: decidir qué dato es de quién. Una vez claro eso, lo demás se ordenó solo.",
+    "La parte más difícil de los microservicios fue definir las fronteras y decidir a quién pertenecía cada dato. Una vez resuelto eso, el resto del diseño se ordenó con mayor facilidad.",
   ],
   "s03-bases": [
-    "En nuestra computadora, la base de notificaciones se publica en el puerto 5433 para consultarla con cualquier herramienta; la de solicitudes solo se ve dentro de la red de Docker. Lo que no se publica, no se alcanza desde afuera.",
-    "En Kubernetes, cada base tiene su disco persistente: si el contenedor se reinicia, los datos siguen ahí. Solo se perderían si se borra el disco.",
+    "Tener una base por servicio no duplica necesariamente el trabajo de diseño. Cada base es pequeña, tiene pocas tablas y atiende una responsabilidad concreta.",
+    "En Kubernetes, cada base utiliza un disco persistente. Si el contenedor se reinicia, los datos permanecen y solo se perderían si se eliminara ese disco.",
   ],
   "s03-modelo": [
-    "La tabla evento tiene un índice parcial: solo indexa las filas pendientes. Como el relevador busca pendientes cada cinco segundos, el índice se mantiene pequeño aunque la tabla acumule años de eventos ya entregados.",
-    "Las tablas se crean con un archivo schema.sql que corre en cada arranque y se puede ejecutar mil veces sin romper nada. También actualiza bases viejas, agregando lo que les falte.",
+    "La tabla evento tiene un índice que incluye únicamente las filas pendientes. Como las consultamos cada cinco segundos, el índice sigue siendo pequeño aunque crezca el historial.",
+    "Las tablas se crean mediante un archivo que puede ejecutarse en cada arranque sin causar daños. Ese archivo también actualiza bases anteriores con los elementos que les falten.",
   ],
   "s03-sp-orm": [
-    "No estamos diciendo que los procedimientos estén mal: son la herramienta correcta para procesos masivos y reportes. Lo que cambia es dónde ponemos las reglas que más cambian y que más necesitamos probar.",
-    "Una ventaja que no se ve a primera vista: con la regla en el código, cada cambio pasa por revisión, pruebas automáticas y pipeline, igual que cualquier otra línea del sistema.",
+    "Los procedimientos siguen siendo adecuados para reportes y procesos masivos. Lo que cambia es dónde colocamos las reglas que modificamos y probamos con mayor frecuencia.",
+    "Cuando la regla está en el código, cada cambio pasa por revisión, pruebas automáticas y el pipeline, como cualquier otra parte del sistema.",
   ],
   "s03-misma-regla": [
-    "La prueba de esa regla es así de simple: se crea una solicitud ya enviada, se intenta enviarla otra vez y se verifica que el sistema lo rechaza. Corre en milisegundos y no necesita ninguna base.",
-    "Para probar lo mismo en el procedimiento habría que preparar datos en una base, ejecutarlo y revisar el resultado. Funciona, pero es más lento y más difícil de repetir en cada cambio.",
+    "Para probar esta regla creamos una solicitud ya enviada, intentamos enviarla otra vez y verificamos el rechazo. La prueba tarda milésimas de segundo y no necesita una base.",
+    "Con un procedimiento habría que preparar los datos, ejecutarlo y revisar el resultado en una base. También funciona, pero resulta más lento de repetir con cada cambio.",
+    "El objetivo del proyecto es conocer otro enfoque y evaluar cuándo conviene usarlo en desarrollos futuros, sin reemplazar lo que ya funciona.",
+  ],
+  "s03-que-es-orm": [
+    "En Java, JPA define el estándar y Hibernate es una herramienta que lo implementa. Podemos verlo como una norma y un producto que cumple esa norma.",
+    "Cuando la herramienta escribe el SQL rutinario, reducimos el código repetitivo y usamos los parámetros de forma consistente.",
+    "Un ORM también puede generar consultas ineficientes si nadie las revisa. Por eso seguimos necesitando personas que entiendan el funcionamiento de las bases de datos.",
   ],
   "s03-orm": [
-    "El repositorio de Spring Data no tiene ni una consulta escrita: hereda de JpaRepository, y con eso ya trae guardar, buscar por llave, listar y borrar.",
-    "Cuando el código guarda una solicitud que ya existe, Hibernate primero la busca por su llave y después decide si hace un INSERT o un UPDATE. Por eso las llaves bien definidas importan: el ORM las usa todo el tiempo.",
+    "El repositorio del proyecto no contiene consultas escritas para las operaciones básicas. Al heredar de una interfaz, obtiene las funciones de guardar, buscar, listar y borrar.",
+    "Al guardar, el ORM utiliza la llave para determinar si corresponde un INSERT o un UPDATE. Por eso es importante definir correctamente las llaves.",
   ],
   "s03-viaje": [
-    "Entre el controlador y la base hay dos objetos distintos a propósito: la Solicitud del negocio, que no sabe nada de tablas, y la SolicitudEntity, que es el reflejo de la tabla. Un adaptador traduce entre los dos.",
-    "Si el identificador ya existe, el viaje se corta en las reglas: no se toca la base y la persona recibe un 409 con el motivo.",
+    "Si el número ya existe, las reglas detienen el recorrido antes de tocar la base. La persona recibe entonces un mensaje que explica el motivo.",
+    "Entre las reglas y la base utilizamos dos objetos distintos. Uno representa la solicitud del negocio y el otro refleja la tabla, mientras una pieza traduce entre ambos.",
   ],
   "s03-credenciales": [
-    "Un detalle honesto: el archivo de configuración trae un valor por defecto para trabajar en la computadora de cada uno. En un ambiente real nunca se usa, porque ahí siempre llegan las variables.",
-    "En el pipeline, la clave de la base de pruebas cambia en cada ejecución: se arma con el número de la corrida. Ni siquiera la base temporal tiene una clave fija.",
+    "En Kubernetes, el Secret guarda la clave y las demás variables contienen el resto de la configuración.",
+    "El proyecto tiene valores predeterminados para trabajar en una computadora. En un ambiente real no los usamos, porque la configuración siempre llega desde el entorno.",
+    "En producción también podemos guardar las claves en una bóveda especializada. La idea se mantiene igual, porque permanecen fuera del código.",
   ],
   "s03-transacciones": [
-    "Abrir una conexión nueva a PostgreSQL toma su tiempo; con muchas peticiones, eso se nota. Por eso el pool las mantiene abiertas y las presta: es la diferencia entre responder rápido y saturar la base.",
-    "La transacción envuelve todo el método enviar: si el INSERT del evento fallara, por ejemplo por una restricción, el UPDATE de la solicitud también se deshace.",
+    "La transacción cubre toda la operación de envío. Si falla el INSERT del aviso, por ejemplo debido a una restricción, también se deshace el UPDATE de la solicitud.",
+    "Preferimos una transacción local dentro de una base, porque resulta más confiable que intentar coordinar dos sistemas al mismo tiempo.",
   ],
   "s03-aprendizajes": [
-    "Para quien trabaja en base de datos, el rol no desaparece: pasa de escribir cada consulta a diseñar el modelo, cuidar índices y restricciones, y revisar el SQL que genera el ORM.",
+    "El rol de base de datos no desaparece. Se concentra más en diseñar el modelo, cuidar los índices y restricciones, y revisar el SQL generado por el ORM.",
   ],
   "s04-comunicacion": [
-    "nginx espera menos que la interfaz, nueve segundos contra diez, para que el proxy responda con un error claro antes de que el navegador corte la petición.",
-    "La llamada entre servicios usa un cliente HTTP preparado para pasar el traceId. Con un cliente cualquiera, el seguimiento entre servicios se rompería; por eso es una regla del equipo.",
+    "La llamada entre servicios utiliza un cliente preparado para conservar el número de seguimiento. Con un cliente común se perdería esa continuidad, por eso lo definimos como una regla del equipo.",
+    "Los servicios se comunican por HTTP y envían mensajes en JSON, un formato de texto que pueden leer tanto las personas como los sistemas.",
   ],
   "s04-sincrono": [
-    "Un ejemplo de la vida diaria: cuando pagamos con tarjeta, la aprobación es síncrona, porque necesitamos saber si pasó; el correo con el comprobante es asíncrono, porque puede llegar un minuto después.",
-    "La pregunta que nos hacemos en cada caso es: si el otro sistema está caído, ¿la persona tiene que enterarse? Si la respuesta es no, va asíncrono.",
+    "En cada caso preguntamos si la persona debe enterarse cuando el otro sistema está caído. Si la respuesta es no, podemos manejarlo de forma asíncrona.",
+    "Esto también ocurre en los sistemas actuales. Un procedimiento que llama a otro sistema y espera su respuesta falla cuando ese sistema no está disponible.",
   ],
   "s04-outbox": [
-    "El relevador hace hasta tres intentos por ciclo, esperando un poco más entre cada uno. Si los tres fallan, no pasa nada grave: la fila sigue pendiente y el siguiente ciclo, cinco segundos después, vuelve a intentar.",
-    "El número del evento se genera una sola vez, al guardar. Por eso cada reintento manda exactamente el mismo número, y del otro lado se puede reconocer como repetido.",
-    "En un sistema con procedimientos se traduce así: una tabla de pendientes con una columna procesado, un INSERT dentro de la misma transacción del procedimiento y un job que recorre los pendientes.",
+    "El relevador intenta entregar cada aviso hasta tres veces por vuelta y espera un poco más entre intentos. Si todos fallan, la fila permanece pendiente y vuelve a probar cinco segundos después.",
+    "El número del evento se genera una sola vez al guardar. Por eso cada reintento lleva el mismo número y el receptor puede reconocerlo.",
+    "Con procedimientos, la receta incluye una tabla de pendientes, una columna procesado, un INSERT dentro de la transacción y un job que recorre las filas.",
   ],
   "s04-idempotencia": [
-    "Lo probamos a propósito: la interfaz tiene un botón para reentregar un evento ya consumido, y el contador de avisos duplicados se mantiene en cero.",
-    "La idempotencia no es solo para mensajes: un pago, un registro de asistencia o una importación de archivos deberían poder reintentarse sin duplicar. La receta es la misma: un número único por operación y una tabla que lo recuerde.",
+    "Lo probamos desde la pantalla al volver a entregar un evento ya recibido. Aunque repetimos la entrega, el contador de avisos duplicados permanece en cero.",
+    "La receta sirve en cualquier sistema. Necesitamos un número único por operación y una tabla que recuerde cuáles ya fueron procesadas.",
   ],
   "s04-aprendizajes": [
-    "Juntos, Outbox e idempotencia logran lo que en la industria se llama entrega al menos una vez con efecto exactamente una vez. Es la base de muchos sistemas de pagos y de notificaciones.",
+    "Juntas, la bandeja de salida y la idempotencia permiten que un mensaje llegue varias veces, pero produzca su efecto una sola vez. Esta es una base común en sistemas de pagos y notificaciones.",
   ],
   "s05-devops": [
-    "En ARKA-Lite, cada paso del camino tiene su herramienta: Git y GitHub para el código, Maven para construir, las pruebas automáticas, Docker para empaquetar, GHCR para publicar, Kubernetes para operar y Loki con Grafana para observar.",
-    "Lo que más se nota en el día a día es que nadie hace pasos a mano: no se copian archivos a un servidor ni se corren pruebas de memoria. Si un paso falla, el camino se detiene y se sabe dónde.",
-  ],
-  "s05-docker": [
-    "La primera etapa descarga las dependencias de Maven en una capa aparte. Mientras el pom.xml no cambie, esa capa se reutiliza y las siguientes construcciones tardan mucho menos.",
-    "Separar la compilación de la imagen final también es seguridad: la imagen que corre no lleva Maven ni el código fuente, solo lo necesario para ejecutar.",
-  ],
-  "s05-compose": [
-    "Compose arranca las piezas en orden: primero las bases, y cada servicio espera a que su base esté sana antes de arrancar.",
-    "La base de solicitudes no se publica hacia afuera; solo la ven los contenedores de la misma red. La de notificaciones sí, en el puerto 5433, para poder consultarla con cualquier herramienta.",
-  ],
-  "s05-k8s-como": [
-    "Todos los manifiestos de ARKA-Lite están en la carpeta k8s del repositorio: cinco archivos, uno por componente, con su Deployment, su Service y, en las bases, su disco persistente.",
-    "Como el estado deseado está en archivos versionados, reconstruir el sistema completo en otro clúster es volver a aplicar esos archivos.",
+    "En ARKA-Lite utilizamos Git y GitHub para el código, pruebas automáticas para validarlo, Docker para empaquetarlo, Kubernetes para operarlo y Grafana para observarlo.",
+    "La mayoría de los pasos ya no depende de la memoria de una persona. Si uno falla, el proceso se detiene y muestra con claridad dónde ocurrió el problema.",
   ],
   "s05-complemento": [
-    "La imagen de cada servicio se construye en dos etapas: una con Maven para compilar y otra solo con Java para correr. Así la imagen final es más liviana y no lleva herramientas de compilación.",
-    "Además, el contenedor corre con un usuario sin privilegios: si alguien comprometiera la aplicación, no sería administrador del contenedor.",
+    "La comparación funciona porque el contenedor de carga también estandarizó la forma de mover distintos productos. La misma caja puede viajar en barco, tren o camión sin importar su contenido.",
+    "Podemos usar Docker sin Kubernetes en un servidor pequeño. También Kubernetes puede ejecutar imágenes creadas con otras herramientas, aunque juntos cubren todo el recorrido.",
+  ],
+  "s05-docker": [
+    "Nuestra receta tiene dos etapas. Una compila con las herramientas de desarrollo y la otra conserva únicamente lo necesario para ejecutar, sin incluir el código fuente ni las herramientas de compilación.",
+    "Las imágenes se organizan por capas. Cuando solo cambia el código, reutilizamos las capas anteriores y reducimos el tiempo de construcción y descarga.",
+  ],
+  "s05-bondades-docker": [
+    "Una máquina virtual carga un sistema operativo completo, mientras un contenedor comparte el del servidor y lleva solo sus elementos. Por eso caben más contenedores en el mismo servidor.",
+    "Los límites se definen al arrancar e indican cuánta memoria y CPU puede utilizar la aplicación. Sin ellos, un contenedor podría consumir todos los recursos disponibles.",
+    "El aislamiento no reemplaza las demás medidas de seguridad. Por eso nuestro contenedor también funciona con un usuario sin privilegios.",
+  ],
+  "s05-compose": [
+    "Si una base no arranca, el servicio correspondiente queda esperando y Compose muestra la causa. Así el error aparece en el lugar correcto.",
+    "Desde la computadora solo abrimos lo necesario. La base de solicitudes no tiene una entrada externa y únicamente los servicios internos pueden alcanzarla.",
+    "Antes de continuar, las bases informan cuándo están listas para aceptar conexiones mediante una herramienta de PostgreSQL.",
+  ],
+  "s05-cambio": [
+    "Describimos cada cambio con un formato común, por ejemplo, fix seguido de impedir el envío de una solicitud aprobada. Así el historial funciona como una bitácora.",
+    "La documentación de los servicios se genera desde el código mediante Swagger, lo que reduce el riesgo de que quede desactualizada.",
+    "Nadie incorpora cambios directamente en la versión principal, incluida la persona que lidera el equipo.",
   ],
   "s05-pipeline": [
-    "El pipeline prueba los dos servicios en paralelo, cada uno con su propia base temporal, y tiene un trabajo aparte para la interfaz: valida, prueba, construye y comprueba que el archivo de Compose es válido.",
-    "La imagen de la interfaz solo se publica cuando el cambio llega a main; la de los servicios hoy también se publica desde el Pull Request. Es un ajuste que ya tenemos identificado.",
-    "Cada imagen lleva como etiqueta el código del commit. Si algo falla en un ambiente, sabemos exactamente qué versión está corriendo y podemos volver a la anterior.",
-  ],
-  "s05-red": [
-    "Los puertos de afuera se pueden cambiar con variables, SOLICITUDES_PORT y NOTIFICACIONES_PORT, sin tocar el archivo de Compose.",
-    "En Kubernetes pasa algo parecido: cada componente tiene un Service con un nombre fijo, y desde afuera solo se abre la interfaz.",
-  ],
-  "s05-arranque": [
-    "La prueba de salud de las bases usa pg_isready, la misma herramienta de PostgreSQL que usaría un DBA para saber si la base responde.",
-    "Sin estas dependencias, el primer arranque fallaría a menudo y habría que levantar los servicios a mano, en orden.",
-  ],
-  "s05-trabajos": [
-    "La clave de cada base de pruebas se arma con el número de la ejecución: nunca hay una clave fija en el pipeline.",
-    "Para publicar en el registro de GitHub no se guarda ninguna contraseña: el pipeline usa un token temporal que GitHub le entrega a cada ejecución.",
+    "El pipeline ejecuta al mismo tiempo un trabajo para solicitudes, otro para notificaciones y otro para la pantalla. Así termina antes y muestra con precisión qué pieza falló.",
+    "Además de pasar las pruebas, el servicio de solicitudes arranca realmente y debe mostrar una solicitud de ejemplo. Compilar no garantiza que una aplicación pueda iniciar.",
+    "Entrega continua significa dejar la imagen lista, mientras despliegue continuo significa instalarla automáticamente. Nuestro proyecto llega hasta la entrega.",
+    "Actualmente las imágenes de los servicios se publican durante la revisión y la de la pantalla al llegar a main. Ya identificamos esa diferencia como un ajuste pendiente.",
   ],
   "s05-falla-ci": [
-    "Por eso cada regla del negocio tiene su prueba: la prueba es la que hace sonar la alarma.",
-    "Se puede ir más lejos con una regla del repositorio que impida fusionar un Pull Request mientras el pipeline esté en rojo. Es configuración de GitHub, sin tocar el código.",
+    "Podemos configurar GitHub para bloquear un Pull Request cuando alguna prueba falla. Es una regla de la plataforma y no requiere modificar el código.",
+    "El pipeline publica imágenes mediante un permiso temporal que GitHub entrega a cada ejecución, sin almacenar una contraseña.",
   ],
   "s05-trazabilidad": [
-    "Etiquetar con el SHA, y no con latest, evita la duda clásica de si la imagen que corre es la nueva o la vieja.",
-    "En Kubernetes, el manifiesto dice qué imagen usar; cambiar de versión es cambiar esa línea y volver a aplicar.",
+    "Ese código se llama SHA y Git genera uno para cada cambio. Usarlo evita la duda sobre si la imagen que se ejecuta es la nueva o la anterior.",
+    "El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.",
   ],
-  "s05-codespaces": [
-    "La máquina publica cuatro puertos: la interfaz, Grafana y los dos Swagger. Un script escribe la dirección pública de cada puerto para que los enlaces de la interfaz también funcionen en la nube.",
-    "Un Codespace sin uso se detiene solo a los treinta minutos, y se borra al terminar. Para el día de la presentación lo arrancamos quince minutos antes.",
+  "s05-flujo": [
+    "Existen herramientas para automatizar ese último paso. Todas siguen la misma idea, donde el pipeline entrega la imagen a Kubernetes y una persona aprueba antes de llegar a producción.",
   ],
-  "s05-kubernetes": [
-    "Antes de arrancar cada servicio, un contenedor previo espera a que su base responda. Sin eso, el servicio arrancaría, no encontraría la base y se reiniciaría una y otra vez.",
-    "La prueba de salud le dice a Kubernetes cuándo el servicio está listo para recibir tráfico. Arrancar no es lo mismo que estar listo, y esa diferencia evita errores en los primeros segundos.",
+  "s05-k8s-como": [
+    "Los archivos de ARKA-Lite están en la carpeta k8s del repositorio, separados por componente. Para reconstruir el sistema en otro clúster, volvemos a aplicar esos archivos.",
+    "Estos archivos se llaman manifiestos y utilizan un formato de texto llamado YAML. Un clúster es un grupo de servidores que trabajan juntos.",
+  ],
+  "s05-pods": [
+    "El Pod permite que Kubernetes trabaje con distintas tecnologías de contenedores y también agrupe procesos que necesitan compartir la misma dirección.",
+    "En ARKA-Lite, un contenedor temporal espera a que la base responda antes de iniciar el principal. Así evitamos que el servicio falle y se reinicie repetidamente.",
+    "Los Pods se reemplazan en lugar de repararse. Por eso los datos importantes permanecen en la base y en su disco, no dentro del Pod.",
+  ],
+  "s05-bondades-k8s": [
+    "Las revisiones de salud indican cuándo un servicio está listo para trabajar. Un proceso puede haber arrancado sin estar todavía preparado para recibir pedidos.",
+    "Podemos aumentar las copias porque los servicios no guardan el estado importante en memoria, sino en la base.",
+    "En el laboratorio abrimos un túnel mediante un comando para llegar a la pantalla. En un ambiente real se expondría de forma permanente.",
+  ],
+  "s05-recursos": [
+    "La CPU se mide en milésimas de un núcleo. Doscientas cincuenta equivalen a un cuarto, y llegar al tope reduce la velocidad, mientras superar la memoria provoca un reinicio.",
+    "La pantalla reserva veinticinco milésimas de CPU y treinta y dos megas de memoria. Sus topes son doscientas cincuenta milésimas y ciento veintiocho megas.",
+    "Definir estos recursos también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.",
   ],
   "s05-autocuracion": [
-    "Se demuestra en un minuto: se borra el Pod con kubectl delete y, mirando la lista de Pods, aparece uno nuevo que en unos segundos vuelve a estar listo.",
-    "Si lo que se cae es la base, pasa lo mismo: su Pod se recrea y los datos siguen en el disco persistente.",
+    "Podemos demostrarlo eliminando el Pod mediante un comando. En la lista aparece uno nuevo y, después de unos segundos, vuelve a estar listo.",
+    "Si se cae la base, ocurre algo similar. Kubernetes recrea el Pod y los datos continúan en su disco.",
   ],
   "s05-aprendizajes": [
-    "Lo que más valor nos dio de DevOps fue que todo quedó escrito: la receta de cada imagen, el archivo de Compose, los manifiestos de Kubernetes y el pipeline. Nada depende de la memoria de una persona.",
+    "Docker y Kubernetes requieren aprendizaje y no todos los sistemas los necesitan. Sin embargo, siempre conviene documentar la instalación de una forma escrita y repetible.",
+  ],
+  "s06-preguntas": [
+    "Los registros del proyecto utilizan un formato estándar configurado fuera del código del negocio. Para activarlo solo necesitamos una línea de configuración.",
+    "Cada servicio tiene una dirección especial que informa su salud. Kubernetes y la pantalla la consultan para mostrar si está disponible.",
   ],
   "s06-logs": [
-    "Para buscar en Grafana basta una consulta como: los logs del servicio de notificaciones que contengan la palabra evento. En segundos aparecen las líneas con el número del evento.",
-    "Los logs salen en un formato estándar, ECS, sin tocar el código del negocio: es una línea de configuración de Spring Boot.",
+    "El número de seguimiento se llama traceId y viaja en cada llamada entre los servicios. Además, cada evento tiene su propio identificador.",
+    "Si todo aparece encendido y falta un aviso, revisamos la bandeja de salida y los registros del relevador y de notificaciones.",
+    "Podemos buscar los registros de notificaciones que contengan la palabra evento. En segundos obtenemos las líneas relacionadas con sus números.",
   ],
   "s06-aprendizajes": [
-    "Si tuvieran que empezar por una sola cosa, sería un identificador por operación que viaje entre sistemas y aparezca en cada log. Con eso, diagnosticar deja de ser adivinar.",
+    "Esta práctica también funciona con procedimientos. Podemos guardar el mismo número en los registros de la aplicación, del procedimiento y de cualquier otro sistema involucrado.",
   ],
   "s07-ui": [
-    "La interfaz es una aplicación React servida por nginx, que a la vez hace de proxy hacia los servicios. Tiene sus propias pruebas automáticas y corre en el mismo Compose que todo lo demás.",
-    "La pestaña Ayuda tiene diagramas paso a paso de cada flujo; la usamos para explicar el sistema a quien no lo conoce.",
+    "La franja superior no forma parte del sistema. La agregamos al video para indicar qué componente trabaja en cada momento.",
   ],
   "s07-caida": [
-    "Si la red de la sala falla, la demostración se puede contar con esta misma lámina: cada clic muestra lo que se vería en la pantalla.",
-    "Si una operación que cambia datos tarda demasiado, la interfaz no la repite sola, porque el cambio pudo haberse guardado aunque la respuesta no llegara.",
+    "El video es una grabación real y los comandos se ejecutaron en ese momento contra el sistema levantado con Docker.",
+    "Si una operación que cambia datos tarda demasiado, la pantalla no la repite automáticamente. El cambio pudo haberse guardado aunque la respuesta no llegara.",
+    "Después de la presentación, cualquier persona puede levantar el sistema mediante un solo comando.",
   ],
   "s07-aprendizajes": [
-    "La demostración también nos sirvió como prueba: cada falla que mostramos la provocamos antes, a propósito, varias veces.",
+    "La demostración también funcionó como prueba. Antes de presentarla, provocamos cada falla varias veces para verificar que el sistema respondiera de la manera esperada.",
   ],
-  "s08-valor": [
-    "Si alguien pregunta por números: cero avisos perdidos o duplicados en las pruebas de caída, un comando para levantar los ocho contenedores y una imagen rastreable por cada commit.",
+  "s08-resultados": [
+    "Comprobamos estos resultados en nuestro laboratorio y no en producción. Lo importante es que cada resultado se puede repetir y verificar.",
   ],
-  "s08-manana": [
-    "El orden que recomendamos: primero la cadena de conexión, porque es un cambio pequeño que baja un riesgo real; después la tabla de pendientes en el proceso que más falla hoy; y luego la idempotencia en lo que se reintenta.",
-    "Ninguna de estas prácticas exige Java, microservicios ni Kubernetes. Son decisiones de diseño que se pueden tomar en el sistema que ya tienen.",
+  "s08-sostiene": [
+    "Un orden razonable sería comenzar con una tabla de pendientes en el proceso que más falla, agregar idempotencia donde existen reintentos y después incorporar un número de seguimiento.",
+    "Ninguna de estas prácticas exige Java, microservicios ni Kubernetes. Son decisiones de diseño aplicables a los sistemas actuales.",
   ],
   "s08-aprendizajes": [
-    "Si se llevan una sola frase: diseñen pensando en qué pasa cuando algo falla, no solo cuando todo sale bien. Y antes de pensar en el cómo, tengan claro el qué.",
+    "Si conservamos una sola idea, debe ser esta. Diseñemos qué hará el sistema cuando algo falle y no solamente cómo funcionará cuando todo salga bien.",
   ],
 };

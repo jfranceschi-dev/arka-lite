@@ -1,20 +1,21 @@
 // Genera el PDF de contenido y guion de cada variante en
 // docs/presentation-data/pdf/.
 //   npm run pdf
-import { createWriteStream, mkdirSync, rmSync } from "node:fs";
+import { createWriteStream, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { RECORRIDOS, VARIANTES } from "../contenido/tipos.ts";
+import { VARIANTES } from "../contenido/tipos.ts";
 import { DIR_PDF } from "../entregables.ts";
 import { construirPdf, nombreArchivoPdf } from "./construir.ts";
 
 mkdirSync(DIR_PDF, { recursive: true });
-// Los PDF de guion de versiones anteriores se llamaban ARKA-Lite-<variante>.pdf.
-for (const r of RECORRIDOS) {
-  const viejo = join(DIR_PDF, `ARKA-Lite-${r}.pdf`);
+// Solo quedan las versiones que se presentan; sus PDF de láminas los exporta
+// npm run pdf-laminas.
+for (const f of readdirSync(DIR_PDF)) {
+  if (!f.endsWith(".pdf") || VARIANTES.some((v) => f.startsWith(`ARKA-Lite-${v}-`))) continue;
   try {
-    rmSync(viejo, { force: true });
+    rmSync(join(DIR_PDF, f), { force: true });
   } catch {
-    console.warn(`No se pudo borrar ${viejo}: está abierto en otro programa. Bórralo a mano después.`);
+    console.warn(`No se pudo borrar ${f}: está abierto en otro programa. Bórralo a mano después.`);
   }
 }
 

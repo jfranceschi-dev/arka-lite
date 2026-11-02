@@ -3,8 +3,8 @@ import { join } from "node:path";
 import { NOMBRE_ENFOQUE, type Captura, type ElementoVisual, type Enfoque, type Icono, type Tono, type Visual } from "../contenido/tipos.ts";
 import { DIR_CAPTURAS, DIR_VIDEOS } from "../entregables.ts";
 import { color } from "../diseno/tokens.ts";
-import { ACC, ACC_S, ACC_T, FUENTE, H, MONO, PRI, PROF, fijarPaso, halo, sombra, TITULO, colorDeTono, flecha, hex, icono, insignia, mezclar, type Slide } from "./base.ts";
-import { duracion, partesDeRuta, pasoDeParte } from "../contenido/visuales.ts";
+import { ACC, ACC_S, ACC_T, FUENTE, H, MONO, PRI, PROF, halo, sombra, TITULO, colorDeTono, flecha, hex, icono, insignia, mezclar, type Slide } from "./base.ts";
+import { duracion, partesDeRuta } from "../contenido/visuales.ts";
 import { segundosDeVideo } from "../contenido/videos.ts";
 import { tamQueCabe } from "./medidas.ts";
 import { colorCodigo, resaltar } from "../diseno/resaltado.ts";
@@ -36,7 +36,6 @@ function texto(s: Slide, t: string, c: Caja, o: { tam?: number; color?: string; 
 const estiloEnfoque: Record<Enfoque, { fondo: string; texto: string; borde: string }> = {
   fondo: { fondo: ACC, texto: PROF, borde: ACC },
   general: { fondo: "#FFFFFF", texto: color.secundario, borde: color.linea },
-  vivo: { fondo: "#5B3FC4", texto: "#FFFFFF", borde: "#5B3FC4" },
   video: { fondo: "#5B3FC4", texto: "#FFFFFF", borde: "#5B3FC4" },
 };
 
@@ -48,12 +47,11 @@ function ruta(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ruta" }>) {
   const yc = c.y + Math.max(0.1, (c.h - bloque) / 2) + 0.3 + d / 2;
   s.addShape("line", { x: c.x + paso / 2, y: yc, w: paso * (partes.length - 1), h: 0, line: { color: hex(mezclar(ACC, "#FFFFFF", 0.35)), width: 4 } });
   partes.forEach((sec, i) => {
-    fijarPaso(pasoDeParte(partes, i));
     const cx = c.x + i * paso + paso / 2;
     const enfoque = sec.enfoque ?? "general";
     const fondo = enfoque === "fondo";
     const dd = fondo ? d : d * 0.78;
-    const relleno = enfoque === "general" ? mezclar(PRI, "#FFFFFF", 0.3) : enfoque === "vivo" || enfoque === "video" ? "#5B3FC4" : PRI;
+    const relleno = enfoque === "general" ? mezclar(PRI, "#FFFFFF", 0.3) : enfoque === "video" ? "#5B3FC4" : PRI;
     s.addShape("ellipse", { x: cx - dd / 2, y: yc - dd / 2, w: dd, h: dd, fill: { color: hex(relleno) }, line: { color: fondo ? hex(ACC) : "FFFFFF", width: fondo ? 3.5 : 3 }, shadow: fondo ? halo() : sombra() });
     icono(s, sec.icono ?? "flag", cx - dd * 0.25, yc - dd * 0.25, dd * 0.5, "#FFFFFF");
     s.addText(String(sec.numero), { x: cx + dd * 0.16, y: yc - dd / 2 - 0.08, w: 0.34, h: 0.34, shape: "ellipse", margin: 0, fill: { color: hex(ACC) }, line: { color: "FFFFFF", width: 1.5 }, fontFace: TITULO, fontSize: 11.5, bold: true, color: hex(PROF), align: "center", valign: "middle" });
@@ -177,32 +175,26 @@ function sistema(s: Slide, c: Caja, v: Extract<Visual, { tipo: "sistema" }>) {
   baseDeDatos(s, v.bases[0], { x: xDb, y: yTop, w: wDb, h: hc });
   baseDeDatos(s, v.bases[1], { x: xDb, y: yBot, w: wDb, h: hc });
 
-  // 1. Persona → UI. Cada conexión aparece en su clic.
-  fijarPaso(1);
+  // 1. Persona → UI.
   codo(s, [[px + dp / 2 + 0.06, ym], [xUi - 0.06, ym]], linea, 2.5);
   numero(s, 1, (px + dp / 2 + xUi) / 2, ym);
   etiquetaConexion(s, v.conexiones[0], { x: px + dp / 2, y: ym - 0.62, w: xUi - px - dp / 2, h: 0.36 }, "center");
   // 2. UI → servicio 1 y 6. UI → servicio 2, por el mismo codo.
-  fijarPaso(2);
   codo(s, [[xUi + wUi + 0.04, ym - 0.28], [xCodo, ym - 0.28], [xCodo, ct], [xSv - 0.06, ct]], linea, 2.5);
   numero(s, 2, xCodo, (ym - 0.28 + ct) / 2);
   etiquetaConexion(s, v.conexiones[1], { x: xUi, y: ct - 0.05, w: xCodo - xUi - 0.3, h: 0.5 }, "right");
-  fijarPaso(6);
   codo(s, [[xUi + wUi + 0.04, ym + 0.28], [xCodo, ym + 0.28], [xCodo, cb], [xSv - 0.06, cb]], linea, 2.5);
   numero(s, 6, xCodo, (ym + 0.28 + cb) / 2);
   etiquetaConexion(s, v.conexiones[5], { x: xUi, y: cb - 0.45, w: xCodo - xUi - 0.3, h: 0.5 }, "right");
   // 3 y 5. Cada servicio → su base.
-  fijarPaso(3);
   codo(s, [[xSv + wSv + 0.06, ct], [xDb - 0.06, ct]], linea, 2.5);
   numero(s, 3, (xSv + wSv + xDb) / 2, ct);
   etiquetaConexion(s, v.conexiones[2], { x: xSv + wSv + 0.05, y: ct - 0.78, w: xDb - xSv - wSv - 0.1, h: 0.56 }, "center");
-  fijarPaso(5);
   codo(s, [[xSv + wSv + 0.06, cb], [xDb - 0.06, cb]], linea, 2.5);
   numero(s, 5, (xSv + wSv + xDb) / 2, cb);
   etiquetaConexion(s, v.conexiones[4], { x: xSv + wSv + 0.05, y: cb - 0.78, w: xDb - xSv - wSv - 0.1, h: 0.56 }, "center");
 
   // 4. El evento: un dato que viaja entre los servicios, no una pieza.
-  fijarPaso(4);
   const xe = xSv + wSv / 2;
   codo(s, [[xe, yTop + hc + 0.06], [xe, yBot - 0.06]], ACC_T, 3, "dash");
   numero(s, 4, xe, ym, ACC_T);
@@ -215,8 +207,7 @@ function sistema(s: Slide, c: Caja, v: Extract<Visual, { tipo: "sistema" }>) {
   texto(s, "EL DATO QUE VIAJA", { x: pX + 0.68, y: ym - ph / 2 + 0.08, w: pw - 0.8, h: 0.24 }, { tam: 9.5, negrita: true, color: ACC_T });
   texto(s, v.evento, { x: pX + 0.68, y: ym - ph / 2 + 0.3, w: pw - 0.8, h: ph - 0.36 }, { tam: 12, color: color.texto, vertical: "middle" });
 
-  // Entre las dos bases no hay flecha: el último clic lo remata.
-  fijarPaso(7);
+  // Entre las dos bases no hay flecha: la nota lo remata.
   const xb = xDb + wDb / 2;
   s.addShape("line", { x: xb, y: yTop + hc + 0.08, w: 0, h: yBot - yTop - hc - 0.16, line: { color: hex(color.linea), width: 2, dashType: "sysDot" } });
   insignia(s, "ban", xb - 0.26, ym - 0.26, 0.52, color.errorSuave, color.error);
@@ -252,7 +243,6 @@ function mapeo(s: Slide, c: Caja, v: Extract<Visual, { tipo: "mapeo" }>) {
   cabecera(c.x, v.clase.titulo, v.clase.subtitulo, "code", tc);
   cabecera(xT, v.tabla.titulo, v.tabla.subtitulo, "table", tt);
   v.clase.campos.forEach((campo, i) => {
-    fijarPaso(1);
     const y = c.y + hCab + 0.07 + i * hFila;
     const col = v.tabla.columnas[i];
     if (i > 0) {
@@ -274,12 +264,10 @@ function mapeo(s: Slide, c: Caja, v: Extract<Visual, { tipo: "mapeo" }>) {
 
   // Operaciones: lo que escribe el código y el SQL que llega a la base.
   const yOp = c.y + hCaja + 0.3;
-  fijarPaso(2);
   texto(s, "LO QUE ESCRIBE EL CÓDIGO  →  EL SQL QUE HIBERNATE ENVÍA A POSTGRESQL", { x: c.x, y: yOp, w: c.w, h: 0.3 }, { tam: 11, negrita: true, color: ACC_T });
   const hOp = Math.min(0.56, (c.y + c.h - yOp - 0.4 - 0.12 * (v.operaciones.length - 1)) / v.operaciones.length);
   const wCod = 3.55;
   v.operaciones.forEach((o, i) => {
-    fijarPaso(2 + i);
     const y = yOp + 0.4 + i * (hOp + 0.12);
     s.addText(o.codigo, { x: c.x, y, w: wCod, h: hOp, shape: "roundRect", rectRadius: 0.08, margin: 8, fill: { color: hex(color.codigoFondo) }, line: { color: hex(color.codigoFondo), width: 0 }, fontFace: MONO, fontSize: tamQueCabe(o.codigo, wCod - 0.3, hOp - 0.06, 14, 9), bold: true, color: hex(ACC), valign: "middle", fit: "shrink" });
     flecha(s, c.x + wCod + 0.1, y + hOp / 2, c.x + wCod + 0.6, y + hOp / 2, ACC_T, 2.5);
@@ -299,7 +287,6 @@ function cifras(s: Slide, c: Caja, lista: (ElementoVisual & { valor: string })[]
   const h = filas === 1 ? Math.min(c.h, 3.4) : (c.h - gap * (filas - 1)) / filas;
   const y0 = filas === 1 ? c.y + (c.h - h) / 2 : c.y;
   lista.forEach((e, i) => {
-    fijarPaso(i);
     const x = c.x + (i % cols) * (w + gap);
     const y = y0 + Math.floor(i / cols) * (h + gap);
     const t = colorDeTono(e.tono);
@@ -329,7 +316,6 @@ function flujo(s: Slide, c: Caja, v: Extract<Visual, { tipo: "flujo" }>) {
   const yTexto = yc + d / 2 + 0.62;
   const hTexto = Math.max(0.45, Math.min(1.0, c.h - altoDesvio - (yTexto - c.y)));
   v.pasos.forEach((e, i) => {
-    fijarPaso(i);
     const t = colorDeTono(e.tono ?? (i === n - 1 ? "correcto" : "marino"));
     const cx = c.x + i * paso + paso / 2;
     s.addShape("ellipse", { x: cx - d / 2, y: yc - d / 2, w: d, h: d, fill: { color: hex(t.suave) }, line: { color: hex(t.fuerte), width: 2.5 }, shadow: sombra() });
@@ -338,19 +324,23 @@ function flujo(s: Slide, c: Caja, v: Extract<Visual, { tipo: "flujo" }>) {
     texto(s, e.titulo, { x: cx - paso / 2 + 0.05, y: yc + d / 2 + 0.14, w: paso - 0.1, h: 0.46 }, { tam: 18, negrita: true, alinear: "center", fuente: TITULO });
     if (e.texto) texto(s, e.texto, { x: cx - paso / 2 + 0.12, y: yTexto, w: paso - 0.24, h: hTexto }, { tam: 14, color: color.secundario, alinear: "center" });
     if (i < n - 1) {
-      fijarPaso(i + 1);
       flecha(s, cx + d / 2 + 0.1, yc, cx + paso - d / 2 - 0.1, yc, ACC, 3);
     }
   });
   if (v.desvio) {
-    fijarPaso(n);
     const t = colorDeTono(v.desvio.elemento.tono ?? "advertencia");
     const cx = c.x + v.desvio.desde * paso + paso / 2;
     const ancho = Math.min(4.6, c.w * 0.42);
-    const caja = { x: Math.min(Math.max(c.x, cx + 0.5), c.x + c.w - ancho), y: c.y + c.h - 0.95, w: ancho, h: 0.95 };
-    s.addShape("line", { x: cx, y: yTexto + Math.min(hTexto, 0.5) + 0.04, w: 0, h: caja.y + caja.h / 2 - (yTexto + Math.min(hTexto, 0.5) + 0.04), line: { color: hex(t.fuerte), width: 2, dashType: "dash" } });
-    flecha(s, cx, caja.y + caja.h / 2, caja.x, caja.y + caja.h / 2, t.fuerte, 2, "dash");
-    texto(s, v.desvio.etiqueta, { x: cx - 1.6, y: caja.y + caja.h / 2 - 0.36, w: 1.5, h: 0.3 }, { tam: 11, negrita: true, color: t.fuerte, alinear: "right" });
+    // La tarjeta va al lado de la línea, donde quepa, con la etiqueta en medio:
+    // ni la tarjeta tapa la línea ni la etiqueta toca el texto de los pasos.
+    const espacio = 1.45;
+    const aLaDerecha = cx + espacio + ancho <= c.x + c.w;
+    const caja = { x: aLaDerecha ? cx + espacio : Math.max(c.x, cx - espacio - ancho), y: c.y + c.h - 0.95, w: ancho, h: 0.95 };
+    const yMedio = caja.y + caja.h / 2;
+    const yLinea = yTexto + hTexto;
+    s.addShape("line", { x: cx, y: yLinea, w: 0, h: yMedio - yLinea, line: { color: hex(t.fuerte), width: 2, dashType: "dash" } });
+    flecha(s, cx, yMedio, aLaDerecha ? caja.x : caja.x + ancho, yMedio, t.fuerte, 2, "dash");
+    texto(s, v.desvio.etiqueta, { x: aLaDerecha ? cx + 0.05 : cx - espacio + 0.05, y: yMedio - 0.34, w: espacio - 0.1, h: 0.3 }, { tam: 12, negrita: true, color: t.fuerte, alinear: "center" });
     tarjeta(s, caja, t.suave, mezclar(t.fuerte, "#FFFFFF", 0.5));
     insignia(s, v.desvio.elemento.icono, caja.x + 0.18, caja.y + 0.17, 0.6, "#FFFFFF", t.fuerte);
     texto(s, v.desvio.elemento.titulo, { x: caja.x + 0.92, y: caja.y + 0.12, w: caja.w - 1.05, h: 0.36 }, { tam: 14.5, negrita: true, color: t.fuerte, fuente: TITULO });
@@ -373,7 +363,6 @@ function tuberia(s: Slide, c: Caja, etapas: ElementoVisual[]) {
   const anchoTitulo = w - muescaT * 0.8 - muescaT * 0.35;
   const tamTitulo = Math.min(...etapas.map((e) => tamQueCabe(e.titulo, anchoTitulo, 0.42, 16, 9, true)));
   etapas.forEach((e, i) => {
-    fijarPaso(i);
     const x = c.x + i * (w - solape);
     const fondo = e.tono ? colorDeTono(e.tono).fuerte : mezclar(PRI, ACC_T, n === 1 ? 0 : i / (n - 1));
     s.addShape(i === 0 ? "homePlate" : "chevron", { x, y, w, h, fill: { color: hex(fondo) }, line: { color: "FFFFFF", width: 2 }, shadow: sombra() });
@@ -400,7 +389,6 @@ function estados(s: Slide, c: Caja, v: Extract<Visual, { tipo: "estados" }>) {
   const hEst = 1.05;
   const centros: { x: number; y: number }[][] = [];
   v.columnas.forEach((col, i) => {
-    fijarPaso(i);
     const x = c.x + i * (wCol + hueco);
     const gap = 0.45;
     const total = col.length * hEst + (col.length - 1) * gap;
@@ -417,7 +405,6 @@ function estados(s: Slide, c: Caja, v: Extract<Visual, { tipo: "estados" }>) {
     });
   });
   for (let i = 0; i < cols - 1; i++) {
-    fijarPaso(i + 1);
     const desde = centros[i];
     const hacia = centros[i + 1];
     const accion = v.acciones[i] ?? "";
@@ -429,7 +416,6 @@ function estados(s: Slide, c: Caja, v: Extract<Visual, { tipo: "estados" }>) {
     s.addText(accion, { x: (x1 + x2) / 2 - ancho / 2, y: ym - 0.68, w: ancho, h: 0.36, shape: "roundRect", rectRadius: 0.18, margin: [0, 6, 0, 6], fill: { color: hex(PRI) }, line: { color: hex(PRI), width: 0 }, fontFace: FUENTE, fontSize: 12, bold: true, color: "FFFFFF", align: "center", valign: "middle", fit: "shrink" });
   }
   if (v.error) {
-    fijarPaso(cols);
     const t = colorDeTono(v.error.tono ?? "error");
     const caja = { x: c.x + c.w * 0.2, y: c.y + c.h - altoError, w: c.w * 0.6, h: altoError };
     tarjeta(s, caja, t.suave, mezclar(t.fuerte, "#FFFFFF", 0.45));
@@ -445,7 +431,6 @@ function contraste(s: Slide, c: Caja, v: Extract<Visual, { tipo: "contraste" }>)
   const gap = 0.7;
   const w = (c.w - gap) / 2;
   v.lados.forEach((l, i) => {
-    fijarPaso(i);
     const x = c.x + i * (w + gap);
     const t = colorDeTono(l.tono);
     tarjeta(s, { x, y: c.y, w, h: c.h });
@@ -463,7 +448,6 @@ function contraste(s: Slide, c: Caja, v: Extract<Visual, { tipo: "contraste" }>)
       if (j < filas - 1) s.addShape("line", { x: x + 0.3, y: y + altoFila, w: w - 0.6, h: 0, line: { color: hex(color.linea), width: 0.75 } });
     });
   });
-  fijarPaso(1);
   const cx = c.x + w + gap / 2;
   // "vs" cuando son dos maneras de hacer lo mismo; "+" cuando se complementan.
   const suma = v.union === "+";
@@ -489,10 +473,7 @@ function tarjetas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "tarjetas" }>) {
   const compacta = h < 1.3;
   // Con tarjetas grandes, la letra crece con ellas.
   const grande = !compacta && w > 4 && h > 1.45;
-  // Con pocas tarjetas, cada una aparece en su clic.
-  const porClic = !v.comando && n <= 6;
   v.tarjetas.forEach((e, i) => {
-    if (porClic) fijarPaso(i);
     const x = c.x + (i % cols) * (w + gap);
     const y = y0 + Math.floor(i / cols) * (h + gap);
     const t = colorDeTono(e.tono);
@@ -515,8 +496,9 @@ function tarjetas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "tarjetas" }>) {
     } else {
       // Con tarjetas altas, la letra crece para que se lea de lejos.
       const alta = h > 1.8;
-      texto(s, e.titulo, { x: tx, y: y + 0.2, w: x + w - tx - 0.15, h: d }, { tam: alta ? 18 : 15, negrita: true, fuente: TITULO, vertical: "middle", color: alta ? t.fuerte : color.texto });
-      if (e.texto) texto(s, e.texto, { x: x + 0.28, y: y + 0.36 + d, w: w - 0.45, h: h - d - 0.5 }, { tam: alta ? 16 : 13, color: alta ? color.texto : color.secundario });
+      const muyAlta = h > 3;
+      texto(s, e.titulo, { x: tx, y: y + 0.2, w: x + w - tx - 0.15, h: d }, { tam: muyAlta ? 22 : alta ? 18 : 15, negrita: true, fuente: TITULO, vertical: "middle", color: alta ? t.fuerte : color.texto });
+      if (e.texto) texto(s, e.texto, { x: x + 0.28, y: y + 0.36 + d, w: w - 0.45, h: h - d - 0.5 }, { tam: muyAlta ? 21 : alta ? 16 : 13, color: alta ? color.texto : color.secundario });
     }
   });
 }
@@ -565,7 +547,6 @@ function captura(s: Slide, c: Caja, v: Extract<Visual, { tipo: "captura" }>, lat
   const celdaH = (c.h - gapY * (filas - 1)) / filas;
   const w = Math.min(celdaW * 0.64, (celdaH - 0.06) / (PROPORCION + 0.036));
   v.capturas.forEach((cap, i) => {
-    fijarPaso(i);
     const x = c.x + (i % cols) * (celdaW + gapX);
     const y = c.y + Math.floor(i / cols) * (celdaH + gapY);
     const alto = marcoNavegador(s, cap, x, y + (celdaH - w * (PROPORCION + 0.036)) / 2, w);
@@ -581,11 +562,11 @@ function captura(s: Slide, c: Caja, v: Extract<Visual, { tipo: "captura" }>, lat
 // ── Video ─────────────────────────────────────────────────────────────────
 
 // El video en un marco de navegador y, al lado, qué van a ver: los mismos
-// pasos que los rótulos numerados del video. El video se reproduce en el
-// clic 1 (posproceso.ts lo reconoce por la marca [v1]).
+// pasos que los rótulos numerados del video. El video se reproduce solo al
+// llegar a la lámina (posproceso.ts lo reconoce por su nombre).
 function video(s: Slide, c: Caja, v: Extract<Visual, { tipo: "video" }>) {
-  const lado = 4.1;
-  const w = Math.min(c.w - lado - 0.4, (c.h - 0.05) / (PROPORCION_VIDEO + 0.035));
+  const lado = 2.75;
+  const w = Math.min(c.w - lado - 0.25, (c.h - 0.05) / (PROPORCION_VIDEO + 0.035));
   const hImg = w * PROPORCION_VIDEO;
   const barra = Math.max(0.24, w * 0.035);
   const y = c.y + (c.h - barra - hImg) / 2;
@@ -593,23 +574,23 @@ function video(s: Slide, c: Caja, v: Extract<Visual, { tipo: "video" }>) {
   const archivo = join(DIR_VIDEOS, v.archivo);
   const portada = join(DIR_VIDEOS, v.portada);
   if (existsSync(archivo) && existsSync(portada)) {
-    s.addMedia({ type: "video", path: archivo, cover: `data:image/png;base64,${readFileSync(portada).toString("base64")}`, x: c.x, y: y + barra, w, h: hImg, objectName: `[v1] Video ${v.archivo}` });
+    s.addMedia({ type: "video", path: archivo, cover: `data:image/png;base64,${readFileSync(portada).toString("base64")}`, x: c.x, y: y + barra, w, h: hImg, objectName: `Video ${v.archivo}` });
   } else {
-    texto(s, `Falta el video ${v.archivo}: ejecutar npm run videos con el sistema arriba`, { x: c.x, y: y + barra, w, h: hImg }, { tam: 12, color: color.error, alinear: "center", vertical: "middle" });
+    texto(s, `Falta el video ${v.archivo}: ejecutar npm run videos`, { x: c.x, y: y + barra, w, h: hImg }, { tam: 12, color: color.error, alinear: "center", vertical: "middle" });
   }
 
-  const x = c.x + w + 0.4;
+  const x = c.x + w + 0.25;
   const ancho = c.x + c.w - x;
   texto(s, "QUÉ VAN A VER", { x, y: c.y, w: ancho, h: 0.3 }, { tam: 11, negrita: true, color: ACC_T });
   const seg = segundosDeVideo(v.archivo);
-  const pista = `▶ Clic para reproducir${seg ? ` · ${duracion(seg)}` : ""} · Alt+P pausa`;
+  const pista = `▶ Arranca solo${seg ? ` · ${duracion(seg)}` : ""} · Alt+P pausa`;
   const yPasos = c.y + 0.42;
   const hPasos = c.y + c.h - 0.5 - yPasos;
-  const fila = Math.min(0.78, hPasos / v.pasos.length);
+  const fila = Math.min(0.95, hPasos / v.pasos.length);
   v.pasos.forEach((p, i) => {
     const yf = yPasos + i * fila;
     s.addText(String(i + 1), { x, y: yf + (fila - 0.36) / 2, w: 0.36, h: 0.36, shape: "ellipse", margin: 0, fill: { color: hex(ACC) }, line: { color: hex(ACC), width: 0 }, fontFace: TITULO, fontSize: 12, bold: true, color: hex(PROF), align: "center", valign: "middle" });
-    texto(s, p, { x: x + 0.5, y: yf, w: ancho - 0.5, h: fila }, { tam: 13.5, vertical: "middle" });
+    texto(s, p, { x: x + 0.45, y: yf, w: ancho - 0.45, h: fila }, { tam: 12, vertical: "middle" });
   });
   s.addText(pista, { x, y: c.y + c.h - 0.4, w: ancho, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 0, fill: { color: hex(ACC_S) }, line: { color: hex(ACC_S), width: 0 }, fontFace: FUENTE, fontSize: 11, bold: true, color: hex(ACC_T), align: "center", valign: "middle", fit: "shrink" });
 }
@@ -617,8 +598,8 @@ function video(s: Slide, c: Caja, v: Extract<Visual, { tipo: "video" }>) {
 // ── Ramas de Git ──────────────────────────────────────────────────────────
 
 function ramas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ramas" }>) {
-  const yMain = c.y + c.h - 1.1;
-  const yRama = c.y + 1.2;
+  const yMain = c.y + c.h - 1.05;
+  const yRama = c.y + 0.85;
   const x0 = c.x + 0.4;
   const x1 = c.x + c.w - 0.4;
   const verde = color.correcto;
@@ -631,23 +612,19 @@ function ramas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ramas" }>) {
   // Sale de main, sube a la rama y vuelve por Pull Request.
   s.addShape("line", { x: xSale, y: yRama, w: 0.7, h: yMain - yRama, flipV: true, line: { color: hex(ACC), width: 5 } });
   s.addShape("line", { x: xSale + 0.7, y: yRama, w: xVuelve - xSale - 1.4, h: 0, line: { color: hex(ACC), width: 5 } });
-  // La vuelta a main por Pull Request aparece en el clic.
-  fijarPaso(1);
   s.addShape("line", { x: xVuelve - 0.7, y: yRama, w: 0.7, h: yMain - yRama, line: { color: hex(verde), width: 5, endArrowType: "triangle" } });
-  fijarPaso(0);
-  s.addText(v.rama, { x: xSale + 0.75, y: yRama - 0.78, w: 4.6, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 8, fill: { color: hex(ACC_S) }, line: { color: hex(ACC), width: 1 }, fontFace: MONO, fontSize: 13, bold: true, color: hex(ACC_T), valign: "middle", fit: "shrink" });
+  s.addText(v.rama, { x: xSale + 0.75, y: yRama - 0.78, w: 4.6, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 8, fill: { color: hex(ACC_S) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, fontSize: 15, bold: true, color: hex(ACC_T), valign: "middle", fit: "shrink" });
   icono(s, "git-branch", xSale - 0.05, yRama - 0.8, 0.4, ACC_T);
   v.commits.forEach((m, i) => {
     const cx = xSale + 0.7 + paso * (i + 0.5);
     s.addShape("ellipse", { x: cx - 0.2, y: yRama - 0.2, w: 0.4, h: 0.4, fill: { color: "FFFFFF" }, line: { color: hex(ACC), width: 4 }, shadow: sombra() });
-    s.addText(m, { x: cx - paso / 2 + 0.05, y: yRama + 0.32, w: paso - 0.1, h: 0.62, margin: 0, fontFace: MONO, fontSize: 11.5, color: hex(color.texto), align: "center", valign: "top", fit: "shrink" });
+    s.addText(m, { x: cx - paso / 2 + 0.05, y: yRama + 0.32, w: paso - 0.1, h: 0.62, margin: 0, fontFace: FUENTE, fontSize: 16, color: hex(color.texto), align: "center", valign: "top", fit: "shrink" });
   });
   [x0 + 0.5, xSale, xVuelve, x1 - 0.5].forEach((cx) => s.addShape("ellipse", { x: cx - 0.17, y: yMain - 0.17, w: 0.34, h: 0.34, fill: { color: hex(PRI) }, line: { color: "FFFFFF", width: 2 } }));
-  fijarPaso(1);
-  const caja = { x: xVuelve - 3.8, y: yMain - 1.32, w: 3.45, h: 0.82 };
+  const caja = { x: xVuelve - 5.2, y: yMain + 0.16, w: 6.1, h: 0.82 };
   tarjeta(s, caja, color.correctoSuave, mezclar(verde, "#FFFFFF", 0.5));
   icono(s, "git-pull-request", caja.x + 0.16, caja.y + 0.2, 0.42, verde);
-  texto(s, v.fusion, { x: caja.x + 0.7, y: caja.y + 0.06, w: caja.w - 0.8, h: caja.h - 0.12 }, { tam: 12.5, negrita: true, color: verde, vertical: "middle" });
+  texto(s, v.fusion, { x: caja.x + 0.7, y: caja.y + 0.06, w: caja.w - 0.8, h: caja.h - 0.12 }, { tam: 14.5, negrita: true, color: verde, vertical: "middle" });
   void H;
 }
 
@@ -677,7 +654,6 @@ function aprendizajes(s: Slide, c: Caja, v: Extract<Visual, { tipo: "aprendizaje
   const h = (c.h - gap * (v.items.length - 1)) / v.items.length;
   const valorW = Math.min(3.6, w * 0.4);
   v.items.forEach((e, i) => {
-    fijarPaso(i + 1);
     const y = c.y + i * (h + gap);
     const t = colorDeTono(e.tono ?? "marino");
     tarjeta(s, { x: x0, y, w, h });
@@ -712,7 +688,6 @@ function escenario(s: Slide, c: Caja, v: Extract<Visual, { tipo: "escenario" }>)
   };
   const hb = 0.82;
   banda(v.falla, c.y, hb, "QUÉ FALLA");
-  fijarPaso(v.pasos.length + 1);
   banda(v.resultado, c.y + c.h - hb, hb, "RESULTADO");
 
   const n = v.pasos.length;
@@ -727,11 +702,9 @@ function escenario(s: Slide, c: Caja, v: Extract<Visual, { tipo: "escenario" }>)
   // La flecha al resultado sale debajo del texto del último paso.
   const xResultado = c.x + c.w - paso / 2;
   flecha(s, xResultado, top + alto + 0.02, xResultado, c.y + c.h - hb - 0.02, colorDeTono(v.resultado.tono).fuerte, 2, "dash");
-  fijarPaso(1);
   flecha(s, xFalla, c.y + hb + 0.02, xFalla, yc - 0.12, colorDeTono(v.falla.tono).fuerte, 2, "dash");
   s.addShape("line", { x: c.x + paso / 2, y: yc, w: paso * (n - 1), h: 0, line: { color: hex(mezclar(ACC, "#FFFFFF", 0.3)), width: 4 } });
   v.pasos.forEach((e, i) => {
-    fijarPaso(i + 1);
     const t = colorDeTono(e.tono);
     const cx = c.x + i * paso + paso / 2;
     const chipW = Math.min(paso - 0.3, 0.5 + e.momento.length * 0.1);
@@ -739,9 +712,7 @@ function escenario(s: Slide, c: Caja, v: Extract<Visual, { tipo: "escenario" }>)
     s.addShape("ellipse", { x: cx - d / 2, y: yc - d / 2, w: d, h: d, fill: { color: hex(t.suave) }, line: { color: hex(t.fuerte), width: 2.5 }, shadow: sombra() });
     icono(s, e.icono, cx - d * 0.27, yc - d * 0.27, d * 0.54, t.fuerte, 1.75);
     if (i < n - 1) {
-      fijarPaso(i + 2);
       flecha(s, cx + d / 2 + 0.08, yc, cx + paso - d / 2 - 0.08, yc, ACC, 3);
-      fijarPaso(i + 1);
     }
     const ty = yc + d / 2 + 0.1;
     texto(s, e.titulo, { x: cx - paso / 2 + 0.08, y: ty, w: paso - 0.16, h: 0.4 }, { tam: 17, negrita: true, alinear: "center", fuente: TITULO, color: t.fuerte });
@@ -759,7 +730,6 @@ function capas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "capas" }>) {
   const h = (c.h - gap * (n - 1)) / n;
   const etiquetaW = 1.75;
   v.capas.forEach((capa, i) => {
-    fijarPaso(i);
     const y = c.y + i * (h + gap);
     const t = colorDeTono(capa.tono);
     s.addShape("roundRect", { x: c.x, y, w: c.w, h, rectRadius: 0.12, fill: { color: hex(mezclar(t.suave, "#FFFFFF", 0.25)) }, line: { color: hex(mezclar(t.fuerte, "#FFFFFF", 0.7)), width: 1 } });
@@ -780,7 +750,6 @@ function capas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "capas" }>) {
       if (e.texto) texto(s, e.texto, { x: tx, y: y + 0.14 + hc * 0.5, w: x + w - tx - 0.1, h: hc * 0.5 - 0.1 }, { tam: 12, color: color.secundario });
     });
     if (i < n - 1 && !v.paralelas) {
-      fijarPaso(i + 1);
       flecha(s, c.x + etiquetaW / 2, y + h - 0.02, c.x + etiquetaW / 2, y + h + gap + 0.02, PRI, 2.5);
     }
   });
@@ -800,10 +769,7 @@ function tablas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "tablas" }>) {
   const y0 = c.y + (c.h - baseH) / 2;
   let x = c.x;
   const centros: number[] = [];
-  // Cada tabla aparece en su clic; la base, con su primera tabla.
-  let tablaGlobal = 0;
   v.bases.forEach((b, i) => {
-    fijarPaso(tablaGlobal);
     const w = (anchoUtil * b.tablas.length) / unidades;
     const t = colorDeTono(b.tono);
     tarjeta(s, { x, y: y0, w, h: baseH }, mezclar(t.suave, "#FFFFFF", 0.35), mezclar(t.fuerte, "#FFFFFF", 0.55));
@@ -815,7 +781,6 @@ function tablas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "tablas" }>) {
     const tg = 0.25;
     const tw = (w - 0.5 - tg * (b.tablas.length - 1)) / b.tablas.length;
     b.tablas.forEach((tb, j) => {
-      fijarPaso(tablaGlobal++);
       const tx = x + 0.25 + j * (tw + tg);
       const ty = y0 + 1.05;
       tarjeta(s, { x: tx, y: ty, w: tw, h: tablaH });
@@ -837,7 +802,6 @@ function tablas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "tablas" }>) {
     void i;
   });
   if (nb > 1) {
-    fijarPaso(unidades);
     const yE = y0 + 1.05 + tablaH / 2;
     for (let i = 0; i < nb - 1; i++) {
       const x1 = centros[i] + 0.08;
@@ -864,7 +828,6 @@ function matriz(s: Slide, c: Caja, v: Extract<Visual, { tipo: "matriz" }>) {
   const n = v.filas.length;
   const h = (c.h - hh - 0.14 - gap * (n - 1)) / n;
   v.filas.forEach((f, i) => {
-    fijarPaso(i);
     const y = c.y + hh + 0.14 + i * (h + gap);
     const t = colorDeTono(f.tono);
     tarjeta(s, { x: c.x, y, w: c.w, h });
@@ -922,12 +885,10 @@ function hexagono(s: Slide, c: Caja, v: Extract<Visual, { tipo: "hexagono" }>) {
       return { y: y + h / 2, x: lado === "izq" ? x + w : x };
     });
   };
-  fijarPaso(1);
   const entradas = columna(v.entrada, c.x, entW, "izq");
   for (const p of entradas) flecha(s, p.x + 0.06, p.y, xHex - 0.16, Math.min(Math.max(p.y, yHex + hexH * 0.3), yHex + hexH * 0.7), color.azulVivo, 2.25);
 
   // Puertos: contratos que el dominio declara y la salida implementa.
-  fijarPaso(0);
   const pg = 0.16;
   const ph = Math.min(0.62, (hexH - pg * (v.puertos.length - 1)) / v.puertos.length);
   const pTotal = v.puertos.length * ph + pg * (v.puertos.length - 1);
@@ -938,7 +899,6 @@ function hexagono(s: Slide, c: Caja, v: Extract<Visual, { tipo: "hexagono" }>) {
     s.addText([{ text: "«puerto»", options: { italic: true, color: hex(color.secundario), fontSize: 8.5, breakLine: true } }, { text: p, options: { bold: true, color: hex(ACC_T), fontFace: MONO, fontSize: tamQueCabe(p, puertoW - 0.55, 0.3, 11, 7) } }], { x: xPuerto + 0.08, y, w: puertoW - 0.16, h: ph, margin: 0, fontFace: FUENTE, valign: "middle", align: "center", fit: "shrink" });
     flecha(s, xHex + hexW - 0.15, y + ph / 2, xPuerto - 0.02, y + ph / 2, ACC, 1.5);
   });
-  fijarPaso(2);
   const salidas = columna(v.salida, xSal, salW, "der");
   for (const p of salidas) flecha(s, p.x - 0.06, p.y, xPuerto + puertoW + 0.06, Math.min(Math.max(p.y, py0 + 0.1), py0 + pTotal - 0.1), color.secundario, 1.5, "dash");
 }
@@ -954,7 +914,6 @@ function caminos(s: Slide, c: Caja, v: Extract<Visual, { tipo: "caminos" }>) {
   const hc = (c.h - gap * (n - 1)) / n;
   const etiquetaW = 2.05;
   v.caminos.forEach((camino, i) => {
-    fijarPaso(i);
     const dibujarGrupos = (x0g: number, bwg: number, sep: number, byg: number) => {
       for (const g of camino.grupos ?? []) {
         const tg = colorDeTono(g.tono);
@@ -1018,7 +977,6 @@ function codigos(s: Slide, c: Caja, v: Extract<Visual, { tipo: "codigos" }>) {
   const hPuntos = Math.max(...v.lados.map((l) => l.puntos.length)) * hPunto;
   const hCod = c.h - hCab - hPuntos - 0.3;
   v.lados.forEach((l, i) => {
-    fijarPaso(i);
     const x = c.x + i * (w + gap);
     const t = colorDeTono(l.tono);
     tarjeta(s, { x, y: c.y, w, h: c.h });
@@ -1077,9 +1035,8 @@ function origenes(s: Slide, c: Caja, v: Extract<Visual, { tipo: "origenes" }>) {
   const yCod = yC + 1.26;
   s.addText(v.centro.valor, { x: xC + 0.18, y: yCod, w: wC - 0.36, h: yC + hC - yCod - 0.16, shape: "roundRect", rectRadius: 0.08, margin: 8, fill: { color: hex(color.codigoFondo) }, line: { color: hex(color.codigoFondo), width: 0 }, fontFace: MONO, fontSize: 11.5, color: hex(ACC), valign: "middle", fit: "shrink" });
 
-  // Cada fuente, con su flecha al centro, en su clic.
+  // Cada fuente, con su flecha al centro.
   v.fuentes.forEach((f, i) => {
-    fijarPaso(i + 1);
     const y = yF0 + i * (hF + gF);
     const t = colorDeTono(f.tono);
     tarjeta(s, { x: c.x, y, w: wF, h: hF });
@@ -1094,7 +1051,6 @@ function origenes(s: Slide, c: Caja, v: Extract<Visual, { tipo: "origenes" }>) {
   });
 
   // El destino y la flecha que los une.
-  fijarPaso(F + 1);
   const td = colorDeTono(v.destino.tono ?? "marino");
   s.addShape("can", { x: xD, y: yD, w: wD, h: hD, fill: { color: hex(td.suave) }, line: { color: hex(td.fuerte), width: 2 }, shadow: sombra() });
   texto(s, v.destino.titulo, { x: xD + 0.1, y: yD + hD * 0.32, w: wD - 0.2, h: 0.4 }, { tam: 15, negrita: true, fuente: MONO, color: td.fuerte, alinear: "center", vertical: "middle" });
@@ -1104,7 +1060,6 @@ function origenes(s: Slide, c: Caja, v: Extract<Visual, { tipo: "origenes" }>) {
   texto(s, v.enlace, { x: xC + wC + 0.05, y: ym - 0.6, w: xD - xC - wC - 0.1, h: 0.52 }, { tam: 11.5, negrita: true, color: td.fuerte, alinear: "center", vertical: "bottom" });
 
   // Lo que nunca lleva el valor.
-  fijarPaso(F + 2);
   const tn = colorDeTono(v.nota.tono ?? "error");
   const yN = c.y + c.h - hNota;
   tarjeta(s, { x: xC, y: yN, w: c.x + c.w - xC, h: hNota }, tn.suave, mezclar(tn.fuerte, "#FFFFFF", 0.5));
@@ -1112,16 +1067,58 @@ function origenes(s: Slide, c: Caja, v: Extract<Visual, { tipo: "origenes" }>) {
   s.addText([{ text: `${v.nota.titulo}:  `, options: { bold: true, color: hex(tn.fuerte) } }, ...(v.nota.texto ? [{ text: v.nota.texto, options: { color: hex(color.texto) } }] : [])], { x: xC + 0.75, y: yN, w: c.x + c.w - xC - 0.9, h: hNota, margin: 0, fontFace: FUENTE, fontSize: tamQueCabe(`${v.nota.titulo}:  ${v.nota.texto ?? ""}`, c.x + c.w - xC - 0.95, hNota - 0.06, 13, 9), valign: "middle", fit: "shrink" });
 }
 
-export function dibujarVisual(s: Slide, v: Visual, c: Caja, lateral?: (caja: Caja) => void, iconoSeccion?: Icono) {
-  fijarPaso(0);
-  try {
-    dibujarSegunTipo(s, v, c, lateral, iconoSeccion);
-  } finally {
-    fijarPaso(0);
-  }
+// ── Pods y contenedores ───────────────────────────────────────────────────
+
+// De la imagen al Pod: a la izquierda el molde y lo que pedimos; a la derecha
+// el servidor con sus Pods, cada uno con su contenedor adentro, y el Service
+// que los reúne bajo un solo nombre.
+function pods(s: Slide, c: Caja, v: Extract<Visual, { tipo: "pods" }>) {
+  const lado = 3.1;
+  const hLado = (c.h - 0.5) / 2;
+  const ficha = (e: ElementoVisual, y: number) => {
+    const t = colorDeTono(e.tono);
+    tarjeta(s, { x: c.x, y, w: lado, h: hLado }, t.suave, mezclar(t.fuerte, "#FFFFFF", 0.5));
+    insignia(s, e.icono, c.x + 0.16, y + 0.14, 0.56, "#FFFFFF", t.fuerte);
+    texto(s, e.titulo, { x: c.x + 0.82, y: y + 0.14, w: lado - 0.9, h: 0.56 }, { tam: 15, negrita: true, fuente: TITULO, color: t.fuerte, vertical: "middle" });
+    if (e.texto) texto(s, e.texto, { x: c.x + 0.18, y: y + 0.76, w: lado - 0.32, h: hLado - 0.82 }, { tam: 13 });
+  };
+  ficha(v.imagen, c.y);
+  flecha(s, c.x + lado / 2, c.y + hLado + 0.06, c.x + lado / 2, c.y + hLado + 0.44, ACC, 3);
+  ficha(v.deployment, c.y + hLado + 0.5);
+
+  const xS = c.x + lado + 0.7;
+  const wS = c.x + c.w - xS;
+  flecha(s, c.x + lado + 0.08, c.y + c.h / 2, xS - 0.08, c.y + c.h / 2, ACC, 3);
+  const ts = colorDeTono(v.service.tono);
+  const hSrv = 0.66;
+  s.addShape("roundRect", { x: xS, y: c.y, w: wS, h: hSrv, rectRadius: 0.1, fill: { color: hex(ts.fuerte) }, line: { color: hex(ts.fuerte), width: 0 } });
+  icono(s, v.service.icono, xS + 0.18, c.y + 0.15, 0.36, "#FFFFFF");
+  s.addText([{ text: `${v.service.titulo}  `, options: { bold: true } }, { text: v.service.texto ?? "" }], { x: xS + 0.65, y: c.y, w: wS - 0.75, h: hSrv, margin: 0, fontFace: FUENTE, fontSize: 14, color: "FFFFFF", valign: "middle", fit: "shrink" });
+
+  const yN = c.y + hSrv + 0.42;
+  const hN = c.y + c.h - yN;
+  s.addShape("roundRect", { x: xS, y: yN, w: wS, h: hN, rectRadius: 0.1, fill: { color: hex(color.fondo) }, line: { color: hex(color.linea), width: 1.25, dashType: "dash" } });
+  texto(s, v.nodo, { x: xS + 0.2, y: yN + 0.06, w: wS - 0.4, h: 0.32 }, { tam: 12.5, negrita: true, color: color.secundario });
+  const n = v.pods.length;
+  const gap = 0.25;
+  const wP = (wS - 0.4 - gap * (n - 1)) / n;
+  const yP = yN + 0.42;
+  const hP = hN - 0.56;
+  v.pods.forEach((p, i) => {
+    const x = xS + 0.2 + i * (wP + gap);
+    flecha(s, x + wP / 2, c.y + hSrv + 0.04, x + wP / 2, yP - 0.02, ts.fuerte, 2);
+    s.addShape("roundRect", { x, y: yP, w: wP, h: hP, rectRadius: 0.1, fill: { color: hex(ACC_S) }, line: { color: hex(ACC), width: 2 }, shadow: sombra() });
+    texto(s, p.titulo, { x: x + 0.14, y: yP + 0.06, w: wP - 0.28, h: 0.34 }, { tam: 14, negrita: true, fuente: TITULO, color: ACC_T });
+    const yC = yP + 0.44;
+    const hC = 0.82;
+    s.addShape("roundRect", { x: x + 0.14, y: yC, w: wP - 0.28, h: hC, rectRadius: 0.08, fill: { color: hex(PRI) }, line: { color: hex(PRI), width: 0 } });
+    icono(s, "container", x + 0.26, yC + 0.21, 0.4, ACC);
+    s.addText(p.contenedor, { x: x + 0.76, y: yC, w: wP - 1, h: hC, margin: 0, fontFace: FUENTE, fontSize: 12.5, bold: true, color: "FFFFFF", valign: "middle", fit: "shrink" });
+    texto(s, p.recursos, { x: x + 0.14, y: yC + hC + 0.06, w: wP - 0.28, h: yP + hP - (yC + hC) - 0.1 }, { tam: 12.5, color: color.texto, vertical: "middle" });
+  });
 }
 
-function dibujarSegunTipo(s: Slide, v: Visual, c: Caja, lateral?: (caja: Caja) => void, iconoSeccion?: Icono) {
+export function dibujarVisual(s: Slide, v: Visual, c: Caja, lateral?: (caja: Caja) => void, iconoSeccion?: Icono) {
   switch (v.tipo) {
     case "ruta": return ruta(s, c, v);
     case "equipo": return equipo(s, c, v);
@@ -1145,6 +1142,7 @@ function dibujarSegunTipo(s: Slide, v: Visual, c: Caja, lateral?: (caja: Caja) =
     case "captura": return captura(s, c, v, lateral);
     case "video": return video(s, c, v);
     case "ramas": return ramas(s, c, v);
+    case "pods": return pods(s, c, v);
   }
 }
 

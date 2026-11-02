@@ -29,8 +29,9 @@ export function nombreDeVisual(v: Visual): string {
     contraste: "Dos maneras, lado a lado",
     tarjetas: "Tarjetas",
     captura: "Capturas reales",
-    video: "Video de la UI",
+    video: "Video",
     ramas: "Una rama de Git",
+    pods: "De la imagen al Pod",
   };
   return nombres[v.tipo];
 }
@@ -109,10 +110,12 @@ export function lineasDeVisual(v: Visual): string[] {
       return v.capturas.map((c) => `Captura de ${c.titulo}${c.url ? ` (${c.url})` : ""}${c.texto ? `: ${c.texto}` : ""}`);
     case "video": {
       const seg = segundosDeVideo(v.archivo);
-      return [`Video capturas/videos/${v.archivo}${seg ? `, ${duracion(seg)}` : ""}. Un clic lo reproduce.`, ...v.pasos.map((p, i) => `${i + 1}. ${p}`)];
+      return [`Video capturas/videos/${v.archivo}${seg ? `, ${duracion(seg)}` : ""}. Arranca solo al llegar a la lámina.`, ...v.pasos.map((p, i) => `${i + 1}. ${p}`)];
     }
     case "ramas":
       return [`Rama ${v.rama} sale de ${v.principal}`, ...v.commits.map((c) => `Commit: ${c}`), `Vuelve a ${v.principal}: ${v.fusion}`];
+    case "pods":
+      return [linea(v.imagen), linea(v.deployment), linea(v.service), `${v.nodo}: ${v.pods.map((p) => `${p.titulo} con ${p.contenedor} (${p.recursos})`).join("; ")}`];
   }
 }
 
@@ -125,48 +128,4 @@ export function duracion(segundos: number): string {
 // Las partes que muestra la agenda: las de la variante o, sin ellas, todas.
 export function partesDeRuta(v: Extract<Visual, { tipo: "ruta" }>): Seccion[] {
   return v.partes ?? secciones.filter((s) => s.numero !== null);
-}
-
-// Bloques consecutivos de partes con el mismo enfoque: la agenda aparece por
-// bloques, no parte por parte.
-function bloquesDeEnfoque(partes: Seccion[]): number[] {
-  let bloque = 0;
-  return partes.map((s, i) => (i > 0 && s.enfoque !== partes[i - 1].enfoque ? ++bloque : bloque));
-}
-
-// Paso en el que aparece cada parte de la agenda.
-export function pasoDeParte(partes: Seccion[], indice: number): number {
-  return bloquesDeEnfoque(partes)[indice] ?? 0;
-}
-
-// Cuántos clics arma el visual: lo que se ve al llegar a la lámina es el
-// paso 0 y cada clic muestra el siguiente. Los dibujos del PPTX y las marcas
-// [clic] del texto oral siguen esta misma cuenta.
-export function clicsDeVisual(v: Visual | undefined): number {
-  if (!v) return 0;
-  switch (v.tipo) {
-    case "ruta": return Math.max(0, ...bloquesDeEnfoque(partesDeRuta(v)));
-    case "equipo": return 0;
-    case "sistema": return 7;
-    case "mapeo": return 1 + v.operaciones.length;
-    case "caminos": return v.caminos.length - 1;
-    case "codigos": return 1;
-    case "origenes": return v.fuentes.length + 2;
-    case "aprendizajes": return v.items.length;
-    case "escenario": return v.pasos.length + 1;
-    case "capas": return v.capas.length - 1;
-    case "tablas": return v.bases.reduce((a, b) => a + b.tablas.length, 0);
-    case "matriz": return v.filas.length - 1;
-    case "hexagono": return 2;
-    case "cifras": return v.cifras.length - 1;
-    case "flujo": return v.pasos.length - 1 + (v.desvio ? 1 : 0);
-    case "tuberia": return v.etapas.length - 1;
-    case "estados": return v.columnas.length - 1 + (v.error ? 1 : 0);
-    case "contraste": return 1;
-    case "tarjetas": return v.comando || v.tarjetas.length > 6 ? 0 : v.tarjetas.length - 1;
-    case "captura": return v.capturas.length - 1;
-    // Un clic reproduce el video.
-    case "video": return 1;
-    case "ramas": return 1;
-  }
 }

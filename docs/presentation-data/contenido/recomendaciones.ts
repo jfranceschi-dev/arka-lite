@@ -4,117 +4,121 @@ import type { ModoDemo, Rol } from "./tipos.ts";
 // generador de guiones para armar guiones/reparto-y-recomendaciones.md con los
 // números de lámina y los minutos de la versión actual.
 
-// Minutos que suma la demostración en vivo además del texto oral.
-export const MINUTOS_DEMO_EN_VIVO = 3;
-
-// Las tres versiones del ejecutivo según cómo se muestra la UI: cuándo usar
-// cada una y qué cambia respecto de la versión en vivo.
+// Las dos versiones: cuándo usar cada una y qué tienen de distinto.
 export const VERSIONES: Record<ModoDemo, { cuando: string; cambia: string }> = {
-  vivo: {
-    cuando: "Hay sistema arriba (Compose local o Codespace) y red confiable en la sala.",
-    cambia: "Es la versión de referencia: la parte 7 se hace en la UI real.",
-  },
   video: {
-    cuando: "No se puede operar el sistema en vivo: sin red, sin Codespace o con poco tiempo para prepararlo.",
-    cambia: "La parte 7 muestra dos videos grabados con la UI real, dentro del PPTX; un clic los reproduce. La portada y la agenda dicen «en video» y no se propone ninguna demostración en las otras láminas.",
+    cuando: "Hay tiempo para la parte 7: no necesita internet ni el sistema arriba.",
+    cambia: "Tres videos dentro del PPTX, que arrancan solos: un ejemplo ilustrativo de CI/CD en la parte 5 y dos del sistema real en la parte 7.",
   },
   sin: {
-    cuando: "Falta tiempo, o el público ya vio la UI.",
-    cambia: "No hay parte 7: la observabilidad pasa directo al cierre. La portada, la agenda, Codespaces y los logs ya no anuncian una demostración.",
+    cuando: "Falta tiempo, o el público ya vio la pantalla.",
+    cambia: "No hay parte 7: la observabilidad pasa directo al cierre, y nada anuncia una demostración.",
   },
 };
 
 export const GENERALES: string[] = [
-  "Ensayen juntos al menos una vez con el PowerPoint en modo presentación: los clics y los relevos son lo que más se nota.",
-  "Cada persona ensaya con su guion de `guion-ejecutivo-7-personas.md`: ahí está solo lo suyo, con de quién recibe la palabra y a quién se la entrega.",
+  "No hace falta aprenderse el texto. Lean la sección «Qué decir» un par de veces y, en la presentación, apóyense en «Con tus palabras»: esas frases, dichas a su manera, ya cubren la lámina.",
+  "Ensayen juntos al menos una vez con el PowerPoint en modo presentación: los relevos son lo que más se nota. Las láminas ya aparecen completas: no hay que hacer clics para armarlas.",
+  "Cada persona ensaya con su guion de `guion-<versión>-por-persona.md`: ahí está solo lo suyo, con de quién recibe la palabra y a quién se la entrega.",
   "El bloque «Si hay tiempo» no cuenta en los minutos: úsenlo solo si van adelantados o si el público pregunta.",
   "Cada lámina trae «Lo que se lleva el staff». Si en una lámina solo alcanzan a decir una frase, que sea esa.",
-  "Si una palabra técnica no se entiende, usen la frase del glosario del guion: así todo el equipo explica igual.",
+  "Hay público técnico y no técnico: si una palabra técnica no se entiende, usen la frase del glosario y la comparación de la lámina.",
 ];
 
 // Por qué cada papel le va a quien lo presenta, y qué cuidar al presentarlo.
 export const PERFIL: Record<Rol, string> = {
-  orquestador: "Conoce el negocio de punta a punta: abre con el qué, conecta las partes y cierra con lo que el staff puede aplicar.",
-  fundamentos: "Fundamentos va en vista general: el equipo anterior ya la trabajó a fondo.",
-  arquitectura: "Arquitectura va en vista general: lo de hexagonal ya lo explicó el equipo anterior.",
+  apertura: "Conecta con la presentación anterior y da el recorrido.",
+  fundamentos: "Fundamentos solo cuenta lo que nos quedó: el equipo anterior ya la trabajó a fondo.",
+  arquitectura: "Arquitectura solo cuenta lo que nos quedó: hexagonal ya lo explicó el equipo anterior.",
   bd: "La base de datos es el terreno que el staff mejor conoce, y nadie habla mejor su idioma.",
-  orm: "Apoya a base de datos con la parte de código: Java, el ORM y la configuración.",
+  orm: "Apoya a base de datos con la parte de código: la misma regla, el ORM y los datos de conexión.",
   interconexion: "Es el corazón técnico: cómo no se pierde ni se duplica nada.",
-  plataforma: "Construir y empaquetar con Docker y Compose, y la observabilidad.",
-  operacion: "Entregar y operar: del pipeline al clúster.",
-  demostracion: "Tiene práctica con la UI: hace la demostración en vivo.",
+  plataforma: "Empaquetar con Docker y Compose, y la observabilidad.",
+  cicd: "Cómo entra un cambio y el camino automático: baja la carga del equipo de infraestructura.",
+  operacion: "Operar: Kubernetes, Pods, memoria y CPU.",
+  demostracion: "Acompaña los videos de la pantalla con su narración.",
+  cierre: "Cierra con los resultados en el idioma del negocio y recibe las preguntas.",
 };
 
 export const CONSEJOS: Record<Rol, string[]> = {
-  orquestador: [
-    "Abrir con el nombre del equipo y el enfoque: vamos a fondo en datos, interconexión y DevOps.",
-    "Llevar el tiempo con la línea de tiempo de este documento y avisar con una seña acordada si alguien se pasa.",
-    "En el cierre, detenerse en «Lo que pueden aplicar desde mañana»: es la lámina más importante para el staff.",
-    "Recibir las preguntas y pasárselas a quien presentó esa parte, según la tabla de preguntas.",
+  apertura: [
+    "No volver a presentar al equipo, porque ya lo hizo el moderador: abrir conectando con la presentación anterior, en menos de un minuto.",
+    "Avisar desde el inicio que todo se explica con ejemplos: el público no técnico se relaja.",
   ],
   fundamentos: [
-    "Ser breve: la idea fuerza es «primero el qué, después el cómo».",
-    "Contar las buenas prácticas con ejemplos que el staff reconozca, no con detalles de Java.",
+    "Ser breve: la idea fuerza es «analizar antes de programar».",
+    "No enseñar Java ni Spring Boot: eso lo cubre el equipo anterior. Contar lo que nos quedó.",
   ],
   arquitectura: [
-    "Hexagonal en una frase: ordena el código por dentro y no cambia cómo se despliega.",
-    "En «Cómo funciona en la práctica», remarcar que el evento es un dato que viaja, no una pieza del sistema.",
+    "Hexagonal en una frase: ordena el código por dentro y no cambia cómo se instala.",
+    "En «Cómo funciona en la práctica», remarcar que ninguna flecha une las dos bases.",
   ],
   bd: [
-    "Apoyarse en lo que el staff ya sabe: procedimientos, BEGIN y COMMIT, llaves, CHECK e índices.",
+    "Apoyarse en lo que el staff ya sabe: procedimientos, BEGIN y COMMIT, llaves e índices.",
     "En «Del procedimiento almacenado al ORM», dejar claro que la base no pierde importancia: lo que cambia es dónde vive la regla.",
-    "Las preguntas de código (Hibernate, Java, configuración) pasárselas a Desarrollo 3.",
+    "Las preguntas de código (el ORM, Java, la configuración) pasárselas a Jossett.",
   ],
   orm: [
-    "Entrar con «Gracias» y salir devolviendo la palabra al administrador de base de datos para la transacción: el guion ya trae las frases.",
-    "Tener a mano cómo ver el SQL que genera Hibernate (spring.jpa.show-sql) por si preguntan por rendimiento.",
-    "En la cadena de conexión, recalcar que la clave no está en el código ni en la imagen: es lo que más le interesa al staff.",
+    "Abrir «La misma regla» aclarando que los procedimientos no están mal: baja la defensiva de la sala.",
+    "En «¿Qué es un ORM?», quedarse en la idea del intérprete; el detalle va en la lámina siguiente.",
+    "En los datos de conexión, conectar con lo que ya hacen hoy: el web.config.",
   ],
   interconexion: [
-    "Llevar el Outbox y la idempotencia al mundo del staff: una tabla de pendientes con un job, y una tabla de procesados con llave única.",
-    "Anticipar la demostración: «en un momento lo van a ver en vivo».",
+    "Llevar la bandeja de salida y la idempotencia al mundo del staff: una tabla de pendientes con un job, y una tabla de procesados con llave única.",
   ],
   plataforma: [
-    "Abrir DevOps con el ciclo completo antes de entrar a Docker: así cada lámina tiene su lugar.",
-    "Ser dueño del Codespace el día de la presentación y apoyar la demostración desde la terminal.",
-    "En observabilidad, mostrar Grafana en vivo solo si sobra tiempo; la lámina basta.",
+    "Abrir DevOps con el camino completo antes de entrar a Docker: así cada lámina tiene su lugar.",
+    "Molde y contenedor: si la sala se queda con eso, Docker ya está entendido.",
+    "En observabilidad, contar el caso del aviso que no llegó y la guía del courier; no explicar cómo se escribe la consulta.",
+  ],
+  cicd: [
+    "Antes de decir CI/CD, explicar rama, main y Pull Request: sin eso, lo demás no se entiende.",
+    "Usar la comparación del control de calidad y evitar el detalle del archivo del pipeline.",
+    "«Cuando un cambio rompe algo» es la lámina de más valor: detenerse ahí.",
   ],
   operacion: [
-    "Contar el CI/CD desde el push y la diferencia entre entrega continua y despliegue continuo.",
-    "«Cuando un cambio rompe algo» es la lámina de más valor del CI: detenerse ahí.",
-    "Si hay un clúster local disponible, se puede borrar un Pod en vivo; si no, contarlo con los clics de la lámina.",
+    "«Contenedores y Pods» es la lámina más difícil de DevOps: seguir el diagrama de izquierda a derecha, sin apuro.",
+    "Decir con honestidad qué es teórico y qué está en el proyecto: una copia por pieza y topes solo en la pantalla.",
+    "Si preguntan por producción, recordar que esto es un laboratorio.",
   ],
   demostracion: [
-    "Abrir el Codespace, o el Compose local, 15 minutos antes y comprobar que Salud muestra los dos servicios en verde.",
-    "Practicar la secuencia: detener notificaciones, enviar una solicitud, mirar Enviadas, levantar notificaciones y Reentregar.",
-    "Plan B: si el sistema o la red fallan, presentar con ARKA-Lite-ejecutivo-con-videos.pptx: las mismas láminas, con la demostración grabada. Si falla en plena presentación, contarla con los clics de la lámina.",
+    "Abrir el PPTX antes en la computadora de la sala y probar que los videos arrancan solos y se oyen las indicaciones.",
+    "Practicar la narración con el video: Alt+P lo pausa si hace falta explicar algo.",
+  ],
+  cierre: [
+    "Hablar en el idioma del negocio: qué gana una persona que usa el sistema.",
+    "Recibir las preguntas al final y pasárselas a quien presentó esa parte, según la tabla de preguntas.",
+    "Llevar el tiempo con la línea de tiempo de este documento y avisar con una seña acordada si alguien se pasa.",
   ],
 };
 
 // A quién pasarle cada tipo de pregunta del público.
 export const PREGUNTAS_A_QUIEN: { tema: string; rol: Rol }[] = [
-  { tema: "El negocio y el alcance del proyecto", rol: "orquestador" },
+  { tema: "El negocio y el alcance del proyecto", rol: "fundamentos" },
   { tema: "Microservicios y por qué dos bases", rol: "arquitectura" },
   { tema: "Procedimientos almacenados, modelo, transacciones e índices", rol: "bd" },
-  { tema: "Hibernate, el SQL que genera y la cadena de conexión", rol: "orm" },
+  { tema: "El ORM, el SQL que genera y los datos de conexión", rol: "orm" },
   { tema: "Eventos, reintentos y duplicados", rol: "interconexion" },
-  { tema: "Docker, Compose, Codespaces y los logs", rol: "plataforma" },
-  { tema: "El pipeline, las imágenes y Kubernetes", rol: "operacion" },
-  { tema: "La interfaz y la demostración", rol: "demostracion" },
+  { tema: "Docker, Compose y los registros", rol: "plataforma" },
+  { tema: "Git, Pull Request y el pipeline", rol: "cicd" },
+  { tema: "Kubernetes, Pods, memoria y CPU", rol: "operacion" },
 ];
 
 // Láminas que se pueden saltar en vivo si falta tiempo (en PowerPoint:
-// Ocultar diapositiva), sin tocar las partes que van a fondo.
+// Ocultar diapositiva), sin tocar las partes que van en detalle.
 export const RECORTES: { id: string; motivo: string }[] = [
   { id: "s02-mapa", motivo: "«Cómo funciona en la práctica» muestra lo mismo con más detalle." },
-  { id: "s08-valor", motivo: "«Lo que pueden aplicar desde mañana» lleva el mensaje más útil para el staff." },
-  { id: "s06-aprendizajes", motivo: "Su mensaje cabe en una frase al final de la lámina de logs." },
+  { id: "s03-orm", motivo: "«¿Qué es un ORM?» ya deja la idea; esta lámina agrega el detalle." },
+  { id: "s03-viaje", motivo: "Repasa lo que ya se vio en la misma parte." },
+  { id: "s05-compose", motivo: "Se puede decir en una frase al final de las bondades de Docker." },
+  { id: "s05-trazabilidad", motivo: "Su mensaje cabe en una frase al final del pipeline." },
+  { id: "s08-sostiene", motivo: "«Resultados para el negocio» lleva el mensaje más útil." },
 ];
 
 export const CHECKLIST: string[] = [
-  "Descargar la última versión del PPTX ejecutivo de la rama y abrirla en modo presentación.",
-  "Codespace arrancado 15 minutos antes, con Salud en verde y Grafana abierto en otra pestaña. Si no se puede, llevar la versión con videos.",
-  "Cada persona con su guion a mano: el PDF de guion o `guion-ejecutivo-7-personas.md` en el teléfono.",
-  "Probar el clicker o el teclado con un diagrama que se arme por clics.",
-  "Acordar con quien orquesta la seña de tiempo.",
+  "Descargar la última versión del PPTX y abrirla en modo presentación.",
+  "Ocultar o borrar la última lámina, «Reparto de la presentación»: es solo para el equipo.",
+  "En la versión con videos, comprobar que arrancan solos en la computadora de la sala.",
+  "Cada persona con su guion a mano: el PDF de guion o su guion por persona en el teléfono.",
+  "Acordar con Abdiel la seña de tiempo.",
 ];

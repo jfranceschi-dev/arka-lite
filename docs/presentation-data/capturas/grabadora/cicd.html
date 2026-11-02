@@ -1,0 +1,124 @@
+<!doctype html>
+<!-- Simulación del camino de un cambio, del merge al despliegue. No se conecta a
+     nada: el pipeline real del proyecto llega hasta publicar la imagen. El aviso
+     de arriba lo dice durante todo el video. grabar-videos.ts llama a paso(n). -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Del merge al despliegue</title>
+<style>
+  :root { --marino: #0B1F3A; --cian: #2BA6CB; --verde: #16A06A; --ambar: #F5B942; --linea: #C9D6E5; --suave: #5A6E87; }
+  * { box-sizing: border-box; margin: 0; font-family: "Segoe UI", system-ui, sans-serif; }
+  body { width: 1200px; height: 675px; overflow: hidden; background: #EEF3F9; color: var(--marino); }
+  header { height: 62px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; background: var(--marino); color: #fff; }
+  header h1 { font-size: 24px; font-weight: 800; }
+  .aviso { padding: 7px 16px; border-radius: 999px; background: var(--ambar); color: #3A2500; font-size: 15px; font-weight: 800; }
+  .etapas { display: flex; align-items: center; padding: 16px 28px 0; }
+  .etapa { flex: 1; height: 86px; padding: 10px 8px; border-radius: 14px; background: #fff; border: 3px solid var(--linea); text-align: center; transition: border-color .3s, background .3s; }
+  .etapa b { display: block; font-size: 19px; font-weight: 800; }
+  .etapa span { display: block; margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--suave); }
+  .etapa.corriendo { border-color: var(--cian); background: #DDF2F9; }
+  .etapa.corriendo span { color: #0B6E8C; }
+  .etapa.lista { border-color: var(--verde); background: #DCF5E9; }
+  .etapa.lista span { color: #0A6B45; }
+  .union { width: 26px; height: 5px; flex: none; background: var(--linea); transition: background .3s; }
+  .union.lista { background: var(--verde); }
+  .paneles { display: flex; gap: 16px; padding: 14px 28px 0; height: 400px; }
+  .registro { flex: 1.15; height: 372px; padding: 16px 18px; border-radius: 14px; background: #0D1526; color: #E8EDF8; font-family: Consolas, "Cascadia Mono", monospace; font-size: 17px; line-height: 1.5; overflow: hidden; }
+  .registro div { opacity: 0; animation: entra .3s forwards; white-space: pre-wrap; }
+  .registro .ok { color: #7BE3B3; }
+  .registro .cmd { color: #7FD3EA; }
+  @keyframes entra { to { opacity: 1; } }
+  .cluster { flex: 1; height: 372px; padding: 16px; border-radius: 14px; background: #fff; border: 3px solid var(--linea); }
+  .cluster h2 { font-size: 18px; font-weight: 800; }
+  .usuarios { margin-top: 12px; padding: 9px; border-radius: 10px; background: var(--marino); color: #fff; text-align: center; font-size: 17px; font-weight: 700; }
+  .pods { display: flex; gap: 14px; margin-top: 44px; position: relative; }
+  .pod { flex: 1; height: 128px; padding: 14px 10px; border-radius: 14px; border: 3px solid var(--verde); background: #DCF5E9; text-align: center; transition: opacity .7s, border-color .3s, background .3s; }
+  .pod b { display: block; font-size: 21px; font-weight: 800; }
+  .pod code { display: block; margin-top: 4px; font-family: Consolas, monospace; font-size: 15px; }
+  .pod span { display: block; margin-top: 7px; font-size: 16px; font-weight: 700; color: #0A6B45; }
+  .pod.creando { border-color: var(--cian); background: #DDF2F9; }
+  .pod.creando span { color: #0B6E8C; }
+  .pod.oculto, .pod.retirado { opacity: 0; }
+  .trafico { position: absolute; top: -38px; width: 6px; height: 34px; border-radius: 3px; background: var(--marino); transition: left .7s; left: calc(25% - 3px); }
+  .trafico.nuevo { left: calc(75% - 3px); }
+</style>
+</head>
+<body>
+  <header><h1>Del merge al despliegue</h1><div class="aviso">EJEMPLO ILUSTRATIVO · no es un despliegue real</div></header>
+  <section class="etapas">
+    <div class="etapa" id="e1"><b>Merge</b><span>a main</span></div><div class="union" id="u1"></div>
+    <div class="etapa" id="e2"><b>Compila</b><span>y prueba</span></div><div class="union" id="u2"></div>
+    <div class="etapa" id="e3"><b>Imagen</b><span>publicada</span></div><div class="union" id="u3"></div>
+    <div class="etapa" id="e4"><b>Despliegue</b><span>aprobado</span></div><div class="union" id="u4"></div>
+    <div class="etapa" id="e5"><b>En línea</b><span>versión nueva</span></div>
+  </section>
+  <section class="paneles">
+    <div class="registro" id="registro"></div>
+    <div class="cluster">
+      <h2>Kubernetes</h2>
+      <div class="usuarios">Usuarios</div>
+      <div class="pods">
+        <div class="trafico" id="trafico"></div>
+        <div class="pod" id="viejo"><b>Pod</b><code>versión anterior</code><span>Atiende</span></div>
+        <div class="pod creando oculto" id="nuevo"><b>Pod</b><code>a1b2c3d</code><span id="estado">Arrancando…</span></div>
+      </div>
+    </div>
+  </section>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const esperar = (ms) => new Promise((listo) => setTimeout(listo, ms));
+  const etapa = (n, clase) => { $(`e${n}`).className = `etapa ${clase}`; if (clase === "lista" && $(`u${n}`)) $(`u${n}`).className = "union lista"; };
+  const linea = (texto, clase = "") => { const d = document.createElement("div"); d.className = clase; d.textContent = texto; $("registro").appendChild(d); };
+
+  window.cicd = {
+    async paso(n) {
+      if (n === 1) {
+        etapa(1, "corriendo");
+        linea("$ git merge feat/nueva-regla", "cmd");
+        await esperar(1800);
+        linea("✓ El cambio entró a main: a1b2c3d", "ok");
+        etapa(1, "lista");
+      }
+      if (n === 2) {
+        etapa(2, "corriendo");
+        linea("› Compilando…");
+        await esperar(2200);
+        linea("› Corriendo las pruebas…");
+        await esperar(2600);
+        linea("✓ Todas las pruebas pasaron", "ok");
+        etapa(2, "lista");
+      }
+      if (n === 3) {
+        etapa(3, "corriendo");
+        linea("› Construyendo la imagen…");
+        await esperar(2400);
+        linea("✓ Publicada: servicio:a1b2c3d", "ok");
+        etapa(3, "lista");
+      }
+      if (n === 4) {
+        etapa(4, "corriendo");
+        linea("✓ Despliegue aprobado", "ok");
+        await esperar(1500);
+        linea("$ kubectl set image … servicio:a1b2c3d", "cmd");
+        etapa(4, "lista");
+        await esperar(800);
+        $("nuevo").classList.remove("oculto");
+      }
+      if (n === 5) {
+        etapa(5, "corriendo");
+        $("nuevo").classList.remove("creando");
+        $("estado").textContent = "Listo";
+        await esperar(1800);
+        $("trafico").classList.add("nuevo");
+        $("estado").textContent = "Atiende";
+        await esperar(1500);
+        $("viejo").classList.add("retirado");
+        linea("✓ Versión nueva en línea, sin interrumpir", "ok");
+        etapa(5, "lista");
+      }
+    },
+  };
+</script>
+</body>
+</html>

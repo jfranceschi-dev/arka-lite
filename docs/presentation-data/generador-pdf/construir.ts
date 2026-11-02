@@ -1,15 +1,10 @@
 import PDFDocument from "pdfkit";
-import { laminas, etiquetaSeccion, nombreVariante, partesDe, recorridoDe, type Lamina, type Variante } from "../contenido/index.ts";
-import { CLIC, type Tabla } from "../contenido/tipos.ts";
-import { lineasDeVisual, nombreDeVisual } from "../contenido/visuales.ts";
+import { laminas, etiquetaSeccion, nombreVariante, partesDe, type Lamina, type Variante } from "../contenido/index.ts";
 import { quienPresenta, rolDe } from "../contenido/reparto.ts";
-import { diagramaPorId } from "../diagramas/definiciones.ts";
-import { numeroDePaso, posicionEtiqueta, posicionNumero, rutaArista } from "../diagramas/geometria.ts";
-import type { Diagrama } from "../diagramas/tipos.ts";
-import { color, trazo } from "../diseno/tokens.ts";
+import { color } from "../diseno/tokens.ts";
 
-// PDF de lectura: cada lámina con lo que se ve, su diagrama detallado y el
-// guion (qué decir, qué hacer, si preguntan, para pasar). Usa las fuentes
+// PDF de lectura: cada lámina con lo que se ve y el guion (qué decir, con tus
+// palabras, si preguntan, para pasar). Usa las fuentes
 // estándar del PDF para que el resultado sea igual en Windows y en CI.
 
 type Doc = PDFKit.PDFDocument;
@@ -20,7 +15,6 @@ const CW = ANCHO - 2 * M;
 const FUENTE = "Helvetica";
 const NEGRITA = "Helvetica-Bold";
 const CURSIVA = "Helvetica-Oblique";
-const MONO = "Courier";
 
 export function nombreArchivoPdf(variante: Variante): string {
   return `ARKA-Lite-${variante}-guion.pdf`;
@@ -82,137 +76,6 @@ function recuadro(doc: Doc, encabezado: string, parrafos: string[], fondo: strin
   }
 }
 
-function tabla(doc: Doc, t: Tabla) {
-  const columnas = t.encabezados.length;
-  const ancho = CW / columnas;
-  const fila = (celdas: string[], negrita: boolean, fondo: string | null) => {
-    doc.font(negrita ? NEGRITA : FUENTE).fontSize(9);
-    const alto = Math.max(...celdas.map((c) => doc.heightOfString(texto(c), { width: ancho - 10 }))) + 10;
-    espacio(doc, alto);
-    const y = doc.y;
-    if (fondo) doc.rect(M, y, CW, alto).fill(fondo);
-    doc.moveTo(M, y + alto).lineTo(M + CW, y + alto).lineWidth(0.5).stroke(color.borde);
-    celdas.forEach((c, i) => {
-      doc.font(negrita ? NEGRITA : FUENTE).fontSize(9).fillColor(color.texto).text(texto(c), M + i * ancho + 5, y + 5, { width: ancho - 10 });
-    });
-    doc.y = y + alto;
-  };
-  doc.moveDown(0.3);
-  fila(t.encabezados, true, color.superficie2);
-  for (const f of t.filas) fila(f, false, null);
-  doc.moveDown(0.5);
-}
-
-const GUIONES: Partial<Record<string, [number, number]>> = { posterior: [6, 4], interno: [1.5, 4], error: [3, 4], dependencia: [4, 3] };
-
-// Diagrama estático: todos los elementos visibles y cada flecha con el
-// número del paso que la explica.
-function diagrama(doc: Doc, d: Diagrama) {
-  const altoMax = 230;
-  const e = Math.min(CW / d.ancho, altoMax / d.alto);
-  const w = d.ancho * e;
-  const h = d.alto * e;
-  espacio(doc, h + 20);
-  const ox = M + (CW - w) / 2;
-  const oy = doc.y + 6;
-  const X = (v: number) => ox + v * e;
-  const Y = (v: number) => oy + v * e;
-  doc.save();
-  doc.roundedRect(ox, oy, w, h, 6).fill(color.superficie2);
-
-  for (const z of d.zonas ?? []) {
-    doc.roundedRect(X(z.x), Y(z.y), z.w * e, z.h * e, 6).lineWidth(0.8);
-    if (z.punteada) doc.dash(4, { space: 3 });
-    doc.fillAndStroke("#FFFFFF", color.borde).undash();
-    doc.font(NEGRITA).fontSize(Math.max(5.5, 11 * e)).fillColor(color.secundario).text(texto(z.etiqueta), X(z.x + 10), Y(z.y + 6), { width: z.w * e - 10, lineBreak: false });
-  }
-
-  for (const a of d.aristas) {
-    const t = trazo[a.tipo];
-    const ruta = rutaArista(d, a);
-    doc.lineWidth(Math.max(0.6, t.ancho * e * 1.4)).strokeColor(t.color);
-    const g = GUIONES[a.tipo];
-    if (g) doc.dash(g[0], { space: g[1] });
-    doc.moveTo(X(ruta[0][0]), Y(ruta[0][1]));
-    for (const p of ruta.slice(1)) doc.lineTo(X(p[0]), Y(p[1]));
-    doc.stroke().undash();
-    if (t.punta !== "ninguna" && ruta.length > 1) {
-      const [ax, ay] = ruta[ruta.length - 2];
-      const [bx, by] = ruta[ruta.length - 1];
-      const ang = Math.atan2(by - ay, bx - ax);
-      const l = 6;
-      const px = X(bx);
-      const py = Y(by);
-      doc.moveTo(px, py).lineTo(px - l * Math.cos(ang - 0.45), py - l * Math.sin(ang - 0.45)).lineTo(px - l * Math.cos(ang + 0.45), py - l * Math.sin(ang + 0.45)).closePath();
-      if (t.punta === "llena") doc.fill(t.color);
-      else doc.lineWidth(0.8).stroke(t.color);
-    }
-    if (a.etiqueta) {
-      const p = posicionEtiqueta(ruta, a.lado);
-      const tam = Math.max(6.5, 11 * e);
-      doc.font(MONO).fontSize(tam);
-      const ancho = doc.widthOfString(texto(a.etiqueta)) + 4;
-      const x = p.ancla === "middle" ? X(p.x) - ancho / 2 : p.ancla === "end" ? X(p.x) - ancho : X(p.x);
-      doc.rect(x, Y(p.y) - tam, ancho, tam + 2).fill(color.superficie2);
-      doc.fillColor(t.color).text(texto(a.etiqueta), x + 2, Y(p.y) - tam + 1, { lineBreak: false });
-    }
-    const n = numeroDePaso(d, a.id);
-    if (n !== null && ruta.length > 1) {
-      const [nx, ny] = posicionNumero(ruta);
-      const r = Math.max(5, 11 * e);
-      doc.circle(X(nx), Y(ny), r).fill(t.color);
-      doc.font(NEGRITA).fontSize(r * 1.1).fillColor("#FFFFFF").text(String(n), X(nx) - r, Y(ny) - r * 0.55, { width: 2 * r, align: "center", lineBreak: false });
-    }
-  }
-
-  for (const n of d.nodos) {
-    const tipo = n.tipo ?? "componente";
-    const fondo = tipo === "memoria" ? color.advertenciaSuave : tipo === "datos" ? "#EEF3FA" : tipo === "infra" ? color.superficie2 : "#FFFFFF";
-    const borde = tipo === "memoria" ? color.advertencia : tipo === "pendiente" ? color.secundario : color.azul;
-    const radio = tipo === "persona" ? (n.h * e) / 2 : 5;
-    doc.lineWidth(0.9);
-    if (tipo === "memoria" || tipo === "pendiente" || tipo === "contrato") doc.dash(3, { space: 2 });
-    if (tipo === "decision") {
-      const cx = X(n.x + n.w / 2);
-      const cy = Y(n.y + n.h / 2);
-      doc.polygon([cx, Y(n.y)], [X(n.x + n.w), cy], [cx, Y(n.y + n.h)], [X(n.x), cy]).fillAndStroke(color.cianSuave, color.cian);
-    } else {
-      doc.roundedRect(X(n.x), Y(n.y), n.w * e, n.h * e, radio).fillAndStroke(fondo, borde);
-    }
-    doc.undash();
-    const tamT = Math.max(5.5, 14 * e);
-    const tamS = Math.max(6, 11.5 * e);
-    doc.font(NEGRITA).fontSize(tamT);
-    const altoT = doc.heightOfString(texto(n.titulo), { width: n.w * e - 6 });
-    doc.font(FUENTE).fontSize(tamS);
-    const altoS = n.subtitulo ? doc.heightOfString(texto(n.subtitulo), { width: n.w * e - 6 }) : 0;
-    const y0 = Y(n.y) + (n.h * e - altoT - altoS) / 2;
-    doc.font(NEGRITA).fontSize(tamT).fillColor(color.texto).text(texto(n.titulo), X(n.x) + 3, y0, { width: n.w * e - 6, align: "center" });
-    if (n.subtitulo) doc.font(FUENTE).fontSize(tamS).fillColor(color.secundario).text(texto(n.subtitulo), X(n.x) + 3, y0 + altoT, { width: n.w * e - 6, align: "center" });
-  }
-  doc.restore();
-  doc.x = M;
-  doc.y = oy + h + 8;
-
-  // Leyenda corta: solo los tipos de flecha que aparecen.
-  const tipos = Array.from(new Set(d.aristas.map((a) => a.tipo)));
-  let x = M;
-  const y = doc.y;
-  for (const tipo of tipos) {
-    const t = trazo[tipo];
-    const g = GUIONES[tipo];
-    doc.lineWidth(1.4).strokeColor(t.color);
-    if (g) doc.dash(g[0], { space: g[1] });
-    doc.moveTo(x, y + 4).lineTo(x + 18, y + 4).stroke().undash();
-    doc.font(FUENTE).fontSize(7.5).fillColor(color.secundario);
-    const ancho = doc.widthOfString(t.etiqueta);
-    doc.text(t.etiqueta, x + 22, y, { lineBreak: false });
-    x += 22 + ancho + 14;
-  }
-  doc.x = M;
-  doc.y = y + 14;
-}
-
 function portada(doc: Doc, variante: Variante) {
   doc.rect(0, 0, ANCHO, ALTO).fill(color.marino);
   doc.rect(0, 0, 10, ALTO).fill(color.cian);
@@ -230,7 +93,7 @@ function portada(doc: Doc, variante: Variante) {
     doc.moveDown(0.3);
   }
   doc.font(FUENTE).fontSize(9).fillColor(color.sobreOscuroSecundario)
-    .text("Generado desde docs/presentation-data/contenido. Cada lámina tiene: lo que se ve, el diagrama detallado cuando lo hay, y el guion: qué decir, qué hacer, si preguntan y para pasar.", M, ALTO - M - 30, { width: CW });
+    .text("Generado desde docs/presentation-data/contenido. Cada lámina tiene: lo que se ve y el guion: qué decir, con tus palabras, si preguntan y para pasar.", M, ALTO - M - 30, { width: CW });
 }
 
 function encabezadoSeccion(doc: Doc, l: Lamina) {
@@ -243,7 +106,7 @@ function encabezadoSeccion(doc: Doc, l: Lamina) {
   doc.y = y + 58;
 }
 
-function lamina(doc: Doc, l: Lamina, numero: number, variante: Variante) {
+function lamina(doc: Doc, l: Lamina, numero: number) {
   const d = l.diapositiva;
   espacio(doc, 90);
   doc.moveDown(0.6);
@@ -251,56 +114,21 @@ function lamina(doc: Doc, l: Lamina, numero: number, variante: Variante) {
   doc.moveDown(0.5);
   titulo(doc, `${numero}. ${d.titulo}`, 14);
   parrafo(doc, `Presenta: ${quienPresenta(rolDe(l))}`, { fuente: CURSIVA, tamano: 9, c: color.secundario });
-  if (d.visual && !d.tabla) {
-    etiqueta(doc, `En pantalla · ${nombreDeVisual(d.visual)}`);
-    vinetas(doc, lineasDeVisual(d.visual));
-    etiqueta(doc, "Ideas clave");
-  } else {
-    etiqueta(doc, "En pantalla");
-  }
-  vinetas(doc, d.visible);
-  if (d.comparacion) parrafo(doc, `Comparación: ${d.comparacion}`, { fuente: CURSIVA, tamano: 9.5, c: color.secundario });
-  if (d.diagrama) {
-    const fig = diagramaPorId(d.diagrama);
-    etiqueta(doc, `Diagrama · ${fig.titulo}`);
-    diagrama(doc, fig);
-    vinetas(doc, fig.pasos.map((p) => p.texto), true);
-    if (fig.nota) parrafo(doc, fig.nota, { fuente: CURSIVA, tamano: 9.5, c: color.secundario });
-  }
-  if (d.tabla) tabla(doc, d.tabla);
-  if (d.codigo && recorridoDe(variante) === "tecnico") {
-    etiqueta(doc, `Código · ${d.codigo.archivo}`);
-    doc.font(MONO).fontSize(8);
-    const alto = doc.heightOfString(texto(d.codigo.texto), { width: CW - 20 }) + 16;
-    espacio(doc, Math.min(alto, 400));
-    const y = doc.y;
-    doc.roundedRect(M, y, CW, alto, 6).fill(color.codigoFondo);
-    doc.font(MONO).fontSize(8).fillColor(color.codigoTexto).text(texto(d.codigo.texto), M + 10, y + 8, { width: CW - 20 });
-    doc.x = M;
-    doc.y = y + alto + 4;
-  }
-  if (d.valor) {
-    etiqueta(doc, "Lo que se lleva el staff", color.correcto);
-    parrafo(doc, d.valor, { fuente: NEGRITA });
-  }
-  recuadro(doc, "Qué decir (▶ = hacer clic)", d.guion.decir.map((t) => `“${t.replaceAll(CLIC, "▶")}”`), color.cianSuave, color.cianClaro);
-  const hacer = [...(d.guion.instrucciones ?? []), ...(d.guion.demo ? [`Mostrar: ${d.guion.demo.accion} Debe verse: ${d.guion.demo.evidencia}`] : [])];
-  if (hacer.length) {
+  recuadro(doc, "Qué decir", [...d.guion.decir, ...(d.guion.transicion ? [d.guion.transicion] : [])], color.cianSuave, color.cianClaro);
+  etiqueta(doc, "Si se te olvida, di esto", color.correcto);
+  vinetas(doc, d.guion.conTusPalabras);
+  if (d.guion.instrucciones?.length) {
     etiqueta(doc, "Qué hacer (no se dice)", color.advertenciaTexto);
-    vinetas(doc, hacer);
-  }
-  if (d.guion.ampliar?.length) {
-    etiqueta(doc, "Si hay tiempo, se puede agregar");
-    vinetas(doc, d.guion.ampliar);
+    vinetas(doc, d.guion.instrucciones);
   }
   for (const p of d.guion.preguntas ?? []) {
     etiqueta(doc, "Si preguntan");
     parrafo(doc, p.texto, { fuente: NEGRITA });
     parrafo(doc, p.respuesta);
   }
-  if (d.guion.transicion) {
-    etiqueta(doc, "Para pasar");
-    parrafo(doc, `“${d.guion.transicion}”`, { fuente: CURSIVA });
+  if (d.guion.ampliar?.length) {
+    etiqueta(doc, "Si hay tiempo");
+    vinetas(doc, d.guion.ampliar);
   }
 }
 
@@ -314,7 +142,7 @@ export function construirPdf(variante: Variante): Doc {
       seccion = l.seccion.id;
       encabezadoSeccion(doc, l);
     }
-    lamina(doc, l, i + 1, variante);
+    lamina(doc, l, i + 1);
   });
   // Pie con número de página, salvo en la portada.
   const paginas = doc.bufferedPageRange();
