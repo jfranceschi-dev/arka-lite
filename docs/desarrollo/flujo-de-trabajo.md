@@ -1,6 +1,6 @@
 # Flujo de trabajo del equipo
 
-Este estándar está diseñado para un equipo de cinco personas que trabaja con Git y GitHub. El objetivo es mantener `main` estable, revisada y lista para ejecutar.
+Este estándar está diseñado para un equipo de siete personas que trabaja con Git y GitHub. El objetivo es mantener `main` estable, revisada y lista para ejecutar.
 
 ## Regla principal
 
@@ -333,7 +333,7 @@ El PR debe contener una sola tarea o propósito. Esto facilita entenderlo, revis
 
 - Una persona desarrolla el cambio.
 - Otra persona realiza la revisión obligatoria.
-- Las revisiones deben rotar entre las cinco personas para compartir conocimiento.
+- Las revisiones deben rotar entre las siete personas para compartir conocimiento.
 - El revisor comprueba funcionamiento, claridad, pruebas, seguridad y documentación.
 - Los cambios solicitados por el revisor se agregan a la misma rama, se confirman con un nuevo commit y se publican con `git push`.
 

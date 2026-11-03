@@ -46,9 +46,9 @@ else echo "   XX  no hay $WF"; fi
 # --- construir las imagenes locales -----------------------------
 echo ""
 echo "[ CONSTRUIR ]"
-echo "-- (3) construyendo las dos imagenes locales..."
+echo "-- (3) construyendo las imagenes locales (servicios y UI)..."
 bok=1
-for S in servicio-solicitudes servicio-notificaciones; do
+for S in servicio-solicitudes servicio-notificaciones arka-lite-ui; do
   docker build -t "$S:local" "./$S" >/tmp/build_$S.log 2>&1 || { bok=0; echo "   .. fallo build $S:"; tail -3 /tmp/build_$S.log; }
 done
 [ "$bok" = 1 ] && { echo "   OK  imagenes construidas (Docker Desktop las ve directo)"; PASS=$((PASS+1)); } \

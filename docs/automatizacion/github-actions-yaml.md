@@ -2,7 +2,7 @@
 
 Esta guía explica qué archivos YAML reconoce GitHub, cómo descubre varios workflows y cómo organizarlos sin asumir experiencia previa con GitHub Actions.
 
-Los ejemplos de esta carpeta son documentación. GitHub no los ejecutará mientras permanezcan dentro de `docs/`.
+Los ejemplos de esta carpeta son documentación. GitHub ejecuta el workflow real [ci.yml](../../.github/workflows/ci.yml); los bloques dentro de `docs/` no se ejecutan.
 
 ## Qué es YAML
 
