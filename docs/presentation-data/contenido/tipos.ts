@@ -152,7 +152,7 @@ export type Visual =
   // al llegar a la lámina.
   | { tipo: "video"; archivo: string; portada: string; url: string; pasos: string[] }
   // Una rama de trabajo que vuelve a main por Pull Request.
-  | { tipo: "ramas"; principal: string; rama: string; commits: string[]; fusion: string }
+  | { tipo: "ramas"; principal: string; ramas: { nombre: string; avances: string[] }[]; nace: string; fusion: string }
   // De la imagen al Pod: el molde, lo que pedimos, el nombre fijo y los Pods de
   // un servidor, cada uno con su contenedor adentro.
   | { tipo: "pods"; imagen: ElementoVisual; deployment: ElementoVisual; service: ElementoVisual; nodo: string; pods: { titulo: string; contenedor: string; recursos: string }[] };

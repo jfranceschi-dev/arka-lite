@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { NOMBRE_ENFOQUE, type Captura, type ElementoVisual, type Enfoque, type Icono, type Tono, type Visual } from "../contenido/tipos.ts";
 import { DIR_CAPTURAS, DIR_VIDEOS } from "../entregables.ts";
 import { color } from "../diseno/tokens.ts";
-import { ACC, ACC_S, ACC_T, FUENTE, H, MONO, PRI, PROF, halo, sombra, TITULO, colorDeTono, flecha, hex, icono, insignia, mezclar, type Slide } from "./base.ts";
+import { ACC, ACC_S, ACC_T, FUENTE, MONO, PRI, PROF, halo, sombra, TITULO, colorDeTono, flecha, hex, icono, insignia, mezclar, type Slide } from "./base.ts";
 import { duracion, partesDeRuta } from "../contenido/visuales.ts";
 import { segundosDeVideo } from "../contenido/videos.ts";
 import { tamQueCabe } from "./medidas.ts";
@@ -597,35 +597,58 @@ function video(s: Slide, c: Caja, v: Extract<Visual, { tipo: "video" }>) {
 
 // ── Ramas de Git ──────────────────────────────────────────────────────────
 
+// main en el centro; la primera rama por encima y la segunda por debajo, para
+// que no se crucen. Cada una nace de un punto de main, guarda sus avances
+// aparte y vuelve con un merge (en verde). Dos notas explican el nacimiento y
+// el merge de la primera.
 function ramas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ramas" }>) {
-  const yMain = c.y + c.h - 1.05;
-  const yRama = c.y + 0.85;
-  const x0 = c.x + 0.4;
-  const x1 = c.x + c.w - 0.4;
   const verde = color.correcto;
-  s.addShape("line", { x: x0, y: yMain, w: x1 - x0, h: 0, line: { color: hex(PRI), width: 6 } });
-  s.addText(v.principal, { x: x0 - 0.1, y: yMain + 0.22, w: 1.6, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 0, fill: { color: hex(PRI) }, line: { color: hex(PRI), width: 0 }, fontFace: MONO, fontSize: 14, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-  const xSale = x0 + 1.2;
-  const xVuelve = x1 - 1.6;
-  const n = v.commits.length;
-  const paso = (xVuelve - xSale - 1.4) / Math.max(n, 1);
-  // Sale de main, sube a la rama y vuelve por Pull Request.
-  s.addShape("line", { x: xSale, y: yRama, w: 0.7, h: yMain - yRama, flipV: true, line: { color: hex(ACC), width: 5 } });
-  s.addShape("line", { x: xSale + 0.7, y: yRama, w: xVuelve - xSale - 1.4, h: 0, line: { color: hex(ACC), width: 5 } });
-  s.addShape("line", { x: xVuelve - 0.7, y: yRama, w: 0.7, h: yMain - yRama, line: { color: hex(verde), width: 5, endArrowType: "triangle" } });
-  s.addText(v.rama, { x: xSale + 0.75, y: yRama - 0.78, w: 4.6, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 8, fill: { color: hex(ACC_S) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, fontSize: 15, bold: true, color: hex(ACC_T), valign: "middle", fit: "shrink" });
-  icono(s, "git-branch", xSale - 0.05, yRama - 0.8, 0.4, ACC_T);
-  v.commits.forEach((m, i) => {
-    const cx = xSale + 0.7 + paso * (i + 0.5);
-    s.addShape("ellipse", { x: cx - 0.2, y: yRama - 0.2, w: 0.4, h: 0.4, fill: { color: "FFFFFF" }, line: { color: hex(ACC), width: 4 }, shadow: sombra() });
-    s.addText(m, { x: cx - paso / 2 + 0.05, y: yRama + 0.32, w: paso - 0.1, h: 0.62, margin: 0, fontFace: FUENTE, fontSize: 16, color: hex(color.texto), align: "center", valign: "top", fit: "shrink" });
+  const yMain = c.y + c.h / 2;
+  const sep = Math.min(1.35, c.h / 2 - 0.4);
+  const x0 = c.x + 0.1;
+  const xIni = x0 + 1.3;
+  const x1 = c.x + c.w - 0.1;
+  const largo = x1 - xIni;
+  const sube = 0.55;
+  const punto = (cx: number, cy: number, d: number, relleno: string, borde: string, ancho = 2) =>
+    s.addShape("ellipse", { x: cx - d / 2, y: cy - d / 2, w: d, h: d, fill: { color: hex(relleno) }, line: { color: hex(borde), width: ancho } });
+  s.addShape("line", { x: xIni, y: yMain, w: largo, h: 0, line: { color: hex(PRI), width: 6, endArrowType: "triangle" } });
+  s.addText(v.principal, { x: x0, y: yMain - 0.22, w: 1.15, h: 0.44, shape: "roundRect", rectRadius: 0.22, margin: 0, fill: { color: hex(PRI) }, line: { color: hex(PRI), width: 0 }, fontFace: MONO, fontSize: 15, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+  const posiciones = [[0.06, 0.6], [0.3, 0.88]];
+  const merges: number[] = [];
+  v.ramas.slice(0, 2).forEach((r, i) => {
+    const arriba = i === 0;
+    const yR = yMain + (arriba ? -sep : sep);
+    const t = colorDeTono(arriba ? "cian" : "violeta");
+    const xNace = xIni + largo * posiciones[i][0];
+    const xVuelve = xIni + largo * posiciones[i][1];
+    merges.push(xVuelve);
+    const top = Math.min(yMain, yR);
+    s.addShape("line", { x: xNace, y: top, w: sube, h: sep, flipV: arriba, line: { color: hex(t.fuerte), width: 5 } });
+    s.addShape("line", { x: xNace + sube, y: yR, w: xVuelve - xNace - 2 * sube, h: 0, line: { color: hex(t.fuerte), width: 5 } });
+    s.addShape("line", { x: xVuelve - sube, y: top, w: sube, h: sep, flipV: !arriba, line: { color: hex(verde), width: 5, endArrowType: "triangle" } });
+    // El nombre de la rama, por fuera; los avances, hacia main.
+    s.addText(r.nombre, { x: xNace + sube + 0.05, y: arriba ? yR - 0.58 : yR + 0.16, w: 3.4, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 8, fill: { color: hex(t.suave) }, line: { color: hex(t.fuerte), width: 1 }, fontFace: FUENTE, fontSize: 14, bold: true, color: hex(t.fuerte), valign: "middle", fit: "shrink" });
+    const n = r.avances.length;
+    const desde = xNace + sube + 0.2;
+    const tramo = (xVuelve - sube - 0.2 - desde) / Math.max(n, 1);
+    r.avances.forEach((a, j) => {
+      const cx = desde + tramo * (j + 0.5);
+      punto(cx, yR, 0.36, "#FFFFFF", t.fuerte, 4);
+      s.addText(a, { x: cx - tramo / 2, y: arriba ? yR + 0.24 : yR - 0.56, w: tramo, h: 0.32, margin: 0, fontFace: FUENTE, fontSize: 12.5, color: hex(color.texto), align: "center", valign: arriba ? "top" : "bottom", fit: "shrink" });
+    });
+    punto(xNace, yMain, 0.34, "#FFFFFF", t.fuerte, 4);
+    punto(xVuelve, yMain, 0.36, verde, "#FFFFFF");
   });
-  [x0 + 0.5, xSale, xVuelve, x1 - 0.5].forEach((cx) => s.addShape("ellipse", { x: cx - 0.17, y: yMain - 0.17, w: 0.34, h: 0.34, fill: { color: hex(PRI) }, line: { color: "FFFFFF", width: 2 } }));
-  const caja = { x: xVuelve - 5.2, y: yMain + 0.16, w: 6.1, h: 0.82 };
-  tarjeta(s, caja, color.correctoSuave, mezclar(verde, "#FFFFFF", 0.5));
-  icono(s, "git-pull-request", caja.x + 0.16, caja.y + 0.2, 0.42, verde);
-  texto(s, v.fusion, { x: caja.x + 0.7, y: caja.y + 0.06, w: caja.w - 0.8, h: caja.h - 0.12 }, { tam: 14.5, negrita: true, color: verde, vertical: "middle" });
-  void H;
+  // Main también avanza por su cuenta.
+  [0.0, 0.45, 0.76].forEach((f) => punto(xIni + largo * f + 0.15, yMain, 0.28, PRI, "#FFFFFF"));
+  // Notas: dónde nace la primera rama y dónde vuelve.
+  const nota = (txt: string, x: number, y: number, w: number, tono: string) => {
+    s.addText(txt, { x, y, w, h: 0.5, margin: 6, shape: "roundRect", rectRadius: 0.1, fill: { color: "FFFFFF" }, line: { color: hex(tono), width: 1.25 }, fontFace: FUENTE, fontSize: 12.5, bold: true, color: hex(tono), valign: "middle", fit: "shrink" });
+  };
+  const xNace0 = xIni + largo * posiciones[0][0];
+  nota(v.nace, xNace0 - 0.25, yMain + 0.3, 2.45, colorDeTono("cian").fuerte);
+  nota(v.fusion, merges[0] + 0.25, yMain - 0.82, 2.9, verde);
 }
 
 // ── Aprendizajes ──────────────────────────────────────────────────────────

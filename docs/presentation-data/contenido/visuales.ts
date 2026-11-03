@@ -113,7 +113,7 @@ export function lineasDeVisual(v: Visual): string[] {
       return [`Video capturas/videos/${v.archivo}${seg ? `, ${duracion(seg)}` : ""}. Arranca solo al llegar a la lámina.`, ...v.pasos.map((p, i) => `${i + 1}. ${p}`)];
     }
     case "ramas":
-      return [`Rama ${v.rama} sale de ${v.principal}`, ...v.commits.map((c) => `Commit: ${c}`), `Vuelve a ${v.principal}: ${v.fusion}`];
+      return [`Línea principal: ${v.principal}`, ...v.ramas.map((r) => `${r.nombre}: nace de ${v.principal}, ${r.avances.join(", ")} y vuelve con un merge`), v.nace, v.fusion];
     case "pods":
       return [linea(v.imagen), linea(v.deployment), linea(v.service), `${v.nodo}: ${v.pods.map((p) => `${p.titulo} con ${p.contenedor} (${p.recursos})`).join("; ")}`];
   }

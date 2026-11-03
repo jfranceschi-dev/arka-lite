@@ -117,6 +117,10 @@ export const AMPLIAR: Record<string, string[]> = {
     "Desde la computadora solo abrimos lo necesario. La base de solicitudes no tiene una entrada externa y únicamente los servicios internos pueden alcanzarla.",
     "Antes de continuar, las bases informan cuándo están listas para aceptar conexiones mediante una herramienta de PostgreSQL.",
   ],
+  "s05-ramas": [
+    "Cada avance guardado se llama commit y tiene un código único. Con ese código se puede volver exactamente a ese punto.",
+    "GitHub es el lugar donde el equipo guarda y comparte el código, y donde se hacen las revisiones.",
+  ],
   "s05-cambio": [
     "Describimos cada cambio con un formato común, por ejemplo, fix seguido de impedir el envío de una solicitud aprobada. Así el historial funciona como una bitácora.",
     "La documentación de los servicios se genera desde el código mediante Swagger, lo que reduce el riesgo de que quede desactualizada.",
@@ -126,6 +130,7 @@ export const AMPLIAR: Record<string, string[]> = {
     "El pipeline ejecuta al mismo tiempo un trabajo para solicitudes, otro para notificaciones y otro para la pantalla. Así termina antes y muestra con precisión qué pieza falló.",
     "Además de pasar las pruebas, el servicio de solicitudes arranca realmente y debe mostrar una solicitud de ejemplo. Compilar no garantiza que una aplicación pueda iniciar.",
     "Entrega continua significa dejar la imagen lista, mientras despliegue continuo significa instalarla automáticamente. Nuestro proyecto llega hasta la entrega.",
+    "Las condiciones se escriben en el mismo archivo del pipeline: en qué eventos corre y qué pasos se hacen solo en algunos de ellos, como publicar la imagen solo al llegar a main.",
     "Actualmente las imágenes de los servicios se publican durante la revisión y la de la pantalla al llegar a main. Ya identificamos esa diferencia como un ajuste pendiente.",
   ],
   "s05-falla-ci": [
@@ -135,6 +140,10 @@ export const AMPLIAR: Record<string, string[]> = {
   "s05-trazabilidad": [
     "Ese código se llama SHA y Git genera uno para cada cambio. Usarlo evita la duda sobre si la imagen que se ejecuta es la nueva o la anterior.",
     "El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.",
+  ],
+  "s05-ciyaml": [
+    "GitHub ofrece plantillas para casi cualquier tecnología: se parte de una y se adapta al proyecto.",
+    "El nombre del archivo puede ser otro; lo que importa es que esté en la carpeta .github/workflows.",
   ],
   "s05-flujo": [
     "Existen herramientas para automatizar ese último paso. Todas siguen la misma idea, donde el pipeline entrega la imagen a Kubernetes y una persona aprueba antes de llegar a producción.",
