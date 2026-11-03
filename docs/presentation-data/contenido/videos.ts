@@ -3,9 +3,9 @@ import { join } from "node:path";
 import { DIR_VIDEOS } from "../entregables.ts";
 import type { Visual } from "./tipos.ts";
 
-// Videos de la versión con videos: dos con el sistema real, sobre cómo
-// interactúan los componentes, y uno simulado del camino de un cambio hasta el
-// despliegue. capturas/grabar-videos.ts los graba y usa estos mismos pasos como rótulos numerados del video; la lámina los lista al
+// Videos de la versión con videos: tres con el sistema real (cómo interactúan
+// los componentes, la caída de notificaciones y la búsqueda de registros en
+// Grafana) y uno simulado del camino de un cambio hasta el despliegue. capturas/grabar-videos.ts los graba y usa estos mismos pasos como rótulos numerados del video; la lámina los lista al
 // lado, así lo que se lee y lo que se ve coinciden.
 export interface Video {
   // En capturas/videos/.
@@ -47,6 +47,19 @@ export const VIDEOS = {
       "Levantamos notificaciones otra vez",
       "Llega un solo aviso, con el mismo evento",
       "Reentregamos el mismo evento a propósito: no se duplica",
+    ],
+  },
+  registros: {
+    archivo: "demo-registros.mp4",
+    portada: "demo-registros.png",
+    titulo: "Un aviso no llegó: ¿dónde buscamos?",
+    subtitulo: "Todos los registros en un solo lugar, y una búsqueda por el código de la solicitud.",
+    url: "Grafana · registros",
+    pasos: [
+      "Promtail recolecta y Loki guarda los registros de todos los servicios",
+      "En Grafana escribimos el código de la solicitud",
+      "Aparecen juntos los registros de solicitudes y de notificaciones",
+      "Se ve hasta dónde llegó: aquí, el aviso se creó",
     ],
   },
   cicd: {

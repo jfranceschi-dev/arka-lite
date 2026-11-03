@@ -30,6 +30,7 @@ export const GLOSARIO: { termino: string; frase: string }[] = [
   { termino: "Secret", frase: "Un lugar aparte y protegido para guardar claves en Kubernetes." },
   { termino: "Reserva y tope", frase: "Lo mínimo garantizado de memoria y CPU, y lo máximo que un Pod puede usar." },
   { termino: "Registros (logs)", frase: "La bitácora de lo que hizo cada servicio." },
+  { termino: "Número del evento", frase: "El identificador fijo de cada evento: con él, notificaciones reconoce una entrega repetida." },
   { termino: "Número de seguimiento (traceId)", frase: "Un número que acompaña cada pedido de un servicio a otro, como la guía de un courier." },
   { termino: "Observabilidad", frase: "Poder saber qué pasa adentro del sistema, sin adivinar: salud, registros y seguimiento." },
 ];

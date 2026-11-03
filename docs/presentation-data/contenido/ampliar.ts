@@ -63,10 +63,6 @@ export const AMPLIAR: Record<string, string[]> = {
     "El repositorio del proyecto no contiene consultas escritas para las operaciones básicas. Al heredar de una interfaz, obtiene las funciones de guardar, buscar, listar y borrar.",
     "Al guardar, el ORM utiliza la llave para determinar si corresponde un INSERT o un UPDATE. Por eso es importante definir correctamente las llaves.",
   ],
-  "s03-viaje": [
-    "Si el número ya existe, las reglas detienen el recorrido antes de tocar la base. La persona recibe entonces un mensaje que explica el motivo.",
-    "Entre las reglas y la base utilizamos dos objetos distintos. Uno representa la solicitud del negocio y el otro refleja la tabla, mientras una pieza traduce entre ambos.",
-  ],
   "s03-credenciales": [
     "En Kubernetes, el Secret guarda la clave y las demás variables contienen el resto de la configuración.",
     "El proyecto tiene valores predeterminados para trabajar en una computadora. En un ambiente real no los usamos, porque la configuración siempre llega desde el entorno.",
@@ -156,11 +152,8 @@ export const AMPLIAR: Record<string, string[]> = {
     "Las revisiones de salud indican cuándo un servicio está listo para trabajar. Un proceso puede haber arrancado sin estar todavía preparado para recibir pedidos.",
     "Podemos aumentar las copias porque los servicios no guardan el estado importante en memoria, sino en la base.",
     "En el laboratorio abrimos un túnel mediante un comando para llegar a la pantalla. En un ambiente real se expondría de forma permanente.",
-  ],
-  "s05-recursos": [
-    "La CPU se mide en milésimas de un núcleo. Doscientas cincuenta equivalen a un cuarto, y llegar al tope reduce la velocidad, mientras superar la memoria provoca un reinicio.",
-    "La pantalla reserva veinticinco milésimas de CPU y treinta y dos megas de memoria. Sus topes son doscientas cincuenta milésimas y ciento veintiocho megas.",
-    "Definir estos recursos también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.",
+    "La pantalla reserva veinticinco milésimas de CPU y treinta y dos megas de memoria, con topes de doscientas cincuenta milésimas y ciento veintiocho megas. Llegar al tope de CPU la hace más lenta; pasarse de memoria provoca un reinicio.",
+    "Definir la reserva y el tope también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.",
   ],
   "s05-autocuracion": [
     "Podemos demostrarlo eliminando el Pod mediante un comando. En la lista aparece uno nuevo y, después de unos segundos, vuelve a estar listo.",

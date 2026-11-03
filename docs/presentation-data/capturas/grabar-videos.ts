@@ -1,10 +1,11 @@
-// Graba los videos de la versión «ejecutivo con videos»: dos con el sistema
-// real, que muestran cómo interactúan los componentes, y uno simulado del
-// camino de un cambio hasta el despliegue (grabadora/cicd.html).
+// Graba los videos de la versión «ejecutivo con videos»: tres con el sistema
+// real (cómo interactúan los componentes, la caída de notificaciones y la
+// búsqueda de registros en Grafana) y uno simulado del camino de un cambio
+// hasta el despliegue (grabadora/cicd.html).
 // Requiere el sistema arriba (docker compose up --build -d) y Edge o Chrome;
 // el simulado solo necesita el navegador.
-//   npm run videos                 → los tres videos
-//   npm run videos -- caida        → solo uno: recorrido, caida o cicd
+//   npm run videos                 → los cuatro videos
+//   npm run videos -- caida        → solo uno: recorrido, caida, registros o cicd
 // Detiene y vuelve a iniciar servicio-notificaciones a propósito: es la caída
 // que muestra el video. Al terminar, regenerar con npm run todo.
 //
@@ -22,6 +23,8 @@ import { DIR_VIDEOS, ENTREGABLES } from "../entregables.ts";
 import { grabados, MANIFIESTO, VIDEOS, type Grabado, type NombreVideo, type Video } from "../contenido/videos.ts";
 
 const UI = process.env.ARKA_UI ?? "http://localhost:8088";
+const GRAFANA = process.env.ARKA_GRAFANA ?? "http://localhost:3000";
+const LOKI = process.env.ARKA_LOKI ?? "http://localhost:3100";
 const RAIZ = join(ENTREGABLES, "..", "..");
 const GRABADORA = join(ENTREGABLES, "capturas", "grabadora");
 // 1200×675 puntos a escala 1.6: cuadros de 1920×1080. Todo sale más grande, para
@@ -53,6 +56,7 @@ class Grabacion {
   // Captura del momento clave: la imagen que se ve antes de reproducir.
   imagenPortada?: Buffer;
   private mouse = { x: VISTA.width / 2, y: VISTA.height / 2 };
+  private vigilando = false;
   private cdp!: CDPSession;
   readonly p: Page;
   readonly video: Video;
@@ -84,9 +88,11 @@ class Grabacion {
     return this.p.evaluate(([m, a]) => (globalThis as any).__grabadora[m as string](...(a as unknown[])), [metodo, args] as const);
   }
 
-  async preparar(conFranja: boolean) {
-    if (conFranja) await this.franja();
-    else await this.llamar("sinCursor");
+  // franja: la UI, con la franja de componentes; cursor: otra página, con el
+  // cursor a la vista; nada: la simulación, que avanza sola.
+  async preparar(modo: "franja" | "cursor" | "nada") {
+    if (modo === "franja") await this.franja();
+    if (modo === "nada") await this.llamar("sinCursor");
     await this.llamar("portada", "ARKA-LITE", this.video.titulo, this.video.subtitulo);
     await dormir(700);
   }
@@ -172,6 +178,26 @@ class Grabacion {
     return this.llamar("franja", COMPONENTES);
   }
 
+  // Mientras graba, la franja dice en qué estado está el evento de la
+  // solicitud, con los datos reales: la bandeja de salida y los registros.
+  vigilarEvento(id: string) {
+    this.vigilando = true;
+    void (async () => {
+      while (this.vigilando) {
+        const estado = await estadoDelEvento(id).catch(() => undefined);
+        if (this.vigilando && estado) await this.llamar("evento", `Evento de ${id}`, ...estado).catch(() => {});
+        await dormir(800);
+      }
+    })();
+  }
+
+  // Deja de leer el estado y, si se pide, muestra uno fijo.
+  async fijarEvento(id: string, texto: string, tono: string) {
+    this.vigilando = false;
+    await dormir(900);
+    await this.llamar("evento", `Evento de ${id}`, texto, tono);
+  }
+
   componentes(estados: Record<string, string>) {
     return this.llamar("componentes", estados);
   }
@@ -207,6 +233,21 @@ class Grabacion {
 async function idLibre(): Promise<string> {
   const existentes = new Set(((await (await fetch(`${UI}/api/solicitudes`)).json()) as { id: string }[]).map((s) => s.id));
   for (let n = 201; ; n++) if (!existentes.has(`SOL-${n}`)) return `SOL-${n}`;
+}
+
+// El estado del evento de una solicitud: entregado o pendiente según la
+// bandeja de salida; si está pendiente, Loki dice cuántas vueltas del
+// relevador no lograron entregarlo.
+async function estadoDelEvento(id: string): Promise<[string, string] | undefined> {
+  const salientes = (await (await fetch(`${UI}/api/eventos/salientes`)).json()) as { eventoId: string; solicitudId: string; procesado: boolean }[];
+  const evento = salientes.find((e) => e.solicitudId === id);
+  if (!evento) return undefined;
+  if (evento.procesado) return ["entregado a notificaciones, que creó un solo aviso", "listo"];
+  const consulta = new URLSearchParams({ query: `{service="servicio-solicitudes"} |= "no entregado tras 3 intentos; va a outbox: ${evento.eventoId}"`, start: String((Date.now() - 600_000) * 1e6), limit: "1000" });
+  const r = (await (await fetch(`${LOKI}/loki/api/v1/query_range?${consulta}`)).json()) as { data: { result: { values: unknown[] }[] } };
+  const fallidas = r.data.result.reduce((n, s) => n + s.values.length, 0);
+  if (!fallidas) return ["guardado en la bandeja de salida, pendiente de entrega", "espera"];
+  return [`sin entregar: notificaciones no responde · ${fallidas} ${fallidas === 1 ? "intento fallido" : "intentos fallidos"}, se reintenta cada 5 s`, "caido"];
 }
 
 const fila = (g: Grabacion, id: string) => g.p.locator("tr", { has: g.p.locator(".celda-id", { hasText: new RegExp(`^${id}$`) }) });
@@ -267,6 +308,7 @@ async function caida(g: Grabacion) {
     await g.soloLaFila(id);
     await g.clic(fila(g, id).locator('button[data-accion="enviar"]'));
     await g.confirmar();
+    g.vigilarEvento(id);
     await dormir(2400);
 
     await g.rotulo(3);
@@ -299,11 +341,71 @@ async function caida(g: Grabacion) {
     await g.clic(fila(g, id).locator('button[data-accion="reentregar"]'));
     await g.confirmar();
     await g.p.getByText("El aviso no se duplicó").waitFor({ timeout: 30_000 });
+    await g.fijarEvento(id, "reentregado a propósito: notificaciones lo reconoce y no crea otro aviso", "listo");
     await dormir(3800);
     await g.clic(g.boton("Entendido"), 2500);
   } finally {
     execFileSync("docker", ["compose", "start", "servicio-notificaciones"], { cwd: RAIZ, stdio: "ignore" });
   }
+}
+
+// Grafana sin Loki conectado no muestra nada: si falta, se conecta la fuente y
+// se carga el tablero de grabadora/tablero-registros.json (una caja para el
+// código de la solicitud y los registros de los dos servicios). Lo mismo que
+// docs/operaciones/observabilidad.md pide hacer a mano.
+async function prepararGrafana() {
+  const json = { "Content-Type": "application/json" };
+  const fuente = await fetch(`${GRAFANA}/api/datasources/uid/loki`);
+  if (!fuente.ok) {
+    const r = await fetch(`${GRAFANA}/api/datasources`, { method: "POST", headers: json, body: JSON.stringify({ name: "Loki", type: "loki", uid: "loki", url: "http://loki:3100", access: "proxy", isDefault: true }) });
+    if (!r.ok) throw new Error(`No se pudo conectar Loki en Grafana: ${r.status}`);
+  }
+  const r = await fetch(`${GRAFANA}/api/dashboards/db`, { method: "POST", headers: json, body: readFileSync(join(GRABADORA, "tablero-registros.json")) });
+  if (!r.ok) throw new Error(`No se pudo cargar el tablero de registros: ${r.status}`);
+}
+
+// Antes de grabar, una solicitud nueva recorre los dos servicios; se espera a
+// que sus registros lleguen a Loki, para que la búsqueda tenga qué mostrar.
+async function solicitudConRegistros(): Promise<string> {
+  const id = await idLibre();
+  const crear = await fetch(`${UI}/api/solicitudes`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, tipo: "Consulta" }) });
+  if (!crear.ok) throw new Error(`No se pudo crear ${id}: ${crear.status}`);
+  await fetch(`${UI}/api/solicitudes/${id}/enviar`, { method: "POST" });
+  const consulta = new URLSearchParams({ query: `{service="servicio-notificaciones"} |= "aviso creado para solicitud ${id} "`, start: String((Date.now() - 600_000) * 1e6) });
+  for (let i = 0; i < 60; i++) {
+    const r = (await (await fetch(`${LOKI}/loki/api/v1/query_range?${consulta}`)).json()) as { data: { result: unknown[] } };
+    if (r.data.result.length) return id;
+    await dormir(2000);
+  }
+  throw new Error(`Los registros de ${id} no llegaron a Loki.`);
+}
+
+// En Grafana: primero todos los registros juntos; al escribir el código de la
+// solicitud quedan solo los suyos, de los dos servicios y en orden.
+async function registros(g: Grabacion, id: string) {
+  await g.portada();
+  await g.rotulo(1);
+  await dormir(3200);
+
+  await g.rotulo(2);
+  const caja = g.p.getByRole("textbox").first();
+  await g.clic(caja, 300);
+  await g.escribir(id);
+  await g.p.keyboard.press("Enter");
+  await dormir(2200);
+
+  await g.rotulo(3);
+  const lineas = g.p.locator('[class*="logs-row"]');
+  await lineas.filter({ hasText: "servicio-solicitudes" }).first().waitFor({ timeout: 20_000 });
+  await g.mover(lineas.filter({ hasText: "servicio-solicitudes" }).first());
+  await dormir(1800);
+  await g.mover(lineas.filter({ hasText: "Consume evento" }).first());
+  await dormir(1800);
+
+  await g.rotulo(4);
+  await g.mover(lineas.filter({ hasText: "aviso creado" }).first());
+  await g.marcarPortada();
+  await dormir(4000);
 }
 
 // El camino de un cambio, simulado: cada rótulo avanza un paso de la página.
@@ -318,9 +420,19 @@ async function cicd(g: Grabacion) {
   await g.marcarPortada();
 }
 
-const GUIONES: Record<NombreVideo, { inicio?: string; pagina?: string; guion: (g: Grabacion) => Promise<void> }> = {
+// Cada video abre una vista de la UI (inicio), la simulación (pagina) o
+// Grafana; antes, si hace falta, prepara el sistema.
+interface Guion {
+  inicio?: string;
+  pagina?: string;
+  grafana?: boolean;
+  guion: (g: Grabacion, dato: string) => Promise<void>;
+}
+
+const GUIONES: Record<NombreVideo, Guion> = {
   recorrido: { inicio: "solicitudes", guion: recorrido },
   caida: { inicio: "solicitudes", guion: caida },
+  registros: { grafana: true, guion: registros },
   cicd: { pagina: "cicd.html", guion: cicd },
 };
 
@@ -336,11 +448,19 @@ async function abrirNavegador(): Promise<Browser> {
 }
 
 async function grabar(contexto: BrowserContext, nombre: NombreVideo): Promise<Grabacion> {
+  const { inicio, pagina, grafana } = GUIONES[nombre];
+  let dato = "";
+  if (grafana) {
+    await prepararGrafana();
+    dato = await solicitudConRegistros();
+  }
   const p = await contexto.newPage();
-  const { inicio, pagina } = GUIONES[nombre];
   if (pagina) {
     await p.route("https://simulacion.arka/**", (r) => r.fulfill({ body: readFileSync(join(GRABADORA, pagina)), contentType: "text/html; charset=utf-8" }));
     await p.goto("https://simulacion.arka/");
+  } else if (grafana) {
+    await p.goto(`${GRAFANA}/d/arka-registros/registros?orgId=1&theme=light`);
+    await p.locator('[class*="logs-row"]').first().waitFor({ timeout: 60_000 });
   } else {
     await p.goto(`${UI}/#/${inicio}`);
     await p.getByText("2 de 2 servicios UP").waitFor({ timeout: 60_000 });
@@ -348,9 +468,9 @@ async function grabar(contexto: BrowserContext, nombre: NombreVideo): Promise<Gr
   await dormir(1500);
   const g = new Grabacion(p, VIDEOS[nombre]);
   // Desde el primer cuadro: la portada tapa la página y la franja, el menú.
-  await g.preparar(!pagina);
+  await g.preparar(pagina ? "nada" : grafana ? "cursor" : "franja");
   await g.empezar();
-  await GUIONES[nombre].guion(g);
+  await GUIONES[nombre].guion(g, dato);
   await g.terminar();
   await p.close();
   return g;

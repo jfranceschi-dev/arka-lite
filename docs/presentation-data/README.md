@@ -20,7 +20,7 @@ Todos los equipos del curso presentan las mismas secciones, pero cada uno profun
 | 7 Demostración | En video | Solo en la versión con videos: cómo interactúan los componentes, con una caída de notificaciones y un evento reentregado |
 | Valor y cierre | | Los resultados en el idioma del negocio, lo que los sostiene y lo que nos llevamos |
 
-Cada idea ocupa **una sola lámina**, con más diagramas que texto. Las láminas **aparecen completas, con un fundido**: no se arman por clics, y un clic siempre pasa a la siguiente, también sobre un video. No hay portadas por sección: una barra de avance arriba a la derecha indica la parte. La presentación no menciona Codespaces, nginx ni el pool de conexiones; la validación lo comprueba.
+Cada idea ocupa **una sola lámina**, con más diagramas que texto. Las láminas **aparecen completas, con un fundido**: no se arman por clics, y un clic siempre pasa a la siguiente, también sobre un video. En la portada, las siete partes giran despacio alrededor de ARKA-Lite (una vuelta cada 6 minutos, sin girar los textos); arranca sola y no detiene el avance. No hay portadas por sección: una barra de avance arriba a la derecha indica la parte. La presentación no menciona Codespaces, nginx ni el pool de conexiones; la validación lo comprueba.
 
 ## Reparto
 
@@ -29,12 +29,12 @@ Cada lámina tiene un papel (el de su sección o uno propio), y [`contenido/repa
 | Persona | Área | Presenta |
 | --- | --- | --- |
 | Luis Cardoze | Desarrollo | Apertura y fundamentos |
-| Ricardo Fábrega | Desarrollo | Arquitectura y la demostración en video |
+| Ricardo Fábrega | Desarrollo | Arquitectura |
 | Marlene Bonilla | Base de datos | Las dos bases, su estructura, del procedimiento al ORM, la transacción y los aprendizajes |
 | Jossett Franceschi | Desarrollo | Apoyo en base de datos (la misma regla, el ORM y la conexión) y CI/CD |
-| Abdiel Barria | Desarrollo | Interconexión de servicios, resultados y cierre; recibe las preguntas |
-| Moises | Infraestructura | DevOps: qué es DevOps, Docker y Compose; al final, la observabilidad |
-| Kevin | Infraestructura | DevOps: Kubernetes |
+| Abdiel Barria | Desarrollo | Interconexión de servicios, la demostración en video, resultados y cierre; recibe las preguntas |
+| Kevin | Infraestructura | DevOps: qué es DevOps, Docker y Compose |
+| Moises | Infraestructura | DevOps: Kubernetes; después, la observabilidad |
 
 Cada PPTX termina con una lámina de apoyo, «Reparto de la presentación», con los números de lámina de esa versión; **se quita antes de presentar**. Las notas del expositor y el PDF dicen quién presenta cada lámina, y [`guiones/reparto-y-recomendaciones.md`](guiones/reparto-y-recomendaciones.md) trae por qué cada persona, la línea de tiempo, los relevos, consejos, a quién pasarle cada pregunta, qué saltar si falta tiempo y la lista del día.
 
@@ -44,7 +44,7 @@ Solo hay dos versiones, y salen del mismo contenido con los cambios de [`conteni
 
 | Versión | Para qué |
 | --- | --- |
-| Con videos | Tres videos dentro del PPTX: en la parte 5, un ejemplo ilustrativo de CI/CD, del merge al despliegue (simulado, porque el pipeline real llega hasta publicar la imagen); en la parte 7, dos grabaciones del sistema real, el recorrido y la caída de notificaciones con la reentrega, con una franja que marca qué componente trabaja. Cada video arranca solo al llegar a la lámina y Alt+P lo pausa; al lado, la lista con los mismos pasos que los rótulos del video. |
+| Con videos | Cuatro videos dentro del PPTX: en la parte 5, un ejemplo ilustrativo de CI/CD, del merge al despliegue (simulado, porque el pipeline real llega hasta publicar la imagen); en la parte 6, la búsqueda de los registros de una solicitud en Grafana (sin demostración, esa lámina muestra el diagrama de Promtail, Loki y Grafana); en la parte 7, dos grabaciones del sistema real, el recorrido y la caída de notificaciones con la reentrega, con una franja que marca qué componente trabaja. Cada video arranca solo al llegar a la lámina y Alt+P lo pausa; al lado, la lista con los mismos pasos que los rótulos del video. |
 | Sin demostración | No hay parte 7: la observabilidad pasa directo al cierre, y nada anuncia una demostración. |
 
 ## Entregables
@@ -79,7 +79,7 @@ Los PPTX tienen texto, tablas, diagramas e íconos editables, y las notas del ex
 | Tarjetas, cifras, flujos y tubería | Las bondades de Docker y de Kubernetes, los números del proyecto, la bandeja de salida y el camino de DevOps. |
 | Íconos | Trazos vectoriales nativos de PowerPoint ([Lucide](https://lucide.dev), licencia ISC). |
 
-Los videos de la versión con videos viven en [`capturas/videos/`](capturas/videos/) y tampoco se generan con `npm run todo`. Se graban con el sistema arriba y `npm run videos` ([`capturas/grabar-videos.ts`](capturas/grabar-videos.ts)): Edge sin ventana abre la UI, un guion mueve un cursor visible, escribe, hace clic y muestra rótulos numerados (los pasos de [`contenido/videos.ts`](contenido/videos.ts), los mismos que lista la lámina), y para la caída detiene y vuelve a iniciar `servicio-notificaciones` de verdad, con una terminal en pantalla que muestra el comando. Las esperas, como el arranque de notificaciones, se aceleran ×4 y el video lo dice. El mismo Edge codifica los cuadros en MP4 H.264 con WebCodecs ([`mediabunny`](https://mediabunny.dev)), sin instalar ffmpeg; `videos.json` guarda la duración real, que usan los minutos y la lámina. `npm run videos -- caida` graba solo uno. En [`capturas/`](capturas/) también quedan las capturas que toma [`capturas/capturar.ps1`](capturas/capturar.ps1), que hoy ninguna lámina usa.
+Los videos de la versión con videos viven en [`capturas/videos/`](capturas/videos/) y tampoco se generan con `npm run todo`. Se graban con el sistema arriba y `npm run videos` ([`capturas/grabar-videos.ts`](capturas/grabar-videos.ts)): Edge sin ventana abre la UI, un guion mueve un cursor visible, escribe, hace clic y muestra rótulos numerados (los pasos de [`contenido/videos.ts`](contenido/videos.ts), los mismos que lista la lámina), y para la caída detiene y vuelve a iniciar `servicio-notificaciones` de verdad, con una terminal en pantalla que muestra el comando. Las esperas, como el arranque de notificaciones, se aceleran ×4 y el video lo dice. El mismo Edge codifica los cuadros en MP4 H.264 con WebCodecs ([`mediabunny`](https://mediabunny.dev)), sin instalar ffmpeg; `videos.json` guarda la duración real, que usan los minutos y la lámina. `npm run videos -- caida` graba solo uno. El de registros conecta Loki en Grafana y carga el tablero de [`capturas/grabadora/tablero-registros.json`](capturas/grabadora/tablero-registros.json) si faltan, y antes de grabar envía una solicitud nueva para que la búsqueda tenga qué mostrar. En [`capturas/`](capturas/) también quedan las capturas que toma [`capturas/capturar.ps1`](capturas/capturar.ps1), que hoy ninguna lámina usa.
 
 ## Cómo leer un guion
 

@@ -33,9 +33,9 @@ export const PERFIL: Record<Rol, string> = {
   bd: "La base de datos es el terreno que el staff mejor conoce, y nadie habla mejor su idioma.",
   orm: "Apoya a base de datos con la parte de código: la misma regla, el ORM y los datos de conexión.",
   interconexion: "Es el corazón técnico: cómo no se pierde ni se duplica nada.",
-  plataforma: "Empaquetar con Docker y Compose, y la observabilidad.",
+  plataforma: "Abre DevOps con el camino completo y explica cómo se empaqueta: Docker y Compose.",
   cicd: "Cómo entra un cambio y el camino automático: baja la carga del equipo de infraestructura.",
-  operacion: "Operar: Kubernetes, Pods, memoria y CPU.",
+  operacion: "Operar y observar: Kubernetes, Pods, memoria y CPU, y la observabilidad.",
   demostracion: "Acompaña los videos de la pantalla con su narración.",
   cierre: "Cierra con los resultados en el idioma del negocio y recibe las preguntas.",
 };
@@ -64,12 +64,13 @@ export const CONSEJOS: Record<Rol, string[]> = {
     "En los datos de conexión, conectar con lo que ya hacen hoy: el web.config.",
   ],
   interconexion: [
-    "Llevar la bandeja de salida y la idempotencia al mundo del staff: una tabla de pendientes con un job, y una tabla de procesados con llave única.",
+    "Llevar la bandeja de salida y la idempotencia al mundo del staff: una tabla de pendientes con una tarea programada, y una tabla de procesados con llave única.",
+    "Cerrar con «Quién habla con quién»: es el resumen de la parte. Recorrer primero el camino de arriba (lo que la persona espera) y luego el de abajo (lo que pasa después).",
   ],
   plataforma: [
     "Abrir DevOps con el camino completo antes de entrar a Docker: así cada lámina tiene su lugar.",
     "Molde y contenedor: si la sala se queda con eso, Docker ya está entendido.",
-    "En observabilidad, contar el caso del aviso que no llegó y la guía del courier; no explicar cómo se escribe la consulta.",
+    "En «De código a contenedor», remarcar que el contenedor corre con un usuario sin privilegios, por seguridad.",
   ],
   cicd: [
     "Antes de decir CI/CD, explicar rama, main y Pull Request: sin eso, lo demás no se entiende.",
@@ -80,6 +81,7 @@ export const CONSEJOS: Record<Rol, string[]> = {
     "«Contenedores y Pods» es la lámina más difícil de DevOps: seguir el diagrama de izquierda a derecha, sin apuro.",
     "Decir con honestidad qué es teórico y qué está en el proyecto: una copia por pieza y topes solo en la pantalla.",
     "Si preguntan por producción, recordar que esto es un laboratorio.",
+    "En observabilidad, decir qué hace cada herramienta (Promtail recolecta, Loki guarda, Grafana muestra) y contar el caso del aviso que no llegó; no explicar cómo se escribe la consulta.",
   ],
   demostracion: [
     "Abrir el PPTX antes en la computadora de la sala y probar que los videos arrancan solos y se oyen las indicaciones.",
@@ -99,9 +101,10 @@ export const PREGUNTAS_A_QUIEN: { tema: string; rol: Rol }[] = [
   { tema: "Procedimientos almacenados, modelo, transacciones e índices", rol: "bd" },
   { tema: "El ORM, el SQL que genera y los datos de conexión", rol: "orm" },
   { tema: "Eventos, reintentos y duplicados", rol: "interconexion" },
-  { tema: "Docker, Compose y los registros", rol: "plataforma" },
+  { tema: "Docker y Compose", rol: "plataforma" },
   { tema: "Git, Pull Request y el pipeline", rol: "cicd" },
   { tema: "Kubernetes, Pods, memoria y CPU", rol: "operacion" },
+  { tema: "Los registros, Grafana y el número de seguimiento", rol: "operacion" },
 ];
 
 // Láminas que se pueden saltar en vivo si falta tiempo (en PowerPoint:
@@ -109,7 +112,6 @@ export const PREGUNTAS_A_QUIEN: { tema: string; rol: Rol }[] = [
 export const RECORTES: { id: string; motivo: string }[] = [
   { id: "s02-mapa", motivo: "«Cómo funciona en la práctica» muestra lo mismo con más detalle." },
   { id: "s03-orm", motivo: "«¿Qué es un ORM?» ya deja la idea; esta lámina agrega el detalle." },
-  { id: "s03-viaje", motivo: "Repasa lo que ya se vio en la misma parte." },
   { id: "s05-compose", motivo: "Se puede decir en una frase al final de las bondades de Docker." },
   { id: "s05-trazabilidad", motivo: "Su mensaje cabe en una frase al final del pipeline." },
   { id: "s08-sostiene", motivo: "«Resultados para el negocio» lleva el mensaje más útil." },

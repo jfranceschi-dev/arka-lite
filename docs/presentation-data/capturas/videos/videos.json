@@ -4,11 +4,15 @@
     "grabado": "2026-11-02"
   },
   "demo-caida.mp4": {
-    "segundos": 64.7,
-    "grabado": "2026-11-02"
+    "segundos": 67,
+    "grabado": "2026-11-03"
   },
   "ejemplo-cicd.mp4": {
     "segundos": 45.4,
     "grabado": "2026-11-02"
+  },
+  "demo-registros.mp4": {
+    "segundos": 27.4,
+    "grabado": "2026-11-03"
   }
 }

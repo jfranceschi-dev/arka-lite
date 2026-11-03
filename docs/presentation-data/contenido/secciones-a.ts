@@ -87,7 +87,7 @@ export const fundamentos: Seccion = {
         filas: [
           { icono: "circle-help", tono: "marino", celdas: ["¿Qué tiene que pasar?", "Se registra, se envía, se avisa y se decide", "Cuatro estados: borrador, enviada, aprobada y rechazada"] },
           { icono: "users", tono: "cian", celdas: ["¿Quién hace cada paso?", "Quien solicita envía, el sistema avisa y otra persona decide", "Dos servicios: uno para las solicitudes y otro para los avisos"] },
-          { icono: "ban", tono: "error", celdas: ["¿Qué no se puede permitir?", "Enviar dos veces o decidir sobre un borrador", "Una regla con su prueba y un error que explica por qué"] },
+          { icono: "ban", tono: "error", celdas: ["¿Qué no se puede permitir?", "Las reglas: se envía solo un borrador, una vez; se decide solo sobre una enviada", "Cada regla con su prueba y un error que explica por qué"] },
         ],
       },
       guion: {
@@ -95,7 +95,7 @@ export const fundamentos: Seccion = {
           "De los fundamentos, lo primero que nos quedó es analizar antes de programar. Antes de escribir código nos hicimos tres preguntas sobre el negocio.",
           "Primero, qué tiene que pasar. Una persona registra una solicitud, como una incidencia o un pedido de cambio, la envía, y otra persona la aprueba o la rechaza. De ahí salieron cuatro estados: borrador, enviada, aprobada y rechazada.",
           "Segundo, quién hace cada paso. Quien solicita envía, el sistema avisa y otra persona decide. Gestionar la solicitud y producir el aviso son trabajos distintos, y por eso los separamos en dos servicios.",
-          "Tercero, qué no se puede permitir, como enviar dos veces la misma solicitud o aprobar una que nadie ha enviado. Cada una de esas reglas quedó con su prueba automática.",
+          "Tercero, qué no se puede permitir. Esas son las reglas de ARKA-Lite: una solicitud se envía solo cuando está en borrador, y una sola vez, y solo una enviada se puede aprobar o rechazar. Cada regla quedó con su prueba automática.",
         ],
         conTusPalabras: [
           "Antes de programar, aclaramos el proceso y sus responsables.",

@@ -2,7 +2,7 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-46 láminas, unos 43 minutos; las preguntas van aparte. Fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps en detalle; la observabilidad pasa directo al cierre.
+44 láminas, unos 40 minutos; las preguntas van aparte. Fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps en detalle; la observabilidad pasa directo al cierre.
 
 ## Cómo está pensada
 
@@ -12,10 +12,10 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 | --- | --- | --- | --- |
 | 1. Fundamentos | Vista general | 3–5 | Lo que nos quedó: analizar antes de programar y buenas prácticas para cualquier lenguaje. |
 | 2. Arquitectura | Vista general | 6–9 | Lo que nos quedó: cada servicio con sus datos, y mensajes entre ellos. |
-| 3. Base de datos | En detalle | 10–19 | Dos bases PostgreSQL, el ORM, los datos de conexión y las transacciones. |
-| 4. Interconexión de servicios | En detalle | 20–24 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
-| 5. DevOps: Docker y Kubernetes | En detalle | 25–39 | Docker empaqueta, el pipeline prueba cada cambio y Kubernetes administra. |
-| 6. Observabilidad | Vista general | 40–42 | Cómo sabemos qué pasa adentro: salud, registros y un número de seguimiento. |
+| 3. Base de datos | En detalle | 10–18 | Dos bases PostgreSQL, el ORM, los datos de conexión y las transacciones. |
+| 4. Interconexión de servicios | En detalle | 19–23 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
+| 5. DevOps: Docker y Kubernetes | En detalle | 24–37 | Docker empaqueta, el pipeline prueba cada cambio y Kubernetes administra. |
+| 6. Observabilidad | Vista general | 38–40 | Cómo sabemos qué pasa adentro: salud, registros y un número de seguimiento. |
 
 ## Reparto
 
@@ -27,11 +27,11 @@ Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apo
 | --- | --- | --- | --- | --- |
 | Luis Cardoze | Desarrollo | Apertura y Fundamentos | 1–5 | ~4 min |
 | Ricardo Fábrega | Desarrollo | Arquitectura | 6–9 | ~3 min |
-| Marlene Bonilla | Base de datos | Base de datos | 10–12 y 18–19 | ~5 min |
-| Jossett Franceschi | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD | 13–17 y 30–33 | ~10 min |
-| Abdiel Barria | Desarrollo | Interconexión de servicios y Resultados, valor y cierre | 20–24 y 43–46 | ~8 min |
-| Moises | Infraestructura | DevOps: Docker y Compose, y la observabilidad | 25–29 y 40–42 | ~7 min |
-| Kevin | Infraestructura | DevOps: Kubernetes | 34–39 | ~6 min |
+| Marlene Bonilla | Base de datos | Base de datos | 10–12 y 17–18 | ~5 min |
+| Jossett Franceschi | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD | 13–16 y 29–32 | ~8 min |
+| Abdiel Barria | Desarrollo | Interconexión de servicios y Resultados, valor y cierre | 19–23 y 41–44 | ~8 min |
+| Kevin | Infraestructura | DevOps: qué es, Docker y Compose | 24–28 | ~4 min |
+| Moises | Infraestructura | DevOps: Kubernetes, y la observabilidad | 33–40 | ~7 min |
 
 Cada persona tiene su guion aparte en `guion-ejecutivo-sin-demo-por-persona.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
@@ -80,6 +80,7 @@ Para que todo el equipo explique igual y sin jerga. Si alguien del público no c
 | Secret | Un lugar aparte y protegido para guardar claves en Kubernetes. |
 | Reserva y tope | Lo mínimo garantizado de memoria y CPU, y lo máximo que un Pod puede usar. |
 | Registros (logs) | La bitácora de lo que hizo cada servicio. |
+| Número del evento | El identificador fijo de cada evento: con él, notificaciones reconoce una entrega repetida. |
 | Número de seguimiento (traceId) | Un número que acompaña cada pedido de un servicio a otro, como la guía de un courier. |
 | Observabilidad | Poder saber qué pasa adentro del sistema, sin adivinar: salud, registros y seguimiento. |
 
@@ -146,7 +147,7 @@ Presenta: Luis Cardoze.
 >
 > Segundo, quién hace cada paso. Quien solicita envía, el sistema avisa y otra persona decide. Gestionar la solicitud y producir el aviso son trabajos distintos, y por eso los separamos en dos servicios.
 >
-> Tercero, qué no se puede permitir, como enviar dos veces la misma solicitud o aprobar una que nadie ha enviado. Cada una de esas reglas quedó con su prueba automática.
+> Tercero, qué no se puede permitir. Esas son las reglas de ARKA-Lite: una solicitud se envía solo cuando está en borrador, y una sola vez, y solo una enviada se puede aprobar o rechazar. Cada regla quedó con su prueba automática.
 >
 > Con el qué ya definido, pasamos al cómo: escribir código que se pueda cambiar con confianza.
 
@@ -422,9 +423,9 @@ Porque la aplicación puede generarlo sin consultar la base, con una probabilida
 >
 > En ARKA-Lite, la regla vive en el servicio junto con su prueba. Cuando la regla permite la operación, una herramienta llamada ORM prepara las instrucciones para guardar los datos. Esas instrucciones se escriben en SQL, el lenguaje con el que consultamos y modificamos la información de la base.
 >
-> Jossett mostrará primero la misma regla escrita de las dos formas y después explicará qué es un ORM. Mientras tanto, la base continúa protegiendo lo que le corresponde, como las llaves, las restricciones y los índices.
+> Esto no significa que los procedimientos estén mal ni que la base pierda importancia: sigue cuidando las llaves, las restricciones y los índices. Solo movimos la decisión a otro lugar.
 >
-> Esto no significa que los procedimientos estén mal ni que la base pierda importancia. Solo movimos la decisión a otro lugar.
+> Jossett lo mostrará con un ejemplo y después explicará qué es un ORM.
 >
 > Jossett, por favor.
 
@@ -454,17 +455,13 @@ No. Podemos comenzar con las reglas que cambian con frecuencia, mientras los rep
 
 **Qué decir**
 
-> Gracias, Marlene. Veamos esa diferencia con una regla concreta: una solicitud solo puede enviarse cuando está en borrador.
->
-> La comparación nos permite ver quién aplica la regla y quién guarda el cambio en cada caso.
+> Gracias, Marlene. Veamos esa diferencia con una de las reglas que mencionó Luis: una solicitud solo puede enviarse cuando está en borrador.
 >
 > A la izquierda, el procedimiento consulta el estado, valida la condición y actualiza el dato. No necesitamos leer cada línea para notar que la regla y el dato están juntos en la base.
 >
 > A la derecha aparece la misma regla en el código de la aplicación. Si el estado no es borrador, se produce un error. Si lo es, la solicitud pasa a enviada.
 >
-> En este caso no escribimos SQL para guardar el cambio, porque el ORM lo genera. La regla no cambia, pero sí cambian el lugar donde se ejecuta y la pieza que la aplica.
->
-> Al tenerla en el código, podemos probarla en milésimas de segundo y sin una base, mientras la base conserva sus responsabilidades.
+> La regla no cambia; cambia dónde se ejecuta. Y al tenerla en el código, podemos probarla en milésimas de segundo, sin una base.
 >
 > Veamos ahora qué es exactamente un ORM.
 
@@ -502,9 +499,7 @@ El servicio pide por llave únicamente los datos necesarios para decidir. Si el 
 >
 > En nuestro proyecto usamos Hibernate, aunque la idea existe en otras tecnologías. Por ejemplo, .NET tiene Entity Framework.
 >
-> El ORM no diseña la base por nosotros. Seguimos definiendo las llaves, las relaciones y los índices, porque un diseño deficiente continúa siendo deficiente.
->
-> Tampoco impide escribir SQL. Si una consulta es compleja, podemos escribirla a mano, mientras el ORM se encarga del trabajo cotidiano.
+> El ORM no diseña la base por nosotros: las llaves, las relaciones y los índices los seguimos definiendo. Y si una consulta es compleja, podemos escribirla a mano.
 >
 > Veamos ahora cómo una clase de la aplicación se relaciona con una tabla.
 
@@ -512,8 +507,7 @@ El servicio pide por llave únicamente los datos necesarios para decidir. Si el 
 
 - El ORM traduce entre objetos y tablas.
 - Hibernate genera el SQL de las operaciones comunes.
-- Nosotros seguimos diseñando la base.
-- Las consultas complejas pueden escribirse a mano.
+- Nosotros seguimos diseñando la base y podemos escribir SQL a mano.
 
 **Si preguntan:** ¿El ORM reemplaza a quien administra la base de datos?
 
@@ -543,9 +537,9 @@ No. Esa persona sigue diseñando el modelo, cuidando los índices y revisando el
 >
 > Es el mismo principio utilizado con los parámetros de un procedimiento: los valores se tratan como datos y no como instrucciones. Así evitamos que un texto ingresado por una persona altere la consulta, lo que se conoce como inyección de SQL.
 >
-> Nosotros no escribimos estas consultas rutinarias, pero sí cuidamos el diseño de las tablas, porque el ORM depende de una base correctamente diseñada.
+> Así cada pieza hace una sola cosa: las reglas deciden, el ORM traduce y la base guarda. Si algo falla, sabemos en qué punto buscar.
 >
-> Con ese mapeo claro, sigamos un dato desde la pantalla hasta la fila.
+> Para llegar a la base, el ORM necesita su dirección, usuario y clave. Veamos dónde guardamos esos datos.
 
 **Si se te olvida, di esto**
 
@@ -557,49 +551,13 @@ No. Esa persona sigue diseñando el modelo, cuidando los índices y revisando el
 
 Sí. Una línea de configuración permite mostrarlo en los registros, lo que ayuda a revisar su funcionamiento y rendimiento.
 
-**Si preguntan:** ¿Y las consultas complejas?
-
-Podemos escribirlas a mano, porque el ORM no lo impide.
-
 **Si hay tiempo**
 
 > El repositorio del proyecto no contiene consultas escritas para las operaciones básicas. Al heredar de una interfaz, obtiene las funciones de guardar, buscar, listar y borrar.
 >
 > Al guardar, el ORM utiliza la llave para determinar si corresponde un INSERT o un UPDATE. Por eso es importante definir correctamente las llaves.
 
-### 16. El viaje de un dato: de la pantalla a la fila
-
-**Presenta:** Jossett Franceschi
-
-**Qué decir**
-
-> Sigamos una solicitud desde que la persona la registra hasta que queda guardada. Primero completa el formulario y la pantalla envía el número SOL-100 y el tipo Consulta.
->
-> El pedido llega al servicio de solicitudes, donde se aplican las reglas del negocio.
->
-> Para comprobar si el número ya existe, el servicio consulta la base mediante el ORM. Si la solicitud cumple las reglas, el ORM prepara la instrucción para guardarla y PostgreSQL registra la fila.
->
-> Después, la base confirma la operación y la respuesta recorre el camino de vuelta. Finalmente, la pantalla informa que la solicitud quedó registrada.
->
-> Cada pieza tiene una responsabilidad. La pantalla atiende a la persona, las reglas deciden, el ORM traduce y la base guarda y protege.
->
-> Por esa separación, cuando algo falla podemos identificar con mayor facilidad dónde ocurrió.
->
-> Para llegar a la base necesitamos su dirección, usuario y clave. Veamos dónde guardamos esos datos.
-
-**Si se te olvida, di esto**
-
-- El dato pasa por la pantalla, las reglas, el ORM y la base.
-- Las reglas deciden antes de guardar.
-- Cada pieza cumple una responsabilidad.
-
-**Si hay tiempo**
-
-> Si el número ya existe, las reglas detienen el recorrido antes de tocar la base. La persona recibe entonces un mensaje que explica el motivo.
->
-> Entre las reglas y la base utilizamos dos objetos distintos. Uno representa la solicitud del negocio y el otro refleja la tabla, mientras una pieza traduce entre ambos.
-
-### 17. ¿Dónde guardamos los datos de conexión?
+### 16. ¿Dónde guardamos los datos de conexión?
 
 **Presenta:** Jossett Franceschi
 
@@ -615,9 +573,7 @@ Podemos escribirlas a mano, porque el ORM no lo impide.
 >
 > Cada ambiente proporciona sus propios valores. Por eso, si cambia el servidor o renovamos una clave, solo actualizamos la configuración del ambiente.
 >
-> Ya vimos cómo distribuimos estas responsabilidades. Ahora Marlene explicará cómo una transacción garantiza que los datos queden completos.
->
-> Marlene, adelante.
+> Ahora Marlene explicará cómo una transacción garantiza que los datos queden completos. Marlene, adelante.
 
 **Si se te olvida, di esto**
 
@@ -641,7 +597,7 @@ No. Sigue siendo válido para las aplicaciones que funcionan de esa manera. Lo i
 >
 > En producción también podemos guardar las claves en una bóveda especializada. La idea se mantiene igual, porque permanecen fuera del código.
 
-### 18. Una transacción: todo o nada
+### 17. Una transacción: todo o nada
 
 **Qué decir**
 
@@ -673,7 +629,7 @@ Es el mismo concepto de BEGIN, COMMIT y ROLLBACK. La diferencia es que la aplica
 >
 > Preferimos una transacción local dentro de una base, porque resulta más confiable que intentar coordinar dos sistemas al mismo tiempo.
 
-### 19. Base de datos: lo que aprendimos
+### 18. Base de datos: lo que aprendimos
 
 **Qué decir**
 
@@ -699,43 +655,11 @@ Es el mismo concepto de BEGIN, COMMIT y ROLLBACK. La diferencia es que la aplica
 
 Presenta: Abdiel Barria.
 
-### 20. Quién habla con quién, y cómo
+### 19. Síncrono o asíncrono
 
 **Qué decir**
 
-> Gracias, Marlene. Como los servicios no comparten una base, necesitamos definir cómo se comunican. Esta tabla resume las conexiones.
->
-> El navegador solo conoce la pantalla. A su vez, la pantalla pasa los pedidos por un intermediario que los envía al servicio correspondiente.
->
-> Así, si un servicio cambia de dirección, las demás piezas no tienen que enterarse. Es como la recepción de una empresa, donde pedimos un departamento y nos conectan con él.
->
-> Entre los servicios, solicitudes envía un evento a notificaciones. Sin embargo, no lo hace mientras la persona espera, sino después mediante un proceso separado.
->
-> Además, las piezas se encuentran por nombre y no por una dirección fija. Cada llamada lleva un número de seguimiento que permite reconstruir su recorrido en los registros.
->
-> Para entender por qué el aviso se envía después, comparemos las dos formas de comunicación.
-
-**Si se te olvida, di esto**
-
-- Un intermediario dirige cada pedido.
-- Los servicios se encuentran por nombre.
-- Cada llamada lleva un número de seguimiento.
-
-**Si preguntan:** ¿Por qué no una cola de mensajes como RabbitMQ o Kafka?
-
-Para este proyecto, basta con guardar el evento pendiente y entregarlo después mediante una llamada web al otro servicio. No necesitamos agregar una herramienta de mensajería. Si aumenta el volumen, podemos llevar el mismo diseño a una cola sin cambiar las reglas.
-
-**Si hay tiempo**
-
-> La llamada entre servicios utiliza un cliente preparado para conservar el número de seguimiento. Con un cliente común se perdería esa continuidad, por eso lo definimos como una regla del equipo.
->
-> Los servicios se comunican por HTTP y envían mensajes en JSON, un formato de texto que pueden leer tanto las personas como los sistemas.
-
-### 21. Síncrono o asíncrono
-
-**Qué decir**
-
-> Tenemos dos formas de comunicación. La síncrona se parece a una llamada telefónica, porque hacemos el pedido y esperamos la respuesta.
+> Gracias, Marlene. Como los servicios no comparten una base, necesitamos definir cómo se comunican, y hay dos formas de hacerlo. La síncrona se parece a una llamada telefónica, porque hacemos el pedido y esperamos la respuesta.
 >
 > La usamos para crear, aprobar o rechazar una solicitud, ya que la persona necesita conocer el resultado de inmediato. Si el otro lado está caído, verá el error.
 >
@@ -763,7 +687,7 @@ Porque quien crea o aprueba una solicitud necesita saber en ese momento si la op
 >
 > Esto también ocurre en los sistemas actuales. Un procedimiento que llama a otro sistema y espera su respuesta falla cuando ese sistema no está disponible.
 
-### 22. Patrón Outbox: guardar primero, avisar después
+### 20. Patrón Outbox: guardar primero, avisar después
 
 **Qué decir**
 
@@ -806,7 +730,7 @@ Los eventos permanecen en la base. Cuando el servicio regresa, el relevador los 
 >
 > Con procedimientos, la receta incluye una tabla de pendientes, una columna procesado, un INSERT dentro de la transacción y un job que recorre las filas.
 
-### 23. Idempotencia: el mismo evento, un solo aviso
+### 21. Idempotencia: el mismo evento, un solo aviso
 
 **Qué decir**
 
@@ -814,7 +738,7 @@ Los eventos permanecen en la base. Cuando el servicio regresa, el relevador los 
 >
 > Para manejarlo usamos la idempotencia, una palabra técnica para una idea sencilla. Significa que repetir la misma operación no cambia el resultado.
 >
-> Cuando llega un evento, notificaciones busca su número en la lista. Si es nuevo, crea el aviso y registra el número. Si ya estaba registrado, lo ignora.
+> Cada evento trae un número fijo, que llamamos el número del evento. Cuando llega, notificaciones lo busca en la lista. Si es nuevo, crea el aviso y registra el número. Si ya estaba registrado, lo ignora.
 >
 > Es como un portero con una lista de invitados, porque quien ya entró no puede entrar una segunda vez.
 >
@@ -822,7 +746,7 @@ Los eventos permanecen en la base. Cuando el servicio regresa, el relevador los 
 >
 > Este principio sirve para cualquier proceso que tenga reintentos, como un pago, un correo o una importación de archivos.
 >
-> Con ambas garantías completas, resumamos lo aprendido sobre la interconexión.
+> Con ambas garantías claras, veamos en una sola imagen quién habla con quién, y cómo.
 
 **Si se te olvida, di esto**
 
@@ -844,7 +768,43 @@ La llave primaria permite registrar el número una sola vez. La otra entrega fal
 >
 > La receta sirve en cualquier sistema. Necesitamos un número único por operación y una tabla que recuerde cuáles ya fueron procesadas.
 
-### 24. Interconexión: lo que aprendimos
+### 22. Resumen: quién habla con quién, y cómo
+
+**Qué decir**
+
+> Con las piezas claras, veamos el recorrido completo en una sola imagen. Es el resumen de esta parte.
+>
+> Arriba está lo que ocurre mientras la persona espera. El navegador solo conoce la pantalla, y la pantalla pasa cada pedido por un intermediario que lo lleva al servicio de solicitudes. Es como la recepción de una empresa: pedimos un departamento y nos conectan con él.
+>
+> Solicitudes aplica la regla, guarda la solicitud y su evento en la misma transacción y responde de inmediato. Esa es la parte síncrona.
+>
+> Abajo está lo que pasa después, sin que nadie espere. El relevador toma el evento de la bandeja de salida y se lo entrega a notificaciones, que revisa el número, crea un solo aviso y anota que ya lo recibió. Esa es la parte asíncrona.
+>
+> Dos detalles unen todo. Las piezas se encuentran por su nombre y no por una dirección fija, y cada llamada lleva un número de seguimiento, distinto del número del evento, que nos permite reconstruir el recorrido en los registros. Moises lo retomará en la observabilidad.
+>
+> Con el recorrido completo a la vista, resumamos lo aprendido sobre la interconexión.
+
+**Si se te olvida, di esto**
+
+- Arriba, lo que pasa mientras la persona espera.
+- Abajo, lo que pasa después, por su cuenta.
+- Se encuentran por nombre y un número sigue cada llamada.
+
+**Qué hacer** (no se dice)
+
+- Recorrer la lámina de izquierda a derecha: primero el camino de arriba y después el de abajo.
+
+**Si preguntan:** ¿Por qué no una cola de mensajes como RabbitMQ o Kafka?
+
+Para este proyecto, basta con guardar el evento pendiente y entregarlo después mediante una llamada web al otro servicio. No necesitamos agregar una herramienta de mensajería. Si aumenta el volumen, podemos llevar el mismo diseño a una cola sin cambiar las reglas.
+
+**Si hay tiempo**
+
+> La llamada entre servicios utiliza un cliente preparado para conservar el número de seguimiento. Con un cliente común se perdería esa continuidad, por eso lo definimos como una regla del equipo.
+>
+> Los servicios se comunican por HTTP y envían mensajes en JSON, un formato de texto que pueden leer tanto las personas como los sistemas.
+
+### 23. Interconexión: lo que aprendimos
 
 **Qué decir**
 
@@ -856,7 +816,7 @@ La llave primaria permite registrar el número una sola vez. La otra entrega fal
 >
 > Estas decisiones no dependen de Java y pueden aplicarse a los sistemas que ya tenemos.
 >
-> Ahora veremos cómo llevamos el código y los datos hasta un servidor. Le paso la palabra a Moises, de infraestructura.
+> Ahora veremos cómo llevamos el código y los datos hasta un servidor. Le paso la palabra a Kevin, de infraestructura.
 
 **Si se te olvida, di esto**
 
@@ -870,9 +830,9 @@ La llave primaria permite registrar el número una sola vez. La otra entrega fal
 
 ## 5 · DevOps: Docker y Kubernetes · en detalle
 
-Presenta: Moises.
+Presenta: Kevin.
 
-### 25. ¿Qué es DevOps? Del código a la operación
+### 24. ¿Qué es DevOps? Del código a la operación
 
 **Qué decir**
 
@@ -884,7 +844,7 @@ Presenta: Moises.
 >
 > También vigilamos el sistema mediante sus registros. Lo que aprendemos durante la operación vuelve al código y el ciclo comienza otra vez.
 >
-> En esta parte, yo explicaré Docker, Jossett mostrará el camino automático de los cambios y Kevin explicará Kubernetes.
+> En esta parte, yo explicaré Docker, Jossett mostrará el camino automático de los cambios y Moises explicará Kubernetes.
 >
 > Comencemos por entender cómo se complementan Docker y Kubernetes.
 
@@ -904,19 +864,17 @@ Es una práctica. Puede haber personas que la impulsen, pero funciona cuando des
 >
 > La mayoría de los pasos ya no depende de la memoria de una persona. Si uno falla, el proceso se detiene y muestra con claridad dónde ocurrió el problema.
 
-### 26. Docker y Kubernetes: no compiten, se complementan
+### 25. Docker y Kubernetes: no compiten, se complementan
 
 **Qué decir**
 
-> Docker y Kubernetes son dos nombres que se escuchan con frecuencia. A veces se presentan como alternativas, pero en realidad cumplen funciones diferentes y se complementan.
+> Docker y Kubernetes se escuchan juntos con frecuencia, y a veces se presentan como alternativas. En realidad cumplen funciones distintas y se complementan.
 >
-> Docker empaqueta la aplicación y todo lo necesario para ejecutarla dentro de una imagen. Ese paquete funciona igual en una computadora o en un servidor.
+> Docker empaqueta la aplicación con todo lo necesario para ejecutarla, dentro de una imagen que funciona igual en una computadora o en un servidor. Así evitamos que algo funcione en una máquina y falle en otra.
 >
-> Así reducimos el problema de que algo funcione en una máquina, pero falle en otra. Kubernetes comienza donde termina Docker.
+> Kubernetes comienza donde termina Docker: decide dónde corren esas aplicaciones, las vigila y reemplaza las que fallan.
 >
-> Kubernetes organiza las aplicaciones que se ejecutan a partir de esas imágenes: decide dónde corren, las vigila y reemplaza las instancias que fallan. Podemos compararlo con el transporte de carga que conocemos en Panamá.
->
-> Docker representa el contenedor estándar que se mueve igual sin importar su contenido. Kubernetes representa el puerto que organiza esos contenedores, los vigila y reemplaza el que presenta una falla.
+> Pensemos en el transporte de carga que conocemos en Panamá. Docker es el contenedor estándar, que se mueve igual sin importar lo que lleva, y Kubernetes es el puerto que los acomoda, los vigila y reemplaza el que se daña.
 >
 > Ahora veamos cómo una receta termina convertida en un contenedor.
 
@@ -940,7 +898,7 @@ No. Para un sistema pequeño puede bastar Docker Compose, una herramienta que pe
 >
 > Podemos usar Docker sin Kubernetes en un servidor pequeño. También Kubernetes puede ejecutar imágenes creadas con otras herramientas, aunque juntos cubren todo el recorrido.
 
-### 27. De código a contenedor
+### 26. De código a contenedor
 
 **Qué decir**
 
@@ -950,17 +908,17 @@ No. Para un sistema pequeño puede bastar Docker Compose, una herramienta que pe
 >
 > La imagen no cambia, así que instalamos exactamente la misma que probamos. Cuando ponemos esa imagen a funcionar, obtenemos un contenedor.
 >
-> Del mismo molde pueden salir varios contenedores iguales. Además, el nuestro funciona sin permisos de administrador para reducir riesgos.
+> Del mismo molde pueden salir varios contenedores iguales. Además, el nuestro se ejecuta con un usuario sin privilegios, por seguridad: si alguien abusara de la aplicación, tendría muy poco margen para hacer daño.
 >
 > Por eso podemos reemplazar un contenedor y crear otro a partir de la misma imagen, sin reconstruir la aplicación.
 >
-> Con esa diferencia clara, veamos qué ventajas nos ofrece Docker.
+> Con la receta, el molde y el contenedor claros, veamos qué ventajas nos ofrece Docker.
 
 **Si se te olvida, di esto**
 
 - El Dockerfile es la receta.
 - La imagen es el molde.
-- El contenedor es la aplicación en ejecución.
+- El contenedor es la imagen en ejecución, sin privilegios.
 
 **Si preguntan:** ¿Dónde se guardan las imágenes?
 
@@ -972,7 +930,7 @@ Se guardan en un registro, que funciona como una biblioteca de imágenes. Nosotr
 >
 > Las imágenes se organizan por capas. Cuando solo cambia el código, reutilizamos las capas anteriores y reducimos el tiempo de construcción y descarga.
 
-### 28. Las bondades de Docker
+### 27. Ventajas de Docker
 
 **Qué decir**
 
@@ -1006,13 +964,13 @@ No lo configuramos en Compose porque se usa para trabajar en una computadora. En
 >
 > El aislamiento no reemplaza las demás medidas de seguridad. Por eso nuestro contenedor también funciona con un usuario sin privilegios.
 
-### 29. Todo el sistema con un comando
+### 28. Todo el sistema con un comando
 
 **Qué decir**
 
 > Un solo contenedor no representa todo el sistema. Con Docker Compose levantamos mediante un comando los dos servicios, las dos bases, la pantalla y las herramientas de registros.
 >
-> En total se ejecutan ocho contenedores. Compose los conecta dentro de una red privada, donde cada uno encuentra a los demás por su nombre.
+> En total se ejecutan ocho contenedores. Compose los conecta dentro de una red privada, donde cada uno encuentra a los demás por su nombre, como mencionó Abdiel.
 >
 > También los inicia en orden. Primero levanta las bases y después cada servicio espera hasta que su base esté disponible.
 >
@@ -1044,13 +1002,13 @@ Puede servir para algo pequeño en un solo servidor. Cuando necesitamos varios s
 >
 > Antes de continuar, las bases informan cuándo están listas para aceptar conexiones mediante una herramienta de PostgreSQL.
 
-### 30. CI/CD: primero, cómo entra un cambio
+### 29. CI/CD: primero, cómo entra un cambio
 
 **Presenta:** Jossett Franceschi
 
 **Qué decir**
 
-> Gracias, Moises. Antes de explicar CI/CD, veamos cómo incorporamos un cambio al sistema, porque de este proceso nace toda la automatización.
+> Gracias, Kevin. Antes de explicar CI/CD, veamos cómo incorporamos un cambio al sistema, porque de este proceso nace toda la automatización.
 >
 > Usamos Git para mantener el historial del código. La línea principal, llamada main, contiene la versión oficial y nadie trabaja directamente sobre ella.
 >
@@ -1082,7 +1040,7 @@ Git detecta el conflicto y avisa. Las personas deciden cómo combinar los cambio
 >
 > Nadie incorpora cambios directamente en la versión principal, incluida la persona que lidera el equipo.
 
-### 31. CI/CD: el control de calidad automático
+### 30. CI/CD: el control de calidad automático
 
 **Presenta:** Jossett Franceschi
 
@@ -1127,7 +1085,7 @@ No. GitHub crea un PostgreSQL temporal para cada ejecución y lo elimina al term
 >
 > Actualmente las imágenes de los servicios se publican durante la revisión y la de la pantalla al llegar a main. Ya identificamos esa diferencia como un ajuste pendiente.
 
-### 32. Cuando un cambio rompe algo
+### 31. Cuando un cambio rompe algo
 
 **Presenta:** Jossett Franceschi
 
@@ -1163,7 +1121,7 @@ Todo cambio entra mediante Pull Request. Además, GitHub puede impedir que se ac
 >
 > El pipeline publica imágenes mediante un permiso temporal que GitHub entrega a cada ejecución, sin almacenar una contraseña.
 
-### 33. Cada imagen, con su etiqueta
+### 32. Cada imagen, con su etiqueta
 
 **Presenta:** Jossett Franceschi
 
@@ -1177,11 +1135,9 @@ Todo cambio entra mediante Pull Request. Además, GitHub puede impedir que se ac
 >
 > Si una versión presenta problemas, podemos volver a la imagen anterior, que continúa almacenada.
 >
-> Cuando operación pregunta qué versión está instalada, podemos responder con una imagen concreta y consultar todo el historial que la respalda.
+> Cuando operación pregunta qué versión está instalada, respondemos con una imagen concreta y su historial. En nuestro laboratorio todavía usamos imágenes construidas en la computadora; en un ambiente real usaríamos la que publicó el pipeline.
 >
-> La imagen publicada permite seguir ese historial. En nuestro laboratorio de Kubernetes todavía usamos imágenes construidas en la computadora; para conservar la relación directa con el pipeline, usaríamos la imagen que este publicó.
->
-> La imagen ya está publicada y rastreada. Ahora, dónde corre. Le paso la palabra a Kevin, que nos explica Kubernetes.
+> La imagen ya está publicada y rastreada. Ahora, dónde corre. Le paso la palabra a Moises, que nos explica Kubernetes.
 
 **Si se te olvida, di esto**
 
@@ -1199,9 +1155,9 @@ Porque latest cambia con cada publicación y no identifica el código. La etique
 >
 > El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.
 
-### 34. Cómo trabaja Kubernetes
+### 33. Cómo trabaja Kubernetes
 
-**Presenta:** Kevin
+**Presenta:** Moises
 
 **Qué decir**
 
@@ -1217,7 +1173,7 @@ Porque latest cambia con cada publicación y no identifica el código. La etique
 >
 > Por eso el sistema puede repararse solo. Como el archivo se guarda con el código, la configuración tampoco depende de la memoria de una persona.
 >
-> Con esa forma de trabajo clara, veamos qué es un Pod y cómo se relaciona con un contenedor.
+> Ahora aparecen dos palabras nuevas. Un Pod es el espacio que Kubernetes le da a cada contenedor, y un Service es el nombre fijo para encontrarlo. Veamos cómo encajan.
 
 **Si se te olvida, di esto**
 
@@ -1235,27 +1191,19 @@ Depende de qué cambie. Si alguien elimina un Pod, Kubernetes crea otro para man
 >
 > Estos archivos se llaman manifiestos y utilizan un formato de texto llamado YAML. Un clúster es un grupo de servidores que trabajan juntos.
 
-### 35. Contenedores y Pods: cómo se complementan
+### 34. Contenedores y Pods: cómo se complementan
 
-**Presenta:** Kevin
+**Presenta:** Moises
 
 **Qué decir**
 
-> Sigamos el diagrama de izquierda a derecha. Primero está la imagen, que es el molde creado con Docker.
+> Sigamos el diagrama de izquierda a derecha. La imagen es el molde que hizo Docker, y el Deployment es el pedido que le hacemos a Kubernetes: en este ejemplo, dos copias de esa imagen.
 >
-> Después aparece el Deployment, un recurso que declara cuántas copias de esa imagen queremos mantener. En este ejemplo pedimos dos.
+> A la derecha está un servidor del clúster, que es el grupo de servidores donde corren las aplicaciones. Cada contenedor vive dentro de un Pod, que le da su dirección, su memoria y su CPU. Siguiendo con el puerto, el contenedor es la carga y el Pod, su espacio en el patio.
 >
-> A la derecha vemos uno de los servidores donde Kubernetes ejecuta las aplicaciones. Al conjunto de servidores lo llamamos clúster. Las cajas oscuras son los contenedores, es decir, la aplicación en ejecución.
+> Arriba está el Service. Como los Pods se reemplazan y cambian de dirección, el Service mantiene un nombre fijo y reparte el trabajo entre las copias.
 >
-> Kubernetes no maneja esos contenedores de forma aislada. Cada uno vive dentro de un Pod, que le proporciona una dirección de red y recursos como memoria y CPU.
->
-> Siguiendo la comparación del puerto, el contenedor es la carga y el Pod es el espacio asignado dentro del patio.
->
-> Encima está el Service. Como los Pods pueden reemplazarse y cambiar de dirección, el Service mantiene un nombre fijo y distribuye el trabajo entre las copias.
->
-> Los demás componentes utilizan ese nombre sin saber qué Pod responderá. Así, Docker prepara el contenedor y Kubernetes lo ejecuta, lo multiplica y lo reemplaza.
->
-> En ARKA-Lite utilizamos una copia de cada pieza. Para pedir dos copias de uno de los servicios, cambiaríamos la cantidad indicada en su archivo.
+> En ARKA-Lite usamos una copia de cada pieza. Para tener dos, basta con cambiar un número en su archivo.
 >
 > Ya conocemos las piezas principales. Ahora veamos qué capacidades nos ofrece Kubernetes con ellas.
 
@@ -1282,37 +1230,36 @@ Corren en los servidores del clúster, llamados nodos. Kubernetes elige el nodo 
 >
 > Los Pods se reemplazan en lugar de repararse. Por eso los datos importantes permanecen en la base y en su disco, no dentro del Pod.
 
-### 36. Las bondades de Kubernetes
+### 35. Las bondades de Kubernetes
 
-**Presenta:** Kevin
+**Presenta:** Moises
 
 **Qué decir**
 
-> Kubernetes agrega capacidades que no tenemos con Docker por sí solo. Primero, se repara automáticamente, porque reemplaza un Pod cuando este se cae.
+> Kubernetes agrega lo que Docker solo no tiene. Se repara solo: si un Pod se cae, levanta otro. Y crece: si aumenta la carga, pedimos más copias cambiando un número, y el Service reparte el trabajo entre ellas.
 >
-> También permite crecer. Si aumenta la carga, solicitamos más copias cambiando un número.
+> También actualiza poco a poco, sin apagar todo, y permite volver a la versión anterior si algo falla.
 >
-> El Service distribuye los pedidos entre esas copias. Además, Kubernetes puede actualizar la aplicación gradualmente sin apagar todas las versiones al mismo tiempo.
+> Controla la memoria y la CPU de cada Pod con una reserva y un tope. Es como un presupuesto: la reserva es lo que apartamos al planificar y el tope es de ahí no pasas. En ARKA-Lite lo aplicamos a la pantalla.
 >
-> Si la nueva versión falla, podemos volver a la anterior. Con una sola copia, como en nuestro laboratorio, puede haber unos segundos sin servicio.
+> Por último, guarda las claves aparte, en un objeto llamado Secret, y los datos en un disco que sobrevive al reinicio del Pod. Todo queda escrito en archivos, sin depender de la memoria de una persona.
 >
-> Con dos o más copias, las personas casi no notan el cambio. Kubernetes también controla la memoria y la CPU mediante una reserva y un tope para cada Pod.
->
-> Por último, permite guardar las claves en un objeto separado, llamado Secret, y controlar mediante permisos quién puede leerlas. También mantiene los datos en un disco que sobrevive al reinicio del Pod.
->
-> Todo queda descrito en archivos, así que no dependemos de pasos manuales recordados por una persona.
->
-> Detengámonos en la reserva y el límite de recursos, porque son importantes para la operación.
+> Veamos qué ocurre cuando una de esas copias se cae.
 
 **Si se te olvida, di esto**
 
 - Kubernetes reemplaza los Pods que fallan.
 - Puede aumentar copias y repartir el trabajo.
-- También controla recursos y protege la configuración.
+- La reserva es lo que apartamos y el tope, el máximo.
+- Las claves y los datos van aparte.
 
 **Si preguntan:** ¿Por qué la base no corre en un servicio administrado?
 
 Porque este es un laboratorio. En producción evaluaríamos una base administrada o una configuración de Kubernetes preparada para conservar la identidad y el almacenamiento de la base, junto con sus respaldos.
+
+**Si preguntan:** ¿Qué número se pone de reserva y de tope?
+
+Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memoria muy bajo provoca reinicios, y uno demasiado alto deja que un contenedor consuma más de lo conveniente.
 
 **Si hay tiempo**
 
@@ -1321,49 +1268,14 @@ Porque este es un laboratorio. En producción evaluaríamos una base administrad
 > Podemos aumentar las copias porque los servicios no guardan el estado importante en memoria, sino en la base.
 >
 > En el laboratorio abrimos un túnel mediante un comando para llegar a la pantalla. En un ambiente real se expondría de forma permanente.
-
-### 37. Memoria y CPU: reservar y limitar
-
-**Presenta:** Kevin
-
-**Qué decir**
-
-> Docker permite colocar un tope de memoria y CPU a cada contenedor. Si supera el límite de memoria, se detiene para no afectar a las demás aplicaciones.
 >
-> Kubernetes agrega una reserva: la cantidad de recursos que toma en cuenta para decidir dónde puede ejecutar cada Pod. El tope establece cuánto puede utilizar como máximo.
+> La pantalla reserva veinticinco milésimas de CPU y treinta y dos megas de memoria, con topes de doscientas cincuenta milésimas y ciento veintiocho megas. Llegar al tope de CPU la hace más lenta; pasarse de memoria provoca un reinicio.
 >
-> Podemos compararlo con un presupuesto: la reserva es lo que apartamos al planificar y el tope es lo máximo que permitimos utilizar.
->
-> Así, el tope protege a las demás aplicaciones.
->
-> Si un contenedor supera el límite de memoria, Kubernetes lo reinicia. En ARKA-Lite, la pantalla reserva treinta y dos megas y tiene un tope de ciento veintiocho.
->
-> Todavía no definimos esos valores para los servicios Java. En un ambiente real, mediríamos y configuraríamos los recursos de todos.
->
-> Con los recursos definidos, veamos qué ocurre cuando una de las copias se cae.
+> Definir la reserva y el tope también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.
 
-**Si se te olvida, di esto**
+### 36. Cuando un Pod se cae
 
-- Docker permite limitar memoria y CPU.
-- Kubernetes usa la reserva para decidir dónde cabe cada Pod.
-- La reserva ubica el Pod y el tope protege al servidor.
-- En ARKA-Lite lo aplicamos a la pantalla.
-
-**Si preguntan:** ¿Qué número se pone?
-
-Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memoria muy bajo puede causar reinicios. Uno demasiado alto puede permitir que un contenedor consuma más recursos de lo conveniente. Por eso medimos y ajustamos.
-
-**Si hay tiempo**
-
-> La CPU se mide en milésimas de un núcleo. Doscientas cincuenta equivalen a un cuarto, y llegar al tope reduce la velocidad, mientras superar la memoria provoca un reinicio.
->
-> La pantalla reserva veinticinco milésimas de CPU y treinta y dos megas de memoria. Sus topes son doscientas cincuenta milésimas y ciento veintiocho megas.
->
-> Definir estos recursos también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.
-
-### 38. Cuando un Pod se cae
-
-**Presenta:** Kevin
+**Presenta:** Moises
 
 **Qué decir**
 
@@ -1395,9 +1307,9 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 >
 > Si se cae la base, ocurre algo similar. Kubernetes recrea el Pod y los datos continúan en su disco.
 
-### 39. DevOps: lo que aprendimos
+### 37. DevOps: lo que aprendimos
 
-**Presenta:** Kevin
+**Presenta:** Moises
 
 **Qué decir**
 
@@ -1409,7 +1321,7 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 >
 > El mayor valor es que todo quedó escrito. Tenemos la receta de cada imagen, el pipeline y los archivos de Kubernetes, sin depender de la memoria de una persona.
 >
-> El sistema ya está instalado. Ahora debemos saber qué ocurre dentro. Le devuelvo la palabra a Moises.
+> El sistema ya está instalado. Ahora veamos cómo sabemos qué ocurre dentro.
 
 **Si se te olvida, di esto**
 
@@ -1425,17 +1337,17 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 
 Presenta: Moises.
 
-### 40. Observabilidad: tres preguntas
+### 38. Observabilidad: tres preguntas
 
 **Qué decir**
 
-> Gracias, Kevin. Observabilidad es el nombre que damos a la capacidad de entender qué ocurre dentro del sistema sin tener que adivinar.
+> Observabilidad es el nombre que damos a la capacidad de entender qué ocurre dentro del sistema sin tener que adivinar.
 >
 > La resumimos mediante tres preguntas. La primera es si el sistema está vivo. Cada servicio informa si funciona y si puede comunicarse con su base.
 >
 > La segunda pregunta es qué pasó. Para responderla utilizamos los registros, también llamados logs, que funcionan como la bitácora de cada servicio.
 >
-> La tercera es por dónde pasó un pedido. Cada operación lleva un número de seguimiento, como el número de guía de un paquete.
+> La tercera es por dónde pasó un pedido. Cada llamada lleva un número de seguimiento, como el número de guía de un paquete. No es el número del evento que vimos con Abdiel: aquel evita avisos duplicados y este nos permite seguir el recorrido.
 >
 > Ese número permite saber por dónde pasó, a qué hora y en qué punto se detuvo. Sin él tendríamos que revisar cada servidor por separado.
 >
@@ -1459,31 +1371,33 @@ Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabil
 >
 > Cada servicio tiene una dirección especial que informa su salud. Kubernetes y la pantalla la consultan para mostrar si está disponible.
 
-### 41. Un aviso no llegó: ¿cómo lo encontramos?
+### 39. Un aviso no llegó: ¿cómo lo encontramos?
 
 **Qué decir**
 
-> Supongamos que alguien informa que envió su solicitud, pero no recibió el aviso. Como tenemos varios servicios, no queremos revisar sus registros uno por uno.
+> Supongamos que alguien envió su solicitud, pero no recibió el aviso. No queremos revisar los registros de cada servicio uno por uno.
 >
-> Por eso reunimos todo en un solo lugar mediante tres herramientas con tareas concretas. Promtail recoge los registros de los contenedores y Loki los guarda.
+> Por eso los reunimos en un solo lugar con tres herramientas. Promtail es el recolector: toma los registros de cada contenedor. Loki es la base de datos donde se guardan. Y Grafana es la pantalla donde los consultamos.
 >
-> Grafana permite buscarlos desde una sola pantalla. Para este caso, buscamos el número de la solicitud y reunimos los registros asociados. Ese número identifica el trámite; el número de seguimiento que mencionamos antes identifica una llamada.
+> Escribimos el código de la solicitud y aparecen juntos sus registros de los dos servicios, en orden: cuándo se envió, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento siguiera en la bandeja de salida, veríamos dónde se detuvo.
 >
-> Podemos identificar a qué hora se envió la solicitud, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento sigue en la bandeja de salida, ya sabemos dónde se detuvo.
->
-> También debemos recordar que un servicio encendido no necesariamente funciona bien. Por eso, además de su estado, revisamos resultados como la cantidad de eventos pendientes.
+> Un servicio encendido no siempre funciona bien. Por eso también revisamos resultados, como la cantidad de eventos pendientes.
 >
 > Con este caso resuelto, resumamos lo que aprendimos sobre observabilidad.
 
 **Si se te olvida, di esto**
 
-- Promtail recoge los registros.
-- Loki los guarda y Grafana permite buscarlos.
-- Buscamos el número de la solicitud para reunir los registros relacionados.
+- Promtail recolecta los registros.
+- Loki es su base de datos y Grafana, la pantalla para consultarlos.
+- Buscamos el código de la solicitud y aparecen los registros de los dos servicios.
 
 **Qué hacer** (no se dice)
 
-- No hace falta explicar cómo se escribe la consulta en Grafana: basta la idea de buscar un número.
+- No hace falta explicar cómo se escribe la consulta en Grafana: basta la idea de buscar el código de la solicitud.
+
+**Si preguntan:** ¿Grafana muestra métricas?
+
+Puede mostrarlas si le conectamos una fuente de métricas, como el consumo de memoria. En ARKA-Lite solo lo conectamos a Loki, así que lo usamos para consultar registros.
 
 **Si hay tiempo**
 
@@ -1493,7 +1407,7 @@ Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabil
 >
 > Podemos buscar los registros de notificaciones que contengan la palabra evento. En segundos obtenemos las líneas relacionadas con sus números.
 
-### 42. Observabilidad: lo que aprendimos
+### 40. Observabilidad: lo que aprendimos
 
 **Qué decir**
 
@@ -1519,7 +1433,7 @@ Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabil
 
 Presenta: Abdiel Barria.
 
-### 43. Resultados para el negocio
+### 41. Resultados para el negocio
 
 **Qué decir**
 
@@ -1547,7 +1461,7 @@ Presenta: Abdiel Barria.
 
 > Comprobamos estos resultados en nuestro laboratorio y no en producción. Lo importante es que cada resultado se puede repetir y verificar.
 
-### 44. Lo que sostiene los resultados
+### 42. Lo que sostiene los resultados
 
 **Qué decir**
 
@@ -1558,8 +1472,6 @@ Presenta: Abdiel Barria.
 > También ejecutamos el mismo sistema en distintos ambientes mediante un solo comando. Las pruebas automáticas revisan cada cambio antes de incorporarlo.
 >
 > Además, reunimos los registros en un solo lugar y relacionamos cada versión con el cambio que la produjo.
->
-> Así protegemos los datos, mantenemos las claves fuera del código, repetimos la instalación, revisamos los cambios y podemos identificar de dónde salió cada versión.
 >
 > La mayoría puede comenzar a aplicarse sin reemplazar la tecnología que ya utilizamos.
 >
@@ -1577,7 +1489,7 @@ Presenta: Abdiel Barria.
 >
 > Ninguna de estas prácticas exige Java, microservicios ni Kubernetes. Son decisiones de diseño aplicables a los sistemas actuales.
 
-### 45. Lo que nos llevamos
+### 43. Lo que nos llevamos
 
 **Qué decir**
 
@@ -1599,7 +1511,7 @@ Presenta: Abdiel Barria.
 
 > Si conservamos una sola idea, debe ser esta. Diseñemos qué hará el sistema cuando algo falle y no solamente cómo funcionará cuando todo salga bien.
 
-### 46. Gracias
+### 44. Gracias
 
 **Qué decir**
 

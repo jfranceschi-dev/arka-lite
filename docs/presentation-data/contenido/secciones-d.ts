@@ -46,7 +46,7 @@ export const demostracion: Seccion = {
       id: "s07-caida",
       titulo: "En video: si notificaciones se cae",
       idea: "La persona no se entera; el aviso llega cuando el servicio vuelve, una sola vez.",
-      visible: ["Enviar responde bien aunque notificaciones esté caído", "El aviso queda pendiente en la bandeja", "Se reintenta cada 5 segundos", "Al volver, llega un solo aviso"],
+      visible: ["Enviar responde bien aunque notificaciones esté caído", "El evento queda pendiente en la bandeja", "Se reintenta cada 5 segundos", "Al volver, llega un solo aviso"],
       valor: "Ver, con el sistema real, que una caída no hace perder ni duplicar información.",
       visual: visualDeVideo(VIDEOS.caida),
       guion: {
@@ -90,7 +90,7 @@ export const demostracion: Seccion = {
       guion: {
         decir: [
           "La demostración nos deja tres aprendizajes. Primero, debemos diseñar para las fallas y no únicamente para el recorrido exitoso.",
-          "También debemos hacer visible lo que ocurre de forma asíncrona. Sin la pestaña Enviadas, un evento pendiente quedaría oculto.",
+          "También debemos hacer visible lo que ocurre de forma asíncrona. Sin una vista de los eventos enviados, uno pendiente quedaría oculto.",
           "Finalmente, ver el sistema funcionando facilita la explicación y convierte la misma pantalla en una herramienta para capacitar a quienes se incorporen.",
         ],
         conTusPalabras: [
@@ -98,7 +98,7 @@ export const demostracion: Seccion = {
           "Lo asíncrono debe hacerse visible.",
           "La demostración también sirve para capacitar.",
         ],
-        transicion: "Para cerrar, le paso la palabra a Abdiel, que presentará los resultados.",
+        transicion: "Para cerrar, veamos qué significa todo esto para el negocio.",
       },
     },
   ],
@@ -130,7 +130,7 @@ export const cierre: Seccion = {
       },
       guion: {
         decir: [
-          "Gracias, Ricardo. Lo que acabamos de ver se traduce en estos resultados para el negocio.",
+          "Lo que acabamos de ver se traduce en estos resultados para el negocio.",
           "Primero, los eventos pendientes permanecen guardados si se interrumpe la entrega, y reenviar el mismo evento no crea otro aviso.",
           "Segundo, el trámite no se detiene. Aunque el servicio de avisos esté caído, la persona puede enviar su solicitud y el aviso llega cuando el servicio regresa.",
           "Tercero, las reglas del negocio se cumplen y cada una tiene una prueba que la vigila.",
@@ -168,7 +168,6 @@ export const cierre: Seccion = {
           "La configuración está separada del código, así que podemos cambiar las claves sin modificar la aplicación.",
           "También ejecutamos el mismo sistema en distintos ambientes mediante un solo comando. Las pruebas automáticas revisan cada cambio antes de incorporarlo.",
           "Además, reunimos los registros en un solo lugar y relacionamos cada versión con el cambio que la produjo.",
-          "Así protegemos los datos, mantenemos las claves fuera del código, repetimos la instalación, revisamos los cambios y podemos identificar de dónde salió cada versión.",
           "La mayoría puede comenzar a aplicarse sin reemplazar la tecnología que ya utilizamos.",
         ],
         conTusPalabras: [

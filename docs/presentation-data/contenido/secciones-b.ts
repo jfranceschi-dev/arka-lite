@@ -142,8 +142,8 @@ export const datos: Seccion = {
           "Aquí está uno de los cambios principales frente a muchas aplicaciones conocidas. La diferencia no es la base de datos, sino el lugar donde vive la regla del negocio.",
           "En el esquema habitual, la persona pulsa Enviar, la aplicación llama a un procedimiento almacenado y ese procedimiento decide y guarda. Por lo tanto, la regla vive en la base.",
           "En ARKA-Lite, la regla vive en el servicio junto con su prueba. Cuando la regla permite la operación, una herramienta llamada ORM prepara las instrucciones para guardar los datos. Esas instrucciones se escriben en SQL, el lenguaje con el que consultamos y modificamos la información de la base.",
-          "Jossett mostrará primero la misma regla escrita de las dos formas y después explicará qué es un ORM. Mientras tanto, la base continúa protegiendo lo que le corresponde, como las llaves, las restricciones y los índices.",
-          "Esto no significa que los procedimientos estén mal ni que la base pierda importancia. Solo movimos la decisión a otro lugar.",
+          "Esto no significa que los procedimientos estén mal ni que la base pierda importancia: sigue cuidando las llaves, las restricciones y los índices. Solo movimos la decisión a otro lugar.",
+          "Jossett lo mostrará con un ejemplo y después explicará qué es un ORM.",
         ],
         conTusPalabras: [
           "La diferencia está en dónde vive la regla.",
@@ -188,12 +188,10 @@ export const datos: Seccion = {
       },
       guion: {
         decir: [
-          "Gracias, Marlene. Veamos esa diferencia con una regla concreta: una solicitud solo puede enviarse cuando está en borrador.",
-          "La comparación nos permite ver quién aplica la regla y quién guarda el cambio en cada caso.",
+          "Gracias, Marlene. Veamos esa diferencia con una de las reglas que mencionó Luis: una solicitud solo puede enviarse cuando está en borrador.",
           "A la izquierda, el procedimiento consulta el estado, valida la condición y actualiza el dato. No necesitamos leer cada línea para notar que la regla y el dato están juntos en la base.",
           "A la derecha aparece la misma regla en el código de la aplicación. Si el estado no es borrador, se produce un error. Si lo es, la solicitud pasa a enviada.",
-          "En este caso no escribimos SQL para guardar el cambio, porque el ORM lo genera. La regla no cambia, pero sí cambian el lugar donde se ejecuta y la pieza que la aplica.",
-          "Al tenerla en el código, podemos probarla en milésimas de segundo y sin una base, mientras la base conserva sus responsabilidades.",
+          "La regla no cambia; cambia dónde se ejecuta. Y al tenerla en el código, podemos probarla en milésimas de segundo, sin una base.",
         ],
         conTusPalabras: [
           "Estamos comparando responsabilidades, no tecnologías.",
@@ -229,14 +227,12 @@ export const datos: Seccion = {
           "El ORM traduce de un lado a otro. Cuando la aplicación le pide guardar una solicitud, identifica la tabla y la columna de cada dato, genera el SQL y lo envía.",
           "Cuando la base responde, hace el recorrido contrario y convierte la fila en un objeto. Es como un intérprete en una reunión, donde cada parte puede hablar su propio idioma.",
           "En nuestro proyecto usamos Hibernate, aunque la idea existe en otras tecnologías. Por ejemplo, .NET tiene Entity Framework.",
-          "El ORM no diseña la base por nosotros. Seguimos definiendo las llaves, las relaciones y los índices, porque un diseño deficiente continúa siendo deficiente.",
-          "Tampoco impide escribir SQL. Si una consulta es compleja, podemos escribirla a mano, mientras el ORM se encarga del trabajo cotidiano.",
+          "El ORM no diseña la base por nosotros: las llaves, las relaciones y los índices los seguimos definiendo. Y si una consulta es compleja, podemos escribirla a mano.",
         ],
         conTusPalabras: [
           "El ORM traduce entre objetos y tablas.",
           "Hibernate genera el SQL de las operaciones comunes.",
-          "Nosotros seguimos diseñando la base.",
-          "Las consultas complejas pueden escribirse a mano.",
+          "Nosotros seguimos diseñando la base y podemos escribir SQL a mano.",
         ],
         preguntas: [{ texto: "¿El ORM reemplaza a quien administra la base de datos?", respuesta: "No. Esa persona sigue diseñando el modelo, cuidando los índices y revisando el SQL generado, aunque la herramienta resuelva muchas consultas rutinarias." }],
         transicion: "Veamos ahora cómo una clase de la aplicación se relaciona con una tabla.",
@@ -266,7 +262,7 @@ export const datos: Seccion = {
           "Con ese mapeo, el ORM genera las operaciones básicas. Para guardar una solicitud nueva, el ORM genera un INSERT, que agrega una fila. Para buscarla por número, genera un SELECT, que consulta los datos.",
           "Cuando enviamos una solicitud existente, genera un UPDATE, que actualiza su estado. Los valores viajan como parámetros, representados por los signos de interrogación, y nunca se pegan al texto del SQL.",
           "Es el mismo principio utilizado con los parámetros de un procedimiento: los valores se tratan como datos y no como instrucciones. Así evitamos que un texto ingresado por una persona altere la consulta, lo que se conoce como inyección de SQL.",
-          "Nosotros no escribimos estas consultas rutinarias, pero sí cuidamos el diseño de las tablas, porque el ORM depende de una base correctamente diseñada.",
+          "Así cada pieza hace una sola cosa: las reglas deciden, el ORM traduce y la base guarda. Si algo falla, sabemos en qué punto buscar.",
         ],
         conTusPalabras: [
           "La clase y la tabla se relacionan campo por columna.",
@@ -275,43 +271,8 @@ export const datos: Seccion = {
         ],
         preguntas: [
           { texto: "¿Se puede ver el SQL que genera?", respuesta: "Sí. Una línea de configuración permite mostrarlo en los registros, lo que ayuda a revisar su funcionamiento y rendimiento." },
-          { texto: "¿Y las consultas complejas?", respuesta: "Podemos escribirlas a mano, porque el ORM no lo impide." },
         ],
-        transicion: "Con ese mapeo claro, sigamos un dato desde la pantalla hasta la fila.",
-      },
-    },
-    {
-      id: "s03-viaje",
-      titulo: "El viaje de un dato: de la pantalla a la fila",
-      idea: "Cada pieza hace una sola cosa; si algo falla, se sabe en qué punto.",
-      visible: ["La pantalla manda los datos", "El servicio los recibe", "Las reglas validan, sin SQL", "El ORM arma el INSERT", "PostgreSQL guarda la fila y confirma"],
-      valor: "Cada pieza hace una sola traducción; si algo falla, se sabe en qué punto.",
-      rol: "orm",
-      visual: {
-        tipo: "flujo",
-        pasos: [
-          { icono: "monitor", titulo: "Pantalla", texto: "Manda: SOL-100, tipo Consulta.", tono: "violeta" },
-          { icono: "code", titulo: "Servicio", texto: "Recibe el pedido.", tono: "marino" },
-          { icono: "puzzle", titulo: "Reglas", texto: "Revisa que el número no exista.", tono: "marino" },
-          { icono: "table", titulo: "ORM", texto: "Arma el INSERT.", tono: "cian" },
-          { icono: "database", titulo: "PostgreSQL", texto: "Guarda y confirma.", tono: "correcto" },
-        ],
-      },
-      guion: {
-        decir: [
-          "Sigamos una solicitud desde que la persona la registra hasta que queda guardada. Primero completa el formulario y la pantalla envía el número SOL-100 y el tipo Consulta.",
-          "El pedido llega al servicio de solicitudes, donde se aplican las reglas del negocio.",
-          "Para comprobar si el número ya existe, el servicio consulta la base mediante el ORM. Si la solicitud cumple las reglas, el ORM prepara la instrucción para guardarla y PostgreSQL registra la fila.",
-          "Después, la base confirma la operación y la respuesta recorre el camino de vuelta. Finalmente, la pantalla informa que la solicitud quedó registrada.",
-          "Cada pieza tiene una responsabilidad. La pantalla atiende a la persona, las reglas deciden, el ORM traduce y la base guarda y protege.",
-          "Por esa separación, cuando algo falla podemos identificar con mayor facilidad dónde ocurrió.",
-        ],
-        conTusPalabras: [
-          "El dato pasa por la pantalla, las reglas, el ORM y la base.",
-          "Las reglas deciden antes de guardar.",
-          "Cada pieza cumple una responsabilidad.",
-        ],
-        transicion: "Para llegar a la base necesitamos su dirección, usuario y clave. Veamos dónde guardamos esos datos.",
+        transicion: "Para llegar a la base, el ORM necesita su dirección, usuario y clave. Veamos dónde guardamos esos datos.",
       },
     },
     {
@@ -336,7 +297,6 @@ export const datos: Seccion = {
           "ARKA-Lite aplica la misma idea con otra herramienta. En lugar de usar un archivo junto a la aplicación, recibe variables de entorno cuando arranca.",
           "Así, el ambiente donde se ejecuta le entrega la dirección, el usuario y la clave. La misma aplicación puede funcionar en desarrollo, pruebas y producción sin cambiar su código.",
           "Cada ambiente proporciona sus propios valores. Por eso, si cambia el servidor o renovamos una clave, solo actualizamos la configuración del ambiente.",
-          "Ya vimos cómo distribuimos estas responsabilidades. Ahora Marlene explicará cómo una transacción garantiza que los datos queden completos.",
         ],
         conTusPalabras: [
           "La conexión se configura fuera del código.",
@@ -347,7 +307,7 @@ export const datos: Seccion = {
           { texto: "¿Dónde queda la clave en Kubernetes?", respuesta: "Se guarda en un objeto para datos sensibles llamado Secret, que el contenedor recibe al arrancar. Los permisos controlan quién puede leerlo." },
           { texto: "¿Hay que dejar de usar web.config?", respuesta: "No. Sigue siendo válido para las aplicaciones que funcionan de esa manera. Lo importante es mantener la clave fuera del código y del repositorio." },
         ],
-        transicion: "Marlene, adelante.",
+        transicion: "Ahora Marlene explicará cómo una transacción garantiza que los datos queden completos. Marlene, adelante.",
         respaldo: "docs/inicio/bases-de-datos-locales.md",
       },
     },
@@ -430,40 +390,6 @@ export const interconexion: Seccion = {
   rol: "interconexion",
   diapositivas: [
     {
-      id: "s04-comunicacion",
-      titulo: "Quién habla con quién, y cómo",
-      idea: "Todo viaja por la red con mensajes de texto, y cada pieza encuentra a la otra por su nombre.",
-      visible: ["El navegador solo conoce la pantalla", "Un intermediario reenvía los pedidos al servicio", "El evento viaja después, con un proceso aparte", "Se encuentran por nombre, no por dirección fija", "Un número de seguimiento acompaña cada llamada"],
-      valor: "Cada conexión tiene un porqué: cambiar una dirección o seguir un error no obliga a tocar todo.",
-      visual: {
-        tipo: "matriz",
-        encabezados: ["Conexión", "Cómo se habla", "Por qué así"],
-        filas: [
-          { icono: "monitor", tono: "violeta", celdas: ["Navegador → pantalla", "Abre una sola dirección", "El navegador nunca conoce las direcciones internas"] },
-          { icono: "route", tono: "violeta", celdas: ["Pantalla → servicios", "Un intermediario reenvía cada pedido", "Si un servicio cambia de dirección, la pantalla ni se entera"] },
-          { icono: "send", tono: "cian", celdas: ["Solicitudes → notificaciones", "El evento, con un proceso aparte", "Si notificaciones cae, solicitudes sigue funcionando"] },
-          { icono: "network", tono: "correcto", celdas: ["Cómo se encuentran", "Por su nombre, no por una dirección fija", "Funciona igual en cualquier ambiente"] },
-          { icono: "waypoints", tono: "advertencia", celdas: ["Seguimiento", "Un número viaja en cada llamada", "Una sola búsqueda sigue todo el recorrido"] },
-        ],
-      },
-      guion: {
-        decir: [
-          "Gracias, Marlene. Como los servicios no comparten una base, necesitamos definir cómo se comunican. Esta tabla resume las conexiones.",
-          "El navegador solo conoce la pantalla. A su vez, la pantalla pasa los pedidos por un intermediario que los envía al servicio correspondiente.",
-          "Así, si un servicio cambia de dirección, las demás piezas no tienen que enterarse. Es como la recepción de una empresa, donde pedimos un departamento y nos conectan con él.",
-          "Entre los servicios, solicitudes envía un evento a notificaciones. Sin embargo, no lo hace mientras la persona espera, sino después mediante un proceso separado.",
-          "Además, las piezas se encuentran por nombre y no por una dirección fija. Cada llamada lleva un número de seguimiento que permite reconstruir su recorrido en los registros.",
-        ],
-        conTusPalabras: [
-          "Un intermediario dirige cada pedido.",
-          "Los servicios se encuentran por nombre.",
-          "Cada llamada lleva un número de seguimiento.",
-        ],
-        preguntas: [{ texto: "¿Por qué no una cola de mensajes como RabbitMQ o Kafka?", respuesta: "Para este proyecto, basta con guardar el evento pendiente y entregarlo después mediante una llamada web al otro servicio. No necesitamos agregar una herramienta de mensajería. Si aumenta el volumen, podemos llevar el mismo diseño a una cola sin cambiar las reglas." }],
-        transicion: "Para entender por qué el aviso se envía después, comparemos las dos formas de comunicación.",
-      },
-    },
-    {
       id: "s04-sincrono",
       titulo: "Síncrono o asíncrono",
       idea: "Si necesitamos el resultado para continuar, esperamos; si no, el trabajo se completa después.",
@@ -480,7 +406,7 @@ export const interconexion: Seccion = {
       },
       guion: {
         decir: [
-          "Tenemos dos formas de comunicación. La síncrona se parece a una llamada telefónica, porque hacemos el pedido y esperamos la respuesta.",
+          "Gracias, Marlene. Como los servicios no comparten una base, necesitamos definir cómo se comunican, y hay dos formas de hacerlo. La síncrona se parece a una llamada telefónica, porque hacemos el pedido y esperamos la respuesta.",
           "La usamos para crear, aprobar o rechazar una solicitud, ya que la persona necesita conocer el resultado de inmediato. Si el otro lado está caído, verá el error.",
           "La comunicación asíncrona se parece a un correo. Enviamos el mensaje y seguimos trabajando sin esperar, aunque la respuesta pueda tardar unos segundos.",
           "En nuestro sistema, si el otro servicio está caído, el mensaje queda guardado hasta que podamos entregarlo. En un pago con tarjeta, por ejemplo, la aprobación es síncrona porque necesitamos saber si fue aceptado.",
@@ -559,7 +485,7 @@ export const interconexion: Seccion = {
         decir: [
           "Un evento puede llegar dos veces. Por ejemplo, notificaciones lo recibe correctamente, pero la confirmación se pierde en la red. Como solicitudes no sabe que llegó, vuelve a enviarlo.",
           "Para manejarlo usamos la idempotencia, una palabra técnica para una idea sencilla. Significa que repetir la misma operación no cambia el resultado.",
-          "Cuando llega un evento, notificaciones busca su número en la lista. Si es nuevo, crea el aviso y registra el número. Si ya estaba registrado, lo ignora.",
+          "Cada evento trae un número fijo, que llamamos el número del evento. Cuando llega, notificaciones lo busca en la lista. Si es nuevo, crea el aviso y registra el número. Si ya estaba registrado, lo ignora.",
           "Es como un portero con una lista de invitados, porque quien ya entró no puede entrar una segunda vez.",
           "Las dos soluciones se complementan. La bandeja de salida evita perder eventos y la idempotencia impide duplicar avisos.",
           "Este principio sirve para cualquier proceso que tenga reintentos, como un pago, un correo o una importación de archivos.",
@@ -573,7 +499,60 @@ export const interconexion: Seccion = {
           { texto: "¿Qué resuelve el Outbox y qué resuelve la idempotencia?", respuesta: "Outbox evita perder el evento. La idempotencia evita que ese evento produzca el mismo efecto dos veces." },
           { texto: "¿Y si llegan dos entregas al mismo tiempo?", respuesta: "La llave primaria permite registrar el número una sola vez. La otra entrega falla y, al reintentarse, encuentra el evento ya procesado." },
         ],
-        transicion: "Con ambas garantías completas, resumamos lo aprendido sobre la interconexión.",
+        transicion: "Con ambas garantías claras, veamos en una sola imagen quién habla con quién, y cómo.",
+      },
+    },
+    {
+      id: "s04-comunicacion",
+      titulo: "Resumen: quién habla con quién, y cómo",
+      idea: "El recorrido completo de una solicitud: una parte mientras la persona espera y otra después, por su cuenta.",
+      visible: ["Mientras la persona espera: la pantalla, solicitudes y su base", "La solicitud y su evento se guardan juntos", "Después, el relevador entrega el evento a notificaciones", "Notificaciones revisa el número y crea un solo aviso", "Todos se encuentran por nombre, y un número sigue cada llamada"],
+      porque: "Las piezas se encuentran por su nombre y un número de seguimiento viaja en cada llamada: una sola búsqueda sigue todo el recorrido.",
+      valor: "Ver en una sola imagen cómo encajan lo síncrono, la bandeja de salida y la idempotencia.",
+      visual: {
+        tipo: "caminos",
+        caminos: [
+          {
+            titulo: "Mientras la persona espera: síncrono",
+            tono: "marino",
+            pasos: [
+              { icono: "user", titulo: "Navegador", texto: "Solo conoce la pantalla." },
+              { icono: "monitor", titulo: "La pantalla", texto: "Reenvía cada pedido." },
+              { icono: "clipboard-list", titulo: "Solicitudes", texto: "Aplica la regla y responde ya." },
+              { icono: "database", titulo: "Su base", texto: "Solicitud y evento, juntos." },
+            ],
+            flechas: ["pide", "reenvía", "guarda"],
+          },
+          {
+            titulo: "Después, por su cuenta: asíncrono",
+            tono: "cian",
+            pasos: [
+              { icono: "inbox", titulo: "La bandeja", texto: "El evento espera su turno." },
+              { icono: "timer", titulo: "Relevador", texto: "Cada 5 segundos lo entrega." },
+              { icono: "bell", titulo: "Notificaciones", texto: "Crea el aviso si es nuevo." },
+              { icono: "clipboard-check", titulo: "Su base", texto: "Anota el número recibido." },
+            ],
+            flechas: ["lo toma", "por nombre", "anota"],
+          },
+        ],
+      },
+      guion: {
+        decir: [
+          "Con las piezas claras, veamos el recorrido completo en una sola imagen. Es el resumen de esta parte.",
+          "Arriba está lo que ocurre mientras la persona espera. El navegador solo conoce la pantalla, y la pantalla pasa cada pedido por un intermediario que lo lleva al servicio de solicitudes. Es como la recepción de una empresa: pedimos un departamento y nos conectan con él.",
+          "Solicitudes aplica la regla, guarda la solicitud y su evento en la misma transacción y responde de inmediato. Esa es la parte síncrona.",
+          "Abajo está lo que pasa después, sin que nadie espere. El relevador toma el evento de la bandeja de salida y se lo entrega a notificaciones, que revisa el número, crea un solo aviso y anota que ya lo recibió. Esa es la parte asíncrona.",
+          "Dos detalles unen todo. Las piezas se encuentran por su nombre y no por una dirección fija, y cada llamada lleva un número de seguimiento, distinto del número del evento, que nos permite reconstruir el recorrido en los registros. Moises lo retomará en la observabilidad.",
+        ],
+        conTusPalabras: [
+          "Arriba, lo que pasa mientras la persona espera.",
+          "Abajo, lo que pasa después, por su cuenta.",
+          "Se encuentran por nombre y un número sigue cada llamada.",
+        ],
+        instrucciones: ["Recorrer la lámina de izquierda a derecha: primero el camino de arriba y después el de abajo."],
+        preguntas: [{ texto: "¿Por qué no una cola de mensajes como RabbitMQ o Kafka?", respuesta: "Para este proyecto, basta con guardar el evento pendiente y entregarlo después mediante una llamada web al otro servicio. No necesitamos agregar una herramienta de mensajería. Si aumenta el volumen, podemos llevar el mismo diseño a una cola sin cambiar las reglas." }],
+        transicion: "Con el recorrido completo a la vista, resumamos lo aprendido sobre la interconexión.",
+        respaldo: "docs/arquitectura/flujo-y-referencias.md",
       },
     },
     {
@@ -603,7 +582,7 @@ export const interconexion: Seccion = {
           "Guardamos primero para no perder información.",
           "Reconocemos repetidos para evitar duplicados.",
         ],
-        transicion: "Ahora veremos cómo llevamos el código y los datos hasta un servidor. Le paso la palabra a Moises, de infraestructura.",
+        transicion: "Ahora veremos cómo llevamos el código y los datos hasta un servidor. Le paso la palabra a Kevin, de infraestructura.",
       },
     },
   ],

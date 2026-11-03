@@ -8,8 +8,8 @@ Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apo
 
 | Versión | Láminas | Minutos | Cuándo usarla | Qué tiene de distinto | Archivos |
 | --- | --- | --- | --- | --- | --- |
-| Con videos | 50 | ~47 | Hay tiempo para la parte 7: no necesita internet ni el sistema arriba. | Tres videos dentro del PPTX, que arrancan solos: un ejemplo ilustrativo de CI/CD en la parte 5 y dos del sistema real en la parte 7. | `pptx/ARKA-Lite-ejecutivo-con-videos.pptx` y `guiones/guion-ejecutivo-con-videos-por-persona.md` |
-| Sin demostración | 46 | ~43 | Falta tiempo, o el público ya vio la pantalla. | No hay parte 7: la observabilidad pasa directo al cierre, y nada anuncia una demostración. | `pptx/ARKA-Lite-ejecutivo-sin-demo.pptx` y `guiones/guion-ejecutivo-sin-demo-por-persona.md` |
+| Con videos | 48 | ~44 | Hay tiempo para la parte 7: no necesita internet ni el sistema arriba. | Tres videos dentro del PPTX, que arrancan solos: un ejemplo ilustrativo de CI/CD en la parte 5 y dos del sistema real en la parte 7. | `pptx/ARKA-Lite-ejecutivo-con-videos.pptx` y `guiones/guion-ejecutivo-con-videos-por-persona.md` |
+| Sin demostración | 44 | ~40 | Falta tiempo, o el público ya vio la pantalla. | No hay parte 7: la observabilidad pasa directo al cierre, y nada anuncia una demostración. | `pptx/ARKA-Lite-ejecutivo-sin-demo.pptx` y `guiones/guion-ejecutivo-sin-demo-por-persona.md` |
 
 Cada PPTX trae además, al final, la lámina «Reparto de la presentación», que no cuenta aquí y se quita antes de presentar.
 
@@ -20,39 +20,39 @@ Los números de lámina son los de la versión con videos; en la versión sin de
 | Persona | Área | Láminas | Qué presenta | Minutos | Por qué esta persona |
 | --- | --- | --- | --- | --- | --- |
 | Luis Cardoze | Desarrollo | 1–5 | Apertura · Fundamentos | ~4 | Conecta con la presentación anterior y da el recorrido. Fundamentos solo cuenta lo que nos quedó: el equipo anterior ya la trabajó a fondo. |
-| Ricardo Fábrega | Desarrollo | 6–9 y 44–46 | Arquitectura · Demostración en video | ~6 | Arquitectura solo cuenta lo que nos quedó: hexagonal ya lo explicó el equipo anterior. Acompaña los videos de la pantalla con su narración. |
-| Marlene Bonilla | Base de datos | 10–12 y 18–19 | Base de datos | ~5 | La base de datos es el terreno que el staff mejor conoce, y nadie habla mejor su idioma. |
-| Jossett Franceschi | Desarrollo | 13–17 y 30–34 | Apoyo en base de datos: la misma regla, el ORM y la conexión · DevOps: CI/CD | ~11 | Apoya a base de datos con la parte de código: la misma regla, el ORM y los datos de conexión. Cómo entra un cambio y el camino automático: baja la carga del equipo de infraestructura. |
-| Abdiel Barria | Desarrollo | 20–24 y 47–50 | Interconexión de servicios · Resultados, valor y cierre | ~8 | Es el corazón técnico: cómo no se pierde ni se duplica nada. Cierra con los resultados en el idioma del negocio y recibe las preguntas. |
-| Moises | Infraestructura | 25–29 y 41–43 | DevOps: Docker y Compose, y la observabilidad | ~7 | Empaquetar con Docker y Compose, y la observabilidad. |
-| Kevin | Infraestructura | 35–40 | DevOps: Kubernetes | ~6 | Operar: Kubernetes, Pods, memoria y CPU. |
+| Ricardo Fábrega | Desarrollo | 6–9 | Arquitectura | ~3 | Arquitectura solo cuenta lo que nos quedó: hexagonal ya lo explicó el equipo anterior. |
+| Marlene Bonilla | Base de datos | 10–12 y 17–18 | Base de datos | ~5 | La base de datos es el terreno que el staff mejor conoce, y nadie habla mejor su idioma. |
+| Jossett Franceschi | Desarrollo | 13–16 y 29–33 | Apoyo en base de datos: la misma regla, el ORM y la conexión · DevOps: CI/CD | ~9 | Apoya a base de datos con la parte de código: la misma regla, el ORM y los datos de conexión. Cómo entra un cambio y el camino automático: baja la carga del equipo de infraestructura. |
+| Abdiel Barria | Desarrollo | 19–23 y 42–48 | Interconexión de servicios · Demostración en video · Resultados, valor y cierre | ~10 | Es el corazón técnico: cómo no se pierde ni se duplica nada. Acompaña los videos de la pantalla con su narración. Cierra con los resultados en el idioma del negocio y recibe las preguntas. |
+| Kevin | Infraestructura | 24–28 | DevOps: qué es, Docker y Compose | ~4 | Abre DevOps con el camino completo y explica cómo se empaqueta: Docker y Compose. |
+| Moises | Infraestructura | 34–41 | DevOps: Kubernetes, y la observabilidad | ~7 | Operar y observar: Kubernetes, Pods, memoria y CPU, y la observabilidad. |
 
 ## Línea de tiempo · con videos
 
 | Parte | Láminas | Desde | Hasta | Presenta |
 | --- | --- | --- | --- | --- |
 | Apertura | 1–2 | 0:00 | 1:03 | Luis Cardoze |
-| 1 · Fundamentos | 3–5 | 1:03 | 4:00 | Luis Cardoze |
-| 2 · Arquitectura | 6–9 | 4:00 | 7:13 | Ricardo Fábrega |
-| 3 · Base de datos | 10–19 | 7:13 | 18:12 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 20–24 | 18:12 | 23:10 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 25–40 | 23:10 | 39:05 | Moises, Jossett Franceschi, Kevin |
-| 6 · Observabilidad | 41–43 | 39:05 | 41:47 | Moises |
-| 7 · Demostración | 44–46 | 41:47 | 44:04 | Ricardo Fábrega |
-| Valor y cierre | 47–50 | 44:04 | 46:48 | Abdiel Barria |
+| 1 · Fundamentos | 3–5 | 1:03 | 4:05 | Luis Cardoze |
+| 2 · Arquitectura | 6–9 | 4:05 | 7:18 | Ricardo Fábrega |
+| 3 · Base de datos | 10–18 | 7:18 | 16:33 | Marlene Bonilla, Jossett Franceschi |
+| 4 · Interconexión de servicios | 19–23 | 16:33 | 22:06 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 24–38 | 22:06 | 35:58 | Kevin, Jossett Franceschi, Moises |
+| 6 · Observabilidad | 39–41 | 35:58 | 38:37 | Moises |
+| 7 · Demostración | 42–44 | 38:37 | 40:58 | Abdiel Barria |
+| Valor y cierre | 45–48 | 40:58 | 43:30 | Abdiel Barria |
 
 ## Línea de tiempo · sin demostración
 
 | Parte | Láminas | Desde | Hasta | Presenta |
 | --- | --- | --- | --- | --- |
 | Apertura | 1–2 | 0:00 | 0:57 | Luis Cardoze |
-| 1 · Fundamentos | 3–5 | 0:57 | 3:53 | Luis Cardoze |
-| 2 · Arquitectura | 6–9 | 3:53 | 7:06 | Ricardo Fábrega |
-| 3 · Base de datos | 10–19 | 7:06 | 18:06 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 20–24 | 18:06 | 23:03 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 25–39 | 23:03 | 37:56 | Moises, Jossett Franceschi, Kevin |
-| 6 · Observabilidad | 40–42 | 37:56 | 40:38 | Moises |
-| Valor y cierre | 43–46 | 40:38 | 43:22 | Abdiel Barria |
+| 1 · Fundamentos | 3–5 | 0:57 | 3:58 | Luis Cardoze |
+| 2 · Arquitectura | 6–9 | 3:58 | 7:12 | Ricardo Fábrega |
+| 3 · Base de datos | 10–18 | 7:12 | 16:27 | Marlene Bonilla, Jossett Franceschi |
+| 4 · Interconexión de servicios | 19–23 | 16:27 | 22:00 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 24–37 | 22:00 | 35:02 | Kevin, Jossett Franceschi, Moises |
+| 6 · Observabilidad | 38–40 | 35:02 | 37:42 | Moises |
+| Valor y cierre | 41–44 | 37:42 | 40:15 | Abdiel Barria |
 
 ## Relevos
 
@@ -63,14 +63,12 @@ Cada vez que cambia quien presenta. La frase de relevo es el final del texto de 
 | 6. El sistema de un vistazo | Luis Cardoze | Ricardo Fábrega |
 | 10. Dos bases, una por servicio | Ricardo Fábrega | Marlene Bonilla |
 | 13. La misma regla, escrita de las dos formas | Marlene Bonilla | Jossett Franceschi |
-| 18. Una transacción: todo o nada | Jossett Franceschi | Marlene Bonilla |
-| 20. Quién habla con quién, y cómo | Marlene Bonilla | Abdiel Barria |
-| 25. ¿Qué es DevOps? Del código a la operación | Abdiel Barria | Moises |
-| 30. CI/CD: primero, cómo entra un cambio | Moises | Jossett Franceschi |
-| 35. Cómo trabaja Kubernetes | Jossett Franceschi | Kevin |
-| 41. Observabilidad: tres preguntas | Kevin | Moises |
-| 44. En video: cómo interactúan los componentes | Moises | Ricardo Fábrega |
-| 47. Resultados para el negocio | Ricardo Fábrega | Abdiel Barria |
+| 17. Una transacción: todo o nada | Jossett Franceschi | Marlene Bonilla |
+| 19. Síncrono o asíncrono | Marlene Bonilla | Abdiel Barria |
+| 24. ¿Qué es DevOps? Del código a la operación | Abdiel Barria | Kevin |
+| 29. CI/CD: primero, cómo entra un cambio | Kevin | Jossett Franceschi |
+| 34. Cómo trabaja Kubernetes | Jossett Franceschi | Moises |
+| 42. En video: cómo interactúan los componentes | Moises | Abdiel Barria |
 
 ## Consejos por persona
 
@@ -85,8 +83,6 @@ Cada vez que cambia quien presenta. La frase de relevo es el final del texto de 
 
 - Hexagonal en una frase: ordena el código por dentro y no cambia cómo se instala.
 - En «Cómo funciona en la práctica», remarcar que ninguna flecha une las dos bases.
-- Abrir el PPTX antes en la computadora de la sala y probar que los videos arrancan solos y se oyen las indicaciones.
-- Practicar la narración con el video: Alt+P lo pausa si hace falta explicar algo.
 
 ### Marlene Bonilla
 
@@ -105,22 +101,26 @@ Cada vez que cambia quien presenta. La frase de relevo es el final del texto de 
 
 ### Abdiel Barria
 
-- Llevar la bandeja de salida y la idempotencia al mundo del staff: una tabla de pendientes con un job, y una tabla de procesados con llave única.
+- Llevar la bandeja de salida y la idempotencia al mundo del staff: una tabla de pendientes con una tarea programada, y una tabla de procesados con llave única.
+- Cerrar con «Quién habla con quién»: es el resumen de la parte. Recorrer primero el camino de arriba (lo que la persona espera) y luego el de abajo (lo que pasa después).
+- Abrir el PPTX antes en la computadora de la sala y probar que los videos arrancan solos y se oyen las indicaciones.
+- Practicar la narración con el video: Alt+P lo pausa si hace falta explicar algo.
 - Hablar en el idioma del negocio: qué gana una persona que usa el sistema.
 - Recibir las preguntas al final y pasárselas a quien presentó esa parte, según la tabla de preguntas.
 - Llevar el tiempo con la línea de tiempo de este documento y avisar con una seña acordada si alguien se pasa.
 
-### Moises
+### Kevin
 
 - Abrir DevOps con el camino completo antes de entrar a Docker: así cada lámina tiene su lugar.
 - Molde y contenedor: si la sala se queda con eso, Docker ya está entendido.
-- En observabilidad, contar el caso del aviso que no llegó y la guía del courier; no explicar cómo se escribe la consulta.
+- En «De código a contenedor», remarcar que el contenedor corre con un usuario sin privilegios, por seguridad.
 
-### Kevin
+### Moises
 
 - «Contenedores y Pods» es la lámina más difícil de DevOps: seguir el diagrama de izquierda a derecha, sin apuro.
 - Decir con honestidad qué es teórico y qué está en el proyecto: una copia por pieza y topes solo en la pantalla.
 - Si preguntan por producción, recordar que esto es un laboratorio.
+- En observabilidad, decir qué hace cada herramienta (Promtail recolecta, Loki guarda, Grafana muestra) y contar el caso del aviso que no llegó; no explicar cómo se escribe la consulta.
 
 ## Consejos para todo el equipo
 
@@ -142,22 +142,22 @@ Abdiel recibe las preguntas al final y se las pasa a quien corresponde.
 | Procedimientos almacenados, modelo, transacciones e índices | Marlene Bonilla |
 | El ORM, el SQL que genera y los datos de conexión | Jossett Franceschi |
 | Eventos, reintentos y duplicados | Abdiel Barria |
-| Docker, Compose y los registros | Moises |
+| Docker y Compose | Kevin |
 | Git, Pull Request y el pipeline | Jossett Franceschi |
-| Kubernetes, Pods, memoria y CPU | Kevin |
+| Kubernetes, Pods, memoria y CPU | Moises |
+| Los registros, Grafana y el número de seguimiento | Moises |
 
 ## Si falta tiempo
 
-Estas láminas se pueden saltar (en PowerPoint: Ocultar diapositiva) sin tocar lo principal. Juntas ahorran unos 6 minutos. Antes de ocultar una, revisen la frase con la que termina la lámina anterior.
+Estas láminas se pueden saltar (en PowerPoint: Ocultar diapositiva) sin tocar lo principal. Juntas ahorran unos 5 minutos. Antes de ocultar una, revisen la frase con la que termina la lámina anterior.
 
 | Lámina | Por qué se puede saltar |
 | --- | --- |
 | 6. El sistema de un vistazo | «Cómo funciona en la práctica» muestra lo mismo con más detalle. |
 | 15. El ORM por dentro: una clase es una tabla | «¿Qué es un ORM?» ya deja la idea; esta lámina agrega el detalle. |
-| 16. El viaje de un dato: de la pantalla a la fila | Repasa lo que ya se vio en la misma parte. |
-| 29. Todo el sistema con un comando | Se puede decir en una frase al final de las bondades de Docker. |
-| 33. Cada imagen, con su etiqueta | Su mensaje cabe en una frase al final del pipeline. |
-| 48. Lo que sostiene los resultados | «Resultados para el negocio» lleva el mensaje más útil. |
+| 28. Todo el sistema con un comando | Se puede decir en una frase al final de las bondades de Docker. |
+| 32. Cada imagen, con su etiqueta | Su mensaje cabe en una frase al final del pipeline. |
+| 46. Lo que sostiene los resultados | «Resultados para el negocio» lleva el mensaje más útil. |
 
 Los videos se graban con `npm run videos` y el sistema arriba: el script maneja la pantalla en Edge sin ventana, detiene y vuelve a iniciar notificaciones, graba la simulación de CI/CD y deja los MP4 en `capturas/videos/`.
 

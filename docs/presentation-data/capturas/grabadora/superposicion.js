@@ -39,8 +39,15 @@
     .portada h1 { margin: 0; font-size: 58px; line-height: 1.1; font-weight: 800; }
     .portada p { margin: 0; font-size: 26px; color: #CFE0F2; max-width: 980px; line-height: 1.35; }
     .portada hr { width: 90px; height: 6px; border: 0; border-radius: 3px; background: ${CIAN}; margin: 6px 0 0; }
-    .franja { position: absolute; left: 0; right: 0; top: 0; height: 70px; display: none; align-items: center; justify-content: center; gap: 10px; background: ${MARINO}; box-shadow: 0 4px 14px rgba(11,31,58,.35); }
+    .franja { position: absolute; left: 0; right: 0; top: 0; min-height: 70px; padding: 13px 0; display: none; flex-direction: column; align-items: center; gap: 9px; background: ${MARINO}; box-shadow: 0 4px 14px rgba(11,31,58,.35); }
     .franja.visible { display: flex; }
+    .nodos { display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .evento { display: none; padding: 6px 20px; border-radius: 999px; font-size: 19px; font-weight: 700; background: #1B2740; color: #E8EDF8; }
+    .evento.visible { display: block; }
+    .evento b { font-weight: 800; }
+    .evento.espera { background: #F5B942; color: #3A2500; }
+    .evento.caido { background: #E5484D; color: #fff; }
+    .evento.listo { background: #2FB67C; color: #06281A; }
     .nodo { padding: 9px 18px; border-radius: 10px; border: 2px solid #3A5A8C; color: #BFD2E8; font-size: 18px; font-weight: 700; transition: background .3s, color .3s, border-color .3s; }
     .nodo.activo { background: ${CIAN}; border-color: ${CIAN}; color: ${MARINO}; }
     .nodo.listo { background: #2FB67C; border-color: #2FB67C; color: #06281A; }
@@ -56,7 +63,7 @@
     anfitrion.id = "grabadora-arka";
     const raiz = anfitrion.attachShadow({ mode: "open" });
     raiz.innerHTML = `<style>${estilos}</style><div class="capa">
-      <div class="franja"></div>
+      <div class="franja"><div class="nodos"></div><div class="evento"></div></div>
       <div class="portada"><small></small><h1></h1><hr><p></p></div>
       <div class="terminal"><div class="barra"><i></i><i></i><i></i>&nbsp;Terminal</div><div class="lineas"></div></div>
       <div class="acelerado"></div>
@@ -97,8 +104,24 @@
         const estilo = document.createElement("style");
         estilo.textContent = ".swal2-container.swal2-top-end { top: 78px !important; }";
         document.head.appendChild(estilo);
-        $(".franja").innerHTML = nombres.map((n) => `<div class="nodo" data-nodo="${n}">${n}</div>`).join('<div class="enlace">→</div>');
+        $(".nodos").innerHTML = nombres.map((n) => `<div class="nodo" data-nodo="${n}">${n}</div>`).join('<div class="enlace">→</div>');
         $(".franja").classList.add("visible");
+      },
+      // Segunda línea de la franja: en qué estado está el evento, con el tono
+      // de los componentes. Las alertas de la UI bajan para no quedar debajo.
+      evento(titulo, texto, tono) {
+        const e = $(".evento");
+        e.innerHTML = "";
+        const b = document.createElement("b");
+        b.textContent = `${titulo} · `;
+        e.append(b, texto);
+        e.className = `evento visible ${tono}`;
+        if (!document.getElementById("grabadora-alertas")) {
+          const estilo = document.createElement("style");
+          estilo.id = "grabadora-alertas";
+          estilo.textContent = ".swal2-container.swal2-top-end { top: 128px !important; }";
+          document.head.appendChild(estilo);
+        }
       },
       sinCursor() {
         cursor.style.display = "none";

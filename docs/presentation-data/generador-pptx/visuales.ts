@@ -935,7 +935,7 @@ function caminos(s: Slide, c: Caja, v: Extract<Visual, { tipo: "caminos" }>) {
     const x0 = c.x + etiquetaW + 0.3;
     const ancho = c.x + c.w - 0.2 - x0;
     // Sin etiquetas en las flechas, las cajas pueden ser más anchas.
-    const hueco = camino.flechas.some((f) => f) ? 1.3 : 0.6;
+    const hueco = camino.flechas.some((f) => f) ? 1.1 : 0.6;
     const bw = Math.min(2.4, (ancho - hueco * (m - 1)) / m);
     const separa = m > 1 ? (ancho - bw * m) / (m - 1) : 0;
     const bh = Math.min(1.4, hc - 0.6);

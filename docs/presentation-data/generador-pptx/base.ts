@@ -40,8 +40,9 @@ export const sombra = (): PptxGenJS.ShadowProps => ({ type: "outer", blur: 6, of
 export const halo = (): PptxGenJS.ShadowProps => ({ type: "outer", blur: 9, offset: 0, angle: 0, color: hex(ACC), opacity: 0.6 });
 
 // Ícono vectorial nativo: una sola forma, solo trazo, en la caja indicada.
-// Los nombres empiezan con "Icono" para que el posproceso redondee las puntas.
-export function icono(s: Slide, nombre: NombreIcono, x: number, y: number, tam: number, colorTrazo: string, grosor = 2) {
+// Los nombres empiezan con "Icono" para que el posproceso redondee las puntas;
+// la marca, si va, se agrega al nombre (por ejemplo, la órbita de la portada).
+export function icono(s: Slide, nombre: NombreIcono, x: number, y: number, tam: number, colorTrazo: string, grosor = 2, marca?: string) {
   const e = tam / 24;
   const puntos = segmentosDeIcono(nombre).map((g): NonNullable<PptxGenJS.ShapeProps["points"]>[number] => {
     if (g.tipo === "M") return { x: g.x * e, y: g.y * e, moveTo: true };
@@ -50,7 +51,7 @@ export function icono(s: Slide, nombre: NombreIcono, x: number, y: number, tam: 
     return { close: true };
   });
   // pptxgenjs dibuja custGeom, pero sus tipos no lo incluyen entre las formas.
-  s.addShape("custGeom" as PptxGenJS.SHAPE_NAME, { x, y, w: tam, h: tam, points: puntos, line: { color: hex(colorTrazo), width: Math.max(0.75, (tam * 72 * grosor) / 24) }, objectName: `Icono ${nombre}` });
+  s.addShape("custGeom" as PptxGenJS.SHAPE_NAME, { x, y, w: tam, h: tam, points: puntos, line: { color: hex(colorTrazo), width: Math.max(0.75, (tam * 72 * grosor) / 24) }, objectName: marca ? `Icono ${nombre} · ${marca}` : `Icono ${nombre}` });
 }
 
 // Ícono dentro de un círculo de color.

@@ -65,9 +65,12 @@ function franjaPorque(s: Slide, texto: string) {
 // Las partes numeradas en órbita alrededor del sistema: el motivo de la portada y
 // del cierre. Cada nodo es una parte de la presentación, con su número, su
 // ícono y su nombre corto; los rayos dicen que todas son el mismo sistema.
-function orbita(s: Slide, partes: Seccion[], cx: number, cy: number, r: number, centro: { icono: NombreIcono; texto: string }) {
+// Con girar, las partes recorren despacio el anillo punteado (el posproceso
+// lee las formas marcadas «Órbita»): sin rayos, que quedarían apuntando al
+// vacío, y con el nombre debajo del nodo, para que nunca choque al moverse.
+function orbita(s: Slide, partes: Seccion[], cx: number, cy: number, r: number, centro: { icono: NombreIcono; texto: string }, girar = false) {
   const anillo = (radio: number, ancho: number, transparencia: number, guion?: "dash") =>
-    s.addShape("ellipse", { x: cx - radio, y: cy - radio, w: 2 * radio, h: 2 * radio, fill: { color: hex(PROF), transparency: 100 }, line: { color: hex(ACC), width: ancho, transparency: transparencia, dashType: guion } });
+    s.addShape("ellipse", { x: cx - radio, y: cy - radio, w: 2 * radio, h: 2 * radio, fill: { color: hex(PROF), transparency: 100 }, line: { color: hex(ACC), width: ancho, transparency: transparencia, dashType: guion }, objectName: guion && girar ? "Órbita anillo" : undefined });
   anillo(r + 0.75, 0.75, 82);
   anillo(r, 1.25, 50, "dash");
   anillo(r - 0.85, 0.75, 75);
@@ -79,7 +82,7 @@ function orbita(s: Slide, partes: Seccion[], cx: number, cy: number, r: number, 
   });
   // Rayos del centro a cada parte, por debajo de los nodos.
   const dc = 1.8;
-  for (const n of nodos) {
+  for (const n of girar ? [] : nodos) {
     const x1 = cx + (dc / 2 + 0.08) * Math.cos(n.a);
     const y1 = cy + (dc / 2 + 0.08) * Math.sin(n.a);
     const x2 = n.x - 0.36 * Math.cos(n.a);
@@ -94,17 +97,18 @@ function orbita(s: Slide, partes: Seccion[], cx: number, cy: number, r: number, 
   s.addText(centro.texto, { x: cx - dc / 2 + 0.1, y: cy + 0.16, w: dc - 0.2, h: 0.42, margin: 0, fontFace: TITULO, fontSize: tamQueCabe(centro.texto, dc - 0.3, 0.4, 15, 9, true), bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
   const dn = 0.66;
-  for (const n of nodos) {
-    s.addShape("ellipse", { x: n.x - dn / 2, y: n.y - dn / 2, w: dn, h: dn, fill: { color: hex(mezclar(PROF, ACC, 0.12)) }, line: { color: hex(ACC), width: 1.5 }, shadow: halo() });
-    icono(s, n.sec.icono ?? "flag", n.x - 0.17, n.y - 0.17, 0.34, ACC);
-    s.addText(String(n.sec.numero), { x: n.x + dn / 2 - 0.2, y: n.y - dn / 2 - 0.08, w: 0.26, h: 0.26, shape: "ellipse", margin: 0, fill: { color: hex(ACC) }, line: { color: hex(PROF), width: 1 }, fontFace: TITULO, fontSize: 9, bold: true, color: hex(PROF), align: "center", valign: "middle" });
+  nodos.forEach((n, i) => {
+    const marca = girar ? `Órbita ${i + 1}` : undefined;
+    s.addShape("ellipse", { x: n.x - dn / 2, y: n.y - dn / 2, w: dn, h: dn, fill: { color: hex(mezclar(PROF, ACC, 0.12)) }, line: { color: hex(ACC), width: 1.5 }, shadow: halo(), objectName: marca && `${marca} nodo` });
+    icono(s, n.sec.icono ?? "flag", n.x - 0.17, n.y - 0.17, 0.34, ACC, 2, marca);
+    s.addText(String(n.sec.numero), { x: n.x + dn / 2 - 0.2, y: n.y - dn / 2 - 0.08, w: 0.26, h: 0.26, shape: "ellipse", margin: 0, fill: { color: hex(ACC) }, line: { color: hex(PROF), width: 1 }, fontFace: TITULO, fontSize: 9, bold: true, color: hex(PROF), align: "center", valign: "middle", objectName: marca && `${marca} número` });
     const derecha = Math.cos(n.a) > 0;
     const lw = 1.25;
-    // Al lado del nodo; si no cabe en la lámina, debajo.
-    const cabe = !derecha || n.x + dn / 2 + 0.1 + lw <= W - 0.05;
+    // Al lado del nodo; si no cabe en la lámina o la órbita gira, debajo.
+    const cabe = !girar && (!derecha || n.x + dn / 2 + 0.1 + lw <= W - 0.05);
     const caja = cabe ? { x: derecha ? n.x + dn / 2 + 0.1 : n.x - dn / 2 - 0.1 - lw, y: n.y - 0.16 } : { x: n.x - lw / 2, y: n.y + dn / 2 + 0.04 };
-    s.addText(n.sec.corto, { ...caja, w: lw, h: 0.32, margin: 0, fontFace: FUENTE, fontSize: 10.5, bold: true, color: hex(color.sobreOscuro), align: cabe ? (derecha ? "left" : "right") : "center", valign: "middle" });
-  }
+    s.addText(n.sec.corto, { ...caja, w: lw, h: 0.32, margin: 0, fontFace: FUENTE, fontSize: 10.5, bold: true, color: hex(color.sobreOscuro), align: cabe ? (derecha ? "left" : "right") : "center", valign: "middle", objectName: marca && `${marca} nombre` });
+  });
 }
 
 function fondoOscuro(s: Slide) {
@@ -115,7 +119,7 @@ function fondoOscuro(s: Slide) {
 function portadaGeneral(pptx: PptxGenJS, l: Lamina, variante: Variante) {
   const s = pptx.addSlide();
   fondoOscuro(s);
-  orbita(s, partesDe(variante), 9.55, 3.72, 2.15, { icono: "ship-wheel", texto: "ARKA-Lite" });
+  orbita(s, partesDe(variante), 9.55, 3.72, 2.15, { icono: "ship-wheel", texto: "ARKA-Lite" }, true);
   logo(s, 0.83, 0.58, true);
   // El nombre del equipo, arriba del título.
   s.addText(`${NOMBRE_EQUIPO.toUpperCase()} · UPSKILLING BACKEND JAVA`, { x: 0.83, y: 1.5, w: 6.2, h: 0.3, margin: 0, fontFace: FUENTE, fontSize: 12, bold: true, color: hex(ACC), charSpacing: 3, fit: "shrink" });
@@ -136,7 +140,7 @@ function portadaGeneral(pptx: PptxGenJS, l: Lamina, variante: Variante) {
     s.addText(k.titulo, { x: x + 0.16, y: 5.44, w: kw - 0.22, h: 0.42, margin: 0, fontFace: FUENTE, fontSize: tamQueCabe(k.titulo, kw - 0.26, 0.4, 10, 7.5), color: hex(color.sobreOscuroSecundario), valign: "top" });
   });
 
-  const publico = "STAFF DE TECNOLOGÍA";
+  const publico = "STAFF DNTIC";
   s.addText(publico, { x: 0.83, y: 6.28, w: 0.5 + publico.length * 0.1, h: 0.36, shape: "roundRect", rectRadius: 0.18, margin: 0, fill: { color: hex(mezclar(PROF, ACC, 0.2)) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, fontSize: 10, bold: true, color: hex(ACC), align: "center", valign: "middle", charSpacing: 1 });
   s.addNotes(textoNotas(l));
 }

@@ -16,9 +16,9 @@ export const NOMBRE_ROL: Record<Rol, string> = {
   bd: "Base de datos",
   orm: "Apoyo en base de datos: la misma regla, el ORM y la conexión",
   interconexion: "Interconexión de servicios",
-  plataforma: "DevOps: Docker y Compose, y la observabilidad",
+  plataforma: "DevOps: qué es, Docker y Compose",
   cicd: "DevOps: CI/CD",
-  operacion: "DevOps: Kubernetes",
+  operacion: "DevOps: Kubernetes, y la observabilidad",
   demostracion: "Demostración en video",
   cierre: "Resultados, valor y cierre",
 };
@@ -42,12 +42,12 @@ export const DIVISION: Division = {
   cuando: "Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apoya en base de datos y presenta CI/CD, para bajar la carga de infraestructura.",
   personas: [
     { nombre: "Luis Cardoze", area: "Desarrollo", roles: ["apertura", "fundamentos"] },
-    { nombre: "Ricardo Fábrega", area: "Desarrollo", roles: ["arquitectura", "demostracion"] },
+    { nombre: "Ricardo Fábrega", area: "Desarrollo", roles: ["arquitectura"] },
     { nombre: "Marlene Bonilla", area: "Base de datos", roles: ["bd"] },
     { nombre: "Jossett Franceschi", area: "Desarrollo", roles: ["orm", "cicd"] },
-    { nombre: "Abdiel Barria", area: "Desarrollo", roles: ["interconexion", "cierre"] },
-    { nombre: "Moises", area: "Infraestructura", roles: ["plataforma"] },
-    { nombre: "Kevin", area: "Infraestructura", roles: ["operacion"] },
+    { nombre: "Abdiel Barria", area: "Desarrollo", roles: ["interconexion", "demostracion", "cierre"] },
+    { nombre: "Kevin", area: "Infraestructura", roles: ["plataforma"] },
+    { nombre: "Moises", area: "Infraestructura", roles: ["operacion"] },
   ],
 };
 

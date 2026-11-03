@@ -76,10 +76,11 @@ describe("fuente de contenido", () => {
     expect(JSON.stringify(lista.map((l) => l.diapositiva.guion))).not.toMatch(/demostraci[oó]n/i);
   });
 
-  it("la versión con videos muestra sus tres videos", () => {
+  it("la versión con videos muestra sus cuatro videos, y la otra ninguno", () => {
     const lista = laminas("ejecutivo-con-videos");
     const videos = lista.filter((l) => l.diapositiva.visual?.tipo === "video");
-    expect(videos.map((l) => l.id)).toEqual(["s05-flujo", "s07-ui", "s07-caida"]);
+    expect(videos.map((l) => l.id)).toEqual(["s05-flujo", "s06-logs", "s07-ui", "s07-caida"]);
+    expect(laminas("ejecutivo-sin-demo").filter((l) => l.diapositiva.visual?.tipo === "video")).toEqual([]);
     expect(lista.find((l) => l.seccion.id === "s07")!.seccion.enfoque).toBe("video");
     // Lo que se dice encima del video no suma: manda lo que dure más.
     for (const l of videos) expect(minutosDeLamina(l)).toBeGreaterThan(0.4);
