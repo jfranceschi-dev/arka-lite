@@ -86,7 +86,7 @@ export const datos: Seccion = {
           "Veamos qué hay dentro. En la base de solicitudes, la tabla solicitud guarda el número, el tipo y el estado del trámite.",
           "La propia base solo acepta los cuatro estados válidos, incluso si alguien intenta escribir directamente en la tabla. Al lado está la tabla evento, que funciona como una bandeja de salida.",
           "Cada fila registra un evento, con un número único y una marca que indica si está pendiente o ya fue entregado.",
-          "La base de notificaciones tiene una tabla principal con los eventos que ya recibió. Funciona como el libro de registro que se mantiene en la entrada de una oficina.",
+          "La base de notificaciones tiene una tabla principal con los eventos que ya recibió. Funciona como el libro de registro de la entrada de una oficina.",
           "No existe una conexión directa entre las bases. Lo que las relaciona es el número del evento, que viaja en el mensaje entre los servicios.",
         ],
         conTusPalabras: [
@@ -98,7 +98,7 @@ export const datos: Seccion = {
           { texto: "¿Dónde se guarda el texto de cada aviso?", respuesta: "En este proyecto queda en la memoria del servicio de notificaciones y la base solo registra los eventos procesados. En producción usaríamos una tabla adicional." },
           { texto: "¿Por qué usan un identificador largo, llamado UUID, y no un número consecutivo?", respuesta: "Porque la aplicación puede generarlo sin consultar la base, con una probabilidad de coincidencia extremadamente baja. Conservamos ese mismo identificador en cada reintento para reconocer el evento." },
         ],
-        transicion: "Ahora veremos un cambio importante frente a muchas aplicaciones actuales, que es dónde vive la regla del negocio.",
+        transicion: "Ahora veremos un cambio importante frente a muchas aplicaciones actuales: dónde vive la regla del negocio.",
         respaldo: "docs/arquitectura/datos-y-consistencia.md",
       },
     },
@@ -265,7 +265,7 @@ export const datos: Seccion = {
           "Así cada pieza hace una sola cosa: las reglas deciden, el ORM traduce y la base guarda. Si algo falla, sabemos en qué punto buscar.",
         ],
         conTusPalabras: [
-          "La clase y la tabla se relacionan campo por columna.",
+          "Cada campo de la clase corresponde a una columna de la tabla.",
           "El ORM genera las instrucciones para agregar, consultar y actualizar los datos.",
           "Los valores viajan como parámetros seguros.",
         ],
@@ -292,7 +292,7 @@ export const datos: Seccion = {
       },
       guion: {
         decir: [
-          "Toda aplicación necesita conocer la ubicación de la base y el usuario y la clave para entrar. A este conjunto de datos lo llamamos cadena de conexión.",
+          "Toda aplicación necesita conocer la ubicación de la base, el usuario y la clave para entrar. A este conjunto de datos lo llamamos cadena de conexión.",
           "En nuestros sistemas actuales la guardamos en un archivo web.config dentro del servidor. Esa ya es una buena práctica, porque la información no está escrita en el código.",
           "ARKA-Lite aplica la misma idea con otra herramienta. En lugar de usar un archivo junto a la aplicación, recibe variables de entorno cuando arranca.",
           "Así, el ambiente donde se ejecuta le entrega la dirección, el usuario y la clave. La misma aplicación puede funcionar en desarrollo, pruebas y producción sin cambiar su código.",
@@ -365,7 +365,7 @@ export const datos: Seccion = {
         decir: [
           "De la base de datos nos llevamos cuatro ideas. El ORM genera el SQL rutinario, pero no elimina el trabajo de diseñar llaves, restricciones e índices.",
           "También mantenemos los datos de conexión fuera del código y los entregamos desde el ambiente. La transacción continúa siendo una de las herramientas más confiables para proteger una operación.",
-          "Además, guardamos y controlamos la estructura de la base junto con el código. Para quienes trabajamos con bases de datos, el mensaje es claro, porque ese conocimiento sigue siendo fundamental.",
+          "Además, guardamos y controlamos la estructura de la base junto con el código. Para quienes trabajamos con bases de datos, el mensaje es claro: ese conocimiento sigue siendo fundamental.",
         ],
         conTusPalabras: [
           "El ORM ayuda, pero no reemplaza el diseño de la base.",

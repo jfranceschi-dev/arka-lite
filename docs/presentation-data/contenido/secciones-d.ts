@@ -90,7 +90,7 @@ export const demostracion: Seccion = {
       guion: {
         decir: [
           "La demostración nos deja tres aprendizajes. Primero, debemos diseñar para las fallas y no únicamente para el recorrido exitoso.",
-          "También debemos hacer visible lo que ocurre de forma asíncrona. Sin una vista de los eventos enviados, uno pendiente quedaría oculto.",
+          "También debemos hacer visible lo que ocurre de forma asíncrona. Sin una vista de los eventos, uno pendiente quedaría oculto.",
           "Finalmente, ver el sistema funcionando facilita la explicación y convierte la misma pantalla en una herramienta para capacitar a quienes se incorporen.",
         ],
         conTusPalabras: [
@@ -139,7 +139,7 @@ export const cierre: Seccion = {
         ],
         conTusPalabras: [
           "No se pierden eventos ni se duplican avisos.",
-          "El trámite continúa aunque notificaciones esté detenido.",
+          "El trámite continúa aunque notificaciones esté fuera de servicio.",
           "Las pruebas y la recuperación reducen el riesgo.",
         ],
         transicion: "Estos resultados no dependen de la suerte, sino de varias decisiones que trabajan juntas.",
@@ -168,7 +168,7 @@ export const cierre: Seccion = {
           "La configuración está separada del código, así que podemos cambiar las claves sin modificar la aplicación.",
           "También ejecutamos el mismo sistema en distintos ambientes mediante un solo comando. Las pruebas automáticas revisan cada cambio antes de incorporarlo.",
           "Además, reunimos los registros en un solo lugar y relacionamos cada versión con el cambio que la produjo.",
-          "La mayoría puede comenzar a aplicarse sin reemplazar la tecnología que ya utilizamos.",
+          "La mayoría de estas prácticas puede aplicarse sin reemplazar la tecnología que ya utilizamos.",
         ],
         conTusPalabras: [
           "Cada resultado se apoya en una práctica concreta.",
@@ -196,7 +196,7 @@ export const cierre: Seccion = {
         decir: [
           "De toda la capacitación nos llevamos tres ideas. La primera es diseñar pensando en la falla, porque algún componente fallará y debemos definir cómo responderá el sistema.",
           "La segunda es automatizar las revisiones y dejar la infraestructura descrita en archivos. Así podemos hacer cambios con mayor confianza y menor riesgo.",
-          "La tercera es hacer visible el sistema. Lo que no podemos ver tampoco podemos diagnosticarlo ni explicarlo con claridad.",
+          "La tercera es hacer visible el sistema. No podemos diagnosticar ni explicar con claridad lo que no vemos.",
         ],
         conTusPalabras: [
           "Diseñamos pensando en las fallas.",

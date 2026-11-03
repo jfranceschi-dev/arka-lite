@@ -37,7 +37,8 @@ export const CAMBIOS: Partial<Record<ModoDemo, Modo>> = {
     sinSecciones: ["s07"],
     sinLaminas: ["s05-flujo"],
     laminas: {
-      "s05-trazabilidad": { guion: { transicion: "La imagen ya está publicada y rastreada. Ahora, dónde corre. Le paso la palabra a Moises, que nos explica Kubernetes." } },
+      // Sin el video, de Git se pasa directo al pipeline.
+      "s05-cambio": { guion: { transicion: "Las pruebas no dependen de que alguien recuerde ejecutarlas. Las ejecuta el pipeline, una secuencia automática de tareas que veremos a continuación." } },
       "s00-portada": {
         guion: { instrucciones: ["El moderador ya presentó al equipo: saludar y entrar directo al tema, sin volver a presentarse.", "Antes de empezar, abrir este PPTX en la computadora de la sala y quitar la última lámina, que es solo para el equipo."] },
       },

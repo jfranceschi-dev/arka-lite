@@ -73,7 +73,8 @@ export const CONSEJOS: Record<Rol, string[]> = {
     "En «De código a contenedor», remarcar que el contenedor corre con un usuario sin privilegios, por seguridad.",
   ],
   cicd: [
-    "Antes de decir CI/CD, explicar rama, main y Pull Request: sin eso, lo demás no se entiende.",
+    "Antes de decir CI/CD, explicar rama, push, Pull Request y merge: sin eso, lo demás no se entiende.",
+    "En el video, señalar la pantalla de los usuarios al final: ahí se ve que el cambio llegó.",
     "Usar la comparación del control de calidad y evitar el detalle del archivo del pipeline.",
     "«Cuando un cambio rompe algo» es la lámina de más valor: detenerse ahí.",
   ],

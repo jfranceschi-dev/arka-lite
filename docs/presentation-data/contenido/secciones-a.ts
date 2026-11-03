@@ -95,7 +95,7 @@ export const fundamentos: Seccion = {
           "De los fundamentos, lo primero que nos quedó es analizar antes de programar. Antes de escribir código nos hicimos tres preguntas sobre el negocio.",
           "Primero, qué tiene que pasar. Una persona registra una solicitud, como una incidencia o un pedido de cambio, la envía, y otra persona la aprueba o la rechaza. De ahí salieron cuatro estados: borrador, enviada, aprobada y rechazada.",
           "Segundo, quién hace cada paso. Quien solicita envía, el sistema avisa y otra persona decide. Gestionar la solicitud y producir el aviso son trabajos distintos, y por eso los separamos en dos servicios.",
-          "Tercero, qué no se puede permitir. Esas son las reglas de ARKA-Lite: una solicitud se envía solo cuando está en borrador, y una sola vez, y solo una enviada se puede aprobar o rechazar. Cada regla quedó con su prueba automática.",
+          "Tercero, qué no se puede permitir. Estas son las reglas de ARKA-Lite: una solicitud solo puede enviarse cuando está en borrador y una sola vez. Solo una solicitud enviada puede aprobarse o rechazarse. Cada regla quedó con su prueba automática.",
         ],
         conTusPalabras: [
           "Antes de programar, aclaramos el proceso y sus responsables.",
@@ -127,7 +127,7 @@ export const fundamentos: Seccion = {
       },
       guion: {
         decir: [
-          "También nos quedó cómo escribir código fácil de mantener. Son seis prácticas que sirven en cualquier lenguaje, ya sea Java, C# o PL/SQL.",
+          "Otra cosa que nos quedó es cómo escribir código fácil de mantener. Son seis prácticas que sirven en cualquier lenguaje, ya sea Java, C# o PL/SQL.",
           "La primera es que cada pieza hace una sola tarea: la que recibe el pedido no decide, y la que decide no guarda. La segunda es conectar las piezas desde afuera, para poder cambiarlas o probarlas por separado. La tercera es dejar las reglas del negocio en un solo lugar, sin repetirlas en la pantalla y en la base.",
           "La cuarta es que todos los errores sigan el mismo formato y expliquen qué pasó. La quinta es usar los nombres del negocio, para que el código se lea como el proceso. Y la sexta es que cada regla tenga su prueba automática.",
           "Es como una cocina ordenada, donde cada persona tiene su puesto y cada cosa su lugar. Así, cuando cambia una regla, tocamos un solo lugar y sabemos enseguida si algo dejó de funcionar.",
@@ -159,7 +159,7 @@ export const fundamentos: Seccion = {
       guion: {
         decir: [
           "Nos quedamos con tres ideas. Primero se analiza y después se programa, porque tener claras las reglas desde el inicio evita rehacer trabajo.",
-          "Segundo, separar responsabilidades, para que un cambio de regla toque un solo lugar y una prueba nos avise si algo se rompió. Tercero, que las reglas del negocio no dependan de la herramienta, de modo que sigan siendo las mismas si mañana cambia la base de datos o la tecnología con la que construimos la aplicación.",
+          "Segundo, separamos responsabilidades para que un cambio de regla toque un solo lugar y una prueba nos avise si algo se rompió. Tercero, las reglas del negocio no deben depender de la herramienta. Así siguen siendo las mismas si cambia la base de datos o la tecnología de la aplicación.",
           "Estas tres prácticas se pueden aplicar en los sistemas actuales, sin importar el lenguaje ni cómo esté organizada la aplicación.",
         ],
         conTusPalabras: [

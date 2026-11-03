@@ -411,7 +411,7 @@ async function registros(g: Grabacion, id: string) {
 // El camino de un cambio, simulado: cada rótulo avanza un paso de la página.
 async function cicd(g: Grabacion) {
   await g.portada();
-  const pausas = [3200, 2600, 3200, 5200, 4200];
+  const pausas = [2200, 1800, 1800, 2000, 3200];
   for (const [i, pausa] of pausas.entries()) {
     await g.rotulo(i + 1);
     await g.p.evaluate((n) => (globalThis as any).cicd.paso(n), i + 1);

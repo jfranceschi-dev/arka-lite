@@ -1,121 +1,196 @@
 <!doctype html>
-<!-- Simulación del camino de un cambio, del merge al despliegue. No se conecta a
+<!-- Simulación del camino de un cambio, del push al despliegue. No se conecta a
      nada: el pipeline real del proyecto llega hasta publicar la imagen. El aviso
-     de arriba lo dice durante todo el video. grabar-videos.ts llama a paso(n). -->
+     de arriba lo dice durante todo el video. Tres zonas, de izquierda a derecha:
+     la computadora de quien desarrolla, GitHub y producción, con la pantalla que
+     ven los usuarios. Solo CI/CD: cómo se instala sin cortar el servicio lo
+     explica la parte de Kubernetes. grabar-videos.ts llama a paso(n). -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Del merge al despliegue</title>
+<title>Del push al despliegue</title>
 <style>
-  :root { --marino: #0B1F3A; --cian: #2BA6CB; --verde: #16A06A; --ambar: #F5B942; --linea: #C9D6E5; --suave: #5A6E87; }
+  :root { --marino: #0B1F3A; --cian: #2BA6CB; --verde: #16A06A; --rojo: #D93A3F; --ambar: #F5B942; --linea: #C9D6E5; --suave: #5A6E87; }
   * { box-sizing: border-box; margin: 0; font-family: "Segoe UI", system-ui, sans-serif; }
   body { width: 1200px; height: 675px; overflow: hidden; background: #EEF3F9; color: var(--marino); }
-  header { height: 62px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; background: var(--marino); color: #fff; }
-  header h1 { font-size: 24px; font-weight: 800; }
-  .aviso { padding: 7px 16px; border-radius: 999px; background: var(--ambar); color: #3A2500; font-size: 15px; font-weight: 800; }
-  .etapas { display: flex; align-items: center; padding: 16px 28px 0; }
-  .etapa { flex: 1; height: 86px; padding: 10px 8px; border-radius: 14px; background: #fff; border: 3px solid var(--linea); text-align: center; transition: border-color .3s, background .3s; }
-  .etapa b { display: block; font-size: 19px; font-weight: 800; }
-  .etapa span { display: block; margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--suave); }
-  .etapa.corriendo { border-color: var(--cian); background: #DDF2F9; }
-  .etapa.corriendo span { color: #0B6E8C; }
-  .etapa.lista { border-color: var(--verde); background: #DCF5E9; }
-  .etapa.lista span { color: #0A6B45; }
-  .union { width: 26px; height: 5px; flex: none; background: var(--linea); transition: background .3s; }
-  .union.lista { background: var(--verde); }
-  .paneles { display: flex; gap: 16px; padding: 14px 28px 0; height: 400px; }
-  .registro { flex: 1.15; height: 372px; padding: 16px 18px; border-radius: 14px; background: #0D1526; color: #E8EDF8; font-family: Consolas, "Cascadia Mono", monospace; font-size: 17px; line-height: 1.5; overflow: hidden; }
-  .registro div { opacity: 0; animation: entra .3s forwards; white-space: pre-wrap; }
-  .registro .ok { color: #7BE3B3; }
-  .registro .cmd { color: #7FD3EA; }
-  @keyframes entra { to { opacity: 1; } }
-  .cluster { flex: 1; height: 372px; padding: 16px; border-radius: 14px; background: #fff; border: 3px solid var(--linea); }
-  .cluster h2 { font-size: 18px; font-weight: 800; }
-  .usuarios { margin-top: 12px; padding: 9px; border-radius: 10px; background: var(--marino); color: #fff; text-align: center; font-size: 17px; font-weight: 700; }
-  .pods { display: flex; gap: 14px; margin-top: 44px; position: relative; }
-  .pod { flex: 1; height: 128px; padding: 14px 10px; border-radius: 14px; border: 3px solid var(--verde); background: #DCF5E9; text-align: center; transition: opacity .7s, border-color .3s, background .3s; }
-  .pod b { display: block; font-size: 21px; font-weight: 800; }
-  .pod code { display: block; margin-top: 4px; font-family: Consolas, monospace; font-size: 15px; }
-  .pod span { display: block; margin-top: 7px; font-size: 16px; font-weight: 700; color: #0A6B45; }
-  .pod.creando { border-color: var(--cian); background: #DDF2F9; }
-  .pod.creando span { color: #0B6E8C; }
-  .pod.oculto, .pod.retirado { opacity: 0; }
-  .trafico { position: absolute; top: -38px; width: 6px; height: 34px; border-radius: 3px; background: var(--marino); transition: left .7s; left: calc(25% - 3px); }
-  .trafico.nuevo { left: calc(75% - 3px); }
+  header { height: 58px; padding: 0 26px; display: flex; align-items: center; justify-content: space-between; background: var(--marino); color: #fff; }
+  header h1 { font-size: 23px; font-weight: 800; }
+  .aviso { padding: 6px 16px; border-radius: 999px; background: var(--ambar); color: #3A2500; font-size: 14px; font-weight: 800; }
+
+  .zonas { display: flex; gap: 14px; padding: 14px 20px 0; height: 510px; }
+  .zona { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px; background: #fff; border: 3px solid var(--linea); transition: border-color .3s, box-shadow .3s, opacity .3s; opacity: .55; }
+  .zona.activa { border-color: var(--cian); box-shadow: 0 0 0 4px rgba(43,166,203,.18); opacity: 1; }
+  .zona.lista { opacity: 1; }
+  .zona h2 { display: flex; align-items: center; gap: 9px; font-size: 18px; font-weight: 800; }
+  .zona h2 i { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--marino); color: #fff; font-style: normal; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+  .zona.lista h2 i { background: var(--verde); }
+
+  /* 1 · La computadora */
+  .editor { border-radius: 10px; overflow: hidden; background: #0D1526; }
+  .editor .barra { padding: 6px 10px; background: #1B2740; color: #9FBEE0; font-size: 13px; font-weight: 600; }
+  .codigo { padding: 10px 12px; min-height: 132px; font-family: Consolas, monospace; font-size: 15px; line-height: 1.5; color: #E8EDF8; white-space: pre; }
+  .codigo .nueva { background: rgba(47,182,124,.25); }
+  .terminal { border-radius: 10px; background: #0D1526; padding: 10px 12px; min-height: 92px; font-family: Consolas, monospace; font-size: 15px; line-height: 1.5; color: #E8EDF8; }
+  .terminal .cmd { color: #7FD3EA; }
+  .terminal .ok { color: #7BE3B3; }
+  .ramas { position: relative; height: 92px; }
+  .ramas svg { width: 100%; height: 100%; }
+
+  /* 2 · GitHub */
+  .tarjeta { padding: 10px 12px; border-radius: 12px; border: 2px solid var(--linea); background: #F7FAFD; transition: opacity .4s, border-color .3s, background .3s; }
+  .tarjeta.oculta { opacity: 0; }
+  .tarjeta b { display: block; font-size: 16px; }
+  .tarjeta small { display: block; margin-top: 2px; font-size: 14px; color: var(--suave); font-weight: 600; }
+  .estado { display: inline-block; margin-top: 6px; padding: 3px 11px; border-radius: 999px; font-size: 14px; font-weight: 800; background: #E3E9F1; color: var(--suave); }
+  .estado.bien { background: #DCF5E9; color: #0A6B45; }
+  .estado.anda { background: #DDF2F9; color: #0B6E8C; }
+  .pasos { display: flex; flex-direction: column; gap: 7px; }
+  .paso { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--linea); font-size: 16px; font-weight: 700; transition: border-color .3s, background .3s; }
+  .paso span { margin-left: auto; font-size: 14px; color: var(--suave); }
+  .paso.anda { border-color: var(--cian); background: #DDF2F9; }
+  .paso.bien { border-color: var(--verde); background: #DCF5E9; }
+  .paso.bien span { color: #0A6B45; }
+
+  /* 3 · Producción */
+  .pantalla { border-radius: 12px; overflow: hidden; border: 3px solid var(--verde); transition: border-color .3s; }
+  .pantalla .barra { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #E3E9F1; font-size: 13px; color: var(--suave); font-weight: 600; }
+  .pantalla .barra i { width: 9px; height: 9px; border-radius: 50%; background: #B8C5D6; }
+  .vista { height: 128px; padding: 12px; background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; transition: background .3s; }
+  .vista b { font-size: 19px; }
+  .vista .version { padding: 4px 14px; border-radius: 999px; background: #DCF5E9; color: #0A6B45; font-size: 16px; font-weight: 800; transition: background .3s, color .3s; }
+  .vista .version.nueva { background: var(--cian); color: #fff; }
+  .pantalla.caida { border-color: var(--rojo); }
+  .pantalla.caida .vista { background: #FDECEC; }
+  .pantalla.caida .version { background: var(--rojo); color: #fff; }
+  .servidor { padding: 14px 12px; border-radius: 12px; border: 3px solid var(--verde); background: #DCF5E9; text-align: center; transition: border-color .3s, background .3s; }
+  .servidor b { display: block; font-size: 18px; }
+  .servidor span { display: block; margin-top: 6px; font-size: 16px; font-weight: 800; color: #0A6B45; }
+  .servidor.instala { border-color: var(--cian); background: #DDF2F9; }
+  .servidor.instala span { color: #0B6E8C; }
 </style>
 </head>
 <body>
-  <header><h1>Del merge al despliegue</h1><div class="aviso">EJEMPLO ILUSTRATIVO · no es un despliegue real</div></header>
-  <section class="etapas">
-    <div class="etapa" id="e1"><b>Merge</b><span>a main</span></div><div class="union" id="u1"></div>
-    <div class="etapa" id="e2"><b>Compila</b><span>y prueba</span></div><div class="union" id="u2"></div>
-    <div class="etapa" id="e3"><b>Imagen</b><span>publicada</span></div><div class="union" id="u3"></div>
-    <div class="etapa" id="e4"><b>Despliegue</b><span>aprobado</span></div><div class="union" id="u4"></div>
-    <div class="etapa" id="e5"><b>En línea</b><span>versión nueva</span></div>
-  </section>
-  <section class="paneles">
-    <div class="registro" id="registro"></div>
-    <div class="cluster">
-      <h2>Kubernetes</h2>
-      <div class="usuarios">Usuarios</div>
-      <div class="pods">
-        <div class="trafico" id="trafico"></div>
-        <div class="pod" id="viejo"><b>Pod</b><code>versión anterior</code><span>Atiende</span></div>
-        <div class="pod creando oculto" id="nuevo"><b>Pod</b><code>a1b2c3d</code><span id="estado">Arrancando…</span></div>
+  <header><h1>Del push al despliegue</h1><div class="aviso">EJEMPLO ILUSTRATIVO · no es un despliegue real</div></header>
+  <main class="zonas">
+    <section class="zona" id="z1">
+      <h2><i>1</i>La computadora de quien desarrolla</h2>
+      <div class="editor"><div class="barra">Solicitud.java · rama feat/enviar-una-vez</div><div class="codigo" id="codigo"></div></div>
+      <div class="terminal" id="terminal"></div>
+      <div class="ramas">
+        <svg viewBox="0 0 340 92">
+          <line x1="10" y1="70" x2="330" y2="70" stroke="#0B1F3A" stroke-width="5"/>
+          <text x="10" y="90" font-size="13" font-weight="700" fill="#0B1F3A" font-family="Consolas, monospace">main</text>
+          <circle cx="40" cy="70" r="8" fill="#0B1F3A"/>
+          <g id="rama" opacity="0">
+            <polyline points="70,70 100,22 230,22" fill="none" stroke="#2BA6CB" stroke-width="5"/>
+            <circle cx="150" cy="22" r="8" fill="#fff" stroke="#2BA6CB" stroke-width="4"/>
+            <text x="110" y="12" font-size="13" font-weight="700" fill="#0B6E8C">mi rama</text>
+          </g>
+          <g id="union" opacity="0">
+            <polyline points="230,22 262,70" fill="none" stroke="#16A06A" stroke-width="5"/>
+            <circle cx="262" cy="70" r="9" fill="#16A06A"/>
+            <text x="238" y="52" font-size="13" font-weight="700" fill="#0A6B45">merge</text>
+          </g>
+        </svg>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="zona" id="z2">
+      <h2><i>2</i>GitHub</h2>
+      <div class="tarjeta oculta" id="pr">
+        <b>Pull Request #42</b>
+        <small>«No permitir enviar dos veces la misma solicitud»</small>
+        <div class="estado" id="revision">Esperando revisión</div>
+      </div>
+      <div class="pasos">
+        <div class="paso" id="p1">Compila<span id="t1">pendiente</span></div>
+        <div class="paso" id="p2">Pruebas<span id="t2">pendiente</span></div>
+        <div class="paso" id="p3">Merge a main<span id="t3">pendiente</span></div>
+        <div class="paso" id="p4">Imagen publicada<span id="t4">pendiente</span></div>
+      </div>
+    </section>
+
+    <section class="zona" id="z3">
+      <h2><i>3</i>Producción: lo que ven los usuarios</h2>
+      <div class="pantalla" id="pantalla">
+        <div class="barra"><i></i><i></i><i></i>&nbsp;ARKA-Lite · Solicitudes</div>
+        <div class="vista"><b id="mensaje">Funcionando</b><div class="version" id="version">versión 1.4</div></div>
+      </div>
+      <div class="servidor" id="servidor"><b>Servidor</b><span id="corre">Corre la versión 1.4</span></div>
+    </section>
+  </main>
 <script>
   const $ = (id) => document.getElementById(id);
   const esperar = (ms) => new Promise((listo) => setTimeout(listo, ms));
-  const etapa = (n, clase) => { $(`e${n}`).className = `etapa ${clase}`; if (clase === "lista" && $(`u${n}`)) $(`u${n}`).className = "union lista"; };
-  const linea = (texto, clase = "") => { const d = document.createElement("div"); d.className = clase; d.textContent = texto; $("registro").appendChild(d); };
+  const zona = (n, clase) => { $(`z${n}`).className = `zona ${clase}`; };
+  const paso = (n, clase, texto) => { $(`p${n}`).className = `paso ${clase}`; $(`t${n}`).textContent = texto; };
+  const escribir = async (destino, texto, clase = "") => {
+    const d = document.createElement("div");
+    if (clase) d.className = clase;
+    destino.appendChild(d);
+    for (const letra of texto) { d.textContent += letra; await esperar(32); }
+  };
+  const pantalla = (estado, mensaje, version, nueva = false) => {
+    $("pantalla").className = `pantalla ${estado}`;
+    $("mensaje").textContent = mensaje;
+    $("version").textContent = version;
+    $("version").className = `version ${nueva ? "nueva" : ""}`;
+  };
+  const servidor = (clase, texto) => { $("servidor").className = `servidor ${clase}`; $("corre").textContent = texto; };
+
+  $("codigo").innerHTML = 'public Solicitud enviar() {\n    <span id="linea"></span>\n    return new Solicitud(...);\n}';
 
   window.cicd = {
     async paso(n) {
       if (n === 1) {
-        etapa(1, "corriendo");
-        linea("$ git merge feat/nueva-regla", "cmd");
-        await esperar(1800);
-        linea("✓ El cambio entró a main: a1b2c3d", "ok");
-        etapa(1, "lista");
+        zona(1, "activa");
+        const linea = $("linea");
+        linea.className = "nueva";
+        for (const letra of "if (estado != BORRADOR) throw …;") { linea.textContent += letra; await esperar(45); }
+        await esperar(500);
+        await escribir($("terminal"), "$ git push origin feat/enviar-una-vez", "cmd");
+        await esperar(700);
+        $("rama").setAttribute("opacity", "1");
+        await escribir($("terminal"), "✓ Cambio subido a su rama en GitHub", "ok");
+        zona(1, "lista");
       }
       if (n === 2) {
-        etapa(2, "corriendo");
-        linea("› Compilando…");
-        await esperar(2200);
-        linea("› Corriendo las pruebas…");
+        zona(2, "activa");
+        $("pr").classList.remove("oculta");
         await esperar(2600);
-        linea("✓ Todas las pruebas pasaron", "ok");
-        etapa(2, "lista");
+        $("revision").className = "estado anda";
+        $("revision").textContent = "Otra persona lo revisa…";
+        await esperar(2400);
+        $("revision").className = "estado bien";
+        $("revision").textContent = "✓ Revisado y aprobado";
       }
       if (n === 3) {
-        etapa(3, "corriendo");
-        linea("› Construyendo la imagen…");
-        await esperar(2400);
-        linea("✓ Publicada: servicio:a1b2c3d", "ok");
-        etapa(3, "lista");
+        paso(1, "anda", "compilando…");
+        await esperar(2200);
+        paso(1, "bien", "✓ listo");
+        paso(2, "anda", "0 de 24");
+        for (let i = 1; i <= 24; i++) { $("t2").textContent = `${i} de 24`; await esperar(110); }
+        paso(2, "bien", "✓ 24 de 24 pasaron");
       }
       if (n === 4) {
-        etapa(4, "corriendo");
-        linea("✓ Despliegue aprobado", "ok");
-        await esperar(1500);
-        linea("$ kubectl set image … servicio:a1b2c3d", "cmd");
-        etapa(4, "lista");
-        await esperar(800);
-        $("nuevo").classList.remove("oculto");
+        paso(3, "anda", "uniendo…");
+        await esperar(1200);
+        $("union").setAttribute("opacity", "1");
+        paso(3, "bien", "✓ entró a main");
+        await esperar(900);
+        paso(4, "anda", "construyendo…");
+        await esperar(1800);
+        paso(4, "bien", "✓ solicitudes:a1b2c3d");
+        zona(2, "lista");
       }
       if (n === 5) {
-        etapa(5, "corriendo");
-        $("nuevo").classList.remove("creando");
-        $("estado").textContent = "Listo";
-        await esperar(1800);
-        $("trafico").classList.add("nuevo");
-        $("estado").textContent = "Atiende";
-        await esperar(1500);
-        $("viejo").classList.add("retirado");
-        linea("✓ Versión nueva en línea, sin interrumpir", "ok");
-        etapa(5, "lista");
+        zona(3, "activa");
+        servidor("instala", "Instalando solicitudes:a1b2c3d…");
+        await esperar(2600);
+        servidor("", "Corre la versión 1.5");
+        pantalla("", "Funcionando", "versión 1.5", true);
+        await esperar(1200);
+        zona(3, "lista");
       }
     },
   };

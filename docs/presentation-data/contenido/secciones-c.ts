@@ -202,37 +202,65 @@ export const devops: Seccion = {
     },
     {
       id: "s05-cambio",
-      titulo: "CI/CD: primero, cómo entra un cambio",
-      idea: "Todo cambio entra revisado, probado y documentado.",
-      visible: ["Cada tarea, en una rama aparte", "Se propone con un Pull Request", "Otra persona revisa y las pruebas tienen que pasar", "La documentación viaja en el mismo cambio"],
-      comparacion: "Como corregir un documento en una copia: se trabaja aparte y solo pasa al original cuando otra persona lo revisó.",
+      titulo: "Primero, Git: cómo entra un cambio",
+      idea: "Cada cambio se trabaja aparte y solo entra a la versión oficial cuando otra persona lo revisó y las pruebas pasaron.",
+      visible: ["main: la versión oficial", "Rama: una copia para trabajar sin tocar main", "Push: subir el cambio a GitHub", "Pull Request: pedir que lo revisen", "Merge: unirlo a main"],
+      comparacion: "Como corregir un documento en una copia: el original solo cambia cuando otra persona revisó la corrección.",
       iconoComparacion: "file-text",
-      valor: "Nada llega a la versión principal sin revisión, pruebas y documentación.",
+      valor: "Nada llega a la versión oficial sin revisión y sin pruebas.",
       rol: "cicd",
       visual: {
-        tipo: "ramas",
-        principal: "main",
-        rama: "Mi tarea, en una rama aparte",
-        commits: ["Cambio en el código", "Su prueba", "Su documentación"],
-        fusion: "Pull Request: otra persona revisa, las pruebas pasan y entra a la versión principal",
+        tipo: "flujo",
+        pasos: [
+          { icono: "git-branch", titulo: "Rama", texto: "Una copia para trabajar sin tocar main.", tono: "marino" },
+          { icono: "code", titulo: "Cambio y prueba", texto: "Se escriben en la rama.", tono: "marino" },
+          { icono: "cloud-upload", titulo: "Push", texto: "Se sube la rama a GitHub.", tono: "cian" },
+          { icono: "git-pull-request", titulo: "Pull Request", texto: "Otra persona revisa y las pruebas corren solas.", tono: "cian" },
+          { icono: "git-merge", titulo: "Merge", texto: "Aprobado y en verde, entra a main.", tono: "correcto" },
+        ],
       },
       guion: {
         decir: [
-          "Gracias, Kevin. Antes de explicar CI/CD, veamos cómo incorporamos un cambio al sistema, porque de este proceso nace toda la automatización.",
-          "Usamos Git para mantener el historial del código. La línea principal, llamada main, contiene la versión oficial y nadie trabaja directamente sobre ella.",
-          "Cada tarea se desarrolla por separado en una rama, como cuando corregimos una copia de un documento. Allí incluimos el cambio, su prueba y su documentación.",
-          "Cuando está listo, creamos lo que GitHub llama un Pull Request. Es una solicitud para que otra persona revise el cambio antes de incorporarlo.",
-          "Las pruebas automáticas también deben pasar. Solo después de cumplir ambas condiciones, el cambio entra en la versión principal.",
-          "Este proceso evitó varias veces que rompiéramos algo que otra persona estaba utilizando. La automatización empieza precisamente en ese punto.",
+          "Gracias, Kevin. Antes de hablar de CI/CD, veamos cómo entra un cambio, porque ahí empieza toda la automatización.",
+          "Usamos Git, que guarda el historial del código, y GitHub, donde el equipo lo comparte. La versión oficial se llama main, y nadie trabaja directamente sobre ella.",
+          "Vamos paso por paso. Primero abrimos una rama: una copia donde trabajamos sin tocar main. Segundo, ahí escribimos el cambio y su prueba.",
+          "Tercero, hacemos push, que es subir esa rama a GitHub. Cuarto, abrimos un Pull Request: le pedimos a otra persona que revise el cambio, y las pruebas corren solas.",
+          "Quinto, si la revisión lo aprueba y las pruebas pasan, hacemos merge, que es unir la rama a main. Solo entonces el cambio forma parte de la versión oficial.",
+          "Es como corregir un documento en una copia: el original solo cambia cuando otra persona revisó la corrección.",
         ],
         conTusPalabras: [
-          "Main contiene la versión principal.",
-          "Cada tarea se desarrolla en una rama.",
-          "El Pull Request exige revisión y pruebas.",
+          "Main es la versión oficial.",
+          "Rama, cambio, push, Pull Request y merge, en ese orden.",
+          "Nada entra a main sin revisión y sin pruebas.",
         ],
         preguntas: [{ texto: "¿Qué pasa si dos personas cambian lo mismo?", respuesta: "Git detecta el conflicto y avisa. Las personas deciden cómo combinar los cambios antes de incorporarlos a la versión principal." }],
-        transicion: "Las pruebas no dependen de que alguien recuerde ejecutarlas. Las ejecuta el pipeline, una secuencia automática de tareas que veremos a continuación.",
+        transicion: "Veamos ahora el recorrido completo de un cambio en una simulación, desde el push hasta la pantalla de los usuarios.",
         respaldo: "docs/desarrollo/git.md",
+      },
+    },
+    {
+      id: "s05-flujo",
+      titulo: "Ejemplo: del push al despliegue",
+      visible: ["Push y Pull Request", "El pipeline compila y prueba", "Merge e imagen publicada", "Se instala y los usuarios ven la versión nueva"],
+      valor: "Ver de punta a punta cómo un cambio llega desde la computadora de quien desarrolla hasta los usuarios.",
+      rol: "cicd",
+      visual: visualDeVideo(VIDEOS.cicd),
+      guion: {
+        decir: [
+          "Este video es una simulación del recorrido completo. Primero, quien desarrolla termina su cambio y hace push a su rama.",
+          "Cuando se abre el Pull Request, el pipeline arranca por su cuenta: compila y corre todas las pruebas. Otra persona también revisa el cambio y debe aprobarlo.",
+          "Con el merge, el cambio entra a main y se publica la imagen, marcada con el código del cambio.",
+          "Al final se instala esa imagen. Fíjense en la pantalla de la derecha, que es lo que ven los usuarios: pasa de la versión 1.4 a la 1.5.",
+          "Nuestro pipeline real llega hasta publicar la imagen; la instalación del video muestra cómo seguiría en producción.",
+        ],
+        conTusPalabras: [
+          "Push, Pull Request, pruebas, merge e imagen.",
+          "Al instalar la imagen, los usuarios ven la versión nueva.",
+          "Nuestro pipeline llega hasta la imagen.",
+        ],
+        instrucciones: ["El video arranca solo al llegar a la lámina; Alt+P lo pausa.", "En el paso 5, señalar la pantalla de la derecha: es lo que ven los usuarios."],
+        preguntas: [{ texto: "¿Por qué ustedes no despliegan así?", respuesta: "Porque nuestro clúster es local y GitHub no puede entrar en él. Necesitaríamos un clúster accesible para el pipeline y un paso de aprobación." }],
+        transicion: "Ahora veamos por partes el corazón de ese recorrido: el pipeline.",
       },
     },
     {
@@ -256,10 +284,10 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "CI/CD reúne dos prácticas que organizan ese camino automático: la integración continua y la entrega continua. Funciona como el control de calidad de una fábrica, donde cada producto pasa por las mismas revisiones.",
-          "CI significa integración continua. Cuando alguien propone un cambio, un servidor de GitHub compila la aplicación y ejecuta todas las pruebas con una base temporal.",
+          "CI/CD reúne dos prácticas que automatizan ese recorrido: la integración continua y la entrega continua. Funciona como el control de calidad de una fábrica, donde cada producto pasa por las mismas revisiones.",
+          "CI significa integración continua. Cuando alguien propone un cambio, GitHub compila la aplicación y ejecuta todas las pruebas con una base temporal.",
           "Nadie tiene que recordar esos pasos. El resultado queda visible en verde cuando todo pasa y en rojo cuando algo falla.",
-          "CD significa entrega continua. Después de aprobar las pruebas, el pipeline empaqueta la aplicación y publica una imagen identificada con el código del cambio.",
+          "CD significa entrega continua. Después de pasar las pruebas, el pipeline empaqueta la aplicación y publica una imagen identificada con el código del cambio.",
           "Esa imagen queda lista para instalar. En nuestro proyecto, la instalación en Kubernetes todavía se hace mediante un comando.",
           "El siguiente paso natural sería automatizar también esa instalación, incluyendo una aprobación antes de ejecutarla.",
         ],
@@ -298,9 +326,9 @@ export const devops: Seccion = {
       guion: {
         decir: [
           "El pipeline demuestra su mayor valor cuando un cambio rompe una regla. Supongamos que alguien permite por error enviar dos veces la misma solicitud.",
-          "Si todo se revisara a mano, podríamos descubrirlo semanas después, cuando una persona usuaria ya estuviera afectada.",
-          "Aquí el pipeline comienza automáticamente y, en pocos minutos, falla la prueba que protege esa regla. GitHub muestra qué falló, dónde ocurrió y cuál fue la causa.",
-          "La persona corrige el problema y el pipeline vuelve a ejecutarse. Así, el error nunca entra en la versión principal.",
+          "Si todo se revisara a mano, podríamos descubrirlo semanas después, cuando el problema ya hubiera afectado a una persona usuaria.",
+          "Aquí el pipeline comienza automáticamente y, en pocos minutos, falla la prueba que protege esa regla. GitHub muestra qué prueba falló y dónde buscar el problema.",
+          "La persona corrige el problema y el pipeline vuelve a ejecutarse. Así, este error no entra en la versión principal, siempre que main exija las pruebas en verde.",
           "La integración continua funciona como la red de seguridad de un trapecista, porque permite hacer cambios con mayor confianza.",
           "Por eso cada regla necesita una prueba. Esa prueba es la alarma que se activa cuando alguien modifica el comportamiento esperado.",
         ],
@@ -333,11 +361,11 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "Cuando todo pasa obtenemos trazabilidad, que significa poder relacionar cada imagen publicada con el cambio que la generó.",
+          "Cuando todas las pruebas pasan, obtenemos trazabilidad, que significa poder relacionar cada imagen publicada con el cambio que la generó.",
           "La imagen lleva el código de ese cambio, como el número de lote de un medicamento. Si aparece un problema, sabemos exactamente de dónde vino.",
-          "Con ese código podemos revisar qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.",
+          "Con ese código podemos buscar en GitHub qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.",
           "Si una versión presenta problemas, podemos volver a la imagen anterior, que continúa almacenada.",
-          "Cuando operación pregunta qué versión está instalada, respondemos con una imagen concreta y su historial. En nuestro laboratorio todavía usamos imágenes construidas en la computadora; en un ambiente real usaríamos la que publicó el pipeline.",
+          "Cuando el equipo de operaciones pregunta qué versión está instalada, podemos indicar la etiqueta exacta y consultar su historial. En nuestro laboratorio todavía usamos imágenes construidas en la computadora; en un ambiente real usaríamos la que publicó el pipeline.",
         ],
         conTusPalabras: [
           "Cada imagen se conecta con un cambio específico.",
@@ -345,32 +373,7 @@ export const devops: Seccion = {
           "Si falla, volvemos a la imagen anterior.",
         ],
         preguntas: [{ texto: "¿Por qué no usar la etiqueta latest?", respuesta: "Porque latest cambia con cada publicación y no identifica el código. La etiqueta basada en el cambio siempre señala una versión concreta." }],
-        transicion: "Ahora veremos una simulación del proceso completo, desde que el cambio entra en la versión principal hasta que se instala en Kubernetes.",
-      },
-    },
-    {
-      id: "s05-flujo",
-      titulo: "Ejemplo: del merge al despliegue",
-      visible: ["Un cambio aprobado entra a main", "El pipeline compila y prueba", "Se publica la imagen", "Kubernetes reemplaza la versión anterior"],
-      valor: "Ver de punta a punta cómo sería el proceso completo en un ambiente real.",
-      rol: "cicd",
-      visual: visualDeVideo(VIDEOS.cicd),
-      guion: {
-        decir: [
-          "Este video es una simulación: muestra cómo seguiría el proceso en producción, después de donde llega hoy nuestro pipeline.",
-          "Todo comienza con un merge, cuando un Pull Request aprobado entra en main y arranca el pipeline.",
-          "Con la imagen publicada, una persona aprueba el despliegue y Kubernetes crea una copia nueva de la aplicación.",
-          "La nueva copia se ejecuta dentro de un Pod, que es la unidad que Kubernetes administra. Mientras arranca y demuestra que está lista, la anterior continúa atendiendo.",
-          "Cuando la copia nueva está lista, comienza a atender las solicitudes de los usuarios y Kubernetes retira la versión anterior. Así evitamos interrumpir el servicio.",
-        ],
-        conTusPalabras: [
-          "El video es una simulación.",
-          "Nuestro pipeline llega hasta publicar la imagen.",
-          "En producción, una aprobación iniciaría el despliegue.",
-        ],
-        instrucciones: ["El video arranca solo al llegar a la lámina; Alt+P lo pausa."],
-        preguntas: [{ texto: "¿Por qué ustedes no despliegan así?", respuesta: "Porque nuestro clúster es local y GitHub no puede entrar en él. Necesitaríamos un clúster accesible para el pipeline y un paso de aprobación." }],
-        transicion: "Ahora veamos dónde se ejecutan esas copias. Le paso la palabra a Moises, que nos explicará Kubernetes.",
+        transicion: "La imagen ya está publicada y rastreada. Ahora veamos dónde se ejecuta. Le paso la palabra a Moises, que nos explicará Kubernetes.",
       },
     },
     {
@@ -406,7 +409,7 @@ export const devops: Seccion = {
           "Compara el estado y corrige las diferencias.",
         ],
         preguntas: [{ texto: "¿Qué pasa si alguien cambia algo a mano?", respuesta: "Depende de qué cambie. Si alguien elimina un Pod, Kubernetes crea otro para mantener la cantidad de copias. Si modifica la configuración, debemos reflejar ese cambio en el archivo, para que lo guardado coincida con lo que está funcionando." }],
-        transicion: "Ahora aparecen dos palabras nuevas. Un Pod es el espacio que Kubernetes le da a cada contenedor, y un Service es el nombre fijo para encontrarlo. Veamos cómo encajan.",
+        transicion: "Ahora veamos dos conceptos nuevos. Un Pod es el espacio que Kubernetes le da a cada contenedor, y un Service es el nombre fijo para encontrarlo.",
         respaldo: "docs/operaciones/kubernetes-local.md",
       },
     },
@@ -472,9 +475,9 @@ export const devops: Seccion = {
       rol: "operacion",
       guion: {
         decir: [
-          "Kubernetes agrega lo que Docker solo no tiene. Se repara solo: si un Pod se cae, levanta otro. Y crece: si aumenta la carga, pedimos más copias cambiando un número, y el Service reparte el trabajo entre ellas.",
+          "Kubernetes aporta capacidades que Docker por sí solo no ofrece. Si un Pod se cae, levanta otro. Si aumenta la carga, pedimos más copias cambiando un número, y el Service reparte el trabajo entre ellas.",
           "También actualiza poco a poco, sin apagar todo, y permite volver a la versión anterior si algo falla.",
-          "Controla la memoria y la CPU de cada Pod con una reserva y un tope. Es como un presupuesto: la reserva es lo que apartamos al planificar y el tope es de ahí no pasas. En ARKA-Lite lo aplicamos a la pantalla.",
+          "Controla la memoria y la CPU de cada Pod con una reserva y un tope. Es como un presupuesto: la reserva es lo que apartamos al planificar y el tope es el máximo permitido. En ARKA-Lite lo aplicamos a la pantalla.",
           "Por último, guarda las claves aparte, en un objeto llamado Secret, y los datos en un disco que sobrevive al reinicio del Pod. Todo queda escrito en archivos, sin depender de la memoria de una persona.",
         ],
         conTusPalabras: [
@@ -518,7 +521,7 @@ export const devops: Seccion = {
         ],
         conTusPalabras: [
           "Kubernetes reemplaza una copia que se cae.",
-          "La nueva espera la base y pasa su revisión.",
+          "La nueva copia espera a que la base esté lista y pasa su revisión.",
           "Los eventos pendientes permanecen guardados.",
         ],
         preguntas: [{ texto: "¿Y si se cae la base?", respuesta: "Su Pod también se recrea y los datos permanecen en el disco. Los servicios esperan hasta que la base regrese." }],
@@ -543,7 +546,7 @@ export const devops: Seccion = {
       },
       guion: {
         decir: [
-          "De DevOps nos llevamos varias ideas que se complementan. Docker y Kubernetes se complementan, porque uno empaqueta la aplicación y el otro la ejecuta y la cuida.",
+          "De DevOps nos llevamos varias ideas. Docker y Kubernetes se complementan: uno empaqueta la aplicación y el otro la ejecuta y la cuida.",
           "La imagen es el entregable que construimos una vez y reutilizamos entre ambientes. Además, la configuración pertenece al ambiente y no al código.",
           "También aprendimos a describir el estado que queremos y a comprobar que los servicios realmente arrancan, en lugar de verificar solamente que compilan.",
           "El mayor valor es que todo quedó escrito. Tenemos la receta de cada imagen, el pipeline y los archivos de Kubernetes, sin depender de la memoria de una persona.",
@@ -617,7 +620,7 @@ export const observabilidad: Seccion = {
         decir: [
           "Supongamos que alguien envió su solicitud, pero no recibió el aviso. No queremos revisar los registros de cada servicio uno por uno.",
           "Por eso los reunimos en un solo lugar con tres herramientas. Promtail es el recolector: toma los registros de cada contenedor. Loki es la base de datos donde se guardan. Y Grafana es la pantalla donde los consultamos.",
-          "Escribimos el código de la solicitud y aparecen juntos sus registros de los dos servicios, en orden: cuándo se envió, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento siguiera en la bandeja de salida, veríamos dónde se detuvo.",
+          "Escribimos el código de la solicitud y aparecen juntos los registros de ambos servicios, en orden: cuándo se envió, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento siguiera en la bandeja de salida, veríamos dónde se detuvo.",
           "Un servicio encendido no siempre funciona bien. Por eso también revisamos resultados, como la cantidad de eventos pendientes.",
         ],
         conTusPalabras: [
@@ -654,7 +657,7 @@ export const observabilidad: Seccion = {
         conTusPalabras: [
           "Organizamos los registros desde el inicio.",
           "Cada operación lleva un número de seguimiento.",
-          "Encendido no siempre significa funcionando.",
+          "Estar encendido no siempre significa funcionar.",
         ],
         transicion: "Ya explicamos cómo funciona el sistema. Ahora veremos ese comportamiento en video. Abdiel, adelante.",
       },

@@ -75,7 +75,7 @@ Láminas 1–5 · unos 4 minutos.
 >
 > Segundo, quién hace cada paso. Quien solicita envía, el sistema avisa y otra persona decide. Gestionar la solicitud y producir el aviso son trabajos distintos, y por eso los separamos en dos servicios.
 >
-> Tercero, qué no se puede permitir. Esas son las reglas de ARKA-Lite: una solicitud se envía solo cuando está en borrador, y una sola vez, y solo una enviada se puede aprobar o rechazar. Cada regla quedó con su prueba automática.
+> Tercero, qué no se puede permitir. Estas son las reglas de ARKA-Lite: una solicitud solo puede enviarse cuando está en borrador y una sola vez. Solo una solicitud enviada puede aprobarse o rechazarse. Cada regla quedó con su prueba automática.
 >
 > Con el qué ya definido, pasamos al cómo: escribir código que se pueda cambiar con confianza.
 
@@ -101,7 +101,7 @@ Porque cambian por motivos distintos. Así, el trámite puede seguir funcionando
 
 **Qué decir**
 
-> También nos quedó cómo escribir código fácil de mantener. Son seis prácticas que sirven en cualquier lenguaje, ya sea Java, C# o PL/SQL.
+> Otra cosa que nos quedó es cómo escribir código fácil de mantener. Son seis prácticas que sirven en cualquier lenguaje, ya sea Java, C# o PL/SQL.
 >
 > La primera es que cada pieza hace una sola tarea: la que recibe el pedido no decide, y la que decide no guarda. La segunda es conectar las piezas desde afuera, para poder cambiarlas o probarlas por separado. La tercera es dejar las reglas del negocio en un solo lugar, sin repetirlas en la pantalla y en la base.
 >
@@ -133,7 +133,7 @@ Puede producir más piezas, pero cada una es corta y se entiende por separado. E
 
 > Nos quedamos con tres ideas. Primero se analiza y después se programa, porque tener claras las reglas desde el inicio evita rehacer trabajo.
 >
-> Segundo, separar responsabilidades, para que un cambio de regla toque un solo lugar y una prueba nos avise si algo se rompió. Tercero, que las reglas del negocio no dependan de la herramienta, de modo que sigan siendo las mismas si mañana cambia la base de datos o la tecnología con la que construimos la aplicación.
+> Segundo, separamos responsabilidades para que un cambio de regla toque un solo lugar y una prueba nos avise si algo se rompió. Tercero, las reglas del negocio no deben depender de la herramienta. Así siguen siendo las mismas si cambia la base de datos o la tecnología de la aplicación.
 >
 > Estas tres prácticas se pueden aplicar en los sistemas actuales, sin importar el lenguaje ni cómo esté organizada la aplicación.
 >
@@ -323,11 +323,11 @@ Son dos bases pequeñas y cada una tiene una responsabilidad. Se respaldan y vig
 >
 > Cada fila registra un evento, con un número único y una marca que indica si está pendiente o ya fue entregado.
 >
-> La base de notificaciones tiene una tabla principal con los eventos que ya recibió. Funciona como el libro de registro que se mantiene en la entrada de una oficina.
+> La base de notificaciones tiene una tabla principal con los eventos que ya recibió. Funciona como el libro de registro de la entrada de una oficina.
 >
 > No existe una conexión directa entre las bases. Lo que las relaciona es el número del evento, que viaja en el mensaje entre los servicios.
 >
-> Ahora veremos un cambio importante frente a muchas aplicaciones actuales, que es dónde vive la regla del negocio.
+> Ahora veremos un cambio importante frente a muchas aplicaciones actuales: dónde vive la regla del negocio.
 
 **Si se te olvida, di esto**
 
@@ -429,7 +429,7 @@ Es el mismo concepto de BEGIN, COMMIT y ROLLBACK. La diferencia es que la aplica
 >
 > También mantenemos los datos de conexión fuera del código y los entregamos desde el ambiente. La transacción continúa siendo una de las herramientas más confiables para proteger una operación.
 >
-> Además, guardamos y controlamos la estructura de la base junto con el código. Para quienes trabajamos con bases de datos, el mensaje es claro, porque ese conocimiento sigue siendo fundamental.
+> Además, guardamos y controlamos la estructura de la base junto con el código. Para quienes trabajamos con bases de datos, el mensaje es claro: ese conocimiento sigue siendo fundamental.
 >
 > Ahora veremos cómo los servicios se comunican sin perder ni duplicar información. Le paso la palabra a Abdiel.
 
@@ -539,7 +539,7 @@ No. Esa persona sigue diseñando el modelo, cuidando los índices y revisando el
 
 **Si se te olvida, di esto**
 
-- La clase y la tabla se relacionan campo por columna.
+- Cada campo de la clase corresponde a una columna de la tabla.
 - El ORM genera las instrucciones para agregar, consultar y actualizar los datos.
 - Los valores viajan como parámetros seguros.
 
@@ -557,7 +557,7 @@ Sí. Una línea de configuración permite mostrarlo en los registros, lo que ayu
 
 **Qué decir**
 
-> Toda aplicación necesita conocer la ubicación de la base y el usuario y la clave para entrar. A este conjunto de datos lo llamamos cadena de conexión.
+> Toda aplicación necesita conocer la ubicación de la base, el usuario y la clave para entrar. A este conjunto de datos lo llamamos cadena de conexión.
 >
 > En nuestros sistemas actuales la guardamos en un archivo web.config dentro del servidor. Esa ya es una buena práctica, porque la información no está escrita en el código.
 >
@@ -595,29 +595,29 @@ No. Sigue siendo válido para las aplicaciones que funcionan de esa manera. Lo i
 
 > **Recibes la palabra** de Kevin, después de la lámina 28.
 
-### 29. CI/CD: primero, cómo entra un cambio
+### 29. Primero, Git: cómo entra un cambio
 
 **Qué decir**
 
-> Gracias, Kevin. Antes de explicar CI/CD, veamos cómo incorporamos un cambio al sistema, porque de este proceso nace toda la automatización.
+> Gracias, Kevin. Antes de hablar de CI/CD, veamos cómo entra un cambio, porque ahí empieza toda la automatización.
 >
-> Usamos Git para mantener el historial del código. La línea principal, llamada main, contiene la versión oficial y nadie trabaja directamente sobre ella.
+> Usamos Git, que guarda el historial del código, y GitHub, donde el equipo lo comparte. La versión oficial se llama main, y nadie trabaja directamente sobre ella.
 >
-> Cada tarea se desarrolla por separado en una rama, como cuando corregimos una copia de un documento. Allí incluimos el cambio, su prueba y su documentación.
+> Vamos paso por paso. Primero abrimos una rama: una copia donde trabajamos sin tocar main. Segundo, ahí escribimos el cambio y su prueba.
 >
-> Cuando está listo, creamos lo que GitHub llama un Pull Request. Es una solicitud para que otra persona revise el cambio antes de incorporarlo.
+> Tercero, hacemos push, que es subir esa rama a GitHub. Cuarto, abrimos un Pull Request: le pedimos a otra persona que revise el cambio, y las pruebas corren solas.
 >
-> Las pruebas automáticas también deben pasar. Solo después de cumplir ambas condiciones, el cambio entra en la versión principal.
+> Quinto, si la revisión lo aprueba y las pruebas pasan, hacemos merge, que es unir la rama a main. Solo entonces el cambio forma parte de la versión oficial.
 >
-> Este proceso evitó varias veces que rompiéramos algo que otra persona estaba utilizando. La automatización empieza precisamente en ese punto.
+> Es como corregir un documento en una copia: el original solo cambia cuando otra persona revisó la corrección.
 >
-> Las pruebas no dependen de que alguien recuerde ejecutarlas. Las ejecuta el pipeline, una secuencia automática de tareas que veremos a continuación.
+> Veamos ahora el recorrido completo de un cambio en una simulación, desde el push hasta la pantalla de los usuarios.
 
 **Si se te olvida, di esto**
 
-- Main contiene la versión principal.
-- Cada tarea se desarrolla en una rama.
-- El Pull Request exige revisión y pruebas.
+- Main es la versión oficial.
+- Rama, cambio, push, Pull Request y merge, en ese orden.
+- Nada entra a main sin revisión y sin pruebas.
 
 **Si preguntan:** ¿Qué pasa si dos personas cambian lo mismo?
 
@@ -631,17 +631,52 @@ Git detecta el conflicto y avisa. Las personas deciden cómo combinar los cambio
 >
 > Nadie incorpora cambios directamente en la versión principal, incluida la persona que lidera el equipo.
 
-### 30. CI/CD: el control de calidad automático
+### 30. Ejemplo: del push al despliegue
 
 **Qué decir**
 
-> CI/CD reúne dos prácticas que organizan ese camino automático: la integración continua y la entrega continua. Funciona como el control de calidad de una fábrica, donde cada producto pasa por las mismas revisiones.
+> Este video es una simulación del recorrido completo. Primero, quien desarrolla termina su cambio y hace push a su rama.
 >
-> CI significa integración continua. Cuando alguien propone un cambio, un servidor de GitHub compila la aplicación y ejecuta todas las pruebas con una base temporal.
+> Cuando se abre el Pull Request, el pipeline arranca por su cuenta: compila y corre todas las pruebas. Otra persona también revisa el cambio y debe aprobarlo.
+>
+> Con el merge, el cambio entra a main y se publica la imagen, marcada con el código del cambio.
+>
+> Al final se instala esa imagen. Fíjense en la pantalla de la derecha, que es lo que ven los usuarios: pasa de la versión 1.4 a la 1.5.
+>
+> Nuestro pipeline real llega hasta publicar la imagen; la instalación del video muestra cómo seguiría en producción.
+>
+> Ahora veamos por partes el corazón de ese recorrido: el pipeline.
+
+**Si se te olvida, di esto**
+
+- Push, Pull Request, pruebas, merge e imagen.
+- Al instalar la imagen, los usuarios ven la versión nueva.
+- Nuestro pipeline llega hasta la imagen.
+
+**Qué hacer** (no se dice)
+
+- El video arranca solo al llegar a la lámina; Alt+P lo pausa.
+- En el paso 5, señalar la pantalla de la derecha: es lo que ven los usuarios.
+
+**Si preguntan:** ¿Por qué ustedes no despliegan así?
+
+Porque nuestro clúster es local y GitHub no puede entrar en él. Necesitaríamos un clúster accesible para el pipeline y un paso de aprobación.
+
+**Si hay tiempo**
+
+> Existen herramientas para automatizar ese último paso. Todas siguen la misma idea, donde el pipeline entrega la imagen a Kubernetes y una persona aprueba antes de llegar a producción.
+
+### 31. CI/CD: el control de calidad automático
+
+**Qué decir**
+
+> CI/CD reúne dos prácticas que automatizan ese recorrido: la integración continua y la entrega continua. Funciona como el control de calidad de una fábrica, donde cada producto pasa por las mismas revisiones.
+>
+> CI significa integración continua. Cuando alguien propone un cambio, GitHub compila la aplicación y ejecuta todas las pruebas con una base temporal.
 >
 > Nadie tiene que recordar esos pasos. El resultado queda visible en verde cuando todo pasa y en rojo cuando algo falla.
 >
-> CD significa entrega continua. Después de aprobar las pruebas, el pipeline empaqueta la aplicación y publica una imagen identificada con el código del cambio.
+> CD significa entrega continua. Después de pasar las pruebas, el pipeline empaqueta la aplicación y publica una imagen identificada con el código del cambio.
 >
 > Esa imagen queda lista para instalar. En nuestro proyecto, la instalación en Kubernetes todavía se hace mediante un comando.
 >
@@ -674,17 +709,17 @@ No. GitHub crea un PostgreSQL temporal para cada ejecución y lo elimina al term
 >
 > Actualmente las imágenes de los servicios se publican durante la revisión y la de la pantalla al llegar a main. Ya identificamos esa diferencia como un ajuste pendiente.
 
-### 31. Cuando un cambio rompe algo
+### 32. Cuando un cambio rompe algo
 
 **Qué decir**
 
 > El pipeline demuestra su mayor valor cuando un cambio rompe una regla. Supongamos que alguien permite por error enviar dos veces la misma solicitud.
 >
-> Si todo se revisara a mano, podríamos descubrirlo semanas después, cuando una persona usuaria ya estuviera afectada.
+> Si todo se revisara a mano, podríamos descubrirlo semanas después, cuando el problema ya hubiera afectado a una persona usuaria.
 >
-> Aquí el pipeline comienza automáticamente y, en pocos minutos, falla la prueba que protege esa regla. GitHub muestra qué falló, dónde ocurrió y cuál fue la causa.
+> Aquí el pipeline comienza automáticamente y, en pocos minutos, falla la prueba que protege esa regla. GitHub muestra qué prueba falló y dónde buscar el problema.
 >
-> La persona corrige el problema y el pipeline vuelve a ejecutarse. Así, el error nunca entra en la versión principal.
+> La persona corrige el problema y el pipeline vuelve a ejecutarse. Así, este error no entra en la versión principal, siempre que main exija las pruebas en verde.
 >
 > La integración continua funciona como la red de seguridad de un trapecista, porque permite hacer cambios con mayor confianza.
 >
@@ -708,21 +743,21 @@ Todo cambio entra mediante Pull Request. Además, GitHub puede impedir que se ac
 >
 > El pipeline publica imágenes mediante un permiso temporal que GitHub entrega a cada ejecución, sin almacenar una contraseña.
 
-### 32. Cada imagen, con su etiqueta
+### 33. Cada imagen, con su etiqueta
 
 **Qué decir**
 
-> Cuando todo pasa obtenemos trazabilidad, que significa poder relacionar cada imagen publicada con el cambio que la generó.
+> Cuando todas las pruebas pasan, obtenemos trazabilidad, que significa poder relacionar cada imagen publicada con el cambio que la generó.
 >
 > La imagen lleva el código de ese cambio, como el número de lote de un medicamento. Si aparece un problema, sabemos exactamente de dónde vino.
 >
-> Con ese código podemos revisar qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.
+> Con ese código podemos buscar en GitHub qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.
 >
 > Si una versión presenta problemas, podemos volver a la imagen anterior, que continúa almacenada.
 >
-> Cuando operación pregunta qué versión está instalada, respondemos con una imagen concreta y su historial. En nuestro laboratorio todavía usamos imágenes construidas en la computadora; en un ambiente real usaríamos la que publicó el pipeline.
+> Cuando el equipo de operaciones pregunta qué versión está instalada, podemos indicar la etiqueta exacta y consultar su historial. En nuestro laboratorio todavía usamos imágenes construidas en la computadora; en un ambiente real usaríamos la que publicó el pipeline.
 >
-> Ahora veremos una simulación del proceso completo, desde que el cambio entra en la versión principal hasta que se instala en Kubernetes.
+> La imagen ya está publicada y rastreada. Ahora veamos dónde se ejecuta. Le paso la palabra a Moises, que nos explicará Kubernetes.
 
 **Si se te olvida, di esto**
 
@@ -739,40 +774,6 @@ Porque latest cambia con cada publicación y no identifica el código. La etique
 > Ese código se llama SHA y Git genera uno para cada cambio. Usarlo evita la duda sobre si la imagen que se ejecuta es la nueva o la anterior.
 >
 > El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.
-
-### 33. Ejemplo: del merge al despliegue
-
-**Qué decir**
-
-> Este video es una simulación: muestra cómo seguiría el proceso en producción, después de donde llega hoy nuestro pipeline.
->
-> Todo comienza con un merge, cuando un Pull Request aprobado entra en main y arranca el pipeline.
->
-> Con la imagen publicada, una persona aprueba el despliegue y Kubernetes crea una copia nueva de la aplicación.
->
-> La nueva copia se ejecuta dentro de un Pod, que es la unidad que Kubernetes administra. Mientras arranca y demuestra que está lista, la anterior continúa atendiendo.
->
-> Cuando la copia nueva está lista, comienza a atender las solicitudes de los usuarios y Kubernetes retira la versión anterior. Así evitamos interrumpir el servicio.
->
-> Ahora veamos dónde se ejecutan esas copias. Le paso la palabra a Moises, que nos explicará Kubernetes.
-
-**Si se te olvida, di esto**
-
-- El video es una simulación.
-- Nuestro pipeline llega hasta publicar la imagen.
-- En producción, una aprobación iniciaría el despliegue.
-
-**Qué hacer** (no se dice)
-
-- El video arranca solo al llegar a la lámina; Alt+P lo pausa.
-
-**Si preguntan:** ¿Por qué ustedes no despliegan así?
-
-Porque nuestro clúster es local y GitHub no puede entrar en él. Necesitaríamos un clúster accesible para el pipeline y un paso de aprobación.
-
-**Si hay tiempo**
-
-> Existen herramientas para automatizar ese último paso. Todas siguen la misma idea, donde el pipeline entrega la imagen a Kubernetes y una persona aprueba antes de llegar a producción.
 
 > **Entregas la palabra** a Moises (lámina 34).
 
@@ -1036,7 +1037,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 
 > La demostración nos deja tres aprendizajes. Primero, debemos diseñar para las fallas y no únicamente para el recorrido exitoso.
 >
-> También debemos hacer visible lo que ocurre de forma asíncrona. Sin una vista de los eventos enviados, uno pendiente quedaría oculto.
+> También debemos hacer visible lo que ocurre de forma asíncrona. Sin una vista de los eventos, uno pendiente quedaría oculto.
 >
 > Finalmente, ver el sistema funcionando facilita la explicación y convierte la misma pantalla en una herramienta para capacitar a quienes se incorporen.
 >
@@ -1073,7 +1074,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 **Si se te olvida, di esto**
 
 - No se pierden eventos ni se duplican avisos.
-- El trámite continúa aunque notificaciones esté detenido.
+- El trámite continúa aunque notificaciones esté fuera de servicio.
 - Las pruebas y la recuperación reducen el riesgo.
 
 **Si hay tiempo**
@@ -1092,7 +1093,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 >
 > Además, reunimos los registros en un solo lugar y relacionamos cada versión con el cambio que la produjo.
 >
-> La mayoría puede comenzar a aplicarse sin reemplazar la tecnología que ya utilizamos.
+> La mayoría de estas prácticas puede aplicarse sin reemplazar la tecnología que ya utilizamos.
 >
 > Si tuviéramos que resumir todo el recorrido en tres ideas, serían las siguientes.
 
@@ -1116,7 +1117,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 >
 > La segunda es automatizar las revisiones y dejar la infraestructura descrita en archivos. Así podemos hacer cambios con mayor confianza y menor riesgo.
 >
-> La tercera es hacer visible el sistema. Lo que no podemos ver tampoco podemos diagnosticarlo ni explicarlo con claridad.
+> La tercera es hacer visible el sistema. No podemos diagnosticar ni explicar con claridad lo que no vemos.
 >
 > Ese es el aprendizaje que conecta todo el recorrido: prepararnos para las fallas, revisar los cambios y poder entender qué ocurre en el sistema.
 
@@ -1350,7 +1351,7 @@ Láminas 34–41 · unos 7 minutos.
 >
 > Por eso el sistema puede repararse solo. Como el archivo se guarda con el código, la configuración tampoco depende de la memoria de una persona.
 >
-> Ahora aparecen dos palabras nuevas. Un Pod es el espacio que Kubernetes le da a cada contenedor, y un Service es el nombre fijo para encontrarlo. Veamos cómo encajan.
+> Ahora veamos dos conceptos nuevos. Un Pod es el espacio que Kubernetes le da a cada contenedor, y un Service es el nombre fijo para encontrarlo.
 
 **Si se te olvida, di esto**
 
@@ -1409,11 +1410,11 @@ Corren en los servidores del clúster, llamados nodos. Kubernetes elige el nodo 
 
 **Qué decir**
 
-> Kubernetes agrega lo que Docker solo no tiene. Se repara solo: si un Pod se cae, levanta otro. Y crece: si aumenta la carga, pedimos más copias cambiando un número, y el Service reparte el trabajo entre ellas.
+> Kubernetes aporta capacidades que Docker por sí solo no ofrece. Si un Pod se cae, levanta otro. Si aumenta la carga, pedimos más copias cambiando un número, y el Service reparte el trabajo entre ellas.
 >
 > También actualiza poco a poco, sin apagar todo, y permite volver a la versión anterior si algo falla.
 >
-> Controla la memoria y la CPU de cada Pod con una reserva y un tope. Es como un presupuesto: la reserva es lo que apartamos al planificar y el tope es de ahí no pasas. En ARKA-Lite lo aplicamos a la pantalla.
+> Controla la memoria y la CPU de cada Pod con una reserva y un tope. Es como un presupuesto: la reserva es lo que apartamos al planificar y el tope es el máximo permitido. En ARKA-Lite lo aplicamos a la pantalla.
 >
 > Por último, guarda las claves aparte, en un objeto llamado Secret, y los datos en un disco que sobrevive al reinicio del Pod. Todo queda escrito en archivos, sin depender de la memoria de una persona.
 >
@@ -1465,7 +1466,7 @@ Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memor
 **Si se te olvida, di esto**
 
 - Kubernetes reemplaza una copia que se cae.
-- La nueva espera la base y pasa su revisión.
+- La nueva copia espera a que la base esté lista y pasa su revisión.
 - Los eventos pendientes permanecen guardados.
 
 **Si preguntan:** ¿Y si se cae la base?
@@ -1482,7 +1483,7 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 
 **Qué decir**
 
-> De DevOps nos llevamos varias ideas que se complementan. Docker y Kubernetes se complementan, porque uno empaqueta la aplicación y el otro la ejecuta y la cuida.
+> De DevOps nos llevamos varias ideas. Docker y Kubernetes se complementan: uno empaqueta la aplicación y el otro la ejecuta y la cuida.
 >
 > La imagen es el entregable que construimos una vez y reutilizamos entre ambientes. Además, la configuración pertenece al ambiente y no al código.
 >
@@ -1544,7 +1545,7 @@ Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabil
 >
 > Por eso los reunimos en un solo lugar con tres herramientas. Promtail es el recolector: toma los registros de cada contenedor. Loki es la base de datos donde se guardan. Y Grafana es la pantalla donde los consultamos.
 >
-> Escribimos el código de la solicitud y aparecen juntos sus registros de los dos servicios, en orden: cuándo se envió, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento siguiera en la bandeja de salida, veríamos dónde se detuvo.
+> Escribimos el código de la solicitud y aparecen juntos los registros de ambos servicios, en orden: cuándo se envió, cuándo se entregó el evento y si notificaciones creó el aviso. Si el evento siguiera en la bandeja de salida, veríamos dónde se detuvo.
 >
 > Un servicio encendido no siempre funciona bien. Por eso también revisamos resultados, como la cantidad de eventos pendientes.
 >
@@ -1589,7 +1590,7 @@ Puede mostrarlas si le conectamos una fuente de métricas, como el consumo de me
 
 - Organizamos los registros desde el inicio.
 - Cada operación lleva un número de seguimiento.
-- Encendido no siempre significa funcionando.
+- Estar encendido no siempre significa funcionar.
 
 **Si hay tiempo**
 

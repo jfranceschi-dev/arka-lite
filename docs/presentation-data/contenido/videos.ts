@@ -65,15 +65,15 @@ export const VIDEOS = {
   cicd: {
     archivo: "ejemplo-cicd.mp4",
     portada: "ejemplo-cicd.png",
-    titulo: "Del merge al despliegue",
-    subtitulo: "Ejemplo ilustrativo de cómo sería el proceso completo.",
+    titulo: "Del push al despliegue",
+    subtitulo: "Ejemplo ilustrativo: un cambio, desde la computadora de quien desarrolla hasta la pantalla de los usuarios.",
     url: "Ejemplo ilustrativo",
     pasos: [
-      "Un Pull Request aprobado entra a main con un merge",
-      "El pipeline arranca solo: compila y corre las pruebas",
-      "Publica la imagen, marcada con el código del cambio",
-      "Se aprueba el despliegue y Kubernetes crea un Pod nuevo",
-      "Cuando está listo, atiende a los usuarios y se retira el anterior",
+      "Quien desarrolla termina su cambio y hace push: lo sube a su rama en GitHub",
+      "Abre un Pull Request y otra persona revisa y aprueba el cambio",
+      "El pipeline arranca solo: compila y corre todas las pruebas",
+      "Con el merge, el cambio entra a main y se publica la imagen",
+      "Se instala la imagen nueva y los usuarios ya ven la versión 1.5",
     ],
   },
 } satisfies Record<string, Video>;

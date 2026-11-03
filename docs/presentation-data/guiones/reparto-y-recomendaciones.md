@@ -32,27 +32,27 @@ Los números de lámina son los de la versión con videos; en la versión sin de
 | Parte | Láminas | Desde | Hasta | Presenta |
 | --- | --- | --- | --- | --- |
 | Apertura | 1–2 | 0:00 | 1:03 | Luis Cardoze |
-| 1 · Fundamentos | 3–5 | 1:03 | 4:05 | Luis Cardoze |
-| 2 · Arquitectura | 6–9 | 4:05 | 7:18 | Ricardo Fábrega |
-| 3 · Base de datos | 10–18 | 7:18 | 16:33 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 19–23 | 16:33 | 22:06 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 24–38 | 22:06 | 35:58 | Kevin, Jossett Franceschi, Moises |
-| 6 · Observabilidad | 39–41 | 35:58 | 38:37 | Moises |
-| 7 · Demostración | 42–44 | 38:37 | 40:58 | Abdiel Barria |
-| Valor y cierre | 45–48 | 40:58 | 43:30 | Abdiel Barria |
+| 1 · Fundamentos | 3–5 | 1:03 | 4:03 | Luis Cardoze |
+| 2 · Arquitectura | 6–9 | 4:03 | 7:16 | Ricardo Fábrega |
+| 3 · Base de datos | 10–18 | 7:16 | 16:29 | Marlene Bonilla, Jossett Franceschi |
+| 4 · Interconexión de servicios | 19–23 | 16:29 | 22:02 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 24–38 | 22:02 | 36:04 | Kevin, Jossett Franceschi, Moises |
+| 6 · Observabilidad | 39–41 | 36:04 | 38:43 | Moises |
+| 7 · Demostración | 42–44 | 38:43 | 41:03 | Abdiel Barria |
+| Valor y cierre | 45–48 | 41:03 | 43:35 | Abdiel Barria |
 
 ## Línea de tiempo · sin demostración
 
 | Parte | Láminas | Desde | Hasta | Presenta |
 | --- | --- | --- | --- | --- |
 | Apertura | 1–2 | 0:00 | 0:57 | Luis Cardoze |
-| 1 · Fundamentos | 3–5 | 0:57 | 3:58 | Luis Cardoze |
-| 2 · Arquitectura | 6–9 | 3:58 | 7:12 | Ricardo Fábrega |
-| 3 · Base de datos | 10–18 | 7:12 | 16:27 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 19–23 | 16:27 | 22:00 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 24–37 | 22:00 | 35:02 | Kevin, Jossett Franceschi, Moises |
-| 6 · Observabilidad | 38–40 | 35:02 | 37:42 | Moises |
-| Valor y cierre | 41–44 | 37:42 | 40:15 | Abdiel Barria |
+| 1 · Fundamentos | 3–5 | 0:57 | 3:56 | Luis Cardoze |
+| 2 · Arquitectura | 6–9 | 3:56 | 7:10 | Ricardo Fábrega |
+| 3 · Base de datos | 10–18 | 7:10 | 16:23 | Marlene Bonilla, Jossett Franceschi |
+| 4 · Interconexión de servicios | 19–23 | 16:23 | 21:56 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 24–37 | 21:56 | 35:06 | Kevin, Jossett Franceschi, Moises |
+| 6 · Observabilidad | 38–40 | 35:06 | 37:45 | Moises |
+| Valor y cierre | 41–44 | 37:45 | 40:18 | Abdiel Barria |
 
 ## Relevos
 
@@ -66,7 +66,7 @@ Cada vez que cambia quien presenta. La frase de relevo es el final del texto de 
 | 17. Una transacción: todo o nada | Jossett Franceschi | Marlene Bonilla |
 | 19. Síncrono o asíncrono | Marlene Bonilla | Abdiel Barria |
 | 24. ¿Qué es DevOps? Del código a la operación | Abdiel Barria | Kevin |
-| 29. CI/CD: primero, cómo entra un cambio | Kevin | Jossett Franceschi |
+| 29. Primero, Git: cómo entra un cambio | Kevin | Jossett Franceschi |
 | 34. Cómo trabaja Kubernetes | Jossett Franceschi | Moises |
 | 42. En video: cómo interactúan los componentes | Moises | Abdiel Barria |
 
@@ -95,7 +95,8 @@ Cada vez que cambia quien presenta. La frase de relevo es el final del texto de 
 - Abrir «La misma regla» aclarando que los procedimientos no están mal: baja la defensiva de la sala.
 - En «¿Qué es un ORM?», quedarse en la idea del intérprete; el detalle va en la lámina siguiente.
 - En los datos de conexión, conectar con lo que ya hacen hoy: el web.config.
-- Antes de decir CI/CD, explicar rama, main y Pull Request: sin eso, lo demás no se entiende.
+- Antes de decir CI/CD, explicar rama, push, Pull Request y merge: sin eso, lo demás no se entiende.
+- En el video, señalar la pantalla de los usuarios al final: ahí se ve que el cambio llegó.
 - Usar la comparación del control de calidad y evitar el detalle del archivo del pipeline.
 - «Cuando un cambio rompe algo» es la lámina de más valor: detenerse ahí.
 
@@ -156,7 +157,7 @@ Estas láminas se pueden saltar (en PowerPoint: Ocultar diapositiva) sin tocar l
 | 6. El sistema de un vistazo | «Cómo funciona en la práctica» muestra lo mismo con más detalle. |
 | 15. El ORM por dentro: una clase es una tabla | «¿Qué es un ORM?» ya deja la idea; esta lámina agrega el detalle. |
 | 28. Todo el sistema con un comando | Se puede decir en una frase al final de las bondades de Docker. |
-| 32. Cada imagen, con su etiqueta | Su mensaje cabe en una frase al final del pipeline. |
+| 33. Cada imagen, con su etiqueta | Su mensaje cabe en una frase al final del pipeline. |
 | 46. Lo que sostiene los resultados | «Resultados para el negocio» lleva el mensaje más útil. |
 
 Los videos se graban con `npm run videos` y el sistema arriba: el script maneja la pantalla en Edge sin ventana, detiene y vuelve a iniciar notificaciones, graba la simulación de CI/CD y deja los MP4 en `capturas/videos/`.
