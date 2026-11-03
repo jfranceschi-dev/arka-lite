@@ -1,5 +1,6 @@
 package pa.gob.dntic.serviciosolicitudes.adaptadores.entrada;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pa.gob.dntic.serviciosolicitudes.dominio.Estado;
 import pa.gob.dntic.serviciosolicitudes.dominio.ServicioDeSolicitudes;
@@ -30,6 +31,14 @@ public class SolicitudController {
         return servicio.buscar(id);
     }
 
+    // Alta con id y tipo elegidos. 201 si se creó; 409 si el id ya existe.
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Solicitud crear(@RequestBody NuevaSolicitud nueva) {
+        return servicio.crear(nueva.id(), nueva.tipo());
+    }
+
+    // Atajo de demostración: siempre INC-002 y, si existe, la deja en BORRADOR.
     @PostMapping("/crear")
     public Solicitud crearNueva() {
         Solicitud nueva = new Solicitud ("INC-002", "Incidencia", Estado.BORRADOR);

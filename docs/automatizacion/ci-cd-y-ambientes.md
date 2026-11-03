@@ -1,6 +1,10 @@
 # Integración continua, ramas y ambientes
 
-Esta guía explica cómo incorporar GitHub Actions a ARKA-Lite. El repositorio todavía no contiene `.github/workflows/ci.yml`; los ejemplos son documentación para una implementación posterior.
+ARKA-Lite ya tiene un workflow en [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml). Se ejecuta en pushes a `main` y en Pull Requests, con una matriz de los dos servicios. Prepara PostgreSQL 17 y Java 26, ejecuta `mvn -B verify`, comprueba el arranque de solicitudes y construye y publica imágenes en GHCR etiquetadas con el SHA del commit.
+
+El workflow usa `actions/checkout@v4`, `actions/setup-java@v4` y `docker/login-action@v3`, con permisos `contents: read` y `packages: write`. Actualmente el login y la publicación no están condicionados al evento: también se intentan en PR y pueden fallar cuando el token no tenga permisos de escritura. No hay despliegue automático ni ejecución manual configurada.
+
+Las secciones siguientes son propuestas y ejemplos para evolucionar ese workflow; no describen configuración ya aplicada.
 
 Si es la primera vez que trabaja con YAML o tiene dudas sobre cómo GitHub reconoce varios archivos, comenzar por [GitHub Actions y archivos YAML](github-actions-yaml.md).
 
@@ -14,13 +18,13 @@ Si es la primera vez que trabaja con YAML o tiene dudas sobre cómo GitHub recon
 
 Conviene incorporar primero CI. El despliegue se agrega cuando estén definidos el registro de imágenes, la plataforma de destino y los secretos.
 
-## Dónde crear `ci.yml`
+## Ubicación del workflow
 
 GitHub solo detecta workflows dentro de `.github/workflows/`:
 
 ```powershell
 New-Item -ItemType Directory -Force .github\workflows
-New-Item -ItemType File .github\workflows\ci.yml
+# ci.yml ya existe: editarlo sin sobrescribirlo.
 ```
 
 También se puede crear en **Actions > New workflow > set up a workflow yourself**. YAML usa espacios; no se deben usar tabuladores.
@@ -87,7 +91,7 @@ jobs:
           ./${{ matrix.servicio }}
 ```
 
-Las versiones mayores corresponden a la documentación oficial vigente al escribir esta guía. Antes de implementarlo se revisan [`actions/checkout`](https://github.com/actions/checkout) y [`actions/setup-java`](https://github.com/actions/setup-java). Para controles estrictos de cadena de suministro se fijan las acciones a un SHA completo y Dependabot propone actualizaciones.
+Las versiones del ejemplo son ilustrativas y no son las del workflow actual. Antes de implementarlo se revisan [`actions/checkout`](https://github.com/actions/checkout) y [`actions/setup-java`](https://github.com/actions/setup-java). Para controles estrictos de cadena de suministro se fijan las acciones a un SHA completo y Dependabot propone actualizaciones.
 
 ## Explicación del workflow
 
@@ -107,7 +111,7 @@ Las versiones mayores corresponden a la documentación oficial vigente al escrib
 
 ## Por qué el ejemplo de una aplicación debe adaptarse
 
-Estos pasos ejecutados desde la raíz apuntan al proyecto legado o a un contexto sin Dockerfile vigente:
+Estos pasos ejecutados desde la raíz fallan porque allí no hay `pom.xml` ni Dockerfile:
 
 ```yaml
 - run: mvn -B verify
@@ -402,7 +406,7 @@ Cada verificación debe producir una señal útil y una acción clara.
 ## Lista antes de activar CI
 
 - El YAML está en `.github/workflows/` y usa espacios.
-- Se prueban ambos microservicios, no el `pom.xml` legado.
+- Se prueban ambos microservicios desde sus respectivas carpetas.
 - Cada `docker build` usa la carpeta correcta.
 - Los permisos del token son mínimos.
 - No hay secretos escritos en archivos.

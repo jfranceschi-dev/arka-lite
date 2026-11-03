@@ -85,3 +85,62 @@ jobs:
           IMG=ghcr.io/$REPO_NAME/${{ matrix.servicio }}:${{ github.sha }}
           docker build -t "$IMG" .
           docker push "$IMG"
+
+  # UI de ARKA-Lite (arka-lite-ui/): Solicitudes, Enviadas, Salud y Ayuda.
+  # Valida sus operaciones y diagramas, prueba, construye y comprueba que
+  # compose.yaml (que ya incluye la UI) es válido. Publica la imagen solo en
+  # push a main.
+  arka-lite-ui:
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: write}
+    defaults:
+      run:
+        working-directory: arka-lite-ui
+
+    steps:
+      - name: Traer el codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: arka-lite-ui/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Validar contenido y tipos
+        run: |
+          npm run validar
+          npm run typecheck
+
+      - name: Probar la UI
+        run: npm test
+
+      - name: Construir la UI
+        run: npm run build
+
+      - name: Validar Compose
+        working-directory: .
+        run: docker compose config --quiet
+
+      - name: Construir la imagen de la UI
+        run: docker build -t arka-lite-ui:ci .
+
+      - name: login al registro
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publicar la imagen de la UI
+        if: github.event_name == 'push'
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          IMG=ghcr.io/$REPO_NAME/arka-lite-ui:${{ github.sha }}
+          docker tag arka-lite-ui:ci "$IMG"
+          docker push "$IMG"

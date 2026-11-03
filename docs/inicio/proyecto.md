@@ -31,7 +31,7 @@ La ejecución vigente parte de estas rutas:
 └── docs/
 ```
 
-El `pom.xml`, `src/`, `mvnw`, `mvnw.cmd` y `.mvn/` de la raíz pertenecen al monolito anterior. Permanecen en el repositorio como código legado, pero no se usan para levantar la solución de microservicios ni deben tomarse como referencia para comandos nuevos. Por eso los comandos de esta documentación siempre indican la carpeta del microservicio o utilizan Docker Compose.
+Los archivos del monolito anterior se retiraron de la raíz. Cada microservicio conserva su propio `pom.xml` y Maven Wrapper; los comandos de esta documentación indican la carpeta del microservicio o utilizan Docker Compose desde la raíz.
 
 ## Tecnología actual
 
@@ -54,7 +54,8 @@ Los dos servicios conservan una separación inspirada en arquitectura hexagonal:
 
 - `dominio`: reglas, entidades y puertos; no conoce detalles HTTP ni almacenamiento.
 - `adaptadores/entrada`: controladores que traducen peticiones HTTP hacia el dominio.
-- `adaptadores/salida`: repositorios en memoria y, en solicitudes, el cliente HTTP de notificaciones.
+- `adaptadores/salida`: repositorios de demostración, cliente HTTP y relevador de eventos.
+- `adaptadores/persistencia`: solicitudes, eventos salientes y registro de eventos procesados mediante JPA y PostgreSQL.
 - `config`: conecta las interfaces del dominio con sus implementaciones.
 
 El flujo de una solicitud enviada es:
@@ -79,7 +80,7 @@ La URL se configura con `NOTIFICACIONES_URL`. Fuera de Docker su valor predeterm
 http://localhost:8081/eventos/solicitud-enviada
 ```
 
-El publicador actual captura los errores de comunicación. Si notificaciones no responde, solicitudes conserva el cambio de estado y escribe un mensaje en el error estándar; no existe reintento ni entrega garantizada.
+El envío guarda la solicitud y un evento pendiente en una misma transacción. Un relevador consulta los eventos pendientes con una pausa de cinco segundos entre ciclos y los publica por HTTP. El publicador realiza hasta tres intentos; si falla, el evento queda pendiente para otro ciclo. La notificación puede aparecer después de responder la API. El consumidor comprueba `eventoId` en PostgreSQL para ignorar eventos ya procesados.
 
 ## API actual
 
@@ -89,10 +90,14 @@ El publicador actual captura los errores de comunicación. Si notificaciones no 
 | --- | --- | --- |
 | `GET` | `/solicitudes` | Lista todas las solicitudes. |
 | `GET` | `/solicitudes/{id}` | Busca una solicitud por identificador. |
-| `POST` | `/solicitudes/crear` | Crea la solicitud fija `INC-002` en estado `BORRADOR`. |
-| `POST` | `/solicitudes/{id}/enviar` | Cambia la solicitud a `ENVIADA` y avisa a notificaciones. |
+| `POST` | `/solicitudes` | Crea una solicitud con el cuerpo `{ "id", "tipo" }` en estado `BORRADOR`. Responde `201`; `409` si el id ya existe; `400` si falta un dato. El id se guarda en mayúsculas. |
+| `POST` | `/solicitudes/crear` | Atajo de demostración: crea `INC-002` en `BORRADOR` y, si ya existe, la devuelve a `BORRADOR`. |
+| `POST` | `/solicitudes/{id}/enviar` | Cambia la solicitud a `ENVIADA` y registra un evento para entrega posterior. |
 | `POST` | `/solicitudes/{id}/aprobar` | Aprueba la solicitud cuando su estado lo permite. |
 | `POST` | `/solicitudes/{id}/rechazar` | Rechaza la solicitud cuando su estado lo permite. |
+| `GET` | `/eventos` | Lista los eventos del outbox: `eventoId`, `solicitudId`, `tipo` y `procesado`. |
+
+Una transición que el estado actual no permite (por ejemplo, enviar una solicitud ya enviada) responde `409` con `{ "estado": 409, "mensaje": … }`. Una solicitud inexistente responde `404`.
 
 Swagger UI está disponible en `http://localhost:8080/swagger-ui/index.html` y OpenAPI JSON en `http://localhost:8080/v3/api-docs`.
 
@@ -101,13 +106,16 @@ Swagger UI está disponible en `http://localhost:8080/swagger-ui/index.html` y O
 | Método | Ruta | Resultado |
 | --- | --- | --- |
 | `POST` | `/eventos/solicitud-enviada` | Recibe el evento enviado por solicitudes. |
-| `GET` | `/notificaciones` | Lista las notificaciones guardadas. |
+| `GET` | `/notificaciones` | Lista las notificaciones en memoria. |
+| `GET` | `/eventos/procesados` | Lista los identificadores de eventos procesados persistidos. |
 
 Swagger UI está disponible en `http://localhost:8081/swagger-ui/index.html` y OpenAPI JSON en `http://localhost:8081/v3/api-docs`.
 
-El endpoint de eventos es parte de la comunicación interna. Normalmente un usuario no lo llama directamente.
+`POST /eventos/solicitud-enviada` es parte de la comunicación interna. La UI `arka-lite-ui` lo usa solo para reentregar un evento ya consumido y mostrar que no se duplica el aviso.
 
 ## Ejecutar el flujo completo
+
+Espera a que las aplicaciones estén saludables antes de probar la API. La notificación llega de forma asíncrona: si la consulta inicial no la muestra, repítela tras unos segundos. Un HTTP exitoso de envío confirma el registro del evento, no su entrega.
 
 Desde la raíz del repositorio:
 
@@ -115,13 +123,18 @@ Desde la raíz del repositorio:
 docker compose up --build -d
 docker compose ps
 
+# La interfaz web queda en http://localhost:8088
+
 # El arranque carga INC-001 y CAM-002; CAM-002 se envía automáticamente
 Invoke-RestMethod http://localhost:8080/solicitudes
 Invoke-RestMethod http://localhost:8081/notificaciones
 
 # Crear y enviar una solicitud
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/crear
-Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/INC-002/enviar
+Invoke-RestMethod -Method Post http://localhost:8080/solicitudes -ContentType 'application/json' -Body '{"id":"SOL-100","tipo":"Consulta"}'
+Invoke-RestMethod -Method Post http://localhost:8080/solicitudes/SOL-100/enviar
+
+# Ver el evento en el outbox de solicitudes
+Invoke-RestMethod http://localhost:8080/eventos
 
 # Comprobar la notificación producida por el segundo servicio
 Invoke-RestMethod http://localhost:8081/notificaciones
@@ -153,7 +166,7 @@ En Linux o macOS se usa `./mvnw` en lugar de `.\mvnw.cmd`.
 
 ## Ejecutar sin Docker
 
-Se necesitan dos terminales.
+Primero prepara las [bases de datos locales](bases-de-datos-locales.md). Se necesitan dos terminales para Java.
 
 Terminal 1:
 
@@ -178,12 +191,12 @@ $env:NOTIFICACIONES_URL = "http://localhost:9091/eventos/solicitud-enviada"
 
 ## Estado y limitaciones actuales
 
-- Los dos repositorios guardan datos en memoria. Al reiniciar un servicio se pierden sus datos.
+- Solicitudes y eventos salientes se guardan en PostgreSQL. Los textos de notificaciones siguen en memoria y se pierden al reiniciar ese servicio; los identificadores procesados permanecen en su base, por lo que repetir un evento no recupera el texto perdido.
 - La creación usa valores fijos y no recibe un cuerpo enviado por el cliente.
 - No hay autenticación ni autorización.
-- No hay base de datos ni migraciones.
-- La notificación se envía mediante una llamada HTTP síncrona sin reintentos, cola ni entrega garantizada.
+- Hay dos bases PostgreSQL; no hay migraciones versionadas. Compose no declara volúmenes de datos administrados por el proyecto, por lo que no debe usarse la recreación de contenedores como estrategia de conservación.
+- La entrega HTTP es asíncrona mediante una tabla de eventos pendientes (outbox), con reintentos. No hay un broker de mensajes ni garantía de procesamiento exactamente una vez.
 - El servicio de solicitudes continúa si falla la llamada de notificación.
-- No hay observabilidad centralizada, identificadores de correlación ni métricas de negocio.
+- Hay Actuator, métricas Prometheus, trazas y logs ECS. Compose incluye Loki, Promtail y Grafana; no incluye un servidor Prometheus ni aprovisiona una fuente Loki en Grafana.
 
 Estas restricciones son adecuadas para el laboratorio actual y deben resolverse antes de una puesta en producción.
