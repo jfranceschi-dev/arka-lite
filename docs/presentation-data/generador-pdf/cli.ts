@@ -1,11 +1,12 @@
-// Genera el PDF de contenido y guion de cada variante en
-// docs/presentation-data/pdf/.
+// Genera el PDF de contenido y guion, y el que trae solo el guion, de cada
+// variante en docs/presentation-data/pdf/.
 //   npm run pdf
 import { createWriteStream, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { VARIANTES } from "../contenido/tipos.ts";
 import { DIR_PDF } from "../entregables.ts";
 import { construirPdf, nombreArchivoPdf } from "./construir.ts";
+import { construirSoloGuion, nombreSoloGuion } from "./lectura.ts";
 
 mkdirSync(DIR_PDF, { recursive: true });
 // Solo quedan las versiones que se presentan; sus PDF de láminas los exporta
@@ -19,9 +20,12 @@ for (const f of readdirSync(DIR_PDF)) {
   }
 }
 
-for (const r of VARIANTES) {
-  const ruta = join(DIR_PDF, nombreArchivoPdf(r));
-  const doc = construirPdf(r);
+const pdfs = VARIANTES.flatMap((r) => [
+  { ruta: join(DIR_PDF, nombreArchivoPdf(r)), construir: () => construirPdf(r) },
+  { ruta: join(DIR_PDF, nombreSoloGuion(r)), construir: () => construirSoloGuion(r) },
+]);
+for (const { ruta, construir } of pdfs) {
+  const doc = construir();
   await new Promise<void>((listo, fallo) => {
     const salida = createWriteStream(ruta);
     salida.on("finish", listo);

@@ -53,7 +53,7 @@ Solo hay dos versiones, y salen del mismo contenido con los cambios de [`conteni
 | --- | --- |
 | [`pptx/ARKA-Lite-ejecutivo-con-videos.pptx`](pptx/ARKA-Lite-ejecutivo-con-videos.pptx) | La presentación con la demostración grabada: no necesita el sistema ni internet. |
 | [`pptx/ARKA-Lite-ejecutivo-sin-demo.pptx`](pptx/ARKA-Lite-ejecutivo-sin-demo.pptx) | La presentación sin la parte 7. |
-| [`pdf/`](pdf/) | Por versión, dos PDF: `ARKA-Lite-<versión>-laminas.pdf`, las láminas para compartir, y `ARKA-Lite-<versión>-guion.pdf`, el contenido con el guion para ensayar o imprimir. |
+| [`pdf/`](pdf/) | Por versión, cuatro PDF: `ARKA-Lite-<versión>-laminas.pdf`, las láminas para compartir; `ARKA-Lite-<versión>-guion.pdf`, el contenido con el guion completo para ensayar o imprimir; `ARKA-Lite-<versión>-solo-guion.pdf`, solo lo que se dice en voz alta, lámina por lámina; y `ARKA-Lite-<versión>-laminas-y-guion.pdf`, cada lámina en imagen con su guion debajo. |
 | [`guiones/`](guiones/) | Por versión, el guion completo (`guion-<versión>.md`) y el de cada persona (`guion-<versión>-por-persona.md`); además, el reparto con recomendaciones. |
 | [`BackUp-pptx/`](BackUp-pptx/) | Versiones anteriores. |
 
@@ -129,7 +129,7 @@ npm ci --prefix docs/presentation-data
 npm run todo --prefix docs/presentation-data
 ```
 
-`npm run todo` valida el contenido, revisa los tipos, corre las pruebas y genera PPTX, PDF de guion y guiones de las dos versiones; también borra los archivos de versiones que ya no existen. Los PDF de láminas los exporta PowerPoint, así que van aparte y solo en Windows: `npm run pdf-laminas`, después de `npm run todo`. Para una sola parte: `npm run pptx`, `npm run pdf` o `npm run guiones`; para una sola versión: `npm run pptx -- ejecutivo-con-videos`. Si cambia la UI o los pasos de un video, grabar otra vez con `npm run videos` antes de `npm run todo`.
+`npm run todo` valida el contenido, revisa los tipos, corre las pruebas y genera PPTX, PDF de guion y guiones de las dos versiones; también borra los archivos de versiones que ya no existen. Los PDF de láminas, y el de láminas con su guion, los exporta PowerPoint, así que van aparte y solo en Windows: `npm run pdf-laminas`, después de `npm run todo`. Para una sola parte: `npm run pptx`, `npm run pdf` o `npm run guiones`; para una sola versión: `npm run pptx -- ejecutivo-con-videos`. Si cambia la UI o los pasos de un video, grabar otra vez con `npm run videos` antes de `npm run todo`.
 
 La validación exige que cada parte numerada termine con sus aprendizajes y diga su enfoque, que el reparto tenga a alguien para cada lámina, que cada lámina traiga «Con tus palabras» y material «si hay tiempo», que cada texto a reemplazar exista, que los videos estén grabados, que ninguna lámina anuncie una demostración que no se hace y que nada mencione Codespaces, nginx ni el pool de conexiones.
 
