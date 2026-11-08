@@ -1,0 +1,18 @@
+{
+  "demo-recorrido.mp4": {
+    "segundos": 29.6,
+    "grabado": "2026-11-02"
+  },
+  "demo-caida.mp4": {
+    "segundos": 67,
+    "grabado": "2026-11-03"
+  },
+  "ejemplo-cicd.mp4": {
+    "segundos": 47.2,
+    "grabado": "2026-11-03"
+  },
+  "demo-registros.mp4": {
+    "segundos": 27.4,
+    "grabado": "2026-11-03"
+  }
+}

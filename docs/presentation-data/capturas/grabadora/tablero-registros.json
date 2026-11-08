@@ -1,0 +1,9 @@
+{"overwrite": true, "dashboard": {
+  "uid": "arka-registros", "title": "ARKA-Lite · registros", "timezone": "browser", "refresh": "",
+  "time": {"from": "now-30m", "to": "now"},
+  "templating": {"list": [{"type": "textbox", "name": "codigo", "label": "Código de la solicitud", "query": "", "current": {"text": "", "value": ""}}]},
+  "panels": [{"type": "logs", "title": "Registros de solicitudes y notificaciones", "gridPos": {"x": 0, "y": 0, "w": 24, "h": 14},
+    "datasource": {"type": "loki", "uid": "loki"},
+    "options": {"showTime": true, "wrapLogMessage": true, "sortOrder": "Ascending", "enableLogDetails": false, "dedupStrategy": "none", "prettifyLogMessage": false, "showLabels": false, "showCommonLabels": false},
+    "targets": [{"refId": "A", "datasource": {"type": "loki", "uid": "loki"}, "expr": "{service=~\"servicio-solicitudes|servicio-notificaciones\"} |= \"$codigo\" | json mensaje=\"message\" | line_format \"{{.service}} · {{.mensaje}}\"", "queryType": "range"}]}]
+}}
