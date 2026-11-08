@@ -114,7 +114,6 @@ export const RECORTES: { id: string; motivo: string }[] = [
   { id: "s02-mapa", motivo: "«Cómo funciona en la práctica» muestra lo mismo con más detalle." },
   { id: "s03-orm", motivo: "«¿Qué es un ORM?» ya deja la idea; esta lámina agrega el detalle." },
   { id: "s05-compose", motivo: "Se puede decir en una frase al final de las bondades de Docker." },
-  { id: "s05-trazabilidad", motivo: "Su mensaje cabe en una frase al final del pipeline." },
   { id: "s08-sostiene", motivo: "«Resultados para el negocio» lleva el mensaje más útil." },
 ];
 

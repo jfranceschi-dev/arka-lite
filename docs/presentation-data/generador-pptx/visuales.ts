@@ -477,17 +477,53 @@ function tarjetas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "tarjetas" }>) {
     s.addText([{ text: "$ ", options: { color: hex(ACC) } }, { text: v.comando, options: { color: "FFFFFF" } }], { x: c.x + 0.7, y: c.y, w: c.w - 0.9, h: 0.62, margin: 0, fontFace: MONO, fontSize: 18, bold: true, valign: "middle" });
     y0 += 0.85;
   }
+  // Variantes: una fila de cuadritos discretos al pie, sin competir con las tarjetas.
+  const yFin = c.y + c.h - (v.variantes ? 0.72 : 0);
+  if (v.variantes) {
+    const items = v.variantes.items;
+    const yv = yFin + 0.26;
+    const wEt = 2.2;
+    texto(s, v.variantes.titulo, { x: c.x, y: yv, w: wEt, h: 0.4 }, { tam: 11, negrita: true, color: color.secundario, vertical: "middle" });
+    const gapV = 0.14;
+    const wv = (c.w - wEt - gapV * (items.length - 1)) / items.length;
+    items.forEach((it, i) => {
+      s.addText(it, { x: c.x + wEt + i * (wv + gapV), y: yv, w: wv, h: 0.4, shape: "roundRect", rectRadius: 0.08, margin: 4, fill: { color: hex(color.fondo) }, line: { color: hex(color.linea), width: 0.75 }, fontFace: MONO, fontSize: tamQueCabe(it, wv - 0.15, 0.36, 11, 8), color: hex(color.secundario), align: "center", valign: "middle" });
+    });
+  }
+  // Con código: el archivo a la izquierda y las tarjetas apiladas a su lado.
+  let area = { x: c.x, w: c.w };
+  if (v.codigo) {
+    const wc = c.w * 0.54;
+    const hCab = 0.46;
+    const hCod = yFin - y0;
+    s.addShape("roundRect", { x: c.x, y: y0, w: wc, h: hCod, rectRadius: 0.12, fill: { color: hex(color.codigoFondo) }, line: { color: hex(color.codigoFondo), width: 0 }, shadow: sombra() });
+    icono(s, "file-code", c.x + 0.2, y0 + 0.1, 0.28, ACC);
+    texto(s, v.codigo.titulo, { x: c.x + 0.58, y: y0 + 0.04, w: wc - 0.75, h: hCab - 0.08 }, { tam: 12, negrita: true, color: "#9FBEE0", fuente: MONO, vertical: "middle" });
+    s.addShape("line", { x: c.x + 0.15, y: y0 + hCab, w: wc - 0.3, h: 0, line: { color: "2A3B5C", width: 1 } });
+    const lineas = v.codigo.codigo.split("\n");
+    const largo = Math.max(...lineas.map((t) => t.length), 10);
+    const hTexto = hCod - hCab - 0.2;
+    const tam = Math.max(8, Math.min(15, Math.floor(Math.min(((wc - 0.5) * 72) / (0.6 * largo), ((hTexto - 0.2) * 72) / (1.3 * lineas.length)) * 2) / 2));
+    const tramos: { text: string; options: Record<string, unknown> }[] = [];
+    lineas.forEach((linea, k) => {
+      const partes = resaltar(linea, v.codigo!.lenguaje);
+      if (partes.length === 0) partes.push({ texto: " ", clase: "texto" });
+      partes.forEach((p, j) => tramos.push({ text: p.texto, options: { color: hex(colorCodigo[p.clase]), italic: p.clase === "comentario", breakLine: j === partes.length - 1 && k < lineas.length - 1 } }));
+    });
+    s.addText(tramos as never, { x: c.x + 0.1, y: y0 + hCab + 0.1, w: wc - 0.2, h: hTexto, fontFace: MONO, fontSize: tam, valign: "top", margin: 10, lineSpacingMultiple: 1.1 });
+    area = { x: c.x + wc + 0.3, w: c.w - wc - 0.3 };
+  }
   const n = v.tarjetas.length;
-  const cols = v.columnas ?? (n <= 3 ? n : n === 4 ? 2 : n <= 6 ? 3 : 4);
+  const cols = v.codigo ? 1 : v.columnas ?? (n <= 3 ? n : n === 4 ? 2 : n <= 6 ? 3 : 4);
   const filas = Math.ceil(n / cols);
   const gap = 0.2;
-  const w = (c.w - gap * (cols - 1)) / cols;
-  const h = (c.y + c.h - y0 - gap * (filas - 1)) / filas;
+  const w = (area.w - gap * (cols - 1)) / cols;
+  const h = (yFin - y0 - gap * (filas - 1)) / filas;
   const compacta = h < 1.3;
   // Con tarjetas grandes, la letra crece con ellas.
   const grande = !compacta && w > 4 && h > 1.45;
   v.tarjetas.forEach((e, i) => {
-    const x = c.x + (i % cols) * (w + gap);
+    const x = area.x + (i % cols) * (w + gap);
     const y = y0 + Math.floor(i / cols) * (h + gap);
     const t = colorDeTono(e.tono);
     tarjeta(s, { x, y, w, h });

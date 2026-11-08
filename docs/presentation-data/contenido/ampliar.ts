@@ -145,10 +145,6 @@ export const AMPLIAR: Record<string, string[]> = {
     "Podemos configurar GitHub para bloquear un Pull Request cuando alguna prueba falla. Es una regla de la plataforma y no requiere modificar el código.",
     "El pipeline publica imágenes mediante un permiso temporal que GitHub entrega a cada ejecución, sin almacenar una contraseña.",
   ],
-  "s05-trazabilidad": [
-    "Ese código se llama SHA y Git genera uno para cada cambio. Usarlo evita la duda sobre si la imagen que se ejecuta es la nueva o la anterior.",
-    "El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.",
-  ],
   "s05-ciyaml": [
     "GitHub ofrece plantillas para casi cualquier tecnología: se parte de una y se adapta al proyecto.",
     "El nombre del archivo puede ser otro; lo que importa es que esté en la carpeta .github/workflows.",

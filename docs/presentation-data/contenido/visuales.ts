@@ -105,7 +105,7 @@ export function lineasDeVisual(v: Visual): string[] {
     case "contraste":
       return v.lados.map((l) => `${l.titulo}: ${l.puntos.join("; ")}`);
     case "tarjetas":
-      return [...(v.comando ? [`Comando: ${v.comando}`] : []), ...v.tarjetas.map(linea)];
+      return [...(v.comando ? [`Comando: ${v.comando}`] : []), ...(v.codigo ? [`${v.codigo.titulo}:\n${v.codigo.codigo}`] : []), ...v.tarjetas.map(linea), ...(v.variantes ? [`${v.variantes.titulo}: ${v.variantes.items.join("; ")}`] : [])];
     case "captura":
       return v.capturas.map((c) => `Captura de ${c.titulo}${c.url ? ` (${c.url})` : ""}${c.texto ? `: ${c.texto}` : ""}`);
     case "video": {

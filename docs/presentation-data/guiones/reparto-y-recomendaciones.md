@@ -8,8 +8,8 @@ Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apo
 
 | Versión | Láminas | Minutos | Cuándo usarla | Qué tiene de distinto | Archivos |
 | --- | --- | --- | --- | --- | --- |
-| Con videos | 52 | ~46 | Hay tiempo para la parte 7: no necesita internet ni el sistema arriba. | Tres videos dentro del PPTX, que arrancan solos: un ejemplo ilustrativo de CI/CD en la parte 5 y dos del sistema real en la parte 7. | `pptx/ARKA-Lite-ejecutivo-con-videos.pptx` y `guiones/guion-ejecutivo-con-videos-por-persona.md` |
-| Sin demostración | 48 | ~43 | Falta tiempo, o el público ya vio la pantalla. | No hay parte 7: la observabilidad pasa directo al cierre, y nada anuncia una demostración. | `pptx/ARKA-Lite-ejecutivo-sin-demo.pptx` y `guiones/guion-ejecutivo-sin-demo-por-persona.md` |
+| Con videos | 51 | ~46 | Hay tiempo para la parte 7: no necesita internet ni el sistema arriba. | Tres videos dentro del PPTX, que arrancan solos: un ejemplo ilustrativo de CI/CD en la parte 5 y dos del sistema real en la parte 7. | `pptx/ARKA-Lite-ejecutivo-con-videos.pptx` y `guiones/guion-ejecutivo-con-videos-por-persona.md` |
+| Sin demostración | 47 | ~42 | Falta tiempo, o el público ya vio la pantalla. | No hay parte 7: la observabilidad pasa directo al cierre, y nada anuncia una demostración. | `pptx/ARKA-Lite-ejecutivo-sin-demo.pptx` y `guiones/guion-ejecutivo-sin-demo-por-persona.md` |
 
 Cada PPTX trae además, al final, la lámina «Reparto de la presentación», que no cuenta aquí y se quita antes de presentar.
 
@@ -22,10 +22,10 @@ Los números de lámina son los de la versión con videos; en la versión sin de
 | Luis Cardoze | Desarrollo | 1–5 | Apertura · Fundamentos | ~4 | Conecta con la presentación anterior y da el recorrido. Fundamentos solo cuenta lo que nos quedó: el equipo anterior ya la trabajó a fondo. |
 | Ricardo Fábrega | Desarrollo | 6–9 | Arquitectura | ~3 | Arquitectura solo cuenta lo que nos quedó: hexagonal ya lo explicó el equipo anterior. |
 | Marlene Bonilla | Base de datos | 10–12 y 17–18 | Base de datos | ~5 | La base de datos es el terreno que el staff mejor conoce, y nadie habla mejor su idioma. |
-| Jossett Franceschi | Desarrollo | 13–16 y 29–37 | Apoyo en base de datos: la misma regla, el ORM y la conexión · DevOps: CI/CD | ~12 | Apoya a base de datos con la parte de código: la misma regla, el ORM y los datos de conexión. Cómo entra un cambio y el camino automático: baja la carga del equipo de infraestructura. |
-| Abdiel Barria | Desarrollo | 19–23 y 46–52 | Interconexión de servicios · Demostración en video · Resultados, valor y cierre | ~10 | Es el corazón técnico: cómo no se pierde ni se duplica nada. Acompaña los videos de la pantalla con su narración. Cierra con los resultados en el idioma del negocio y recibe las preguntas. |
+| Jossett Franceschi | Desarrollo | 13–16 y 29–36 | Apoyo en base de datos: la misma regla, el ORM y la conexión · DevOps: CI/CD | ~11 | Apoya a base de datos con la parte de código: la misma regla, el ORM y los datos de conexión. Cómo entra un cambio y el camino automático: baja la carga del equipo de infraestructura. |
+| Abdiel Barria | Desarrollo | 19–23 y 45–51 | Interconexión de servicios · Demostración en video · Resultados, valor y cierre | ~10 | Es el corazón técnico: cómo no se pierde ni se duplica nada. Acompaña los videos de la pantalla con su narración. Cierra con los resultados en el idioma del negocio y recibe las preguntas. |
 | Kevin | Infraestructura | 24–28 | DevOps: qué es, Docker y Compose | ~4 | Abre DevOps con el camino completo y explica cómo se empaqueta: Docker y Compose. |
-| Moises | Infraestructura | 38–45 | DevOps: Kubernetes, y la observabilidad | ~7 | Operar y observar: Kubernetes, Pods, memoria y CPU, y la observabilidad. |
+| Moises | Infraestructura | 37–44 | DevOps: Kubernetes, y la observabilidad | ~7 | Operar y observar: Kubernetes, Pods, memoria y CPU, y la observabilidad. |
 
 ## Línea de tiempo · con videos
 
@@ -34,12 +34,12 @@ Los números de lámina son los de la versión con videos; en la versión sin de
 | Apertura | 1–2 | 0:00 | 1:03 | Luis Cardoze |
 | 1 · Fundamentos | 3–5 | 1:03 | 4:03 | Luis Cardoze |
 | 2 · Arquitectura | 6–9 | 4:03 | 7:16 | Ricardo Fábrega |
-| 3 · Base de datos | 10–18 | 7:16 | 16:27 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 19–23 | 16:27 | 22:00 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 24–42 | 22:00 | 38:58 | Kevin, Jossett Franceschi, Moises |
-| 6 · Observabilidad | 43–45 | 38:58 | 41:37 | Moises |
-| 7 · Demostración | 46–48 | 41:37 | 43:57 | Abdiel Barria |
-| Valor y cierre | 49–52 | 43:57 | 46:30 | Abdiel Barria |
+| 3 · Base de datos | 10–18 | 7:16 | 16:21 | Marlene Bonilla, Jossett Franceschi |
+| 4 · Interconexión de servicios | 19–23 | 16:21 | 21:54 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 24–41 | 21:54 | 38:05 | Kevin, Jossett Franceschi, Moises |
+| 6 · Observabilidad | 42–44 | 38:05 | 40:44 | Moises |
+| 7 · Demostración | 45–47 | 40:44 | 43:04 | Abdiel Barria |
+| Valor y cierre | 48–51 | 43:04 | 45:37 | Abdiel Barria |
 
 ## Línea de tiempo · sin demostración
 
@@ -48,11 +48,11 @@ Los números de lámina son los de la versión con videos; en la versión sin de
 | Apertura | 1–2 | 0:00 | 0:57 | Luis Cardoze |
 | 1 · Fundamentos | 3–5 | 0:57 | 3:56 | Luis Cardoze |
 | 2 · Arquitectura | 6–9 | 3:56 | 7:10 | Ricardo Fábrega |
-| 3 · Base de datos | 10–18 | 7:10 | 16:20 | Marlene Bonilla, Jossett Franceschi |
-| 4 · Interconexión de servicios | 19–23 | 16:20 | 21:54 | Abdiel Barria |
-| 5 · DevOps: Docker y Kubernetes | 24–41 | 21:54 | 37:56 | Kevin, Jossett Franceschi, Moises |
-| 6 · Observabilidad | 42–44 | 37:56 | 40:35 | Moises |
-| Valor y cierre | 45–48 | 40:35 | 43:08 | Abdiel Barria |
+| 3 · Base de datos | 10–18 | 7:10 | 16:14 | Marlene Bonilla, Jossett Franceschi |
+| 4 · Interconexión de servicios | 19–23 | 16:14 | 21:48 | Abdiel Barria |
+| 5 · DevOps: Docker y Kubernetes | 24–40 | 21:48 | 37:03 | Kevin, Jossett Franceschi, Moises |
+| 6 · Observabilidad | 41–43 | 37:03 | 39:42 | Moises |
+| Valor y cierre | 44–47 | 39:42 | 42:15 | Abdiel Barria |
 
 ## Relevos
 
@@ -67,8 +67,8 @@ Cada vez que cambia quien presenta. La frase de relevo es el final del texto de 
 | 19. Síncrono o asíncrono | Marlene Bonilla | Abdiel Barria |
 | 24. ¿Qué es DevOps? Del código a la operación | Abdiel Barria | Kevin |
 | 29. Git: el historial y main | Kevin | Jossett Franceschi |
-| 38. Cómo trabaja Kubernetes | Jossett Franceschi | Moises |
-| 46. En video: cómo interactúan los componentes | Moises | Abdiel Barria |
+| 37. Cómo trabaja Kubernetes | Jossett Franceschi | Moises |
+| 45. En video: cómo interactúan los componentes | Moises | Abdiel Barria |
 
 ## Consejos por persona
 
@@ -150,15 +150,14 @@ Abdiel recibe las preguntas al final y se las pasa a quien corresponde.
 
 ## Si falta tiempo
 
-Estas láminas se pueden saltar (en PowerPoint: Ocultar diapositiva) sin tocar lo principal. Juntas ahorran unos 5 minutos. Antes de ocultar una, revisen la frase con la que termina la lámina anterior.
+Estas láminas se pueden saltar (en PowerPoint: Ocultar diapositiva) sin tocar lo principal. Juntas ahorran unos 4 minutos. Antes de ocultar una, revisen la frase con la que termina la lámina anterior.
 
 | Lámina | Por qué se puede saltar |
 | --- | --- |
 | 6. El sistema de un vistazo | «Cómo funciona en la práctica» muestra lo mismo con más detalle. |
 | 15. El ORM por dentro: el mapa entre la clase y la tabla | «¿Qué es un ORM?» ya deja la idea; esta lámina agrega el detalle. |
 | 28. Todo el sistema con un comando | Se puede decir en una frase al final de las bondades de Docker. |
-| 37. Cada imagen, con su etiqueta | Su mensaje cabe en una frase al final del pipeline. |
-| 50. Lo que sostiene los resultados | «Resultados para el negocio» lleva el mensaje más útil. |
+| 49. Lo que sostiene los resultados | «Resultados para el negocio» lleva el mensaje más útil. |
 
 Los videos se graban con `npm run videos` y el sistema arriba: el script maneja la pantalla en Edge sin ventana, detiene y vuelve a iniciar notificaciones, graba la simulación de CI/CD y deja los MP4 en `capturas/videos/`.
 

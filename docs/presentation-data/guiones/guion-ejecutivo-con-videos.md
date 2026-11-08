@@ -2,7 +2,7 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-52 láminas, unos 46 minutos contando los videos; las preguntas van aparte. Fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps en detalle; observabilidad y la demostración grabada: tres videos dentro del PPTX, dos del sistema real y un ejemplo ilustrativo de CI/CD.
+51 láminas, unos 46 minutos contando los videos; las preguntas van aparte. Fundamentos y arquitectura en vista general; base de datos, interconexión y DevOps en detalle; observabilidad y la demostración grabada: tres videos dentro del PPTX, dos del sistema real y un ejemplo ilustrativo de CI/CD.
 
 ## Cómo está pensada
 
@@ -14,9 +14,9 @@ Todos los equipos presentan las mismas secciones, pero cada uno profundiza en al
 | 2. Arquitectura | Vista general | 6–9 | Lo que nos quedó: cada servicio con sus datos, y mensajes entre ellos. |
 | 3. Base de datos | En detalle | 10–18 | Dos bases PostgreSQL, el ORM, los datos de conexión y las transacciones. |
 | 4. Interconexión de servicios | En detalle | 19–23 | Cómo se hablan los servicios: síncrono, asíncrono, Outbox e idempotencia. |
-| 5. DevOps: Docker y Kubernetes | En detalle | 24–42 | Docker empaqueta, el pipeline prueba cada cambio y Kubernetes administra. |
-| 6. Observabilidad | Vista general | 43–45 | Cómo sabemos qué pasa adentro: salud, registros y un número de seguimiento. |
-| 7. Demostración | En video | 46–48 | En video, cómo interactúan los componentes: solicitudes, bandeja de salida y notificaciones. |
+| 5. DevOps: Docker y Kubernetes | En detalle | 24–41 | Docker empaqueta, el pipeline prueba cada cambio y Kubernetes administra. |
+| 6. Observabilidad | Vista general | 42–44 | Cómo sabemos qué pasa adentro: salud, registros y un número de seguimiento. |
+| 7. Demostración | En video | 45–47 | En video, cómo interactúan los componentes: solicitudes, bandeja de salida y notificaciones. |
 
 ## Reparto
 
@@ -29,10 +29,10 @@ Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apo
 | Luis Cardoze | Desarrollo | Apertura y Fundamentos | 1–5 | ~4 min |
 | Ricardo Fábrega | Desarrollo | Arquitectura | 6–9 | ~3 min |
 | Marlene Bonilla | Base de datos | Base de datos | 10–12 y 17–18 | ~5 min |
-| Jossett Franceschi | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD | 13–16 y 29–37 | ~12 min |
-| Abdiel Barria | Desarrollo | Interconexión de servicios y Demostración en video y Resultados, valor y cierre | 19–23 y 46–52 | ~10 min |
+| Jossett Franceschi | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD | 13–16 y 29–36 | ~11 min |
+| Abdiel Barria | Desarrollo | Interconexión de servicios y Demostración en video y Resultados, valor y cierre | 19–23 y 45–51 | ~10 min |
 | Kevin | Infraestructura | DevOps: qué es, Docker y Compose | 24–28 | ~4 min |
-| Moises | Infraestructura | DevOps: Kubernetes, y la observabilidad | 38–45 | ~7 min |
+| Moises | Infraestructura | DevOps: Kubernetes, y la observabilidad | 37–44 | ~7 min |
 
 Cada persona tiene su guion aparte en `guion-ejecutivo-con-videos-por-persona.md`. Las notas de cada lámina del PPTX traen el mismo texto y dicen quién presenta.
 
@@ -463,8 +463,6 @@ No. Podemos comenzar con las reglas que cambian con frecuencia, mientras los rep
 > A la derecha aparece la misma regla en el código de la aplicación. Si el estado no es borrador, se produce un error. Si lo es, la solicitud pasa a enviada.
 >
 > La regla no cambia; cambia dónde se ejecuta. Y al tenerla en el código, podemos probarla en milésimas de segundo, sin una base.
->
-> Mientras tanto, la base sigue cuidando las llaves, las restricciones y los índices.
 >
 > Pero si la regla vive en el código, alguien tiene que llevar el resultado a la base. Esa pieza es el ORM.
 
@@ -1161,25 +1159,27 @@ No. El pipeline crea una base de datos PostgreSQL temporal para cada ejecución 
 
 **Qué decir**
 
-> El pipeline no se configura con clics: se escribe en un archivo de texto que guardamos en el repositorio, junto al código.
+> El pipeline no se configura con clics: lo escribimos en un archivo de texto que guardamos en el repositorio, junto al código. A la izquierda está el nuestro, simplificado. No hace falta leer cada línea: lo importante es que especifica tres cosas.
 >
-> Cada herramienta tiene su archivo. A la izquierda está el de GitHub, que es el que usamos en ARKA-Lite, y a la derecha el equivalente en GitLab. No hace falta leer cada línea: cambian las palabras, pero los dos dicen las mismas tres cosas.
+> Primero, cuándo se ejecuta: ante un evento, como pedir integrar o llegar a main. Es la parte de arriba del archivo.
 >
-> Cuándo corre, que en GitHub es on y en GitLab es rules. Dónde corre, en una máquina preparada para eso. Y qué pasos hace: aquí, compilar y correr las pruebas.
+> Segundo, qué hace: los pasos, en orden. En la siguiente lámina vemos cuáles.
 >
-> Azure DevOps y Jenkins siguen la misma idea. Y como el archivo es parte del proyecto, también lo revisamos antes de que entre: si alguien cambia el pipeline, queda registrado quién lo cambió y por qué.
+> Tercero, cómo debe hacerlo: en qué máquina y con qué herramientas, por ejemplo con una base de datos temporal para las pruebas, y con qué condiciones, como publicar la imagen solo cuando el cambio llega a main.
+>
+> Abajo ven algunas herramientas que lo usan: cambia la forma de escribirlo, pero todas especifican lo mismo. Y como el archivo es parte del proyecto, también lo revisamos antes de que entre.
 >
 > ¿Y qué pasos podemos poner en ese archivo? Veamos algunos ejemplos.
 
 **Si se te olvida, di esto**
 
 - El pipeline se escribe en un archivo de texto.
-- Dice cuándo corre, dónde y qué pasos hace.
-- Cambia la herramienta; la idea es la misma.
+- Especifica cuándo se ejecuta, qué hace y cómo.
+- Cambia la herramienta; lo que se especifica es lo mismo.
 
 **Qué hacer** (no se dice)
 
-- No hace falta leer cada línea: basta señalar cuándo, dónde y qué pasos en cada lado.
+- Recorrer las tres tarjetas de izquierda a derecha: cuándo, qué y cómo.
 
 **Si preguntan:** ¿Hay que saber programar para leerlo?
 
@@ -1282,7 +1282,7 @@ Porque nuestro ambiente de Kubernetes es local y GitHub no puede acceder a él. 
 >
 > Por eso cada regla necesita una prueba: es la alarma que se activa cuando alguien modifica el comportamiento esperado.
 >
-> Cuando el cambio se aprueba y las pruebas pasan, el pipeline publica la imagen con una etiqueta.
+> Con esto cerramos el recorrido de un cambio: del código a una imagen lista para instalar. Ahora veamos dónde se ejecuta. Le paso la palabra a Moises, que nos explicará Kubernetes.
 
 **Si se te olvida, di esto**
 
@@ -1300,41 +1300,7 @@ Se puede configurar el repositorio para que no acepte la integración mientras l
 >
 > El pipeline publica imágenes mediante un permiso temporal que GitHub entrega a cada ejecución, sin almacenar una contraseña.
 
-### 37. Cada imagen, con su etiqueta
-
-**Presenta:** Jossett Franceschi
-
-**Qué decir**
-
-> Cuando las pruebas pasan, obtenemos trazabilidad: podemos relacionar cada imagen publicada con el cambio que la generó.
->
-> La imagen lleva el código de ese cambio, como el número de lote de un medicamento. Si aparece un problema, sabemos exactamente de dónde vino.
->
-> Con ese código podemos buscar en el repositorio qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.
->
-> Si una versión presenta problemas, podemos volver a la imagen anterior, que continúa almacenada.
->
-> Si el equipo de operaciones pregunta qué versión está instalada, damos la etiqueta exacta y consultamos su historial. En el laboratorio todavía construimos las imágenes en una computadora; en un ambiente real usaríamos la imagen publicada por el pipeline.
->
-> La imagen ya está publicada y rastreada. Ahora veamos dónde se ejecuta. Le paso la palabra a Moises, que nos explicará Kubernetes.
-
-**Si se te olvida, di esto**
-
-- Cada imagen se conecta con el cambio que la generó.
-- Sabemos quién lo propuso, quién lo revisó y qué pruebas pasó.
-- Si falla, volvemos a la imagen anterior.
-
-**Si preguntan:** ¿Por qué no usar la etiqueta latest?
-
-Porque latest cambia con cada publicación y no identifica el código. La etiqueta basada en el cambio siempre señala una versión concreta.
-
-**Si hay tiempo**
-
-> Ese código se llama SHA y Git genera uno para cada cambio. Usarlo evita la duda sobre si la imagen que se ejecuta es la nueva o la anterior.
->
-> El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.
-
-### 38. Cómo trabaja Kubernetes
+### 37. Cómo trabaja Kubernetes
 
 **Presenta:** Moises
 
@@ -1370,7 +1336,7 @@ Depende de qué cambie. Si alguien elimina un Pod, Kubernetes crea otro para man
 >
 > Estos archivos se llaman manifiestos y utilizan un formato de texto llamado YAML. Un clúster es un grupo de servidores que trabajan juntos.
 
-### 39. Contenedores y Pods: cómo se complementan
+### 38. Contenedores y Pods: cómo se complementan
 
 **Presenta:** Moises
 
@@ -1409,7 +1375,7 @@ Corren en los servidores del clúster, llamados nodos. Kubernetes elige el nodo 
 >
 > Los Pods se reemplazan en lugar de repararse. Por eso los datos importantes permanecen en la base y en su disco, no dentro del Pod.
 
-### 40. Las bondades de Kubernetes
+### 39. Las bondades de Kubernetes
 
 **Presenta:** Moises
 
@@ -1452,7 +1418,7 @@ Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memor
 >
 > Definir la reserva y el tope también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.
 
-### 41. Cuando un Pod se cae
+### 40. Cuando un Pod se cae
 
 **Presenta:** Moises
 
@@ -1486,7 +1452,7 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 >
 > Si se cae la base, ocurre algo similar. Kubernetes recrea el Pod y los datos continúan en su disco.
 
-### 42. DevOps: lo que aprendimos
+### 41. DevOps: lo que aprendimos
 
 **Presenta:** Moises
 
@@ -1516,7 +1482,7 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 
 Presenta: Moises.
 
-### 43. Observabilidad: tres preguntas
+### 42. Observabilidad: tres preguntas
 
 **Qué decir**
 
@@ -1550,7 +1516,7 @@ Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabil
 >
 > Cada servicio tiene una dirección especial que informa su salud. Kubernetes y la pantalla la consultan para mostrar si está disponible.
 
-### 44. Un aviso no llegó: ¿cómo lo encontramos?
+### 43. Un aviso no llegó: ¿cómo lo encontramos?
 
 **Qué decir**
 
@@ -1587,7 +1553,7 @@ Puede mostrarlas si le conectamos una fuente de métricas, como el consumo de me
 >
 > Podemos buscar los registros de notificaciones que contengan la palabra evento. En segundos obtenemos las líneas relacionadas con sus números.
 
-### 45. Observabilidad: lo que aprendimos
+### 44. Observabilidad: lo que aprendimos
 
 **Qué decir**
 
@@ -1613,7 +1579,7 @@ Puede mostrarlas si le conectamos una fuente de métricas, como el consumo de me
 
 Presenta: Abdiel Barria.
 
-### 46. En video: cómo interactúan los componentes
+### 45. En video: cómo interactúan los componentes
 
 **Qué decir**
 
@@ -1642,7 +1608,7 @@ Presenta: Abdiel Barria.
 
 > La franja superior no forma parte del sistema. La agregamos al video para indicar qué componente trabaja en cada momento.
 
-### 47. En video: si notificaciones se cae
+### 46. En video: si notificaciones se cae
 
 **Qué decir**
 
@@ -1684,7 +1650,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 >
 > Después de la presentación, cualquier persona puede levantar el sistema mediante un solo comando.
 
-### 48. Demostración: lo que aprendimos
+### 47. Demostración: lo que aprendimos
 
 **Qué decir**
 
@@ -1710,7 +1676,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 
 Presenta: Abdiel Barria.
 
-### 49. Resultados para el negocio
+### 48. Resultados para el negocio
 
 **Qué decir**
 
@@ -1738,7 +1704,7 @@ Presenta: Abdiel Barria.
 
 > Comprobamos estos resultados en nuestro laboratorio y no en producción. Lo importante es que cada resultado se puede repetir y verificar.
 
-### 50. Lo que sostiene los resultados
+### 49. Lo que sostiene los resultados
 
 **Qué decir**
 
@@ -1766,7 +1732,7 @@ Presenta: Abdiel Barria.
 >
 > Ninguna de estas prácticas exige Java, microservicios ni Kubernetes. Son decisiones de diseño aplicables a los sistemas actuales.
 
-### 51. Lo que nos llevamos
+### 50. Lo que nos llevamos
 
 **Qué decir**
 
@@ -1788,7 +1754,7 @@ Presenta: Abdiel Barria.
 
 > Si conservamos una sola idea, debe ser esta. Diseñemos qué hará el sistema cuando algo falle y no solamente cómo funcionará cuando todo salga bien.
 
-### 52. Gracias
+### 51. Gracias
 
 **Qué decir**
 

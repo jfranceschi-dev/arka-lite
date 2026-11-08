@@ -146,7 +146,7 @@ export type Visual =
   // compiten: se complementan.
   | { tipo: "contraste"; lados: [Lado, Lado]; union?: "vs" | "+" }
   // Cuadrícula de tarjetas, con un comando opcional arriba.
-  | { tipo: "tarjetas"; tarjetas: ElementoVisual[]; columnas?: number; comando?: string }
+  | { tipo: "tarjetas"; tarjetas: ElementoVisual[]; columnas?: number; comando?: string; variantes?: { titulo: string; items: string[] }; codigo?: { titulo: string; lenguaje: BloqueCodigo["lenguaje"]; codigo: string } }
   // Capturas reales en un marco de navegador.
   | { tipo: "captura"; capturas: Captura[] }
   // Un video grabado con la UI (capturas/videos/) en un marco de navegador,

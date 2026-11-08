@@ -192,7 +192,6 @@ export const datos: Seccion = {
           "A la izquierda, el procedimiento consulta el estado, valida la condición y actualiza el dato. No necesitamos leer cada línea para notar que la regla y el dato están juntos en la base.",
           "A la derecha aparece la misma regla en el código de la aplicación. Si el estado no es borrador, se produce un error. Si lo es, la solicitud pasa a enviada.",
           "La regla no cambia; cambia dónde se ejecuta. Y al tenerla en el código, podemos probarla en milésimas de segundo, sin una base.",
-          "Mientras tanto, la base sigue cuidando las llaves, las restricciones y los índices.",
         ],
         conTusPalabras: [
           "La regla no cambia; cambia dónde vive.",
