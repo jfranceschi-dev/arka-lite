@@ -235,11 +235,15 @@ function mapeo(s: Slide, c: Caja, v: Extract<Visual, { tipo: "mapeo" }>) {
     s.addShape("roundRect", { x, y: c.y, w: wCaja, h: hCab, rectRadius: 0.14, fill: { color: hex(t.fuerte) }, line: { color: hex(t.fuerte), width: 0 } });
     s.addShape("rect", { x, y: c.y + hCab - 0.2, w: wCaja, h: 0.2, fill: { color: hex(t.fuerte) }, line: { color: hex(t.fuerte), width: 0 } });
     icono(s, nombre, x + 0.22, c.y + 0.2, 0.4, "#FFFFFF");
-    texto(s, titulo, { x: x + 0.78, y: c.y + 0.06, w: wCaja - 0.95, h: 0.4 }, { tam: 18, negrita: true, color: "#FFFFFF", fuente: MONO, vertical: "middle" });
-    texto(s, subtitulo, { x: x + 0.78, y: c.y + 0.44, w: wCaja - 0.95, h: 0.3 }, { tam: 11, color: color.sobreOscuroSecundario });
+    s.addText(titulo, { x: x + 0.78, y: c.y + 0.06, w: wCaja - 0.95, h: 0.4, margin: 0, fontFace: MONO, fontSize: tamQueCabe(titulo, wCaja - 1.0, 0.38, 18, 11, true), bold: true, color: titulo.startsWith("@") ? "FBE7BD" : "FFFFFF", valign: "middle" });
+    if (subtitulo.startsWith("@")) s.addText(subtitulo, { x: x + 0.78, y: c.y + 0.44, w: wCaja - 0.95, h: 0.3, margin: 0, fontFace: MONO, fontSize: 13, bold: true, color: "FBE7BD", valign: "middle", fit: "shrink" });
+    else texto(s, subtitulo, { x: x + 0.78, y: c.y + 0.44, w: wCaja - 0.95, h: 0.3 }, { tam: 11, color: color.sobreOscuroSecundario });
   };
   const tc = colorDeTono("marino");
   const tt = colorDeTono("cian");
+  // Qué empareja cada flecha, escrito encima de ella.
+  const enlace = (txt: string, yc: number) =>
+    s.addText(txt, { x: c.x + wCaja + 0.1, y: yc - 0.3, w: xT - c.x - wCaja - 0.2, h: 0.26, margin: 0, fontFace: FUENTE, fontSize: 11.5, bold: true, color: hex(txt.startsWith("@") ? color.advertencia : ACC_T), align: "center", valign: "bottom", fit: "shrink" });
   cabecera(c.x, v.clase.titulo, v.clase.subtitulo, "code", tc);
   cabecera(xT, v.tabla.titulo, v.tabla.subtitulo, "table", tt);
   v.clase.campos.forEach((campo, i) => {
@@ -249,22 +253,31 @@ function mapeo(s: Slide, c: Caja, v: Extract<Visual, { tipo: "mapeo" }>) {
       s.addShape("line", { x: c.x + 0.2, y, w: wCaja - 0.4, h: 0, line: { color: hex(color.linea), width: 0.75 } });
       s.addShape("line", { x: xT + 0.2, y, w: wCaja - 0.4, h: 0, line: { color: hex(color.linea), width: 0.75 } });
     }
-    texto(s, campo.nombre, { x: c.x + 0.3, y, w: wCaja - 0.5, h: hFila }, { tam: 15, color: tc.fuerte, fuente: MONO, vertical: "middle", negrita: true });
+    const [etiqueta, resto] = campo.nombre.startsWith("@") ? [campo.nombre.split(" ")[0], campo.nombre.slice(campo.nombre.indexOf(" "))] : ["", campo.nombre];
+    s.addText([...(etiqueta ? [{ text: etiqueta, options: { color: hex(color.advertencia), bold: true } }] : []), { text: resto, options: { color: hex(tc.fuerte), bold: true } }], { x: c.x + 0.3, y, w: wCaja - 0.5, h: hFila, margin: 0, fontFace: MONO, fontSize: 15, valign: "middle", fit: "shrink" });
     const clave = /PK|FK/.test(col.detalle ?? "");
     icono(s, clave ? "key-round" : "hash", xT + 0.24, y + (hFila - 0.24) / 2, 0.24, clave ? color.advertencia : color.secundario);
     s.addText([{ text: col.nombre, options: { bold: true, color: hex(tt.fuerte), fontFace: MONO } }, ...(col.detalle ? [{ text: `   ${col.detalle}`, options: { color: hex(color.secundario), fontFace: FUENTE } }] : [])], { x: xT + 0.6, y, w: wCaja - 0.75, h: hFila, margin: 0, fontSize: 15, valign: "middle", fit: "shrink" });
     // Flecha de ida y vuelta entre el campo y su columna.
     const yc = y + hFila / 2;
     s.addShape("line", { x: c.x + wCaja + 0.1, y: yc, w: xT - c.x - wCaja - 0.2, h: 0, line: { color: hex(ACC), width: 2.25, beginArrowType: "triangle", endArrowType: "triangle" } });
+    if (campo.enlace) enlace(campo.enlace, yc);
   });
-  // El traductor al medio, sobre las flechas.
-  const xm = c.x + wCaja + (xT - c.x - wCaja) / 2;
-  const pw = 2.3;
-  s.addText([{ text: "Hibernate", options: { bold: true, color: hex(ACC_T), fontFace: TITULO, fontSize: 16, breakLine: true } }, { text: "traduce en los dos sentidos", options: { color: hex(color.secundario), fontSize: 11 } }], { x: xm - pw / 2, y: c.y + 0.02, w: pw, h: hCab - 0.06, shape: "roundRect", rectRadius: 0.12, margin: 0, fill: { color: hex(ACC_S) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, align: "center", valign: "middle" });
+  if (v.clase.enlace) {
+    // De la etiqueta de la clase a la tabla entera.
+    const yc = c.y + hCab / 2;
+    s.addShape("line", { x: c.x + wCaja + 0.1, y: yc, w: xT - c.x - wCaja - 0.2, h: 0, line: { color: hex(color.advertencia), width: 2.25, endArrowType: "triangle" } });
+    enlace(v.clase.enlace, yc);
+  } else {
+    // El traductor al medio, sobre las flechas.
+    const xm = c.x + wCaja + (xT - c.x - wCaja) / 2;
+    const pw = 2.3;
+    s.addText([{ text: "Hibernate", options: { bold: true, color: hex(ACC_T), fontFace: TITULO, fontSize: 16, breakLine: true } }, { text: "traduce en los dos sentidos", options: { color: hex(color.secundario), fontSize: 11 } }], { x: xm - pw / 2, y: c.y + 0.02, w: pw, h: hCab - 0.06, shape: "roundRect", rectRadius: 0.12, margin: 0, fill: { color: hex(ACC_S) }, line: { color: hex(ACC), width: 1 }, fontFace: FUENTE, align: "center", valign: "middle" });
+  }
 
   // Operaciones: lo que escribe el código y el SQL que llega a la base.
   const yOp = c.y + hCaja + 0.3;
-  texto(s, "LO QUE ESCRIBE EL CÓDIGO  →  EL SQL QUE HIBERNATE ENVÍA A POSTGRESQL", { x: c.x, y: yOp, w: c.w, h: 0.3 }, { tam: 11, negrita: true, color: ACC_T });
+  texto(s, v.clase.enlace ? "CON ESE MAPA, EL ORM ESCRIBE EL SQL QUE LLEGA A LA BASE" : "LO QUE ESCRIBE EL CÓDIGO  →  EL SQL QUE HIBERNATE ENVÍA A POSTGRESQL", { x: c.x, y: yOp, w: c.w, h: 0.3 }, { tam: 11, negrita: true, color: ACC_T });
   const hOp = Math.min(0.56, (c.y + c.h - yOp - 0.4 - 0.12 * (v.operaciones.length - 1)) / v.operaciones.length);
   const wCod = 3.55;
   v.operaciones.forEach((o, i) => {
@@ -597,14 +610,16 @@ function video(s: Slide, c: Caja, v: Extract<Visual, { tipo: "video" }>) {
 
 // ── Ramas de Git ──────────────────────────────────────────────────────────
 
-// main en el centro; la primera rama por encima y la segunda por debajo, para
-// que no se crucen. Cada una nace de un punto de main, guarda sus avances
-// aparte y vuelve con un merge (en verde). Dos notas explican el nacimiento y
-// el merge de la primera.
+// main y sus ramas, de tres formas:
+// - sin ramas: el historial, main con cada versión como un punto y una flecha
+//   para volver a una anterior;
+// - dos ramas: la primera por encima de main y la segunda por debajo, para que
+//   no se crucen; cada una nace de un punto de main, guarda sus avances aparte y
+//   vuelve con un merge (en verde);
+// - una rama con pasos: los pasos van como círculos grandes con ícono sobre la
+//   rama, que sale de main y vuelve a ella.
 function ramas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ramas" }>) {
   const verde = color.correcto;
-  const yMain = c.y + c.h / 2;
-  const sep = Math.min(1.35, c.h / 2 - 0.4);
   const x0 = c.x + 0.1;
   const xIni = x0 + 1.3;
   const x1 = c.x + c.w - 0.1;
@@ -612,9 +627,51 @@ function ramas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ramas" }>) {
   const sube = 0.55;
   const punto = (cx: number, cy: number, d: number, relleno: string, borde: string, ancho = 2) =>
     s.addShape("ellipse", { x: cx - d / 2, y: cy - d / 2, w: d, h: d, fill: { color: hex(relleno) }, line: { color: hex(borde), width: ancho } });
-  s.addShape("line", { x: xIni, y: yMain, w: largo, h: 0, line: { color: hex(PRI), width: 6, endArrowType: "triangle" } });
-  s.addText(v.principal, { x: x0, y: yMain - 0.22, w: 1.15, h: 0.44, shape: "roundRect", rectRadius: 0.22, margin: 0, fill: { color: hex(PRI) }, line: { color: hex(PRI), width: 0 }, fontFace: MONO, fontSize: 15, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-  const posiciones = [[0.06, 0.6], [0.3, 0.88]];
+  const linea = (y: number) => {
+    s.addShape("line", { x: xIni, y, w: largo, h: 0, line: { color: hex(PRI), width: 6, endArrowType: "triangle" } });
+    s.addText(v.principal, { x: x0, y: y - 0.22, w: 1.15, h: 0.44, shape: "roundRect", rectRadius: 0.22, margin: 0, fill: { color: hex(PRI) }, line: { color: hex(PRI), width: 0 }, fontFace: MONO, fontSize: 15, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+  };
+  const nota = (txt: string, x: number, y: number, w: number, tono: string) => {
+    s.addText(txt, { x, y, w, h: 0.5, margin: 6, shape: "roundRect", rectRadius: 0.1, fill: { color: "FFFFFF" }, line: { color: hex(tono), width: 1.25 }, fontFace: FUENTE, fontSize: 12.5, bold: true, color: hex(tono), valign: "middle", fit: "shrink" });
+  };
+  const numero = (n: number, x: number, y: number, tono: string) =>
+    s.addText(String(n), { x, y, w: 0.34, h: 0.34, shape: "ellipse", margin: 0, fill: { color: hex(tono) }, line: { color: "FFFFFF", width: 1.5 }, fontFace: TITULO, fontSize: 12, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+
+  // El historial: main y sus versiones.
+  if (v.ramas.length === 0) {
+    const versiones = v.versiones ?? [];
+    const yMain = c.y + c.h * 0.42;
+    linea(yMain);
+    const d = 0.9;
+    const xs = versiones.map((_, i) => xIni + largo * (0.1 + (0.66 * i) / Math.max(versiones.length - 1, 1)));
+    versiones.forEach((ver, i) => {
+      const ultima = i === versiones.length - 1;
+      const t = colorDeTono(ultima ? "cian" : "marino");
+      insignia(s, "git-commit-horizontal", xs[i] - d / 2, yMain - d / 2, d, ultima ? t.suave : "#FFFFFF", t.fuerte, true);
+      s.addShape("ellipse", { x: xs[i] - d / 2, y: yMain - d / 2, w: d, h: d, fill: { color: "FFFFFF", transparency: 100 }, line: { color: hex(t.fuerte), width: 3 } });
+      numero(i + 1, xs[i] + d / 2 - 0.26, yMain - d / 2 - 0.08, t.fuerte);
+      texto(s, ver.titulo, { x: xs[i] - 1.3, y: yMain - d / 2 - 0.55, w: 2.6, h: 0.4 }, { tam: 16, negrita: true, fuente: TITULO, color: t.fuerte, alinear: "center", vertical: "bottom" });
+      texto(s, ver.texto, { x: xs[i] - 1.3, y: yMain + d / 2 + 0.1, w: 2.6, h: 0.6 }, { tam: 13, color: color.texto, alinear: "center" });
+    });
+    if (v.volver && xs.length > 1) {
+      // Volver de la última versión a la anterior.
+      const yv = yMain + d / 2 + 0.95;
+      const [xa, xb] = [xs[xs.length - 1], xs[xs.length - 2]];
+      s.addShape("line", { x: xa, y: yMain + d / 2 + 0.72, w: 0, h: yv - (yMain + d / 2 + 0.72), line: { color: hex(verde), width: 2.5, dashType: "dash" } });
+      s.addShape("line", { x: xb, y: yv, w: xa - xb, h: 0, flipH: true, line: { color: hex(verde), width: 2.5, dashType: "dash" } });
+      s.addShape("line", { x: xb, y: yMain + d / 2 + 0.72, w: 0, h: yv - (yMain + d / 2 + 0.72), flipV: true, line: { color: hex(verde), width: 2.5, dashType: "dash", endArrowType: "triangle" } });
+      nota(v.volver, (xa + xb) / 2 - 1.6, yv + 0.12, 3.2, verde);
+    }
+    return;
+  }
+
+  // Con una sola rama, main va abajo y la rama ocupa casi todo el ancho.
+  const una = v.ramas.length === 1;
+  const conPasos = una && (v.ramas[0].pasos?.length ?? 0) > 0;
+  const yMain = una ? c.y + c.h - 0.95 : c.y + c.h / 2;
+  const sep = conPasos ? Math.min(2.6, c.h - 1.4) : una ? Math.min(2.4, c.h - 1.6) : Math.min(1.35, c.h / 2 - 0.4);
+  linea(yMain);
+  const posiciones = una ? [[0.04, 0.84]] : [[0.06, 0.6], [0.3, 0.88]];
   const merges: number[] = [];
   v.ramas.slice(0, 2).forEach((r, i) => {
     const arriba = i === 0;
@@ -627,28 +684,51 @@ function ramas(s: Slide, c: Caja, v: Extract<Visual, { tipo: "ramas" }>) {
     s.addShape("line", { x: xNace, y: top, w: sube, h: sep, flipV: arriba, line: { color: hex(t.fuerte), width: 5 } });
     s.addShape("line", { x: xNace + sube, y: yR, w: xVuelve - xNace - 2 * sube, h: 0, line: { color: hex(t.fuerte), width: 5 } });
     s.addShape("line", { x: xVuelve - sube, y: top, w: sube, h: sep, flipV: !arriba, line: { color: hex(verde), width: 5, endArrowType: "triangle" } });
-    // El nombre de la rama, por fuera; los avances, hacia main.
-    s.addText(r.nombre, { x: xNace + sube + 0.05, y: arriba ? yR - 0.58 : yR + 0.16, w: 3.4, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 8, fill: { color: hex(t.suave) }, line: { color: hex(t.fuerte), width: 1 }, fontFace: FUENTE, fontSize: 14, bold: true, color: hex(t.fuerte), valign: "middle", fit: "shrink" });
-    const n = r.avances.length;
-    const desde = xNace + sube + 0.2;
-    const tramo = (xVuelve - sube - 0.2 - desde) / Math.max(n, 1);
-    r.avances.forEach((a, j) => {
-      const cx = desde + tramo * (j + 0.5);
-      punto(cx, yR, 0.36, "#FFFFFF", t.fuerte, 4);
-      s.addText(a, { x: cx - tramo / 2, y: arriba ? yR + 0.24 : yR - 0.56, w: tramo, h: 0.32, margin: 0, fontFace: FUENTE, fontSize: 12.5, color: hex(color.texto), align: "center", valign: arriba ? "top" : "bottom", fit: "shrink" });
-    });
+    if (conPasos) {
+      // Cada paso, un círculo grande con su ícono y su número; debajo, qué es.
+      const pasos = r.pasos ?? [];
+      const desde = xNace + sube + 0.1;
+      const tramo = (xVuelve - sube - 0.1 - desde) / pasos.length;
+      const d = 0.95;
+      pasos.forEach((p, j) => {
+        const cx = desde + tramo * (j + 0.5);
+        const tp = colorDeTono(p.tono ?? "cian");
+        const opcional = r.opcionales?.includes(j);
+        insignia(s, p.icono, cx - d / 2, yR - d / 2, d, opcional ? "#FFFFFF" : tp.suave, tp.fuerte, !opcional);
+        s.addShape("ellipse", { x: cx - d / 2, y: yR - d / 2, w: d, h: d, fill: { color: "FFFFFF", transparency: 100 }, line: { color: hex(tp.fuerte), width: 3, dashType: opcional ? "dash" : "solid" } });
+        numero(j + 1, cx + d / 2 - 0.28, yR - d / 2 - 0.1, tp.fuerte);
+        texto(s, p.titulo, { x: cx - tramo / 2 + 0.03, y: yR + d / 2 + 0.08, w: tramo - 0.06, h: 0.34 }, { tam: 14, negrita: true, fuente: TITULO, color: tp.fuerte, alinear: "center" });
+        if (p.texto) texto(s, p.texto, { x: cx - tramo / 2 + 0.05, y: yR + d / 2 + 0.42, w: tramo - 0.1, h: 0.62 }, { tam: 11.5, color: color.texto, alinear: "center" });
+      });
+      s.addText(r.nombre, { x: xNace + sube + 0.05, y: yR - d / 2 - 0.52, w: 2.6, h: 0.38, shape: "roundRect", rectRadius: 0.19, margin: 8, fill: { color: hex(t.suave) }, line: { color: hex(t.fuerte), width: 1 }, fontFace: FUENTE, fontSize: 13, bold: true, color: hex(t.fuerte), valign: "middle", fit: "shrink" });
+    } else {
+      // El nombre de la rama, por fuera; los avances, hacia main.
+      s.addText(r.nombre, { x: xNace + sube + 0.05, y: arriba ? yR - 0.58 : yR + 0.16, w: 4.2, h: 0.4, shape: "roundRect", rectRadius: 0.2, margin: 8, fill: { color: hex(t.suave) }, line: { color: hex(t.fuerte), width: 1 }, fontFace: FUENTE, fontSize: 14, bold: true, color: hex(t.fuerte), valign: "middle", fit: "shrink" });
+      const n = r.avances.length;
+      const desde = xNace + sube + 0.2;
+      const tramo = (xVuelve - sube - 0.2 - desde) / Math.max(n, 1);
+      r.avances.forEach((a, j) => {
+        const cx = desde + tramo * (j + 0.5);
+        if (r.opcionales?.includes(j)) s.addShape("ellipse", { x: cx - 0.18, y: yR - 0.18, w: 0.36, h: 0.36, fill: { color: "FFFFFF" }, line: { color: hex(t.fuerte), width: 3, dashType: "dash" } });
+        else punto(cx, yR, 0.36, "#FFFFFF", t.fuerte, 4);
+        const hEt = una ? 0.6 : 0.32;
+        s.addText(a, { x: cx - tramo / 2 + 0.03, y: arriba ? yR + 0.24 : yR - 0.24 - hEt, w: tramo - 0.06, h: hEt, margin: 0, fontFace: FUENTE, fontSize: una ? 13 : 12.5, color: hex(color.texto), align: "center", valign: arriba ? "top" : "bottom", fit: "shrink" });
+      });
+    }
     punto(xNace, yMain, 0.34, "#FFFFFF", t.fuerte, 4);
     punto(xVuelve, yMain, 0.36, verde, "#FFFFFF");
   });
   // Main también avanza por su cuenta.
   [0.0, 0.45, 0.76].forEach((f) => punto(xIni + largo * f + 0.15, yMain, 0.28, PRI, "#FFFFFF"));
   // Notas: dónde nace la primera rama y dónde vuelve.
-  const nota = (txt: string, x: number, y: number, w: number, tono: string) => {
-    s.addText(txt, { x, y, w, h: 0.5, margin: 6, shape: "roundRect", rectRadius: 0.1, fill: { color: "FFFFFF" }, line: { color: hex(tono), width: 1.25 }, fontFace: FUENTE, fontSize: 12.5, bold: true, color: hex(tono), valign: "middle", fit: "shrink" });
-  };
   const xNace0 = xIni + largo * posiciones[0][0];
-  nota(v.nace, xNace0 - 0.25, yMain + 0.3, 2.45, colorDeTono("cian").fuerte);
-  nota(v.fusion, merges[0] + 0.25, yMain - 0.82, 2.9, verde);
+  if (una) {
+    if (v.nace) nota(v.nace, xNace0 - 0.25, yMain + 0.3, 3.6, colorDeTono("cian").fuerte);
+    if (v.fusion) nota(v.fusion, merges[0] - 3.4, yMain + 0.3, 3.6, verde);
+  } else {
+    if (v.nace) nota(v.nace, xNace0 - 0.25, yMain + 0.3, 2.45, colorDeTono("cian").fuerte);
+    if (v.fusion) nota(v.fusion, merges[0] + 0.25, yMain - 0.82, 2.9, verde);
+  }
 }
 
 // ── Aprendizajes ──────────────────────────────────────────────────────────
@@ -971,8 +1051,9 @@ function caminos(s: Slide, c: Caja, v: Extract<Visual, { tipo: "caminos" }>) {
       tarjeta(s, { x, y: by, w: bw, h: bh }, regla ? tp.suave : "#FFFFFF", regla ? tp.fuerte : mezclar(tp.fuerte, "#FFFFFF", 0.55));
       if (regla) {
         s.addShape("roundRect", { x, y: by, w: bw, h: bh, rectRadius: 0.14, fill: { color: hex(tp.suave), transparency: 100 }, line: { color: hex(tp.fuerte), width: 2.5 } });
-        const chipW = 2.1;
-        s.addText("AQUÍ VIVE LA REGLA", { x: x + (bw - chipW) / 2, y: by - 0.36, w: chipW, h: 0.3, shape: "roundRect", rectRadius: 0.15, margin: 0, fill: { color: hex(tp.fuerte) }, line: { color: hex(tp.fuerte), width: 0 }, fontFace: FUENTE, fontSize: 9.5, bold: true, color: "FFFFFF", align: "center", valign: "middle", charSpacing: 1 });
+        const marca = (camino.marca ?? "Aquí vive la regla").toUpperCase();
+        const chipW = Math.max(2.1, 0.5 + marca.length * 0.085);
+        s.addText(marca, { x: x + (bw - chipW) / 2, y: by - 0.36, w: chipW, h: 0.3, shape: "roundRect", rectRadius: 0.15, margin: 0, fill: { color: hex(tp.fuerte) }, line: { color: hex(tp.fuerte), width: 0 }, fontFace: FUENTE, fontSize: 9.5, bold: true, color: "FFFFFF", align: "center", valign: "middle", charSpacing: 1 });
       }
       const d = 0.5;
       insignia(s, p.icono, x + (bw - d) / 2, by + 0.1, d, regla ? "#FFFFFF" : tp.suave, tp.fuerte);

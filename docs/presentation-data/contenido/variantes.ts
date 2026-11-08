@@ -37,8 +37,8 @@ export const CAMBIOS: Partial<Record<ModoDemo, Modo>> = {
     sinSecciones: ["s07"],
     sinLaminas: ["s05-flujo"],
     laminas: {
-      // Sin el video, del archivo del pipeline se pasa directo al caso de falla.
-      "s05-ciyaml": { guion: { transicion: "Veamos ahora qué ocurre cuando una de esas revisiones detecta un problema." } },
+      // Sin el video, de las automatizaciones se pasa directo al caso de falla.
+      "s05-automatizar": { guion: { transicion: "Veamos ahora qué pasa cuando una prueba detecta un problema." } },
       "s00-portada": {
         guion: { instrucciones: ["El moderador ya presentó al equipo: saludar y entrar directo al tema, sin volver a presentarse.", "Antes de empezar, abrir este PPTX en la computadora de la sala y quitar la última lámina, que es solo para el equipo."] },
       },

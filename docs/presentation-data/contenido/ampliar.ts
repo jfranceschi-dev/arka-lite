@@ -117,9 +117,17 @@ export const AMPLIAR: Record<string, string[]> = {
     "Desde la computadora solo abrimos lo necesario. La base de solicitudes no tiene una entrada externa y únicamente los servicios internos pueden alcanzarla.",
     "Antes de continuar, las bases informan cuándo están listas para aceptar conexiones mediante una herramienta de PostgreSQL.",
   ],
+  "s05-historial": [
+    "Cada versión guardada se llama commit y tiene un código único. Con ese código se puede volver exactamente a ese punto.",
+    "Git funciona en la computadora de cada persona; el repositorio compartido guarda la copia del equipo.",
+  ],
+  "s05-automatizar": [
+    "Cada paso que se automatiza deja de depender de que alguien lo recuerde, y se hace igual cada vez.",
+    "Un paso lento puede correr solo al integrar en main, y uno rápido en cada subida de cambios.",
+  ],
   "s05-ramas": [
-    "Cada avance guardado se llama commit y tiene un código único. Con ese código se puede volver exactamente a ese punto.",
-    "GitHub es el lugar donde el equipo guarda y comparte el código, y donde se hacen las revisiones.",
+    "Si dos ramas cambian la misma línea, Git avisa un conflicto y las personas deciden cómo combinarlas.",
+    "Las ramas se crean en segundos y se borran después del merge: son baratas.",
   ],
   "s05-cambio": [
     "Describimos cada cambio con un formato común, por ejemplo, fix seguido de impedir el envío de una solicitud aprobada. Así el historial funciona como una bitácora.",

@@ -2,17 +2,17 @@
 
 > Archivo generado por `npm run guiones` desde `docs/presentation-data/contenido/`. No editar a mano: los cambios se hacen en la fuente.
 
-Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apoya en base de datos y presenta CI/CD, para bajar la carga de infraestructura. Con videos, 50 láminas. Cada persona tiene aquí solo lo suyo, con el número de lámina del PPTX.
+Cuatro de desarrollo, una de base de datos y dos de infraestructura. Jossett apoya en base de datos y presenta CI/CD, para bajar la carga de infraestructura. Con videos, 52 láminas. Cada persona tiene aquí solo lo suyo, con el número de lámina del PPTX.
 
 | Persona | Área | Qué presenta | Láminas | Habla |
 | --- | --- | --- | --- | --- |
 | Luis Cardoze | Desarrollo | Apertura y Fundamentos | 1–5 | ~4 min |
 | Ricardo Fábrega | Desarrollo | Arquitectura | 6–9 | ~3 min |
 | Marlene Bonilla | Base de datos | Base de datos | 10–12 y 17–18 | ~5 min |
-| Jossett Franceschi | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD | 13–16 y 29–35 | ~12 min |
-| Abdiel Barria | Desarrollo | Interconexión de servicios y Demostración en video y Resultados, valor y cierre | 19–23 y 44–50 | ~10 min |
+| Jossett Franceschi | Desarrollo | Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD | 13–16 y 29–37 | ~12 min |
+| Abdiel Barria | Desarrollo | Interconexión de servicios y Demostración en video y Resultados, valor y cierre | 19–23 y 46–52 | ~10 min |
 | Kevin | Infraestructura | DevOps: qué es, Docker y Compose | 24–28 | ~4 min |
-| Moises | Infraestructura | DevOps: Kubernetes, y la observabilidad | 36–43 | ~7 min |
+| Moises | Infraestructura | DevOps: Kubernetes, y la observabilidad | 38–45 | ~7 min |
 
 ## Luis Cardoze · Apertura y Fundamentos
 
@@ -447,7 +447,7 @@ Es el mismo concepto de BEGIN, COMMIT y ROLLBACK. La diferencia es que la aplica
 
 ## Jossett Franceschi · Apoyo en base de datos: la misma regla, el ORM y la conexión y DevOps: CI/CD
 
-Láminas 13–16 y 29–35 · unos 12 minutos.
+Láminas 13–16 y 29–37 · unos 12 minutos.
 
 > **Recibes la palabra** de Marlene Bonilla, después de la lámina 12.
 
@@ -463,13 +463,15 @@ Láminas 13–16 y 29–35 · unos 12 minutos.
 >
 > La regla no cambia; cambia dónde se ejecuta. Y al tenerla en el código, podemos probarla en milésimas de segundo, sin una base.
 >
-> Veamos ahora qué es exactamente un ORM.
+> Mientras tanto, la base sigue cuidando las llaves, las restricciones y los índices.
+>
+> Pero si la regla vive en el código, alguien tiene que llevar el resultado a la base. Esa pieza es el ORM.
 
 **Si se te olvida, di esto**
 
-- Estamos comparando responsabilidades, no tecnologías.
-- La misma regla puede vivir en la base o en la aplicación.
-- En el código podemos probarla rápidamente y sin una base.
+- La regla no cambia; cambia dónde vive.
+- En el código la probamos en milésimas de segundo.
+- La base sigue cuidando llaves e índices.
 
 **Si preguntan:** ¿Y si la regla necesita consultar muchos datos?
 
@@ -487,25 +489,25 @@ El servicio pide por llave únicamente los datos necesarios para decidir. Si el 
 
 **Qué decir**
 
+> Acabamos de ver que la regla vive en el código, pero el dato se sigue guardando en la base. Y el código y la base no hablan el mismo idioma: para unirlos usamos un ORM.
+>
 > ORM significa mapeo objeto-relacional. En palabras sencillas, es una herramienta que hace de intérprete entre la aplicación y la base de datos.
 >
 > La aplicación trabaja con objetos, como una solicitud que tiene número, tipo y estado. La base, en cambio, trabaja con tablas, filas y columnas.
 >
-> El ORM traduce de un lado a otro. Cuando la aplicación le pide guardar una solicitud, identifica la tabla y la columna de cada dato, genera el SQL y lo envía.
+> El ORM traduce de un lado a otro. Cuando la aplicación le pide guardar una solicitud, identifica la tabla y la columna de cada dato, genera el SQL y lo envía. Es como un intérprete en una reunión, donde cada parte habla su propio idioma.
 >
-> Cuando la base responde, hace el recorrido contrario y convierte la fila en un objeto. Es como un intérprete en una reunión, donde cada parte puede hablar su propio idioma.
->
-> En nuestro proyecto usamos Hibernate, aunque la idea existe en otras tecnologías. Por ejemplo, .NET tiene Entity Framework.
+> En nuestro proyecto usamos Hibernate, aunque la idea existe en otras tecnologías; por ejemplo, .NET tiene Entity Framework.
 >
 > El ORM no diseña la base por nosotros: las llaves, las relaciones y los índices los seguimos definiendo. Y si una consulta es compleja, podemos escribirla a mano.
 >
-> Veamos ahora cómo una clase de la aplicación se relaciona con una tabla.
+> Veamos ahora cómo sabe el ORM qué parte de la clase va con qué parte de la tabla.
 
 **Si se te olvida, di esto**
 
-- El ORM traduce entre objetos y tablas.
-- Hibernate genera el SQL de las operaciones comunes.
-- Nosotros seguimos diseñando la base y podemos escribir SQL a mano.
+- El código habla en objetos y la base en tablas.
+- El ORM traduce entre los dos.
+- Nosotros seguimos diseñando la base.
 
 **Si preguntan:** ¿El ORM reemplaza a quien administra la base de datos?
 
@@ -519,29 +521,32 @@ No. Esa persona sigue diseñando el modelo, cuidando los índices y revisando el
 >
 > Un ORM también puede generar consultas ineficientes si nadie las revisa. Por eso seguimos necesitando personas que entiendan el funcionamiento de las bases de datos.
 
-### 15. El ORM por dentro: una clase es una tabla
+### 15. El ORM por dentro: el mapa entre la clase y la tabla
 
 **Qué decir**
 
-> Aquí vemos la traducción lado a lado. A la izquierda está una clase de Java y, a la derecha, la tabla solicitud.
+> Aquí vemos la traducción lado a lado. A la izquierda está la clase SolicitudEntity, que es como el código representa una solicitud. A la derecha, la tabla solicitud, donde la guardamos.
 >
-> Una marca le indica al ORM que esa clase representa la tabla. Después, cada campo corresponde a una columna y la marca Id identifica la llave primaria.
+> Las palabras en amarillo, las que empiezan con arroba, son etiquetas y forman el mapa. Table le indica al ORM que esta clase va en la tabla solicitud, e Id marca cuál es la llave primaria.
 >
-> Con ese mapeo, el ORM genera las operaciones básicas. Para guardar una solicitud nueva, el ORM genera un INSERT, que agrega una fila. Para buscarla por número, genera un SELECT, que consulta los datos.
+> Los demás campos se emparejan por su nombre: tipo con tipo y estado con estado.
 >
-> Cuando enviamos una solicitud existente, genera un UPDATE, que actualiza su estado. Los valores viajan como parámetros, representados por los signos de interrogación, y nunca se pegan al texto del SQL.
+> Abajo está lo que pasa por detrás. Cuando el código cambia el estado de una solicitud, el ORM usa ese mapa y arma este UPDATE. Los valores viajan como parámetros, en los signos de interrogación, igual que en un procedimiento.
 >
-> Es el mismo principio utilizado con los parámetros de un procedimiento: los valores se tratan como datos y no como instrucciones. Así evitamos que un texto ingresado por una persona altere la consulta, lo que se conoce como inyección de SQL.
->
-> Así cada pieza hace una sola cosa: las reglas deciden, el ORM traduce y la base guarda. Si algo falla, sabemos en qué punto buscar.
+> Así no escribimos a mano el SQL de todos los días, y la base sigue recibiendo SQL normal, que podemos revisar.
 >
 > Para llegar a la base, el ORM necesita su dirección, usuario y clave. Veamos dónde guardamos esos datos.
 
 **Si se te olvida, di esto**
 
-- Cada campo de la clase corresponde a una columna de la tabla.
-- El ORM genera las instrucciones para agregar, consultar y actualizar los datos.
-- Los valores viajan como parámetros seguros.
+- Clase a la izquierda, tabla a la derecha.
+- Las etiquetas con arroba forman el mapa.
+- Lo demás se une por nombre.
+- Al cambiar el estado, el ORM arma el UPDATE por detrás.
+
+**Si preguntan:** ¿Y si la columna se llama distinto?
+
+Se agrega la etiqueta Column con el nombre de la columna, por ejemplo @Column(name = "estado_actual").
 
 **Si preguntan:** ¿Se puede ver el SQL que genera?
 
@@ -571,8 +576,8 @@ Sí. Una línea de configuración permite mostrarlo en los registros, lo que ayu
 
 **Si se te olvida, di esto**
 
-- La conexión se configura fuera del código.
-- Aquí usamos variables que entrega el ambiente.
+- Tanto web.config como las variables de entorno dejan la conexión fuera del código.
+- En ARKA-Lite, el ambiente entrega los datos al arrancar.
 - La misma aplicación sirve en distintos ambientes.
 
 **Si preguntan:** ¿Dónde queda la clave en Kubernetes?
@@ -595,7 +600,7 @@ No. Sigue siendo válido para las aplicaciones que funcionan de esa manera. Lo i
 
 > **Recibes la palabra** de Kevin, después de la lámina 28.
 
-### 29. Git: el historial y las ramas
+### 29. Git: el historial y main
 
 **Qué decir**
 
@@ -603,55 +608,84 @@ No. Sigue siendo válido para las aplicaciones que funcionan de esa manera. Lo i
 >
 > La primera es el historial. Git guarda cada avance como un punto en una línea de tiempo. Así sabemos qué cambió, quién lo hizo y cuándo. También podemos volver a un punto anterior.
 >
-> La línea del centro se llama main. Es la versión oficial, la que se instala, y nadie trabaja directamente sobre ella.
+> Esa línea de tiempo principal y estable se llama main. Es la versión oficial, la que se instala.
 >
-> La segunda idea es la rama. Para cada tarea, la rama nace de un punto de main. Es una copia de main tal como está en ese momento. Ahí guardamos los avances sin tocar la versión oficial.
+> Es como el historial de versiones de un documento compartido.
 >
-> Arriba está la rama de una tarea y abajo la de otra. Las dos avanzan al mismo tiempo, cada una por su lado, sin pisarse.
->
-> Cuando una tarea está lista, su rama vuelve a main con su cambio. A eso le llamamos merge, y es la flecha verde.
->
-> Es como el control de cambios de un documento compartido: cada quien trabaja en su copia y, al final, se integra al original.
->
-> Con esas dos ideas, veamos paso por paso cómo un cambio viaja de una rama hasta main.
+> Ahora, si todos trabajáramos directamente sobre main, nos estorbaríamos. Para eso existen las ramas.
 
 **Si se te olvida, di esto**
 
-- Git guarda el historial de cada avance.
-- main es la versión oficial.
-- La rama nace como copia de main.
-- Cada tarea se trabaja en su rama y vuelve a main con un merge.
+- Git guarda cada avance como un punto en el tiempo.
+- Sabemos qué cambió, quién y cuándo, y podemos volver atrás.
+- main es la línea principal y estable.
 
-**Si preguntan:** ¿Qué pasa si dos personas cambian lo mismo?
+**Si preguntan:** ¿Git es lo mismo que GitHub?
 
-Git detecta el conflicto y avisa. El equipo decide cómo combinar los cambios antes de incorporarlos a main.
+No. Git es la herramienta que guarda el historial. GitHub, GitLab o Azure DevOps son lugares donde el equipo comparte ese historial.
 
 **Si hay tiempo**
 
-> Cada avance guardado se llama commit y tiene un código único. Con ese código se puede volver exactamente a ese punto.
+> Cada versión guardada se llama commit y tiene un código único. Con ese código se puede volver exactamente a ese punto.
 >
-> GitHub es el lugar donde el equipo guarda y comparte el código, y donde se hacen las revisiones.
+> Git funciona en la computadora de cada persona; el repositorio compartido guarda la copia del equipo.
 
-### 30. Cómo entra un cambio, paso por paso
+### 30. Las ramas: trabajar en paralelo sin tocar main
 
 **Qué decir**
 
-> Ahora veamos el camino de un cambio en cinco pasos. Primero, abrimos una rama para la tarea. Segundo, ahí escribimos el cambio y su prueba.
+> La segunda idea es la rama. En main nadie trabaja directamente, porque es la versión estable y tiene que seguir funcionando.
 >
-> Tercero, hacemos push: subimos la rama a GitHub, donde el equipo comparte el código. Cuarto, abrimos un Pull Request para que otra persona revise el cambio. En ese momento, las pruebas corren solas.
+> Cuando vamos a atender una funcionalidad o una corrección, creamos una rama. La rama nace de un punto de main: es una copia de main tal como está en ese momento. Ahí guardamos los avances sin tocar la versión oficial.
 >
-> Quinto, si otra persona aprueba el cambio y las pruebas pasan, hacemos merge, que es unir la rama a main. Solo entonces el cambio forma parte de la versión oficial.
+> Arriba está la rama de una funcionalidad y abajo la de otra. Las dos avanzan al mismo tiempo, cada una por su lado, sin pisarse.
 >
-> Esas pruebas no las corre una persona. Las corre el pipeline. Veamos qué es.
+> Cuando el trabajo está listo, la rama se integra a main. A eso le llamamos merge, y es la flecha verde.
+>
+> Es como trabajar en una copia de un documento y, al final, integrar los cambios al original.
+>
+> Con esas dos ideas, veamos cómo un cambio viaja de una rama hasta main.
 
 **Si se te olvida, di esto**
 
-- Rama, cambio, push, Pull Request y merge, en ese orden.
-- Nada entra a main sin revisión y sin pruebas.
+- Nadie trabaja directamente sobre main.
+- Para cada funcionalidad creamos una rama, una copia de main.
+- Al terminar, la integramos a main con un merge.
 
-**Si preguntan:** ¿Quién revisa el Pull Request?
+**Si preguntan:** ¿Qué pasa si dos personas cambian lo mismo?
+
+Git detecta el conflicto y avisa. El equipo decide cómo combinar los cambios antes de integrarlos a main.
+
+**Si hay tiempo**
+
+> Si dos ramas cambian la misma línea, Git avisa un conflicto y las personas deciden cómo combinarlas.
+>
+> Las ramas se crean en segundos y se borran después del merge: son baratas.
+
+### 31. Cómo entra un cambio, paso por paso
+
+**Qué decir**
+
+> Juntemos las dos ideas: así entra un cambio a main.
+>
+> Creamos una rama desde main, hacemos el cambio y, si hace falta, sus pruebas. Después hacemos push, que es subir la rama al repositorio compartido, y pedimos integrarla.
+>
+> Otra persona revisa el cambio y, cuando lo aprueba, hacemos el merge. Así nada entra a la versión oficial sin revisión.
+>
+> Hasta aquí, todo lo hacemos las personas. Pero hay revisiones que se repiten en cada cambio, y esas las puede hacer una máquina. Eso es CI/CD.
+
+**Si se te olvida, di esto**
+
+- Rama, cambio, pruebas, push y solicitud.
+- Otra persona revisa antes del merge.
+
+**Si preguntan:** ¿Quién revisa el cambio?
 
 Otra persona del equipo. Quien hizo el cambio no puede aprobar su propio cambio.
+
+**Si preguntan:** ¿Esto es solo con GitHub?
+
+No. El flujo es el mismo en GitLab, Azure DevOps o Bitbucket. Solo cambia el nombre: en unos se llama Pull Request y en otros Merge Request.
 
 **Si hay tiempo**
 
@@ -661,36 +695,29 @@ Otra persona del equipo. Quien hizo el cambio no puede aprobar su propio cambio.
 >
 > Nadie incorpora cambios directamente en la versión principal, incluida la persona que lidera el equipo.
 
-### 31. CI/CD: el control de calidad automático
+### 32. CI/CD: el control de calidad automático
 
 **Qué decir**
 
-> CI/CD reúne dos prácticas que automatizan este camino: integración continua y entrega continua. Sus tareas forman un pipeline, es decir, una lista de pasos que se ejecuta sola. Es como el control de calidad de una fábrica: cada producto pasa por las mismas revisiones.
+> Cada vez que llega un cambio repetimos las mismas revisiones: compilar, probar y publicar. CI/CD es dejar que una máquina las haga sola, siempre igual. Para eso armamos un pipeline: una lista de pasos que se ejecuta sola cuando ocurre algo en el repositorio.
 >
-> El pipeline se activa cuando ocurre un evento, es decir, una acción que lo pone en marcha. En ARKA-Lite responde a dos eventos. Cada uno sigue un camino distinto.
+> Arriba está el primer camino: cada vez que hacemos push o pedimos integrar un cambio. El pipeline compila, es decir, arma la aplicación a partir del código, y corre todas las pruebas. El resultado queda en verde o en rojo; si queda en rojo, el cambio no entra. Esa es la integración continua, o CI.
 >
-> Arriba, el primer evento ocurre cuando alguien abre o actualiza un Pull Request. Ahí se ejecuta la integración continua, o CI. GitHub compila la aplicación y ejecuta las pruebas con una base de datos temporal. El resultado queda en verde o en rojo.
+> Abajo, el segundo camino: cuando el cambio ya entró a main. El pipeline compila y prueba otra vez y, si todo pasa, publica la imagen que nos explicó Kevin, el paquete listo para instalar. Esa es la entrega continua, o CD.
 >
-> Abajo, el segundo evento ocurre cuando hacemos merge a main. El pipeline compila y prueba otra vez. Si todo pasa, ejecuta la entrega continua, o CD: publica una imagen, un paquete listo para instalar con el código del cambio.
+> Es como el control de calidad de una fábrica: cada producto pasa por las mismas revisiones. En nuestro proyecto, la instalación final todavía se hace con un comando.
 >
-> Nadie tiene que recordar esos pasos. En nuestro proyecto, la instalación final aún se hace con un comando. El siguiente paso sería automatizarla con una aprobación previa.
->
-> Ahora veamos dónde se escriben esos eventos y pasos: en el archivo ci.yml.
+> ¿Dónde le decimos al pipeline qué hacer? En un archivo de texto. Veamos cómo luce.
 
 **Si se te olvida, di esto**
 
-- El pipeline reacciona a eventos.
-- En el Pull Request: compila y prueba.
-- En el merge a main: además publica la imagen.
-- La instalación final todavía usa un comando.
-
-**Si preguntan:** ¿Se puede condicionar a otros eventos?
-
-Sí. Por ejemplo, a un push en cualquier rama, a una hora programada o a una etiqueta de versión.
+- El pipeline es una lista de pasos que corre sola.
+- CI: con cada cambio, compila y prueba.
+- CD: en main, además publica la imagen.
 
 **Si preguntan:** ¿Así funciona hoy ARKA-Lite?
 
-La pantalla, sí: su imagen se publica solo al llegar a main. Los servicios todavía publican también durante el Pull Request; es un ajuste que tenemos pendiente.
+Corre al pedir integrar y al llegar a main. La pantalla publica su imagen solo en main; los servicios todavía la publican también al pedir integrar, y es un ajuste pendiente.
 
 **Si preguntan:** ¿Por qué no se instala solo?
 
@@ -698,7 +725,7 @@ Porque Kubernetes funciona en nuestro ambiente local de laboratorio. En un ambie
 
 **Si preguntan:** ¿Las pruebas usan la base real?
 
-No. GitHub crea una base de datos PostgreSQL temporal para cada ejecución y la elimina al terminar.
+No. El pipeline crea una base de datos PostgreSQL temporal para cada ejecución y la elimina al terminar.
 
 **Si hay tiempo**
 
@@ -712,36 +739,37 @@ No. GitHub crea una base de datos PostgreSQL temporal para cada ejecución y la 
 >
 > Actualmente las imágenes de los servicios se publican durante la revisión y la de la pantalla al llegar a main. Ya identificamos esa diferencia como un ajuste pendiente.
 
-### 32. El pipeline se escribe en un archivo: ci.yml
+### 33. El pipeline se escribe como código
 
 **Qué decir**
 
-> Todo lo que acabamos de ver está escrito en un archivo de texto llamado ci.yml. Está en la carpeta .github/workflows, dentro del repositorio. GitHub lo lee automáticamente.
+> El pipeline no se configura con clics: se escribe en un archivo de texto que guardamos en el repositorio, junto al código.
 >
-> A la izquierda vemos cuándo se ejecuta. La palabra on enumera los eventos: abrir o actualizar un Pull Request, y hacer push a main, como ocurre al hacer merge.
+> Cada herramienta tiene su archivo. A la izquierda está el de GitHub, que es el que usamos en ARKA-Lite, y a la derecha el equivalente en GitLab. No hace falta leer cada línea: cambian las palabras, pero los dos dicen las mismas tres cosas.
 >
-> A la derecha vemos qué hace. Primero indica que se ejecuta en un servidor de GitHub. Luego, steps enumera los pasos en orden: compilar y probar, y publicar la imagen.
+> Cuándo corre, que en GitHub es on y en GitLab es rules. Dónde corre, en una máquina preparada para eso. Y qué pasos hace: aquí, compilar y correr las pruebas.
 >
-> La línea if agrega una condición: el paso de publicar la imagen solo se ejecuta cuando hay un push a main. Así se forman los dos caminos de la lámina anterior.
+> Azure DevOps y Jenkins siguen la misma idea. Y como el archivo es parte del proyecto, también lo revisamos antes de que entre: si alguien cambia el pipeline, queda registrado quién lo cambió y por qué.
 >
-> Como es un archivo más del proyecto, también pasa por un Pull Request y se revisa. Si alguien cambia el pipeline, queda registrado quién lo cambió y por qué.
->
-> Ya tenemos todas las piezas. Veamos ahora el recorrido completo en una simulación: desde el push hasta el despliegue.
+> ¿Y qué pasos podemos poner en ese archivo? Veamos algunos ejemplos.
 
 **Si se te olvida, di esto**
 
-- El pipeline se escribe en ci.yml.
-- on dice cuándo corre.
-- steps enumera los pasos. if indica una condición.
-- El archivo se revisa como el código.
+- El pipeline se escribe en un archivo de texto.
+- Dice cuándo corre, dónde y qué pasos hace.
+- Cambia la herramienta; la idea es la misma.
 
 **Qué hacer** (no se dice)
 
-- Es una versión simplificada del archivo real: no hace falta leer cada línea, basta señalar on, steps e if.
+- No hace falta leer cada línea: basta señalar cuándo, dónde y qué pasos en cada lado.
 
 **Si preguntan:** ¿Hay que saber programar para leerlo?
 
-Ayuda, pero no es indispensable. YAML es un formato de texto con nombres y valores, y cada paso indica en palabras qué hace.
+Ayuda, pero no es indispensable. Es texto con nombres y valores, y cada paso dice en palabras qué hace.
+
+**Si preguntan:** ¿Cuál usa ARKA-Lite?
+
+GitHub Actions, porque el código está en GitHub. La misma idea se lleva a cualquier otra herramienta.
 
 **Si hay tiempo**
 
@@ -749,13 +777,45 @@ Ayuda, pero no es indispensable. YAML es un formato de texto con nombres y valor
 >
 > El nombre del archivo puede ser otro; lo que importa es que esté en la carpeta .github/workflows.
 
-### 33. Ejemplo: del push al despliegue
+### 34. Qué se puede automatizar
 
 **Qué decir**
 
-> Este video es una simulación del recorrido completo. Primero, quien desarrolla termina su cambio y hace push a su rama.
+> En ese archivo podemos poner los pasos que necesitemos. Estos son algunos ejemplos; los verdes son los que ya hace ARKA-Lite.
 >
-> Al abrir el Pull Request, otra persona revisa el cambio y debe aprobarlo. El pipeline también arranca por su cuenta: compila y ejecuta todas las pruebas.
+> Lo básico es compilar, para confirmar que el código arma sin errores, y correr las pruebas unitarias, que validan que las reglas siguen funcionando.
+>
+> También verificamos que la aplicación arranca con su base y publicamos la imagen lista para instalar.
+>
+> La fila de abajo son ideas para crecer: revisar la calidad del código, buscar fallas de seguridad, instalar en un ambiente de pruebas y avisar al equipo cuando algo falla.
+>
+> Cada paso que automatizamos deja de depender de que alguien se acuerde, y se hace igual cada vez.
+>
+> Ya tenemos todas las piezas. Veamos el recorrido completo en una simulación, desde el push hasta que los usuarios ven la versión nueva.
+
+**Si se te olvida, di esto**
+
+- Compilar y probar es lo básico.
+- En verde, lo que ya hace ARKA-Lite.
+- Abajo, ideas para crecer.
+
+**Si preguntan:** ¿Por cuál conviene empezar?
+
+Por compilar y correr las pruebas. Es lo más simple y lo que más errores atrapa.
+
+**Si hay tiempo**
+
+> Cada paso que se automatiza deja de depender de que alguien lo recuerde, y se hace igual cada vez.
+>
+> Un paso lento puede correr solo al integrar en main, y uno rápido en cada subida de cambios.
+
+### 35. Ejemplo: del push al despliegue
+
+**Qué decir**
+
+> Este video es una simulación del recorrido completo; no es un despliegue real. Primero, quien desarrolla termina su cambio y hace push a su rama.
+>
+> Luego pide integrarlo. En el video aparece como Pull Request, que es como lo llama GitHub. Otra persona revisa y aprueba, y el pipeline arranca solo: compila y corre todas las pruebas.
 >
 > Con el merge, el cambio entra a main y se publica la imagen, marcada con el código del cambio.
 >
@@ -767,7 +827,7 @@ Ayuda, pero no es indispensable. YAML es un formato de texto con nombres y valor
 
 **Si se te olvida, di esto**
 
-- Push, Pull Request, pruebas, merge e imagen.
+- Push, solicitud, pruebas, merge e imagen.
 - Al instalar la imagen, los usuarios ven la versión nueva.
 - Nuestro pipeline llega hasta la imagen.
 
@@ -784,33 +844,31 @@ Porque nuestro ambiente de Kubernetes es local y GitHub no puede acceder a él. 
 
 > Existen herramientas para automatizar ese último paso. Todas siguen la misma idea, donde el pipeline entrega la imagen a Kubernetes y una persona aprueba antes de llegar a producción.
 
-### 34. Cuando un cambio rompe algo
+### 36. Cuando un cambio rompe algo
 
 **Qué decir**
 
 > Veamos qué pasa cuando un cambio rompe una regla. Supongamos que alguien permite por error enviar dos veces la misma solicitud.
 >
-> Si todo se revisara a mano, quizá lo descubriríamos semanas después, cuando ya hubiera afectado a una persona usuaria.
+> Arriba, sin revisión automática: el cambio se integra, nadie lo nota, se instala días después y, semanas más tarde, llega el reclamo de una persona usuaria. Para entonces, el daño ya está hecho.
 >
-> Aquí el pipeline arranca solo. En pocos minutos, falla la prueba que protege esa regla. GitHub muestra qué falló y dónde buscar el problema.
+> Abajo, con el pipeline: en pocos minutos falla la prueba que protege esa regla y queda en rojo. El cambio no entra.
 >
-> La persona corrige el problema y el pipeline vuelve a correr. Si main exige las pruebas en verde, el error no entra.
+> La persona corrige el problema, el pipeline vuelve a correr y, solo cuando todo está en verde, el cambio entra a main.
 >
-> La integración continua funciona como una red de seguridad: permite hacer cambios con mayor confianza.
->
-> Por eso cada regla necesita una prueba. Esa prueba es la alarma que se activa cuando alguien modifica el comportamiento esperado.
+> Por eso cada regla necesita una prueba: es la alarma que se activa cuando alguien modifica el comportamiento esperado.
 >
 > Cuando el cambio se aprueba y las pruebas pasan, el pipeline publica la imagen con una etiqueta.
 
 **Si se te olvida, di esto**
 
-- Una prueba detecta la regla rota en minutos.
-- GitHub muestra dónde ocurrió el problema.
-- El error no llega a la versión principal.
+- La misma falla, dos caminos.
+- Sin pipeline: lo descubre un usuario, semanas después.
+- Con pipeline: lo detecta una prueba, en minutos.
 
 **Si preguntan:** ¿Y si alguien se salta el pipeline?
 
-Todo cambio entra mediante Pull Request. Además, GitHub puede impedir el merge mientras el pipeline esté en rojo.
+Se puede configurar el repositorio para que no acepte la integración mientras las pruebas estén en rojo.
 
 **Si hay tiempo**
 
@@ -818,7 +876,7 @@ Todo cambio entra mediante Pull Request. Además, GitHub puede impedir el merge 
 >
 > El pipeline publica imágenes mediante un permiso temporal que GitHub entrega a cada ejecución, sin almacenar una contraseña.
 
-### 35. Cada imagen, con su etiqueta
+### 37. Cada imagen, con su etiqueta
 
 **Qué decir**
 
@@ -826,18 +884,18 @@ Todo cambio entra mediante Pull Request. Además, GitHub puede impedir el merge 
 >
 > La imagen lleva el código de ese cambio, como el número de lote de un medicamento. Si aparece un problema, sabemos exactamente de dónde vino.
 >
-> Con ese código podemos buscar en GitHub qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.
+> Con ese código podemos buscar en el repositorio qué cambió, quién lo propuso, quién lo revisó y cuáles pruebas pasaron.
 >
 > Si una versión presenta problemas, podemos volver a la imagen anterior, que continúa almacenada.
 >
-> Si el equipo de operaciones pregunta qué versión está instalada, damos la etiqueta exacta y consultamos su historial. En el laboratorio todavía construimos las imágenes en una computadora. En un ambiente real usaríamos la imagen publicada por el pipeline.
+> Si el equipo de operaciones pregunta qué versión está instalada, damos la etiqueta exacta y consultamos su historial. En el laboratorio todavía construimos las imágenes en una computadora; en un ambiente real usaríamos la imagen publicada por el pipeline.
 >
 > La imagen ya está publicada y rastreada. Ahora veamos dónde se ejecuta. Le paso la palabra a Moises, que nos explicará Kubernetes.
 
 **Si se te olvida, di esto**
 
-- Cada imagen se conecta con un cambio específico.
-- Podemos saber quién lo revisó y qué pruebas pasó.
+- Cada imagen se conecta con el cambio que la generó.
+- Sabemos quién lo propuso, quién lo revisó y qué pruebas pasó.
 - Si falla, volvemos a la imagen anterior.
 
 **Si preguntan:** ¿Por qué no usar la etiqueta latest?
@@ -850,11 +908,11 @@ Porque latest cambia con cada publicación y no identifica el código. La etique
 >
 > El archivo de Kubernetes indica qué imagen debe utilizar. Para cambiar de versión, modificamos esa referencia y volvemos a aplicar el archivo.
 
-> **Entregas la palabra** a Moises (lámina 36).
+> **Entregas la palabra** a Moises (lámina 38).
 
 ## Abdiel Barria · Interconexión de servicios y Demostración en video y Resultados, valor y cierre
 
-Láminas 19–23 y 44–50 · unos 10 minutos.
+Láminas 19–23 y 46–52 · unos 10 minutos.
 
 > **Recibes la palabra** de Marlene Bonilla, después de la lámina 18.
 
@@ -1033,9 +1091,9 @@ Para este proyecto, basta con guardar el evento pendiente y entregarlo después 
 
 > **Entregas la palabra** a Kevin (lámina 24).
 
-> **Recibes la palabra** de Moises, después de la lámina 43.
+> **Recibes la palabra** de Moises, después de la lámina 45.
 
-### 44. En video: cómo interactúan los componentes
+### 46. En video: cómo interactúan los componentes
 
 **Qué decir**
 
@@ -1064,7 +1122,7 @@ Para este proyecto, basta con guardar el evento pendiente y entregarlo después 
 
 > La franja superior no forma parte del sistema. La agregamos al video para indicar qué componente trabaja en cada momento.
 
-### 45. En video: si notificaciones se cae
+### 47. En video: si notificaciones se cae
 
 **Qué decir**
 
@@ -1106,7 +1164,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 >
 > Después de la presentación, cualquier persona puede levantar el sistema mediante un solo comando.
 
-### 46. Demostración: lo que aprendimos
+### 48. Demostración: lo que aprendimos
 
 **Qué decir**
 
@@ -1128,7 +1186,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 
 > La demostración también funcionó como prueba. Antes de presentarla, provocamos cada falla varias veces para verificar que el sistema respondiera de la manera esperada.
 
-### 47. Resultados para el negocio
+### 49. Resultados para el negocio
 
 **Qué decir**
 
@@ -1156,7 +1214,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 
 > Comprobamos estos resultados en nuestro laboratorio y no en producción. Lo importante es que cada resultado se puede repetir y verificar.
 
-### 48. Lo que sostiene los resultados
+### 50. Lo que sostiene los resultados
 
 **Qué decir**
 
@@ -1184,7 +1242,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 >
 > Ninguna de estas prácticas exige Java, microservicios ni Kubernetes. Son decisiones de diseño aplicables a los sistemas actuales.
 
-### 49. Lo que nos llevamos
+### 51. Lo que nos llevamos
 
 **Qué decir**
 
@@ -1206,7 +1264,7 @@ Puede esperar indefinidamente porque permanece en la base. Se entrega en la prim
 
 > Si conservamos una sola idea, debe ser esta. Diseñemos qué hará el sistema cuando algo falle y no solamente cómo funcionará cuando todo salga bien.
 
-### 50. Gracias
+### 52. Gracias
 
 **Qué decir**
 
@@ -1406,11 +1464,11 @@ Puede servir para algo pequeño en un solo servidor. Cuando necesitamos varios s
 
 ## Moises · DevOps: Kubernetes, y la observabilidad
 
-Láminas 36–43 · unos 7 minutos.
+Láminas 38–45 · unos 7 minutos.
 
-> **Recibes la palabra** de Jossett Franceschi, después de la lámina 35.
+> **Recibes la palabra** de Jossett Franceschi, después de la lámina 37.
 
-### 36. Cómo trabaja Kubernetes
+### 38. Cómo trabaja Kubernetes
 
 **Qué decir**
 
@@ -1444,7 +1502,7 @@ Depende de qué cambie. Si alguien elimina un Pod, Kubernetes crea otro para man
 >
 > Estos archivos se llaman manifiestos y utilizan un formato de texto llamado YAML. Un clúster es un grupo de servidores que trabajan juntos.
 
-### 37. Contenedores y Pods: cómo se complementan
+### 39. Contenedores y Pods: cómo se complementan
 
 **Qué decir**
 
@@ -1481,7 +1539,7 @@ Corren en los servidores del clúster, llamados nodos. Kubernetes elige el nodo 
 >
 > Los Pods se reemplazan en lugar de repararse. Por eso los datos importantes permanecen en la base y en su disco, no dentro del Pod.
 
-### 38. Las bondades de Kubernetes
+### 40. Las bondades de Kubernetes
 
 **Qué decir**
 
@@ -1522,7 +1580,7 @@ Comenzamos con una estimación, medimos el sistema y ajustamos. Un tope de memor
 >
 > Definir la reserva y el tope también permite calcular cuántos servidores necesitamos, en lugar de estimarlo sin mediciones.
 
-### 39. Cuando un Pod se cae
+### 41. Cuando un Pod se cae
 
 **Qué decir**
 
@@ -1554,7 +1612,7 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 >
 > Si se cae la base, ocurre algo similar. Kubernetes recrea el Pod y los datos continúan en su disco.
 
-### 40. DevOps: lo que aprendimos
+### 42. DevOps: lo que aprendimos
 
 **Qué decir**
 
@@ -1578,7 +1636,7 @@ Su Pod también se recrea y los datos permanecen en el disco. Los servicios espe
 
 > Docker y Kubernetes requieren aprendizaje y no todos los sistemas los necesitan. Sin embargo, siempre conviene documentar la instalación de una forma escrita y repetible.
 
-### 41. Observabilidad: tres preguntas
+### 43. Observabilidad: tres preguntas
 
 **Qué decir**
 
@@ -1612,7 +1670,7 @@ Son conceptos relacionados. El monitoreo avisa que algo anda mal y la observabil
 >
 > Cada servicio tiene una dirección especial que informa su salud. Kubernetes y la pantalla la consultan para mostrar si está disponible.
 
-### 42. Un aviso no llegó: ¿cómo lo encontramos?
+### 44. Un aviso no llegó: ¿cómo lo encontramos?
 
 **Qué decir**
 
@@ -1649,7 +1707,7 @@ Puede mostrarlas si le conectamos una fuente de métricas, como el consumo de me
 >
 > Podemos buscar los registros de notificaciones que contengan la palabra evento. En segundos obtenemos las líneas relacionadas con sus números.
 
-### 43. Observabilidad: lo que aprendimos
+### 45. Observabilidad: lo que aprendimos
 
 **Qué decir**
 
@@ -1671,4 +1729,4 @@ Puede mostrarlas si le conectamos una fuente de métricas, como el consumo de me
 
 > Esta práctica también funciona con procedimientos. Podemos guardar el mismo número en los registros de la aplicación, del procedimiento y de cualquier otro sistema involucrado.
 
-> **Entregas la palabra** a Abdiel Barria (lámina 44).
+> **Entregas la palabra** a Abdiel Barria (lámina 46).

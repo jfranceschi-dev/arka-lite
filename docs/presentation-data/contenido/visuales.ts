@@ -54,7 +54,7 @@ export function lineasDeVisual(v: Visual): string[] {
     case "caminos":
       return v.caminos.map((c) => {
         const grupos = (c.grupos ?? []).map((g) => `${g.titulo}: pasos ${g.desde + 1} a ${g.hasta + 1}`).join("; ");
-        return `${c.titulo}: ${c.pasos.map((p, i) => `${linea(p)}${i === c.regla ? " (aquí vive la regla)" : ""}${c.flechas[i] ? ` → [${c.flechas[i]}]` : i < c.pasos.length - 1 ? " →" : ""}`).join(" ")}${grupos ? ` (${grupos})` : ""}`;
+        return `${c.titulo}: ${c.pasos.map((p, i) => `${linea(p)}${i === c.regla ? ` (${(c.marca ?? "aquí vive la regla").toLowerCase()})` : ""}${c.flechas[i] ? ` → [${c.flechas[i]}]` : i < c.pasos.length - 1 ? " →" : ""}`).join(" ")}${grupos ? ` (${grupos})` : ""}`;
       });
     case "codigos":
       return v.lados.map((l) => `${l.titulo}: ${l.codigo.replaceAll("\n", " ")} · ${l.puntos.join("; ")}`);
@@ -113,7 +113,7 @@ export function lineasDeVisual(v: Visual): string[] {
       return [`Video capturas/videos/${v.archivo}${seg ? `, ${duracion(seg)}` : ""}. Arranca solo al llegar a la lámina.`, ...v.pasos.map((p, i) => `${i + 1}. ${p}`)];
     }
     case "ramas":
-      return [`Línea principal: ${v.principal}`, ...v.ramas.map((r) => `${r.nombre}: nace de ${v.principal}, ${r.avances.join(", ")} y vuelve con un merge`), v.nace, v.fusion];
+      return [`Línea principal: ${v.principal}`, ...(v.versiones ?? []).map((x) => `${x.titulo}: ${x.texto}`), ...v.ramas.map((r) => `${r.nombre}: nace de ${v.principal}, ${(r.pasos?.map(linea) ?? r.avances).join(", ")} y vuelve con un merge`), ...[v.volver, v.nace, v.fusion].filter((x): x is string => !!x)];
     case "pods":
       return [linea(v.imagen), linea(v.deployment), linea(v.service), `${v.nodo}: ${v.pods.map((p) => `${p.titulo} con ${p.contenedor} (${p.recursos})`).join("; ")}`];
   }

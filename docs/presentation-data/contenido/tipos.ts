@@ -80,6 +80,8 @@ export interface Base {
 export interface Campo {
   nombre: string;
   detalle?: string;
+  // Qué empareja el campo con su columna; va sobre la flecha.
+  enlace?: string;
 }
 
 export type Visual =
@@ -107,7 +109,7 @@ export type Visual =
   // Dos o más maneras de recorrer el mismo camino, una por carril. El paso
   // "regla" de cada carril lleva la marca de dónde vive la regla del negocio;
   // los grupos marcan con un corchete qué pasos son una etapa (CI, CD).
-  | { tipo: "caminos"; caminos: { titulo: string; tono: Tono; pasos: ElementoVisual[]; flechas: string[]; regla?: number; grupos?: { desde: number; hasta: number; titulo: string; tono: Tono }[] }[] }
+  | { tipo: "caminos"; caminos: { titulo: string; tono: Tono; pasos: ElementoVisual[]; flechas: string[]; regla?: number; marca?: string; grupos?: { desde: number; hasta: number; titulo: string; tono: Tono }[] }[] }
   // La misma idea escrita de dos formas, en código, lado a lado, con lo que
   // implica cada una debajo.
   | { tipo: "codigos"; lados: [LadoCodigo, LadoCodigo] }
@@ -115,7 +117,7 @@ export type Visual =
   // llegar al destino. La nota dice lo que nunca lo lleva.
   | { tipo: "origenes"; fuentes: (ElementoVisual & { valor: string })[]; centro: ElementoVisual & { valor: string }; enlace: string; destino: ElementoVisual; nota: ElementoVisual }
   // Cómo el ORM traduce una clase a una tabla y cada operación a SQL.
-  | { tipo: "mapeo"; clase: { titulo: string; subtitulo: string; campos: Campo[] }; tabla: { titulo: string; subtitulo: string; columnas: Campo[] }; operaciones: { codigo: string; sql: string }[] }
+  | { tipo: "mapeo"; clase: { titulo: string; subtitulo: string; campos: Campo[]; enlace?: string }; tabla: { titulo: string; subtitulo: string; columnas: Campo[] }; operaciones: { codigo: string; sql: string }[] }
   // Lo que aprendimos en la sección: una o dos métricas y, por aprendizaje,
   // qué aprendimos, cómo lo aplicamos y qué valor le deja al equipo.
   | { tipo: "aprendizajes"; metricas: { valor: string; titulo: string }[]; items: (ElementoVisual & { valor: string })[] }
@@ -152,7 +154,7 @@ export type Visual =
   // al llegar a la lámina.
   | { tipo: "video"; archivo: string; portada: string; url: string; pasos: string[] }
   // Una rama de trabajo que vuelve a main por Pull Request.
-  | { tipo: "ramas"; principal: string; ramas: { nombre: string; avances: string[] }[]; nace: string; fusion: string }
+  | { tipo: "ramas"; principal: string; ramas: { nombre: string; avances: string[]; opcionales?: number[]; pasos?: ElementoVisual[] }[]; nace?: string; fusion?: string; versiones?: { titulo: string; texto: string }[]; volver?: string }
   // De la imagen al Pod: el molde, lo que pedimos, el nombre fijo y los Pods de
   // un servidor, cada uno con su contenedor adentro.
   | { tipo: "pods"; imagen: ElementoVisual; deployment: ElementoVisual; service: ElementoVisual; nodo: string; pods: { titulo: string; contenedor: string; recursos: string }[] };
